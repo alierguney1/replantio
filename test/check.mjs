@@ -2,7 +2,7 @@
 import assert from "node:assert";
 import { readFileSync } from "node:fs";
 import { trap, daylength, scoreSpecies, aggregateClimate, grade } from "../scoring.js";
-import { CLASSES, height, dbhCm, co2eKgPerTree, crownDiameterM, crownDisplayM, maturityYears } from "../growth.js";
+import { CLASSES, height, dbhCm, co2eKgPerTree, crownDiameterM, crownDisplayM, standDisplay, maturityYears } from "../growth.js";
 
 const species = JSON.parse(readFileSync(new URL("../data/species.json", import.meta.url)));
 const by = sci => species.find(s => s.sci === sci);
@@ -141,6 +141,18 @@ assert.ok(cd20 > 3.5 && cd20 < 5.5, `euc display crown at 20y plausible: ${cd20}
 assert.ok(cd60 > 5 && cd60 < 8, `euc display crown at 60y plausible: ${cd60}`);
 assert.ok(cd60 > cd20, "crowns keep widening with age");
 close(co2eKgPerTree({ gclass: "temperate_slow", wood: "broadleaf" }, 10), 21.5, 3, "carbon anchor unmoved by crown fix");
+
+// self-thinning display: density falls, surviving crowns widen, carbon untouched
+const tm = CLASSES.tropical_medium;
+const sd5 = standDisplay(tm, 5), sd30 = standDisplay(tm, 30), sd60 = standDisplay(tm, 60);
+assert.ok(sd30.keep < sd5.keep && sd60.keep < sd30.keep, "stand keeps thinning with age");
+const dens30 = sd30.keep * 1111;
+assert.ok(dens30 > 100 && dens30 < 600, `30y density plausible: ${dens30.toFixed(0)}/ha`);
+assert.ok(sd30.crown > crownDisplayM(tm, 30), "released crowns wider than plantation crowns");
+assert.ok(sd30.crown > 8 && sd30.crown < 13, `30y display crown satellite-scale: ${sd30.crown.toFixed(1)} m`);
+const cover30 = sd30.keep * 1111 * Math.PI * (sd30.crown / 2) ** 2 / 1e4;
+assert.ok(cover30 > 0.8, `canopy stays closed after thinning: ${(cover30 * 100).toFixed(0)}%`);
+close(co2eKgPerTree({ gclass: "temperate_slow", wood: "broadleaf" }, 10), 21.5, 3, "carbon anchor unmoved by thinning");
 
 // habit expansion: non-tree species exist and are flagged
 assert.ok(species.length > 2000, `all life forms present: ${species.length}`);

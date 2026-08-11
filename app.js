@@ -1,366 +1,14 @@
 import { aggregateClimate, scoreSpecies, grade, gradeColor, monthlyDaylengths } from "./scoring.js";
-import { CLASSES, projection, maturityYears, co2eKgPerTree, co2eTonsPerHa, height, dbhCm, crownDiameterM, crownDisplayM, STEMS_PER_HA } from "./growth.js";
+import { DICTS, LANGS, NAMES, LOCALES, MONTHS_ALL } from "./i18n.js";
+import { CLASSES, projection, maturityYears, co2eKgPerTree, co2eTonsPerHa, height, dbhCm, crownDiameterM, crownDisplayM, standDisplay, STEMS_PER_HA } from "./growth.js";
 
 const $ = s => document.querySelector(s);
-// ---------- language: browser-detected, four options, cycling toggle ----------
-const LANGS = ["pt", "en", "es", "fr"];
+// ---------- language: browser-detected, dictionary module ----------
 const navLang = (navigator.language || "en").slice(0, 2).toLowerCase();
 const storedLang = localStorage.getItem("lang");
 const LANG = LANGS.includes(storedLang) ? storedLang : (LANGS.includes(navLang) ? navLang : "en");
-const LOCALE = { pt: "pt-BR", en: "en-US", es: "es-419", fr: "fr-FR" }[LANG];
-const PT = {
-  "Draw an area anywhere on Earth: Replantio shows which species would thrive there, how they grow, the carbon they store, and what restoration costs. Open data, open model.": "Desenhe uma área em qualquer lugar do mundo: o Replantio mostra quais espécies prosperariam ali, como crescem, o carbono que guardam e quanto custa restaurar. Dados abertos, modelo aberto.",
-  "created by": "criado por",
-  "Open source on GitHub": "Código aberto no GitHub",
-  "Go to my location": "Ir para minha localização",
-  "Could not get your location.": "Não foi possível obter sua localização.",
-  "Analyzing area": "Analisando a área",
-  "Analysis failed": "Falha na análise",
-  "Retry": "Tentar de novo",
-  "Climate normals &middot; Open-Meteo ERA5, 10 years daily": "Normais climáticas &middot; Open-Meteo ERA5, 10 anos diários",
-  "Soil profile &middot; SoilGrids 2.0": "Perfil do solo &middot; SoilGrids 2.0",
-  "Scoring {n} species": "Avaliando {n} espécies",
-  "Could not load the climate record for this point. The Open-Meteo archive may be busy or rate limited; wait a moment and retry.":
-    "Não foi possível carregar o histórico climático deste ponto. O arquivo do Open-Meteo pode estar ocupado ou limitado; aguarde um momento e tente de novo.",
-  "{s} of {n} species rate suitable or better": "{s} de {n} espécies avaliadas como adequadas ou melhores",
-  "Site climate &middot; ERA5 2015&ndash;2024": "Clima do local &middot; ERA5 2015&ndash;2024",
-  "Recommended species": "Espécies recomendadas",
-  "soil pH": "pH do solo", "elevation": "elevação", "daylength": "duração do dia", "record low": "mínima recorde",
-  "sun": "sol", "humidity": "umidade", "cloud": "nuvens", "slope": "declive", "facing": "face",
-  "kWh/m²·day": "kWh/m²·dia",
-  "mean daily shortwave radiation, all weather included": "radiação solar média diária, já contando o tempo nublado",
-  "high humidity plus high cloud cover marks fog-prone sites": "umidade e nebulosidade altas indicam locais com neblina",
-  "no data": "sem dados", "n/a": "n/d",
-  "E": "L", "W": "O", "SW": "SO", "NW": "NO",
-  "This area looks like open water (no soil data, elevation {e} m). Species scores here reflect climate only and are unlikely to be meaningful.":
-    "Esta área parece ser água aberta (sem dados de solo, elevação {e} m). As notas abaixo refletem só o clima e provavelmente não fazem sentido.",
-  "Show scores anyway": "Mostrar mesmo assim",
-  "Nothing clears the bar for this filter here.": "Nada passa do corte com esse filtro aqui.",
-  "Show {n} more": "Mostrar mais {n}",
-  "Native here": "Nativas daqui",
-  "Only species in this country's native flora (WCVP)": "Só espécies da flora nativa deste país (WCVP)",
-  "All uses": "Todos os usos",
-  "timber": "madeira", "fruit": "fruta", "environment": "ambiental", "medicinal": "medicinal",
-  "forage": "forragem", "materials": "materiais", "food": "alimento", "ornamental": "ornamental",
-  "native": "nativa", "nearby": "na região",
-  "Part of the native flora of this country (WCVP)": "Parte da flora nativa deste país (WCVP)",
-  "GBIF occurrence records near this area": "Registros de ocorrência (GBIF) perto desta área",
-  "Excellent": "Excelente", "Very suitable": "Muito adequada", "Suitable": "Adequada",
-  "Marginal": "Marginal", "Very marginal": "Muito marginal", "Not suitable": "Inadequada",
-  "{rate} growth &middot; {zone}": "crescimento {rate} &middot; {zone}",
-  "fast": "rápido", "medium": "médio", "slow": "lento", "tropical": "tropical", "temperate": "temperado",
-  "Temperature": "Temperatura", "Rainfall": "Chuva", "Soil pH": "pH do solo",
-  "tolerated {a} to {d} · optimal {b} to {c}": "tolera {a} a {d} · ótimo {b} a {c}",
-  "Photoperiod outside this species' range: 0.5 penalty applied.": "Fotoperíodo fora da faixa da espécie: penalidade de 0,5 aplicada.",
-  "Needs winter dormancy; the coldest month here is too warm for it.": "Precisa de dormência de inverno; o mês mais frio aqui é quente demais.",
-  "Origin": "Origem", "Use": "Uso", "Time to max height": "Tempo até altura máx.", "Mature canopy": "Copa adulta",
-  "all origins": "todas", "any": "qualquer", "under {n} years": "até {n} anos",
-  "native here": "nativas daqui", "all uses": "todos", "Maturity": "Maturidade",
-  "no limit": "sem limite", "no minimum": "sem mínimo",
-  "criteria": "critérios", "clear criteria": "limpar critérios",
-  "{n} of {t}": "{n} de {t}", "{n} species": "{n} espécies",
-  "Reaches ~95% of its max height in ~{n} years (class-level model).": "Atinge ~95% da altura máxima em ~{n} anos (modelo por classe).",
-  "Trunk &oslash; 20 yr": "Tronco &oslash; 20 anos", "Canopy, 20 yr": "Copa, 20 anos",
-  "CO&#8322;e/tree, 20 yr": "CO&#8322;e/árvore, 20 anos", "Stand CO&#8322;e, 20 yr": "CO&#8322;e do plantio, 20 anos",
-  "Best window": "Melhor janela", "Hardy to": "Resiste até",
-  "Trees in this area, 3&times;3 m": "Árvores na área, 3&times;3 m", "Area CO&#8322;e by year 20": "CO&#8322;e da área em 20 anos",
-  "mean": "média", "per year": "por ano", "y": "a", "yr": "anos", "trunk": "tronco",
-  "Suitability follows the FAO EcoCrop model (trapezoidal climate envelopes, most-limiting-factor). Growth and carbon are class-level estimates":
-    "A adequação segue o modelo EcoCrop da FAO (envelopes climáticos trapezoidais, fator mais limitante). Crescimento e carbono são estimativas por classe",
-  "(Chapman-Richards, Chave 2014 / Jenkins 2003, IPCC 2006), for screening, not planting prescriptions.":
-    "(Chapman-Richards, Chave 2014 / Jenkins 2003, IPCC 2006): triagem, não prescrição de plantio.",
-  "Data:": "Dados:", "Photos: iNaturalist": "Fotos: iNaturalist", "Map:": "Mapa:",
-  "Search a city or place": "Busque uma cidade ou lugar",
-  "Draw area": "Desenhar área",
-  "Click to drop points &middot; right-click, double-click or click the first point to close &middot; Esc cancels":
-    "Clique para marcar pontos &middot; botão direito, duplo clique ou clique no primeiro ponto para fechar &middot; Esc cancela",
-  "No matches": "Sem resultados",
-  "Replantio · replanting intelligence": "Replantio · inteligência de replantio",
-  "Habit": "Porte", "all habits": "todos os portes",
-  "shrubs": "arbustos", "herbs": "ervas", "grasses": "gramíneas", "vines": "trepadeiras",
-  "Cycle": "Ciclo", "{a} to {b} days": "{a} a {b} dias",
-  "Find plantable land in this view": "Achar áreas plantáveis nesta vista",
-  "Zoom in to city scale to scan for plantable land.": "Aproxime até a escala de cidade para escanear áreas plantáveis.",
-  "Nothing promising in this view. Try another neighborhood.": "Nada promissor nesta vista. Tente outro canto.",
-  "The land scan service is busy; try again in a minute.": "O serviço de varredura está ocupado; tente de novo em um minuto.",
-  "click to analyze": "clique para analisar",
-  "candidate areas": "áreas candidatas",
-  "Simulate planting": "Simular plantio",
-  "Stop simulation": "Fechar simulação",
-  "year": "ano", "height": "altura", "crown": "copa",
-  "Close": "Fechar", "Selected area": "Área selecionada", "fit": "ajuste",
-  "Delete area": "Excluir área",
-  "Import area (GeoJSON, KML, zipped shapefile)": "Importar área (GeoJSON, KML, shapefile zipado)",
-  "No polygons found in the file.": "Nenhum polígono encontrado no arquivo.",
-  "Could not read the file.": "Não foi possível ler o arquivo.",
-  "The shapefile must use WGS84 geographic coordinates (like SARE requires).": "O shapefile precisa estar em coordenadas geográficas WGS84 (como o SARE exige).",
-  "Report": "Relatório", "SHP (SARE)": "SHP (SARE)", "CSV": "CSV",
-  "area": "área", "areas": "áreas", "planted": "plantados",
-  "Legal &middot; Forest Code": "Legal &middot; Código Florestal",
-  "Property": "Imóvel", "APP type": "Tipo de APP",
-  "up to 1 MF": "até 1 MF", "1 to 2 MF": "1 a 2 MF", "2 to 4 MF": "2 a 4 MF", "over 4 MF": "acima de 4 MF",
-  "rivers and streams": "rios e igarapés", "springs": "nascentes", "lakes and ponds": "lagos e lagoas",
-  "Strip to recompose (Art. 61-A)": "Faixa a recompor (Art. 61-A)",
-  "{w} m on each margin": "{w} m em cada margem",
-  "Art. 61-B: total recomposition capped at {p}% of the property": "Art. 61-B: recomposição total limitada a {p}% da área do imóvel",
-  "above 4 MF the 61-B cap does not apply; for rivers, 20 m covers watercourses up to 10 m wide":
-    "acima de 4 MF não há teto do Art. 61-B; para rios, os 20 m valem para cursos d'água de até 10 m de largura",
-  "SMA 32 targets (SP)": "Metas SMA 32 (SP)",
-  "ombrophilous and seasonal forests": "florestas ombrófilas e estacionais",
-  "cerradao / cerrado stricto sensu": "cerradão / cerrado stricto sensu",
-  "{n} years": "{n} anos",
-  "sign-off gate (Anexo II)": "atesto (Anexo II)",
-  "Plots for this area: {n} of 100 m2 (25 x 4 m). A regenerant counts from 50 cm height with CAP under 15 cm.":
-    "Parcelas para esta área: {n} de 100 m² (25 × 4 m). Regenerante conta a partir de 50 cm de altura com CAP menor que 15 cm.",
-  "Anexo III suggests at least 80 regional native species for full-area planting. It is guidance, not a requirement.":
-    "O Anexo III sugere ao menos 80 espécies nativas regionais no plantio em área total. É orientação, não exigência.",
-  "Restoration cost": "Custo de restauração",
-  "range across labour arrangements, own workforce to contracted; 2023 prices, 3x2 m spacing":
-    "faixa da mão de obra própria à empreitada; preços de 2023, espaçamento 3x2 m",
-  "Natural regeneration management": "Condução da regeneração natural",
-  "Regeneration + enrichment": "Condução + enriquecimento",
-  "Regeneration + densification + enrichment": "Condução + adensamento + enriquecimento",
-  "Seedling planting, mechanized": "Plantio de mudas, mecanizado",
-  "Seedling planting, manual": "Plantio de mudas, não mecanizado",
-  "Direct seeding, mechanized": "Semeadura direta, mecanizada",
-  "Direct seeding, manual": "Semeadura direta, não mecanizada",
-  "Seedling planting in this area": "Plantio de mudas nesta área",
-  "Costs: Instituto Escolhas 2023": "Custos: Instituto Escolhas 2023",
-  "Score in the 2040s": "Nota nos anos 2040",
-  "Rescored on a 2040-2049 CMIP6 projection (MRI-AGCM3-2-S), same scoring engine":
-    "Reavaliada com a projeção CMIP6 2040-2049 (MRI-AGCM3-2-S), mesmo mecanismo de nota",
-  "Falls below suitable in the 2040s climate (CMIP6)": "Cai abaixo de adequada no clima dos anos 2040 (CMIP6)",
-  "Export report": "Exportar relatório",
-  "central sample of {n} trees": "amostra central de {n} árvores",
-  "showing {n} of {t} trees": "mostrando {n} de {t} árvores",
-  "trees": "árvores",
-  "click plants a sapling · right-click removes it · Cmd+Z undoes": "clique planta uma muda · botão direito remove · Cmd+Z desfaz",
-};
-const ES = {
-  "Draw an area anywhere on Earth: Replantio shows which species would thrive there, how they grow, the carbon they store, and what restoration costs. Open data, open model.": "Dibuja un área en cualquier lugar del mundo: Replantio muestra qué especies prosperarían allí, cómo crecen, el carbono que guardan y cuánto cuesta restaurar. Datos abiertos, modelo abierto.",
-  "created by": "creado por",
-  "Open source on GitHub": "Código abierto en GitHub",
-  "Go to my location": "Ir a mi ubicación",
-  "Could not get your location.": "No se pudo obtener tu ubicación.",
-  "Analyzing area": "Analizando el área", "Analysis failed": "Falló el análisis", "Retry": "Reintentar",
-  "Climate normals &middot; Open-Meteo ERA5, 10 years daily": "Normales climáticas &middot; Open-Meteo ERA5, 10 años diarios",
-  "Soil profile &middot; SoilGrids 2.0": "Perfil del suelo &middot; SoilGrids 2.0",
-  "Scoring {n} species": "Evaluando {n} especies",
-  "Could not load the climate record for this point. The Open-Meteo archive may be busy or rate limited; wait a moment and retry.": "No se pudo cargar el registro climático de este punto. El archivo de Open-Meteo puede estar ocupado; espere un momento y reintente.",
-  "{s} of {n} species rate suitable or better": "{s} de {n} especies califican adecuadas o mejores",
-  "Site climate &middot; ERA5 2015&ndash;2024": "Clima del sitio &middot; ERA5 2015&ndash;2024",
-  "Recommended species": "Especies recomendadas",
-  "soil pH": "pH del suelo", "elevation": "elevación", "daylength": "duración del día", "record low": "mínima récord",
-  "sun": "sol", "humidity": "humedad", "cloud": "nubes", "slope": "pendiente", "facing": "orientación",
-  "kWh/m²·day": "kWh/m²·día",
-  "mean daily shortwave radiation, all weather included": "radiación solar media diaria, nubosidad incluida",
-  "high humidity plus high cloud cover marks fog-prone sites": "humedad y nubosidad altas señalan sitios con niebla",
-  "no data": "sin datos", "n/a": "n/d", "E": "E", "W": "O", "SW": "SO", "NW": "NO",
-  "This area looks like open water (no soil data, elevation {e} m). Species scores here reflect climate only and are unlikely to be meaningful.": "Esta área parece agua abierta (sin datos de suelo, elevación {e} m). Las notas reflejan solo el clima y probablemente no signifiquen nada.",
-  "Show scores anyway": "Mostrar de todos modos",
-  "Nothing clears the bar for this filter here.": "Nada supera el corte con este filtro aquí.",
-  "Show {n} more": "Mostrar {n} más",
-  "Native here": "Nativas de aquí",
-  "Only species in this country's native flora (WCVP)": "Solo especies de la flora nativa de este país (WCVP)",
-  "All uses": "Todos los usos",
-  "timber": "madera", "fruit": "fruta", "environment": "ambiental", "medicinal": "medicinal",
-  "forage": "forraje", "materials": "materiales", "food": "alimento", "ornamental": "ornamental",
-  "native": "nativa", "nearby": "en la zona",
-  "Part of the native flora of this country (WCVP)": "Parte de la flora nativa de este país (WCVP)",
-  "GBIF occurrence records near this area": "Registros de ocurrencia (GBIF) cerca de esta área",
-  "Excellent": "Excelente", "Very suitable": "Muy adecuada", "Suitable": "Adecuada",
-  "Marginal": "Marginal", "Very marginal": "Muy marginal", "Not suitable": "Inadecuada",
-  "{rate} growth &middot; {zone}": "crecimiento {rate} &middot; {zone}",
-  "fast": "rápido", "medium": "medio", "slow": "lento", "tropical": "tropical", "temperate": "templado",
-  "Temperature": "Temperatura", "Rainfall": "Lluvia", "Soil pH": "pH del suelo",
-  "tolerated {a} to {d} · optimal {b} to {c}": "tolera {a} a {d} · óptimo {b} a {c}",
-  "Photoperiod outside this species' range: 0.5 penalty applied.": "Fotoperiodo fuera del rango de la especie: penalización de 0,5 aplicada.",
-  "Needs winter dormancy; the coldest month here is too warm for it.": "Necesita dormancia invernal; el mes más frío aquí es demasiado cálido.",
-  "Origin": "Origen", "Use": "Uso", "Time to max height": "Tiempo hasta altura máx.", "Mature canopy": "Copa adulta",
-  "all origins": "todas", "any": "cualquiera", "under {n} years": "hasta {n} años",
-  "native here": "nativas de aquí", "all uses": "todos", "Maturity": "Madurez",
-  "no limit": "sin límite", "no minimum": "sin mínimo",
-  "criteria": "criterios", "clear criteria": "limpiar criterios",
-  "{n} of {t}": "{n} de {t}", "{n} species": "{n} especies",
-  "Reaches ~95% of its max height in ~{n} years (class-level model).": "Alcanza ~95% de su altura máxima en ~{n} años (modelo por clase).",
-  "Trunk &oslash; 20 yr": "Tronco &oslash; 20 años", "Canopy, 20 yr": "Copa, 20 años",
-  "CO&#8322;e/tree, 20 yr": "CO&#8322;e/árbol, 20 años", "Stand CO&#8322;e, 20 yr": "CO&#8322;e del rodal, 20 años",
-  "Best window": "Mejor ventana", "Hardy to": "Resiste hasta",
-  "Trees in this area, 3&times;3 m": "Árboles en el área, 3&times;3 m", "Area CO&#8322;e by year 20": "CO&#8322;e del área al año 20",
-  "mean": "media", "per year": "por año", "y": "a", "yr": "años", "trunk": "tronco",
-  "Suitability follows the FAO EcoCrop model (trapezoidal climate envelopes, most-limiting-factor). Growth and carbon are class-level estimates": "La aptitud sigue el modelo EcoCrop de la FAO (envolventes climáticas trapezoidales, factor más limitante). Crecimiento y carbono son estimaciones por clase",
-  "(Chapman-Richards, Chave 2014 / Jenkins 2003, IPCC 2006), for screening, not planting prescriptions.": "(Chapman-Richards, Chave 2014 / Jenkins 2003, IPCC 2006): tamizaje, no prescripción de plantación.",
-  "Data:": "Datos:", "Photos: iNaturalist": "Fotos: iNaturalist", "Map:": "Mapa:",
-  "Search a city or place": "Busca una ciudad o lugar",
-  "Draw area": "Dibujar área",
-  "Click to drop points &middot; right-click, double-click or click the first point to close &middot; Esc cancels": "Haz clic para marcar puntos &middot; clic derecho, doble clic o clic en el primer punto para cerrar &middot; Esc cancela",
-  "No matches": "Sin resultados",
-  "Replantio · replanting intelligence": "Replantio · inteligencia de replantación",
-  "Habit": "Porte", "all habits": "todos los portes",
-  "shrubs": "arbustos", "herbs": "hierbas", "grasses": "pastos", "vines": "trepadoras",
-  "Cycle": "Ciclo", "{a} to {b} days": "{a} a {b} días",
-  "Find plantable land in this view": "Buscar terrenos plantables en esta vista",
-  "Zoom in to city scale to scan for plantable land.": "Acerca el zoom a escala de ciudad para escanear terrenos.",
-  "Nothing promising in this view. Try another neighborhood.": "Nada prometedor en esta vista. Prueba otro barrio.",
-  "The land scan service is busy; try again in a minute.": "El servicio de escaneo está ocupado; intenta en un minuto.",
-  "click to analyze": "clic para analizar", "candidate areas": "áreas candidatas",
-  "year": "año", "height": "altura", "crown": "copa",
-  "central sample of {n} trees": "muestra central de {n} árboles",
-  "showing {n} of {t} trees": "mostrando {n} de {t} árboles",
-  "trees": "árboles",
-  "click plants a sapling · right-click removes it · Cmd+Z undoes": "clic planta un plantín · clic derecho lo quita · Cmd+Z deshace",
-  "Close": "Cerrar", "Selected area": "Área seleccionada", "fit": "ajuste",
-  "Delete area": "Eliminar área",
-  "Import area (GeoJSON, KML, zipped shapefile)": "Importar área (GeoJSON, KML, shapefile comprimido)",
-  "No polygons found in the file.": "No se encontraron polígonos en el archivo.",
-  "Could not read the file.": "No se pudo leer el archivo.",
-  "The shapefile must use WGS84 geographic coordinates (like SARE requires).": "El shapefile debe usar coordenadas geográficas WGS84.",
-  "Report": "Informe", "SHP (SARE)": "SHP", "CSV": "CSV",
-  "area": "área", "areas": "áreas", "planted": "plantados",
-  "Restoration cost": "Costo de restauración",
-  "range across labour arrangements, own workforce to contracted; 2023 prices, 3x2 m spacing": "rango entre mano de obra propia y contratada; precios 2023 (Brasil), espaciamiento 3x2 m",
-  "Natural regeneration management": "Manejo de regeneración natural",
-  "Regeneration + enrichment": "Regeneración + enriquecimiento",
-  "Regeneration + densification + enrichment": "Regeneración + densificación + enriquecimiento",
-  "Seedling planting, mechanized": "Plantación de plantines, mecanizada",
-  "Seedling planting, manual": "Plantación de plantines, manual",
-  "Direct seeding, mechanized": "Siembra directa, mecanizada",
-  "Direct seeding, manual": "Siembra directa, manual",
-  "Seedling planting in this area": "Plantación de plantines en esta área",
-  "Costs: Instituto Escolhas 2023": "Costos: Instituto Escolhas 2023",
-  "Score in the 2040s": "Nota en los 2040",
-  "Rescored on a 2040-2049 CMIP6 projection (MRI-AGCM3-2-S), same scoring engine": "Reevaluada con proyección CMIP6 2040-2049 (MRI-AGCM3-2-S), mismo motor de nota",
-  "Falls below suitable in the 2040s climate (CMIP6)": "Cae por debajo de adecuada en el clima de los 2040 (CMIP6)",
-  "Export report": "Exportar informe",
-  "Legal &middot; Forest Code": "Legal &middot; Código Forestal (Brasil)",
-  "Property": "Predio", "APP type": "Tipo de APP",
-  "up to 1 MF": "hasta 1 MF", "1 to 2 MF": "1 a 2 MF", "2 to 4 MF": "2 a 4 MF", "over 4 MF": "más de 4 MF",
-  "rivers and streams": "ríos y arroyos", "springs": "manantiales", "lakes and ponds": "lagos y lagunas",
-  "Strip to recompose (Art. 61-A)": "Franja a recomponer (Art. 61-A)",
-  "{w} m on each margin": "{w} m en cada margen",
-  "Art. 61-B: total recomposition capped at {p}% of the property": "Art. 61-B: recomposición total limitada al {p}% del predio",
-  "above 4 MF the 61-B cap does not apply; for rivers, 20 m covers watercourses up to 10 m wide": "sobre 4 MF no aplica el tope del 61-B; en ríos, los 20 m valen para cauces de hasta 10 m de ancho",
-  "SMA 32 targets (SP)": "Metas SMA 32 (São Paulo)",
-  "ombrophilous and seasonal forests": "bosques ombrófilos y estacionales",
-  "cerradao / cerrado stricto sensu": "cerradão / cerrado stricto sensu",
-  "{n} years": "{n} años",
-  "sign-off gate (Anexo II)": "cierre (Anexo II)",
-  "Plots for this area: {n} of 100 m2 (25 x 4 m). A regenerant counts from 50 cm height with CAP under 15 cm.": "Parcelas para esta área: {n} de 100 m² (25 × 4 m). Un regenerante cuenta desde 50 cm de altura con CAP menor a 15 cm.",
-  "Anexo III suggests at least 80 regional native species for full-area planting. It is guidance, not a requirement.": "El Anexo III sugiere al menos 80 especies nativas regionales para plantación en área total. Es orientación, no exigencia.",
-};
-const FR = {
-  "Draw an area anywhere on Earth: Replantio shows which species would thrive there, how they grow, the carbon they store, and what restoration costs. Open data, open model.": "Dessinez une zone n'importe où sur Terre : Replantio montre quelles espèces y prospéreraient, leur croissance, le carbone stocké et le coût de la restauration. Données ouvertes, modèle ouvert.",
-  "created by": "créé par",
-  "Open source on GitHub": "Open source sur GitHub",
-  "Go to my location": "Aller à ma position",
-  "Could not get your location.": "Impossible d'obtenir votre position.",
-  "Analyzing area": "Analyse de la zone", "Analysis failed": "Échec de l'analyse", "Retry": "Réessayer",
-  "Climate normals &middot; Open-Meteo ERA5, 10 years daily": "Normales climatiques &middot; Open-Meteo ERA5, 10 ans journaliers",
-  "Soil profile &middot; SoilGrids 2.0": "Profil du sol &middot; SoilGrids 2.0",
-  "Scoring {n} species": "Évaluation de {n} espèces",
-  "Could not load the climate record for this point. The Open-Meteo archive may be busy or rate limited; wait a moment and retry.": "Impossible de charger l'historique climatique de ce point. L'archive Open-Meteo est peut-être saturée; patientez puis réessayez.",
-  "{s} of {n} species rate suitable or better": "{s} des {n} espèces sont adaptées ou mieux",
-  "Site climate &middot; ERA5 2015&ndash;2024": "Climat du site &middot; ERA5 2015&ndash;2024",
-  "Recommended species": "Espèces recommandées",
-  "soil pH": "pH du sol", "elevation": "altitude", "daylength": "durée du jour", "record low": "minimum record",
-  "sun": "soleil", "humidity": "humidité", "cloud": "nuages", "slope": "pente", "facing": "exposition",
-  "kWh/m²·day": "kWh/m²·jour",
-  "mean daily shortwave radiation, all weather included": "rayonnement solaire moyen journalier, nébulosité comprise",
-  "high humidity plus high cloud cover marks fog-prone sites": "humidité et nébulosité élevées signalent les sites brumeux",
-  "no data": "pas de données", "n/a": "n/d", "E": "E", "W": "O", "SW": "SO", "NW": "NO",
-  "This area looks like open water (no soil data, elevation {e} m). Species scores here reflect climate only and are unlikely to be meaningful.": "Cette zone semble être de l'eau libre (pas de sol, altitude {e} m). Les notes ne reflètent que le climat et n'ont probablement aucun sens.",
-  "Show scores anyway": "Afficher quand même",
-  "Nothing clears the bar for this filter here.": "Rien ne passe la barre avec ce filtre ici.",
-  "Show {n} more": "Afficher {n} de plus",
-  "Native here": "Indigènes d'ici",
-  "Only species in this country's native flora (WCVP)": "Seulement la flore indigène de ce pays (WCVP)",
-  "All uses": "Tous usages",
-  "timber": "bois", "fruit": "fruit", "environment": "environnement", "medicinal": "médicinal",
-  "forage": "fourrage", "materials": "matériaux", "food": "aliment", "ornamental": "ornemental",
-  "native": "indigène", "nearby": "à proximité",
-  "Part of the native flora of this country (WCVP)": "Fait partie de la flore indigène de ce pays (WCVP)",
-  "GBIF occurrence records near this area": "Occurrences GBIF près de cette zone",
-  "Excellent": "Excellente", "Very suitable": "Très adaptée", "Suitable": "Adaptée",
-  "Marginal": "Marginale", "Very marginal": "Très marginale", "Not suitable": "Inadaptée",
-  "{rate} growth &middot; {zone}": "croissance {rate} &middot; {zone}",
-  "fast": "rapide", "medium": "moyenne", "slow": "lente", "tropical": "tropicale", "temperate": "tempérée",
-  "Temperature": "Température", "Rainfall": "Pluie", "Soil pH": "pH du sol",
-  "tolerated {a} to {d} · optimal {b} to {c}": "toléré {a} à {d} · optimal {b} à {c}",
-  "Photoperiod outside this species' range: 0.5 penalty applied.": "Photopériode hors de la plage de l'espèce : pénalité de 0,5 appliquée.",
-  "Needs winter dormancy; the coldest month here is too warm for it.": "Exige une dormance hivernale; le mois le plus froid ici est trop chaud.",
-  "Origin": "Origine", "Use": "Usage", "Time to max height": "Temps jusqu'à la hauteur max.", "Mature canopy": "Houppier adulte",
-  "all origins": "toutes", "any": "indifférent", "under {n} years": "moins de {n} ans",
-  "native here": "indigènes d'ici", "all uses": "tous", "Maturity": "Maturité",
-  "no limit": "sans limite", "no minimum": "sans minimum",
-  "criteria": "critères", "clear criteria": "effacer les critères",
-  "{n} of {t}": "{n} sur {t}", "{n} species": "{n} espèces",
-  "Reaches ~95% of its max height in ~{n} years (class-level model).": "Atteint ~95 % de sa hauteur max en ~{n} ans (modèle par classe).",
-  "Trunk &oslash; 20 yr": "Tronc &oslash; 20 ans", "Canopy, 20 yr": "Houppier, 20 ans",
-  "CO&#8322;e/tree, 20 yr": "CO&#8322;e/arbre, 20 ans", "Stand CO&#8322;e, 20 yr": "CO&#8322;e du peuplement, 20 ans",
-  "Best window": "Meilleure fenêtre", "Hardy to": "Rustique jusqu'à",
-  "Trees in this area, 3&times;3 m": "Arbres dans la zone, 3&times;3 m", "Area CO&#8322;e by year 20": "CO&#8322;e de la zone à 20 ans",
-  "mean": "moyenne", "per year": "par an", "y": "a", "yr": "ans", "trunk": "tronc",
-  "Suitability follows the FAO EcoCrop model (trapezoidal climate envelopes, most-limiting-factor). Growth and carbon are class-level estimates": "L'aptitude suit le modèle EcoCrop de la FAO (enveloppes climatiques trapézoïdales, facteur le plus limitant). Croissance et carbone sont des estimations par classe",
-  "(Chapman-Richards, Chave 2014 / Jenkins 2003, IPCC 2006), for screening, not planting prescriptions.": "(Chapman-Richards, Chave 2014 / Jenkins 2003, IPCC 2006) : un tamisage, pas une prescription de plantation.",
-  "Data:": "Données :", "Photos: iNaturalist": "Photos : iNaturalist", "Map:": "Carte :",
-  "Search a city or place": "Cherchez une ville ou un lieu",
-  "Draw area": "Dessiner la zone",
-  "Click to drop points &middot; right-click, double-click or click the first point to close &middot; Esc cancels": "Cliquez pour poser des points &middot; clic droit, double-clic ou clic sur le premier point pour fermer &middot; Échap annule",
-  "No matches": "Aucun résultat",
-  "Replantio · replanting intelligence": "Replantio · intelligence de la replantation",
-  "Habit": "Port", "all habits": "tous les ports",
-  "shrubs": "arbustes", "herbs": "herbacées", "grasses": "graminées", "vines": "lianes",
-  "Cycle": "Cycle", "{a} to {b} days": "{a} à {b} jours",
-  "Find plantable land in this view": "Trouver des terrains plantables dans cette vue",
-  "Zoom in to city scale to scan for plantable land.": "Zoomez à l'échelle de la ville pour scanner les terrains.",
-  "Nothing promising in this view. Try another neighborhood.": "Rien de prometteur dans cette vue. Essayez un autre quartier.",
-  "The land scan service is busy; try again in a minute.": "Le service de balayage est saturé; réessayez dans une minute.",
-  "click to analyze": "cliquez pour analyser", "candidate areas": "zones candidates",
-  "year": "année", "height": "hauteur", "crown": "houppier",
-  "central sample of {n} trees": "échantillon central de {n} arbres",
-  "showing {n} of {t} trees": "affichage de {n} sur {t} arbres",
-  "trees": "arbres",
-  "click plants a sapling · right-click removes it · Cmd+Z undoes": "clic plante un jeune arbre · clic droit le retire · Cmd+Z annule",
-  "Close": "Fermer", "Selected area": "Zone sélectionnée", "fit": "ajust.",
-  "Delete area": "Supprimer la zone",
-  "Import area (GeoJSON, KML, zipped shapefile)": "Importer une zone (GeoJSON, KML, shapefile zippé)",
-  "No polygons found in the file.": "Aucun polygone trouvé dans le fichier.",
-  "Could not read the file.": "Impossible de lire le fichier.",
-  "The shapefile must use WGS84 geographic coordinates (like SARE requires).": "Le shapefile doit être en coordonnées géographiques WGS84.",
-  "Report": "Rapport", "SHP (SARE)": "SHP", "CSV": "CSV",
-  "area": "zone", "areas": "zones", "planted": "plantés",
-  "Restoration cost": "Coût de restauration",
-  "range across labour arrangements, own workforce to contracted; 2023 prices, 3x2 m spacing": "fourchette selon la main-d'œuvre, propre à sous-traitée; prix 2023 (Brésil), espacement 3x2 m",
-  "Natural regeneration management": "Conduite de la régénération naturelle",
-  "Regeneration + enrichment": "Régénération + enrichissement",
-  "Regeneration + densification + enrichment": "Régénération + densification + enrichissement",
-  "Seedling planting, mechanized": "Plantation de plants, mécanisée",
-  "Seedling planting, manual": "Plantation de plants, manuelle",
-  "Direct seeding, mechanized": "Semis direct, mécanisé",
-  "Direct seeding, manual": "Semis direct, manuel",
-  "Seedling planting in this area": "Plantation de plants dans cette zone",
-  "Costs: Instituto Escolhas 2023": "Coûts : Instituto Escolhas 2023",
-  "Score in the 2040s": "Note dans les années 2040",
-  "Rescored on a 2040-2049 CMIP6 projection (MRI-AGCM3-2-S), same scoring engine": "Réévaluée sur une projection CMIP6 2040-2049 (MRI-AGCM3-2-S), même moteur de notation",
-  "Falls below suitable in the 2040s climate (CMIP6)": "Descend sous le seuil d'adaptée dans le climat des années 2040 (CMIP6)",
-  "Export report": "Exporter le rapport",
-  "Legal &middot; Forest Code": "Légal &middot; Code forestier (Brésil)",
-  "Property": "Propriété", "APP type": "Type d'APP",
-  "up to 1 MF": "jusqu'à 1 MF", "1 to 2 MF": "1 à 2 MF", "2 to 4 MF": "2 à 4 MF", "over 4 MF": "plus de 4 MF",
-  "rivers and streams": "rivières et ruisseaux", "springs": "sources", "lakes and ponds": "lacs et étangs",
-  "Strip to recompose (Art. 61-A)": "Bande à recomposer (Art. 61-A)",
-  "{w} m on each margin": "{w} m sur chaque rive",
-  "Art. 61-B: total recomposition capped at {p}% of the property": "Art. 61-B : recomposition totale plafonnée à {p} % de la propriété",
-  "above 4 MF the 61-B cap does not apply; for rivers, 20 m covers watercourses up to 10 m wide": "au-delà de 4 MF le plafond 61-B ne s'applique pas; pour les rivières, 20 m couvre les cours d'eau jusqu'à 10 m de large",
-  "SMA 32 targets (SP)": "Objectifs SMA 32 (São Paulo)",
-  "ombrophilous and seasonal forests": "forêts ombrophiles et saisonnières",
-  "cerradao / cerrado stricto sensu": "cerradão / cerrado stricto sensu",
-  "{n} years": "{n} ans",
-  "sign-off gate (Anexo II)": "validation (Anexo II)",
-  "Plots for this area: {n} of 100 m2 (25 x 4 m). A regenerant counts from 50 cm height with CAP under 15 cm.": "Placettes pour cette zone : {n} de 100 m² (25 × 4 m). Un régénérant compte dès 50 cm de hauteur avec CAP sous 15 cm.",
-  "Anexo III suggests at least 80 regional native species for full-area planting. It is guidance, not a requirement.": "L'Anexo III suggère au moins 80 espèces indigènes régionales pour la plantation en zone totale. C'est indicatif, pas obligatoire.",
-};
-const DICT = { pt: PT, es: ES, fr: FR }[LANG];
+const LOCALE = LOCALES[LANG];
+const DICT = DICTS[LANG];
 const tr = s => DICT?.[s] ?? s;
 const tfmt = (s, vars) => Object.entries(vars).reduce((a, [k, v]) => a.replace(`{${k}}`, v), tr(s));
 
@@ -368,12 +16,7 @@ const fmt = (x, d = 0) => x.toLocaleString(LOCALE, { maximumFractionDigits: d })
 const fmtC = x => x >= 1e6 ? (x / 1e6).toFixed(1) + "M" : x >= 1e4 ? Math.round(x / 1e3) + "k" : fmt(x);
 const fmtHa = h => h >= 10 ? fmt(h) + " ha" : h >= 0.1 ? fmt(h, 1) + " ha" : fmt(h * 10000) + " m\u00b2";
 const THIS_YEAR = new Date().getFullYear();
-const MONTHS = {
-  pt: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
-  en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-  es: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-  fr: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Aoû", "Sep", "Oct", "Nov", "Déc"],
-}[LANG];
+const MONTHS = MONTHS_ALL[LANG] ?? MONTHS_ALL.en;
 
 // ---------- map ----------
 const map = L.map("map", { zoomControl: true, worldCopyJump: true, attributionControl: false }).setView([-15, -52], 4);
@@ -386,11 +29,31 @@ L.tileLayer("https://basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
   maxZoom: 20, attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
 }).addTo(map);
 
-let SPECIES = [], NATIVES = {};
+let SPECIES = [], NATIVES = {}, NAMES_PT = {}, SOURCING = null;
 const speciesReady = Promise.all([
   fetch("data/species.json").then(r => r.json()).then(j => { SPECIES = j; }),
   fetch("data/natives.json").then(r => r.json()).then(j => { NATIVES = j; }).catch(() => {}), // optional layer
+  fetch("data/names_pt.json").then(r => r.json()).then(j => { NAMES_PT = j; }).catch(() => {}), // optional layer
+  fetch("data/sourcing.json").then(r => r.json()).then(j => { SOURCING = j; }).catch(() => {}), // optional layer
 ]);
+
+// display name: Portuguese vernacular when the UI is in PT and we have one;
+// in PT the fallback is the binomial, never an English trade name
+const ptName = sp => NAMES_PT[sp.id]?.nome ?? null;
+const dispName = sp => {
+  if (LANG === "pt") {
+    const n = ptName(sp);
+    return n ? cap(n) : `<i>${sp.sci}</i>`;
+  }
+  return sp.common === sp.sci ? `<i>${sp.sci}</i>` : cap(sp.common);
+};
+// what a Brazilian store search box wants: the vernacular, else the binomial
+const shopTerm = sp => ptName(sp) ?? sp.sci;
+// plain-text display name (no markup), for the sim pill and exports
+const plainName = sp => {
+  if (LANG === "pt") { const n = ptName(sp); return n ? cap(n) : sp.sci; }
+  return sp.common === sp.sci ? sp.sci : cap(sp.common);
+};
 
 // ---------- geocoding search ----------
 const geoInput = $("#geo-input"), geoResults = $("#geo-results");
@@ -476,6 +139,7 @@ function deleteActiveArea() {
   shapes.splice(shapes.indexOf(shape), 1);
   shape = null;
   panel.hidden = true;
+  document.body.classList.remove("panel-open");
   history.replaceState(null, "", location.pathname);
   saveAreas();
 }
@@ -609,6 +273,7 @@ function addEditHandles(poly) {
       // discard BOTH the frozen stand and any live sim on this area, otherwise
       // the re-analysis freezes the old-geometry trees right back
       removeStand(poly);
+      poly._analysis = null; // geometry changed: cached analysis is stale
       saveAreas();
       analyze(poly._pts);
     });
@@ -688,7 +353,9 @@ async function fetchPlace(c, signal) {
   try {
     const j = await (await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${c.lat}&longitude=${c.lng}&localityLanguage=${LANG}`, { signal })).json();
     return { label: [j.city || j.locality, j.principalSubdivision, j.countryName].filter(Boolean).join(", ") || null,
-             cc: j.countryCode || null, state: j.principalSubdivision || "" };
+             cc: j.countryCode || null, state: j.principalSubdivision || "",
+             city: j.city || j.locality || "",
+             uf: (j.principalSubdivisionCode || "").split("-")[1] || "" };
   } catch { return null; }
 }
 
@@ -722,6 +389,15 @@ async function analyze(pts) {
   const ha = polyAreaHa(pts);
   location.hash = `p=${pts.map(p => `${p.lat.toFixed(4)},${p.lng.toFixed(4)}`).join(";")}`;
 
+  // clicking back into an already-analyzed area restores instantly; climate
+  // normals do not change within a session, so nothing needs refetching
+  if (shape && shape._pts === pts && shape._analysis) {
+    current = shape._analysis;
+    renderResults();
+    loadRowPhotos();
+    return;
+  }
+
   openPanel(`
     <div class="p-head">
       <div class="loc-title">${tr("Analyzing area")}</div>
@@ -730,15 +406,24 @@ async function analyze(pts) {
     </div>
     <div class="p-body">
       <div class="loading">
-        <div class="load-step active" id="ls-climate"><span class="dot"></span>${tr("Climate normals &middot; Open-Meteo ERA5, 10 years daily")}</div>
-        <div class="load-step" id="ls-soil"><span class="dot"></span>${tr("Soil profile &middot; SoilGrids 2.0")}</div>
-        <div class="load-step" id="ls-score"><span class="dot"></span>${tfmt("Scoring {n} species", { n: fmt(SPECIES.length || 1021) })}</div>
+        <div class="load-step active" id="ls-climate"><span class="dot"></span><span class="lt">${tr("Climate normals &middot; Open-Meteo ERA5, 10 years daily")}</span></div>
+        <div class="load-step" id="ls-soil"><span class="dot"></span><span class="lt">${tr("Soil profile &middot; SoilGrids 2.0")}</span></div>
+        <div class="load-step" id="ls-score"><span class="dot"></span><span class="lt">${tfmt("Scoring {n} species", { n: fmt(SPECIES.length || 1021) })}</span></div>
+        <div class="load-elapsed"><span class="pxg">${"<i></i>".repeat(9)}</span><span class="mono" id="load-elapsed">0.0s</span></div>
       </div>
       <div class="skel">
         <div class="skel-fig"></div>
         <div class="skel-row"></div><div class="skel-row"></div><div class="skel-row"></div>
       </div>
     </div>`);
+
+  // elapsed-time readout; self-clears when the loading markup is replaced
+  const t0 = performance.now();
+  const tick = setInterval(() => {
+    const el = document.getElementById("load-elapsed");
+    if (!el) { clearInterval(tick); return; }
+    el.textContent = ((performance.now() - t0) / 1000).toFixed(1) + "s";
+  }, 100);
 
   const climP = fetchClimate(c, ctl.signal);
   const soilP = fetchSoil(c, ctl.signal);
@@ -778,7 +463,11 @@ async function analyze(pts) {
     .sort((a, b) => (b.score - a.score) || (b.fit - a.fit));
   step("ls-score");
 
-  current = { site, scored, pts, center: c, ha, filter: "all", habit: "tree", shown: 12, cc: place?.cc ?? null, state: place?.state ?? "", critOpen: false };
+  current = { site, scored, pts, center: c, ha, filter: "all", habit: "tree", shown: 12,
+    cc: place?.cc ?? null, state: place?.state ?? "", city: place?.city ?? "", uf: place?.uf ?? "",
+    // native-first by default wherever we know the country AND the ranges loaded
+    nativeOnly: !!place?.cc && Object.keys(NATIVES).length > 0, critOpen: false };
+  if (shape && shape._pts === pts) shape._analysis = current; // session cache per area
   renderResults();
   loadRowPhotos();
   gbifEvidence(scored.filter(s => s.score > 0.05).slice(0, 20), L.latLngBounds(pts), ctl.signal);
@@ -793,6 +482,7 @@ function step(doneId, nextId) {
 function openPanel(html) {
   content.innerHTML = html;
   panel.hidden = false;
+  document.body.classList.add("panel-open");
 }
 panel.addEventListener("click", e => {
   if (e.target.closest("[data-del]")) { // explicit area deletion
@@ -801,6 +491,7 @@ panel.addEventListener("click", e => {
   }
   if (e.target.closest("[data-close]")) { // closes the panel; deletes nothing
     panel.hidden = true;
+    document.body.classList.remove("panel-open");
     history.replaceState(null, "", location.pathname);
   }
 });
@@ -882,7 +573,7 @@ function legalMarkup() {
 
 function costsMarkup() {
   const rows = COSTS.map(([k, lo, hi]) =>
-    `<div class="stat"><span class="sk">${tr(k)}</span><span class="sv">${brl(lo)}&ndash;${brl(hi)}/ha</span></div>`).join("");
+    `<div class="stat"><span class="sk">${tr(k)}</span><span class="sv" style="white-space:nowrap">${brl(lo)}&ndash;${brl(hi)}/ha</span></div>`).join("");
   return `<div class="section-h" title="${tr("range across labour arrangements, own workforce to contracted; 2023 prices, 3x2 m spacing")}">${tr("Restoration cost")}</div>
     <div class="stats" style="margin-top:0">
       ${rows}
@@ -896,7 +587,7 @@ const matCls = g => MAT_CLS[g] ??= maturityYears(CLASSES[g]);
 const crownCls = g => CROWN_CLS[g] ??= crownDisplayM(CLASSES[g], Math.min(maturityYears(CLASSES[g]), 120));
 
 const critMatch = (s, c) => s.score > 0.05
-  && (c.habit === "all" || s.sp.porte === c.habit)
+  && (c.habit === "all" || (c.habit === "nontree" ? s.sp.porte !== "tree" : s.sp.porte === c.habit))
   && (c.use === "all" || s.sp.uses.includes(c.use))
   && (!c.nativeOnly || nativeHere(s.sp) === true)
   && (!c.matMax || (s.sp.tree && matCls(s.sp.gclass) <= c.matMax))
@@ -913,7 +604,7 @@ const CRIT_DIMS = () => [
   }] : []),
   {
     key: "habit", label: "Habit", cur: current.habit ?? "tree",
-    opts: [["tree", tr("trees")], ["shrub", tr("shrubs")], ["herb", tr("herbs")], ["grass", tr("grasses")], ["vine", tr("vines")], ["all", tr("all habits")]],
+    opts: [["tree", tr("trees")], ["nontree", tr("shrubs and herbs")], ["shrub", tr("shrubs")], ["herb", tr("herbs")], ["grass", tr("grasses")], ["vine", tr("vines")], ["all", tr("all habits")]],
     over: v => ({ habit: v }),
   },
   {
@@ -933,15 +624,27 @@ const CRIT_DIMS = () => [
   }] : []),
 ];
 
+// guerrilla-mode front controls: one line of chips, the facet browser behind "more filters"
+function chipsMarkup() {
+  const habit = current.habit ?? "tree";
+  const fam = ["nontree", "shrub", "herb", "grass", "vine"].includes(habit); // any non-tree selection lights the family chip
+  const chip = (on, f, v, label, n) =>
+    `<button class="opt${on ? " on" : ""}" data-f="${f}" data-v="${v}"${on ? ' aria-pressed="true"' : ""}${!on && n === 0 ? " disabled" : ""}>${label}${!on && n != null ? `<span class="c">${n}</span>` : ""}</button>`;
+  return `<div class="chips-row">
+    ${current.cc ? chip(current.nativeOnly, "origin", current.nativeOnly ? "all" : "native", tr("native here"), current.nativeOnly ? null : critCount({ nativeOnly: true })) : ""}
+    ${chip(habit === "tree", "habit", "tree", tr("trees"), habit === "tree" ? null : critCount({ habit: "tree" }))}
+    ${chip(fam, "habit", "nontree", tr("shrubs and herbs"), fam ? null : critCount({ habit: "nontree" }))}
+    ${chip(habit === "all", "habit", "all", tr("everything"), habit === "all" ? null : critCount({ habit: "all" }))}
+    <button class="crit-toggle" data-crit-toggle aria-expanded="${current.critOpen ? "true" : "false"}">${tr("more filters")}<i class="car"></i></button>
+  </div>`;
+}
+
+// the pristine state for this analysis: native-first, trees, no extra criteria
+const critIsDefault = () => current.filter === "all" && !current.matMax && !current.crownMin
+  && (current.habit ?? "tree") === "tree" && current.nativeOnly === (!!current.cc && Object.keys(NATIVES).length > 0);
+
 function critMarkup() {
   const dims = CRIT_DIMS();
-  const n = critCount({});
-  const total = critCount({ use: "all", nativeOnly: false, matMax: null, crownMin: null, habit: current.habit ?? "tree" });
-  const active = dims.flatMap(d => {
-    const i = d.opts.findIndex(o => o[0] === d.cur);
-    return i > 0 ? [d.opts[i][1]] : [];
-  });
-
   const rows = dims.map(d => `<div class="crit-row">
     <div class="k"${d.title ? ` title="${d.title}"` : ""}>${tr(d.label)}</div>
     <div class="opts">${d.opts.map(([v, txt], i) => {
@@ -949,17 +652,17 @@ function critMarkup() {
       return `<button class="opt${on ? (i ? " on constrained" : " on") : ""}" data-f="${d.key}" data-v="${v}"${on ? ' aria-pressed="true"' : ""}${!on && !c ? " disabled" : ""}>${txt}${on ? "" : `<span class="c">${c}</span>`}</button>`;
     }).join("")}</div></div>`).join("");
 
-  return `<div class="sec-row">
-      <div class="section-h">${tr("Recommended species")}</div>
-      <button class="crit-toggle${active.length ? " active" : ""}" data-crit-toggle aria-expanded="${current.critOpen ? "true" : "false"}">${
-        active.length ? tfmt("{n} of {t}", { n: `<b>${fmt(n)}</b>`, t: fmt(total) }) : tfmt("{n} species", { n: `<b>${fmt(total)}</b>` })
-      } &middot; ${tr("criteria")}<i class="car"></i></button>
-    </div>
-    ${active.length && !current.critOpen ? `<button class="crit-summary" data-crit-toggle>${active.map(a => `<b>${a}</b>`).join(' <span class="d">&middot;</span> ')}</button>` : ""}
+  return `${chipsMarkup()}
     <div class="crit-panel"${current.critOpen ? "" : " hidden"}>${rows}${
-      active.length ? `<button class="crit-clear" data-crit-clear>${tr("clear criteria")}</button>` : ""
+      critIsDefault() ? "" : `<button class="crit-clear" data-crit-clear>${tr("clear criteria")}</button>`
     }</div>`;
 }
+
+// collapsible sections; open state persists so a consultant opens "For projects" once
+const DISC = (() => { try { return JSON.parse(localStorage.getItem("disc") || "{}"); } catch { return {}; } })();
+const disc = (id, label, inner) => `
+  <button class="disc${DISC[id] ? " open" : ""}" data-disc="${id}" aria-expanded="${!!DISC[id]}">${tr(label)}<i class="car"></i></button>
+  <div class="disc-body"${DISC[id] ? "" : " hidden"}>${inner}</div>`;
 
 function loadRowPhotos() {
   content.querySelectorAll("[data-thumb]").forEach(el => {
@@ -985,16 +688,12 @@ function renderResults() {
   const rd = (k, v, title) =>
     `<div class="rd"${title ? ` title="${title}"` : ""}><span>${k}</span><b>${v}</b></div>`;
 
-  openPanel(`
-    <div class="p-head">
-      <div class="loc-title">${titleHtml}</div>
-      <div class="loc-geo">${current.center.lat.toFixed(4)}, ${current.center.lng.toFixed(4)}<span class="sep">&middot;</span>${fmtHa(ha)}</div>
-      ${noLand ? "" : `<div class="loc-note">${tfmt("{s} of {n} species rate suitable or better",
-        { s: `<b>${fmt(suitable)}</b>`, n: `<b>${fmt(SPECIES.length)}</b>` })}</div>`}
-      <button class="panel-del" data-del title="${tr("Delete area")}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
-      <button class="panel-close" data-close title="${tr("Close")}">&times;</button>
-    </div>
-    <div class="p-body">
+  const goodPool = pool.filter(s => s.score > 0.4).length;
+  const headline = goodPool
+    ? tfmt(current.nativeOnly ? "{n} native plants would grow well here" : "{n} plants would grow well here", { n: `<b>${fmt(goodPool)}</b>` })
+    : tfmt("{s} of {n} species rate suitable or better", { s: `<b>${fmt(suitable)}</b>`, n: `<b>${fmt(SPECIES.length)}</b>` });
+
+  const whyBlock = `
     <div class="section-h">${tr("Site climate &middot; ERA5 2015&ndash;2024")}</div>
     <div class="site-fig">${climateSvg(site)}</div>
     <div class="readout">
@@ -1007,16 +706,37 @@ function renderResults() {
       ${rd(tr("cloud"), site.cloud != null ? `${fmt(site.cloud)}%` : tr("n/a"), tr("high humidity plus high cloud cover marks fog-prone sites"))}
       ${rd(tr("slope"), site.terrain ? `${fmt(site.terrain.slope)}°${site.terrain.facing ? ` ${tr("facing")} ` + tr(site.terrain.facing) : ""}` : tr("n/a"))}
     </div>
-    ${noLand ? `<div class="error-box" style="margin-top:12px">${tfmt("This area looks like open water (no soil data, elevation {e} m). Species scores here reflect climate only and are unlikely to be meaningful.", { e: fmt(site.elevation) })}</div><div class="retry-row"><button class="chip" data-force>${tr("Show scores anyway")}</button></div>` : `
+    <div class="footnote" style="margin-top:10px">
+      ${tr("Suitability follows the FAO EcoCrop model (trapezoidal climate envelopes, most-limiting-factor). Growth and carbon are class-level estimates")}
+      ${tr("(Chapman-Richards, Chave 2014 / Jenkins 2003, IPCC 2006), for screening, not planting prescriptions.")}
+    </div>`;
+
+  const projectsBlock = `
+    ${costsMarkup()}
+    ${legalMarkup()}
+    <div class="retry-row"><button class="chip" data-print>${tr("Report")}</button> <button class="chip" data-shp>${tr("SHP (SARE)")}</button> <button class="chip" data-csv>${tr("CSV")}</button></div>`;
+
+  openPanel(`
+    <div class="p-head">
+      <div class="loc-title">${titleHtml}</div>
+      <div class="loc-geo">${current.center.lat.toFixed(4)}, ${current.center.lng.toFixed(4)}<span class="sep">&middot;</span>${fmtHa(ha)}</div>
+      ${noLand ? "" : `<div class="loc-note">${headline}</div>`}
+      <button class="panel-del" data-del title="${tr("Delete area")}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
+      <button class="panel-close" data-close title="${tr("Close")}">&times;</button>
+    </div>
+    <div class="p-body">
+    ${noLand ? `<div class="error-box" style="margin-top:12px">${tfmt("This area looks like open water (no soil data, elevation {e} m). Species scores here reflect climate only and are unlikely to be meaningful.", { e: fmt(site.elevation) })}</div><div class="retry-row"><button class="chip" data-force>${tr("Show scores anyway")}</button> <button class="chip" data-print>${tr("Report")}</button> <button class="chip" data-shp>${tr("SHP (SARE)")}</button> <button class="chip" data-csv>${tr("CSV")}</button></div>${whyBlock}` : `
     ${critMarkup()}
     <div id="sp-list">${rows.map((s, i) => speciesRow(s, i)).join("") || `<div class="sp-empty">${tr("Nothing clears the bar for this filter here.")}</div>`}</div>
     ${pool.length > shown ? `<button class="chip more" data-more>${tfmt("Show {n} more", { n: Math.min(20, pool.length - shown) })}</button>` : ""}
-    ${costsMarkup()}
-    ${legalMarkup()}`}
-    <div class="retry-row"><button class="chip" data-print>${tr("Report")}</button> <button class="chip" data-shp>${tr("SHP (SARE)")}</button> <button class="chip" data-csv>${tr("CSV")}</button></div>
+    ${current.cc === "BR" ? `<div class="land-note">${tr("Public land? You can plant, just tell the city first and follow the local urban forestry plan. Private land? Talk to the owner before anything.")}</div>` : ""}
+    ${rows.length ? `<div class="follow">
+      ${rows.some(r => r.sp.tree) ? `<button class="fu" data-fu="sim"><span class="fa">&#8629;</span>${tr("See the planting grow")}</button>` : ""}
+      <button class="fu" data-fu="radar"><span class="fa">&#8629;</span>${tr("Find plantable land nearby")}</button>
+    </div>` : ""}
+    ${disc("why", "Why these plants?", whyBlock)}
+    ${disc("proj", "For projects", projectsBlock)}`}
     <div class="footnote">
-      ${tr("Suitability follows the FAO EcoCrop model (trapezoidal climate envelopes, most-limiting-factor). Growth and carbon are class-level estimates")}
-      ${tr("(Chapman-Richards, Chave 2014 / Jenkins 2003, IPCC 2006), for screening, not planting prescriptions.")}<br>
       ${tr("Data:")} <a href="https://gaez.fao.org/pages/ecocrop" target="_blank">FAO EcoCrop</a> &middot;
       <a href="https://open-meteo.com/" target="_blank">Open-Meteo ERA5</a> &middot;
       <a href="https://soilgrids.org/" target="_blank">SoilGrids 2.0, ISRIC (CC-BY 4.0)</a> &middot;
@@ -1030,25 +750,35 @@ function renderResults() {
     <div class="panel-fade"></div>`);
 }
 
+// price band for the row chip: what a muda or seed packet of this costs
+function priceBand(sp) {
+  const bands = SOURCING?.bands;
+  if (!bands) return null;
+  const key = bands.porte_band?.[sp.porte] ?? (sp.tree || sp.porte === "shrub" ? "muda_nativa" : "semente_pacote");
+  return bands[key]?.label ?? null;
+}
+const speedWord = sp => !sp.tree ? "" : sp.gclass.endsWith("fast") ? tr("fast-growing") : sp.gclass.endsWith("slow") ? tr("slow-growing") : "";
+
 function speciesRow(s, i) {
-  const pct = Math.round(s.score * 100);
-  const col = gradeColor(s.score);
+  const name = dispName(s.sp);
+  const showSci = !(name === `<i>${s.sp.sci}</i>`); // binomial headline -> family subline
+  const speed = speedWord(s.sp);
+  const price = priceBand(s.sp);
   return `
   <div class="sp" data-id="${s.sp.id}">
     <div class="sp-head" data-toggle>
-      <div class="sp-rank">${i + 1}</div>
       <div class="sp-thumb" data-thumb="${s.sp.id}"${s.photo?.sq ? ` style="background-image:url(&quot;${s.photo.sq}&quot;)"` : ""}></div>
       <div class="sp-names">
-        <div class="sp-common">${s.sp.common === s.sp.sci ? `<i>${s.sp.sci}</i>` : cap(s.sp.common)}
+        <div class="sp-common">${name}
           ${nativeHere(s.sp) === true ? `<span class="nearby" title="${tr("Part of the native flora of this country (WCVP)")}">${tr("native")}</span>` : ""}
           <span class="nearby gbif" data-nearby="${s.sp.id}" ${s.gbif?.count > 0 ? "" : "hidden"} title="${tr("GBIF occurrence records near this area")}">&#10003; ${tr("nearby")}</span>
           <span class="nearby warn45" data-f45="${s.sp.id}" ${s.score > 0.4 && s.f45 != null && s.f45 <= 0.4 ? "" : "hidden"} title="${tr("Falls below suitable in the 2040s climate (CMIP6)")}">2045 &#9662;</span>
         </div>
-        <div class="sp-sci">${s.sp.common === s.sp.sci ? s.sp.family : s.sp.sci}</div>
+        <div class="sp-sci">${showSci ? s.sp.sci : s.sp.family}</div>
       </div>
-      <div class="sp-score">
-        <span class="pct" style="color:${col}">${pct}<span class="u">%</span></span>
-        <span class="fit">${tr("fit")} ${Math.round(s.fit * 100)}</span>
+      <div class="sp-get">
+        ${speed ? `<span class="spd">${speed}</span>` : ""}
+        ${price ? `<span class="prc">${price}</span>` : ""}
       </div>
     </div>
     <div class="sp-body" hidden></div>
@@ -1056,16 +786,27 @@ function speciesRow(s, i) {
 }
 
 content.addEventListener("click", e => {
+  const dbtn = e.target.closest("[data-disc]");
+  if (dbtn) {
+    const id = dbtn.dataset.disc;
+    DISC[id] = !DISC[id];
+    try { localStorage.setItem("disc", JSON.stringify(DISC)); } catch {}
+    dbtn.classList.toggle("open", DISC[id]);
+    dbtn.setAttribute("aria-expanded", String(DISC[id]));
+    dbtn.nextElementSibling.hidden = !DISC[id];
+    return;
+  }
   if (e.target.closest("[data-crit-toggle]")) {
     current.critOpen = !current.critOpen;
     const p = content.querySelector(".crit-panel");
     if (p) p.hidden = !current.critOpen;
     content.querySelector(".crit-toggle")?.setAttribute("aria-expanded", String(current.critOpen));
-    content.querySelector(".crit-summary")?.toggleAttribute("hidden", current.critOpen);
     return;
   }
   if (e.target.closest("[data-crit-clear]")) {
-    current.filter = "all"; current.nativeOnly = false; current.matMax = null; current.crownMin = null; current.habit = "tree";
+    // reset to the analysis defaults, which include native-first
+    current.filter = "all"; current.matMax = null; current.crownMin = null; current.habit = "tree";
+    current.nativeOnly = !!current.cc && Object.keys(NATIVES).length > 0;
     current.shown = 12; renderResults(); loadRowPhotos(); return;
   }
   const opt = e.target.closest(".opt[data-f]");
@@ -1082,6 +823,16 @@ content.addEventListener("click", e => {
     if (opt.dataset.f === "mat") current.matMax = v ? +v : null;
     if (opt.dataset.f === "crown") current.crownMin = v ? +v : null;
     current.shown = 12; renderResults(); loadRowPhotos(); return;
+  }
+  const fu = e.target.closest("[data-fu]");
+  if (fu) {
+    if (fu.dataset.fu === "sim") {
+      const head = [...content.querySelectorAll(".sp")].find(el =>
+        current.scored.find(x => x.sp.id === +el.dataset.id)?.sp.tree)?.querySelector("[data-toggle]");
+      head?.scrollIntoView({ block: "center", behavior: "smooth" });
+      head?.click();
+    } else radarScan();
+    return;
   }
   if (e.target.closest("[data-print]")) { window.print(); return; }
   if (e.target.closest("[data-shp]")) { shpExport(); return; }
@@ -1187,6 +938,34 @@ function climateSvg(site) {
   </svg>`;
 }
 
+const slugify = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+  .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+// "Onde conseguir": the first block of the detail, because it is the only fact
+// here that converts intent into action. Brazilian stores only, so BR-gated.
+function sourcingMarkup(sp) {
+  if (!SOURCING?.shops?.length || current.cc !== "BR") return "";
+  const term = shopTerm(sp);
+  const kindWord = sp.tree || sp.porte === "shrub" ? "muda" : "sementes";
+  const links = SOURCING.shops.map(sh => {
+    const url = sh.search.includes("{slug}")
+      ? sh.search.replace("{slug}", slugify(`${kindWord} ${term}`))
+      : sh.search.replace("{q}", encodeURIComponent(term));
+    return `<a href="${url}" target="_blank" rel="noopener">${sh.name}</a>`;
+  }).join(" &middot; ");
+  const band = priceBand(sp);
+  const horto = (SOURCING.hortos || []).find(h =>
+    h.municipio && current.city && h.municipio.localeCompare(current.city, "pt", { sensitivity: "base" }) === 0);
+  const nets = (SOURCING.networks || []).filter(n => current.uf && (n.uf || []).includes(current.uf)).slice(0, 2);
+  return `<div class="section-h">${tr("Where to get it")}</div>
+    <div class="stats getrows" style="margin-top:0">
+      ${horto ? `<div class="stat wide"><span class="sk gfree">${tr("free")}</span><span class="sv"><a href="${horto.url}" target="_blank" rel="noopener">${horto.name}</a>${horto.limit ? ` &middot; ${tfmt("up to {n} seedlings", { n: horto.limit })}` : ""}${horto.scope === "quintal" ? ` &middot; ${tr("for planting on your own property")}` : ""}</span></div>` : ""}
+      <div class="stat wide"><span class="sk">${tr("buy")}</span><span class="sv">${links}</span></div>
+      ${nets.length ? `<div class="stat wide"><span class="sk">${tr("seed networks")}</span><span class="sv">${nets.map(n => `<a href="${n.url}" target="_blank" rel="noopener">${n.name}</a>`).join(" &middot; ")}</span></div>` : ""}
+      ${band ? `<div class="stat wide"><span class="sk">${tr("typical price")}</span><span class="sv">${band}${SOURCING.bands?.checked ? ` <span class="chk">(${SOURCING.bands.checked})</span>` : ""}</span></div>` : ""}
+    </div>`;
+}
+
 function speciesDetail(id) {
   const s = current.scored.find(x => x.sp.id === id);
   const { sp } = s;
@@ -1201,21 +980,23 @@ function speciesDetail(id) {
   const win = s.window.months < 12
     ? `<div class="stat"><span class="sk">${tr("Best window")}</span><span class="sv">${MONTHS[s.window.start]}&ndash;${MONTHS[(s.window.start + s.window.months - 1) % 12]}</span></div>` : "";
 
+  const factors = (() => {
+    const { wt, wr } = windowVals(s);
+    const notes = [];
+    if (s.factors.photo != null && s.factors.photo < 1) notes.push(tr("Photoperiod outside this species' range: 0.5 penalty applied."));
+    if (s.factors.chill != null && s.factors.chill < 1) notes.push(tr("Needs winter dormancy; the coldest month here is too warm for it."));
+    return `<div class="factors">
+      ${rangeStrip(tr("Temperature"), " °C", sp.temp, wt, 1)}
+      ${rangeStrip(tr("Rainfall"), " mm", sp.rain, wr, 0)}
+      ${rangeStrip(tr("Soil pH"), "", sp.ph, current.site.ph, 1)}
+    </div>${notes.map(n => `<div class="evidence">${n}</div>`).join("")}`;
+  })();
+
   return `
     <div class="sp-photo" data-hero="${sp.id}" hidden></div>
     <div class="sp-meta"><span class="grade">${tr(grade(s.score))}</span><span class="sep">&middot;</span>${tfmt("{rate} growth &middot; {zone}", { rate: tr(rate), zone: tr(zone) })}</div>
     <div class="sp-uses">${sp.uses.map(u => `<span class="it">${tr(USE_LABELS[u] ?? u)}</span>`).join("")}</div>
-    ${(() => {
-      const { wt, wr } = windowVals(s);
-      const notes = [];
-      if (s.factors.photo != null && s.factors.photo < 1) notes.push(tr("Photoperiod outside this species' range: 0.5 penalty applied."));
-      if (s.factors.chill != null && s.factors.chill < 1) notes.push(tr("Needs winter dormancy; the coldest month here is too warm for it."));
-      return `<div class="factors">
-        ${rangeStrip(tr("Temperature"), " °C", sp.temp, wt, 1)}
-        ${rangeStrip(tr("Rainfall"), " mm", sp.rain, wr, 0)}
-        ${rangeStrip(tr("Soil pH"), "", sp.ph, current.site.ph, 1)}
-      </div>${notes.map(n => `<div class="evidence">${n}</div>`).join("")}`;
-    })()}
+    ${sourcingMarkup(sp)}
     ${sp.tree ? `<div class="growth-fig">${growthSvg(sp)}
       <div class="fig-cap">${tfmt("Reaches ~95% of its max height in ~{n} years (class-level model).", { n: fmt(mat) })}</div>
     </div>` : ""}
@@ -1231,7 +1012,8 @@ function speciesDetail(id) {
       <div class="stat"><span class="sk" title="${tr("Rescored on a 2040-2049 CMIP6 projection (MRI-AGCM3-2-S), same scoring engine")}">${tr("Score in the 2040s")}</span><span class="sv" data-f45stat="${sp.id}">${f45Text(s)}</span></div>
       ${sp.tree ? `<div class="stat"><span class="sk">${tr("Trees in this area, 3&times;3 m")}</span><span class="sv">${fmtC(trees)}</span></div>
       <div class="stat wide"><span class="sk">${tr("Area CO&#8322;e by year 20")}</span><span class="sv">${fmtC(co2Ha20 * current.ha)} t</span></div>` : ""}
-    </div>`;
+    </div>
+    ${factors}`;
 }
 
 // ---------- growth chart ----------
@@ -1348,7 +1130,7 @@ function startSim(item) {
   const maxY = Math.min(120, Math.ceil(maturityYears(cls)));
   const ctl = document.createElement("div");
   ctl.id = "sim";
-  ctl.innerHTML = `<span class="sim-name">${item.sp.common === item.sp.sci ? item.sp.sci : cap(item.sp.common)}</span>
+  ctl.innerHTML = `<span class="sim-name">${plainName(item.sp)}</span>
     <input type="range" min="0" max="${maxY}" step="1" value="${Math.min(10, maxY)}">
     <span class="sim-label mono"></span>
     <span class="sim-note">${note ? note + " &middot; " : ""}${tr("click plants a sapling · right-click removes it · Cmd+Z undoes")}</span>
@@ -1465,10 +1247,10 @@ function drawSim() {
   if (SIM) {
     renderStand(g, SIM, size, mpp, true);
     const h = height(SIM.year, SIM.cls);
-    const cd = crownDisplayM(SIM.cls, SIM.year);
+    const disp = standDisplay(SIM.cls, SIM.year);
     const manual = SIM.trees.reduce((n, tr2) => n + (tr2.manual ? 1 : 0), 0);
     SIM.ctl.querySelector(".sim-label").textContent =
-      `${tr("year")} ${THIS_YEAR + Math.round(SIM.year)} · ${h.toFixed(1)} m · ${tr("crown")} ${cd.toFixed(1)} m · ${fmtC(SIM.fullCount + manual)} ${tr("trees")}`;
+      `${tr("year")} ${THIS_YEAR + Math.round(SIM.year)} · ${h.toFixed(1)} m · ${tr("crown")} ${disp.crown.toFixed(1)} m · ${fmtC(Math.round(SIM.fullCount * disp.keep) + manual)} ${tr("trees")}`;
     updateProj();
   }
 }
@@ -1486,9 +1268,10 @@ function renderStand(g, stand, size, mpp, active) {
     if (m === undefined) {
       const age = t - pl;
       if (age <= 0.01) m = null;
-      else m = { h: height(age, cls), cd: crownDisplayM(cls, age) };
+      else m = { h: height(age, cls), cd: crownDisplayM(cls, age), std: standDisplay(cls, age) };
       byAge.set(pl, m);
     }
+    if (m && !tree.manual && tree.seed / 2147483647 > m.std.keep) continue; // self-thinned
     if (!m || m.h < 0.3) {
       if (active && tree.manual) {
         const p = map.latLngToContainerPoint([tree.la, tree.ln]);
@@ -1498,8 +1281,9 @@ function renderStand(g, stand, size, mpp, active) {
     }
     const p = map.latLngToContainerPoint([tree.la, tree.ln]);
     if (!inView(p)) continue;
-    const open = tree.manual ? 1.6 : 1; // isolated trees spread open-grown crowns
-    const r = m.cd * tree.s * open / 2 / mpp;
+    // isolated trees spread full open-grown crowns; stand survivors widen as
+    // self-thinning releases them (standDisplay blend)
+    const r = (tree.manual ? m.cd * 1.6 : m.std.crown) * tree.s / 2 / mpp;
     if (r <= 0.05) {
       if (active && tree.manual) saplings.push(p);
       continue;
@@ -1920,12 +1704,63 @@ async function restoreFromHash() {
     drawSim();
   }
 }
+// ---------- in-app toast (replaces native alert) ----------
+let toastTimer;
+function toast(msg) {
+  let el = document.getElementById("toast");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "toast";
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 6500);
+}
+
 // ---------- plantable-land radar (OSM Overpass) ----------
-let radarLayer = null;
+let radarLayer = null, radarCands = [], radarIdx = -1, radarNav = null;
+const CAND_STYLE = { color: "#e5b26b", weight: 2, dashArray: "5 4", fillColor: "#d7a463", fillOpacity: 0.22 };
+const CAND_ACTIVE = { color: "#f0c98a", weight: 3, dashArray: null, fillColor: "#d7a463", fillOpacity: 0.4 };
+
+// OSM landuse tags in the user's language: "brownfield" means nothing to Lia
+const LAND_LABELS = {
+  brownfield: "vacant lot", greenfield: "open land", meadow: "meadow",
+  grass: "grassy patch", village_green: "village green", allotments: "community garden",
+};
+const landLabel = tag => tr(LAND_LABELS[tag] ?? "plantable land");
+
+function radarGoTo(i) {
+  if (!radarCands.length) return;
+  radarIdx = ((i % radarCands.length) + radarCands.length) % radarCands.length;
+  radarCands.forEach((cd, k) => cd.poly.setStyle(k === radarIdx ? CAND_ACTIVE : CAND_STYLE));
+  const cd = radarCands[radarIdx];
+  map.fitBounds(cd.poly.getBounds().pad(0.6));
+  radarNav.querySelector(".rn-label").textContent =
+    `${radarIdx + 1}/${radarCands.length} · ${landLabel(cd.tag)} · ${fmtHa(polyAreaHa(cd.pts.map(([la, ln]) => L.latLng(la, ln))))}`;
+}
+function radarNavClose() {
+  radarNav?.remove(); radarNav = null;
+  radarCands = []; radarIdx = -1;
+}
+function radarAnalyzeCurrent() {
+  const cd = radarCands[radarIdx];
+  if (!cd) return;
+  const pts = cd.pts.map(([la, ln]) => L.latLng(la, ln));
+  setShape(pts);
+  analyze(pts);
+}
+document.addEventListener("keydown", e => {
+  if (!radarNav || /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName ?? "")) return;
+  if (e.key === "ArrowRight") { radarGoTo(radarIdx + 1); e.preventDefault(); }
+  if (e.key === "ArrowLeft") { radarGoTo(radarIdx - 1); e.preventDefault(); }
+});
+
 async function radarScan() {
   const btn = $("#radar-btn");
-  if (radarLayer) { radarLayer.remove(); radarLayer = null; btn.classList.remove("armed"); return; }
-  if (map.getZoom() < 13) { alert(tr("Zoom in to city scale to scan for plantable land.")); return; }
+  if (radarLayer) { radarLayer.remove(); radarLayer = null; radarNavClose(); btn.classList.remove("armed"); return; }
+  if (map.getZoom() < 13) { toast(tr("Zoom in to city scale to scan for plantable land.")); return; }
   btn.classList.add("armed");
   const b = map.getBounds();
   const bbox = `${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()}`;
@@ -1940,23 +1775,44 @@ async function radarScan() {
     const cands = (j.elements ?? []).filter(e => e.type === "way" && e.geometry?.length >= 4)
       .map(e => ({ tag: e.tags?.landuse ?? e.tags?.["abandoned:landuse"] ?? "?", pts: e.geometry.map(g => [g.lat, g.lon]) }));
     if (!cands.length) {
-      alert(tr("Nothing promising in this view. Try another neighborhood."));
+      toast(tr("Nothing promising in this view. Try another neighborhood."));
       btn.classList.remove("armed");
       return;
     }
-    radarLayer = L.layerGroup(cands.map(cd => {
-      const poly = L.polygon(cd.pts, { color: "#d7a463", weight: 1.2, dashArray: "4 4", fillOpacity: 0.06 });
-      poly.bindTooltip(`${cd.tag} &middot; ${tr("click to analyze")}`, { sticky: true });
+    radarCands = cands.map(cd => {
+      const poly = L.polygon(cd.pts, CAND_STYLE);
+      poly.bindTooltip(`${landLabel(cd.tag)} &middot; ${tr("click to analyze")}`, { sticky: true });
       poly.on("click", () => {
         if (armed) return;
         const pts = cd.pts.map(([la, ln]) => L.latLng(la, ln));
         setShape(pts);
         analyze(pts);
       });
-      return poly;
-    })).addTo(map);
+      return { ...cd, poly };
+    });
+    radarLayer = L.layerGroup(radarCands.map(cd => cd.poly)).addTo(map);
+    // arrows to walk the candidates one by one
+    radarNav = document.createElement("div");
+    radarNav.id = "radarnav";
+    radarNav.innerHTML = `<button class="rn-btn" data-rn="-1">&#8249;</button>
+      <span class="rn-label mono"></span>
+      <button class="rn-btn" data-rn="1">&#8250;</button>
+      <button class="rn-go">${tr("Analyze")}</button>
+      <button class="panel-close" data-rnclose title="${tr("Close")}">&times;</button>`;
+    document.body.appendChild(radarNav);
+    radarNav.addEventListener("click", e => {
+      const step = e.target.closest("[data-rn]");
+      if (step) { radarGoTo(radarIdx + +step.dataset.rn); return; }
+      if (e.target.closest(".rn-go")) { radarAnalyzeCurrent(); return; }
+      if (e.target.closest("[data-rnclose]")) {
+        radarLayer.remove(); radarLayer = null;
+        radarNavClose();
+        $("#radar-btn").classList.remove("armed");
+      }
+    });
+    radarGoTo(0);
   } catch {
-    alert(tr("The land scan service is busy; try again in a minute."));
+    toast(tr("The land scan service is busy; try again in a minute."));
     btn.classList.remove("armed");
   }
 }
@@ -1970,7 +1826,7 @@ async function importGeometryFile(file) {
     else if (name.endsWith(".kml")) polys = kmlToPolys(await file.text());
     else polys = geojsonToPolys(JSON.parse(await file.text()));
     polys = (polys ?? []).filter(r => r.length >= 3 && r.every(([la, ln]) => Math.abs(la) <= 90 && Math.abs(ln) <= 180)).slice(0, 50);
-    if (!polys.length) { alert(tr("No polygons found in the file.")); return; }
+    if (!polys.length) { toast(tr("No polygons found in the file.")); return; }
     let last = null;
     for (const ring of polys) {
       setShape(ring.map(([la, ln]) => L.latLng(la, ln)));
@@ -1980,7 +1836,7 @@ async function importGeometryFile(file) {
     await speciesReady;
     analyze(last._pts);
   } catch (err) {
-    alert(`${tr("Could not read the file.")} (${err.message})`);
+    toast(`${tr("Could not read the file.")} (${err.message})`);
   }
 }
 function geojsonToPolys(j) {
@@ -2197,12 +2053,14 @@ function csvExport() {
 }
 
 // localize the static chrome
-document.title = tr("Replantio · replanting intelligence");
+document.title = "Replantio";
 geoInput.placeholder = tr("Search a city or place");
 $("#draw-label").textContent = tr("Draw area");
 hint.innerHTML = tr("Click to drop points &middot; right-click, double-click or click the first point to close &middot; Esc cancels");
 $("#import-btn").title = tr("Import area (GeoJSON, KML, zipped shapefile)");
 $("#radar-btn").title = tr("Find plantable land in this view");
+$("#radar-label").textContent = tr("Find land");
+$("#import-label").textContent = tr("Import");
 $("#radar-btn").addEventListener("click", radarScan);
 const syncRadarBtn = () => { $("#radar-btn").hidden = map.getZoom() < 13 && !radarLayer; };
 map.on("zoomend", syncRadarBtn);
@@ -2220,7 +2078,9 @@ locCtl.onAdd = () => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       p => map.flyTo([p.coords.latitude, p.coords.longitude], 15, { duration: 1.4 }),
-      () => alert(tr("Could not get your location.")),
+      err => toast(err.code === 1
+        ? tr("Location is blocked. Allow it in your browser: tap the lock icon by the address bar, enable Location, then try again.")
+        : tr("Could not get your location right now; try again.")),
       { maximumAge: 60000, timeout: 10000 });
   });
   return b;
@@ -2248,18 +2108,61 @@ document.addEventListener("click", e => {
 });
 
 const langBtn = $("#lang-btn");
-langBtn.value = LANG;
-langBtn.addEventListener("change", () => {
-  localStorage.setItem("lang", langBtn.value);
+langBtn.textContent = LANG.toUpperCase();
+const langMenu = $("#langmenu");
+const READY_LANGS = LANGS.filter(l => l === "en" || Object.keys(DICTS[l] ?? {}).length > 0);
+langMenu.innerHTML = READY_LANGS.map(l =>
+  `<button data-lang="${l}" class="${l === LANG ? "on" : ""}">${NAMES[l]}</button>`).join("");
+langBtn.addEventListener("click", () => { langMenu.hidden = !langMenu.hidden; });
+langMenu.addEventListener("click", e => {
+  const b = e.target.closest("[data-lang]");
+  if (!b) return;
+  localStorage.setItem("lang", b.dataset.lang);
   location.reload(); // the analysis is in the hash, so it survives the reload
+});
+document.addEventListener("click", e => {
+  if (!langMenu.hidden && !e.target.closest("#langmenu") && !e.target.closest("#lang-btn")) langMenu.hidden = true;
 });
 
 restoreAreas();
 restoreFromHash();
-if (!location.hash && !shapes.length && navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(
-    p => map.setView([p.coords.latitude, p.coords.longitude], 13),
-    () => {}, { maximumAge: 600000, timeout: 8000 });
+if (!location.hash && !shapes.length) {
+  // IP-based approximate locate: iOS blocks the geolocation prompt without a
+  // user gesture, so entry never asks; precise GPS lives on the locate button.
+  const ipLocate = fetch("https://api.bigdatacloud.net/data/reverse-geocode-client")
+    .then(r => r.json())
+    .then(j => j.latitude ? [j.latitude, j.longitude] : null)
+    .catch(() => null);
+  ipLocate.then(p => {
+    if (p && map.getZoom() < 6 && !shapes.length) map.setView(p, 13);
+  });
+
+  // first-run invitation: the product in one sentence, the radar as the door
+  if (!localStorage.getItem("intro-seen")) {
+    const el = document.createElement("div");
+    el.id = "intro";
+    el.innerHTML = `<span class="iq">${tr("What would grow in that empty lot down your street?")}</span>
+      <button id="intro-go">${tr("Find land")}</button>
+      <span class="ialt">${tr("or draw an area yourself")}</span>`;
+    document.body.appendChild(el);
+    const dismiss = () => {
+      el.remove();
+      map.off("click contextmenu", dismiss);
+      try { localStorage.setItem("intro-seen", "1"); } catch {}
+    };
+    el.querySelector("#intro-go").addEventListener("click", async () => {
+      if (map.getZoom() < 13) {           // IP locate still pending, or it failed
+        const p = await ipLocate;
+        if (p) map.setView(p, 13);
+        else { toast(tr("Could not get your location right now; try again.")); return; } // keep the invitation
+      }
+      dismiss();
+      radarScan();
+    });
+    $("#draw-btn").addEventListener("click", dismiss, { once: true });
+    $("#radar-btn").addEventListener("click", dismiss, { once: true });
+    map.on("click contextmenu", dismiss);
+  }
 }
 
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);

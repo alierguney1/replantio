@@ -1,0 +1,752 @@
+{
+ "_sobre": "Onde conseguir sementes e mudas nativas no Brasil. Tudo aqui foi conferido com fetch ao vivo em 2026-08-11.",
+ "checked": "2026-08",
+ "shops": [
+  {
+   "id": "clickmudas",
+   "name": "Click Mudas",
+   "kinds": [
+    "muda"
+   ],
+   "scope": "BR",
+   "search": "https://www.clickmudas.com.br/loja/busca.php?loja=&palavra_busca={q}",
+   "note": "Loja do IBFlorestas, com RENASEM. Mudas de nativas em tubete a partir de R$8,30. A busca funciona com nome popular (aroeira, ipê, angico); o catálogo de sementes existe mas não aparece na busca."
+  },
+  {
+   "id": "plantepassaros",
+   "name": "Plante Pássaros",
+   "kinds": [
+    "semente",
+    "muda"
+   ],
+   "scope": "BR",
+   "search": "https://www.plantepassaros.com.br/loja/busca.php?loja=&palavra_busca={q}",
+   "note": "Melhor loja verificada para sementes no varejo: pacotes de nativas de R$14,90 a R$34,90, adubação verde (crotalária, guandu, feijão-de-porco) a partir de R$14,90 e mudas de R$34,90 a R$49,90."
+  },
+  {
+   "id": "brasilnativas",
+   "name": "Brasil Nativas",
+   "kinds": [
+    "semente",
+    "muda"
+   ],
+   "scope": "BR",
+   "search": "https://brasilnativas.com.br/?s={q}&post_type=product",
+   "note": "Vende no atacado: sementes por quilo ou por litro (R$260 a R$380) e mudas de 1,5 m por volta de R$45. Bom para muvuca e plantio grande, caro para quem quer uma muda só."
+  },
+  {
+   "id": "ml",
+   "name": "Mercado Livre",
+   "kinds": [
+    "muda",
+    "semente"
+   ],
+   "scope": "BR",
+   "search": "https://lista.mercadolivre.com.br/{slug}",
+   "note": "Tem de tudo, com qualidade que varia muito. O link abre normalmente no navegador; procedência e tamanho da muda são por conta de quem compra."
+  }
+ ],
+ "bands": {
+  "_sobre": "Faixas de preço por tipo de propágulo, definidas na mão a partir de preços observados ao vivo em 2026-08-11. Não é cotação: é ordem de grandeza. Sempre apresentar como '~R$X'.",
+  "checked": "2026-08",
+  "porte_band": {
+   "tree": "muda_nativa",
+   "shrub": "muda_nativa",
+   "herb": "semente_pacote",
+   "grass": "semente_pacote",
+   "vine": "semente_pacote"
+  },
+  "muda_nativa": {
+   "min": 8,
+   "max": 15,
+   "label": "muda ~R$10",
+   "unit": "por muda",
+   "note": "Muda pequena, em tubete. Preços vistos na Click Mudas: angico-vermelho e guanandi R$8,30, ipês R$8,35, guapuruvu, dedaleiro, timburi e capixingui R$10,90, aroeira-preta e oiti R$11,00.",
+   "fonte": "clickmudas"
+  },
+  "muda_grande": {
+   "min": 30,
+   "max": 75,
+   "label": "muda graúda ~R$45",
+   "unit": "por muda",
+   "note": "Muda de 1 a 1,5 m, em saquinho: pega mais rápido e resiste melhor em rua. Ipê-roxo 1/1,5 m em saquinho R$70,20 na Click Mudas, mudas de R$34,90 a R$49,90 na Plante Pássaros, R$45,00 na Brasil Nativas.",
+   "fonte": "clickmudas, plantepassaros, brasilnativas"
+  },
+  "semente_pacote": {
+   "min": 15,
+   "max": 35,
+   "label": "pacote de sementes ~R$20",
+   "unit": "por pacote",
+   "note": "Pacote de sementes de nativa no varejo. Na Plante Pássaros: ipês e baru R$14,90, jenipapo R$19,90, cedro-rosa, canafístula, quaresmeira e guapuruvu R$29,90, palmeira-juçara R$39,90.",
+   "fonte": "plantepassaros"
+  },
+  "semente_adubo_verde": {
+   "min": 15,
+   "max": 20,
+   "label": "adubo verde ~R$15",
+   "unit": "por pacote",
+   "note": "Leguminosas de adubação verde, que é o que vai junto na muvuca: guandu-anão e crotalária R$14,90, feijão-de-porco R$19,90, kit com cinco espécies R$49,90.",
+   "fonte": "plantepassaros"
+  },
+  "semente_granel": {
+   "min": 260,
+   "max": 380,
+   "label": "semente a granel ~R$300",
+   "unit": "por kg ou litro",
+   "note": "Preço de atacado, para plantio grande ou muvuca. Brasil Nativas: sementes de aroeira-preta R$260,00 o litro, aroeira-pimenteira R$380,00 o quilo. Rede de sementes costuma sair mais barato, mas só por contato.",
+   "fonte": "brasilnativas"
+  }
+ },
+ "networks_sobre": "As 27 redes de sementes listadas pela Iniciativa Caminhos da Semente (caminhosdasemente.org.br/redes-de-sementes), transcritas em 2026-08-11. Nenhuma vende por carrinho: a compra é sempre por telefone ou e-mail, por isso 'order' é 'contato' em todas. O bioma foi deduzido da sede, não vem declarado na fonte. 'muvuca: true' marca as redes que citam muvuca no próprio site; false quer dizer não verificado, não que a rede não faça.",
+ "networks": [
+  {
+   "name": "Aprospera",
+   "sede": "Brasília/DF",
+   "uf": [
+    "DF"
+   ],
+   "bioma": [
+    "Cerrado"
+   ],
+   "kind": "semente",
+   "url": "https://www.caminhosdasemente.org.br/redes-de-sementes/aprospera",
+   "tel": "(61) 98123-6070",
+   "order": "contato",
+   "muvuca": false,
+   "fallback": true
+  },
+  {
+   "name": "Associação Cerrado de Pé",
+   "sede": "Chapada dos Veadeiros/GO",
+   "uf": [
+    "GO"
+   ],
+   "bioma": [
+    "Cerrado"
+   ],
+   "kind": "semente",
+   "url": "https://www.cerradodepe.org.br/",
+   "tel": "(62) 99901-7268",
+   "order": "contato",
+   "muvuca": false,
+   "note": "Comunidades do entorno do Parque Nacional da Chapada dos Veadeiros."
+  },
+  {
+   "name": "Associação Rede de Sementes do Xingu",
+   "sede": "Canarana/MT",
+   "uf": [
+    "MT"
+   ],
+   "bioma": [
+    "Amazônia",
+    "Cerrado"
+   ],
+   "kind": "semente",
+   "url": "https://www.sementesdoxingu.org.br/",
+   "tel": "(61) 3478-3491",
+   "order": "contato",
+   "muvuca": true,
+   "note": "A maior rede do país e a referência em muvuca. Não tem loja: o catálogo sai em PDF e o pedido é por telefone ou e-mail."
+  },
+  {
+   "name": "Banco de sementes da Amazônia",
+   "sede": "Manaus/AM",
+   "uf": [
+    "AM"
+   ],
+   "bioma": [
+    "Amazônia"
+   ],
+   "kind": "semente",
+   "url": "https://www.fca.ufam.edu.br/nucleos/nucleo-de-sementes",
+   "tel": "(92) 8222-7927",
+   "order": "contato",
+   "muvuca": false,
+   "note": "Apoiada pelo Centro de Sementes Nativas do Amazonas (CSNAM) da UFAM."
+  },
+  {
+   "name": "COOPPROJIRAU",
+   "sede": "Nova Mutum Paraná, Porto Velho/RO",
+   "uf": [
+    "RO"
+   ],
+   "bioma": [
+    "Amazônia"
+   ],
+   "kind": "semente",
+   "url": "https://www.coopprojirau.com.br/",
+   "tel": "(69) 99940-2900",
+   "order": "contato",
+   "muvuca": false,
+   "note": "Coleta de sementes nativas florestais e frutíferas do bioma amazônico."
+  },
+  {
+   "name": "Coopajé",
+   "sede": "Porto Seguro/BA",
+   "uf": [
+    "BA"
+   ],
+   "bioma": [
+    "Mata Atlântica"
+   ],
+   "kind": "semente",
+   "url": "https://www.xn--coopaj-gva.com.br/",
+   "tel": "(73) 99992-3035",
+   "order": "contato",
+   "muvuca": false
+  },
+  {
+   "name": "Cooperaçu",
+   "sede": "Januária/MG",
+   "uf": [
+    "MG"
+   ],
+   "bioma": [
+    "Cerrado",
+    "Caatinga"
+   ],
+   "kind": "semente",
+   "url": "https://www.caminhosdasemente.org.br/redes-de-sementes/cooperacu",
+   "tel": "(38) 99748-6151",
+   "order": "contato",
+   "muvuca": false,
+   "note": "O contato principal é a página no Facebook, facebook.com/cooperuacu, que só abre no navegador.",
+   "fallback": true
+  },
+  {
+   "name": "Flora do Tietê",
+   "sede": "Penápolis/SP",
+   "uf": [
+    "SP"
+   ],
+   "bioma": [
+    "Mata Atlântica",
+    "Cerrado"
+   ],
+   "kind": "semente",
+   "url": "https://www.floratiete.com.br/",
+   "tel": "(18) 3652-2948",
+   "order": "contato",
+   "muvuca": false,
+   "note": "Publica a relação de mudas e de sementes disponíveis em PDF, com uma página de 'como comprar sementes'."
+  },
+  {
+   "name": "Grupo de Restauradores da RDS Nascentes Geraizeiras",
+   "sede": "Montezuma/MG",
+   "uf": [
+    "MG"
+   ],
+   "bioma": [
+    "Cerrado",
+    "Caatinga"
+   ],
+   "kind": "semente",
+   "url": "https://www.instagram.com/coletores_restauradoresrds/",
+   "tel": "(38) 99828-3494",
+   "order": "contato",
+   "muvuca": false,
+   "note": "Comunidades da Reserva de Desenvolvimento Sustentável Nascentes Geraizeiras."
+  },
+  {
+   "name": "Instituto Refloresta",
+   "sede": "São Paulo/SP",
+   "uf": [
+    "SP"
+   ],
+   "bioma": [
+    "Mata Atlântica"
+   ],
+   "kind": "semente",
+   "url": "https://www.refloresta.org.br/",
+   "tel": "(11) 99751-2227",
+   "order": "contato",
+   "muvuca": false
+  },
+  {
+   "name": "Rede de Sementes da Bioeconomia Amazônica (RESEBA)",
+   "sede": "Porto Velho/RO",
+   "uf": [
+    "RO"
+   ],
+   "bioma": [
+    "Amazônia"
+   ],
+   "kind": "semente",
+   "url": "https://reseba.ecopore.org.br/",
+   "tel": "(69) 98482-6598",
+   "order": "contato",
+   "muvuca": false,
+   "note": "Nasceu dentro da Ecoporé, que atua em Rondônia há mais de três décadas."
+  },
+  {
+   "name": "Rede Sementes do Portal da Amazônia",
+   "sede": "Alta Floresta/MT",
+   "uf": [
+    "MT"
+   ],
+   "bioma": [
+    "Amazônia"
+   ],
+   "kind": "semente",
+   "url": "https://sementesdoportal.com.br/",
+   "tel": "(66) 3521-7917",
+   "order": "contato",
+   "muvuca": true
+  },
+  {
+   "name": "Rede Tupyguá",
+   "sede": "Aracruz/ES",
+   "uf": [
+    "ES"
+   ],
+   "bioma": [
+    "Mata Atlântica"
+   ],
+   "kind": "semente",
+   "url": "https://www.tupyguasementes.com.br/",
+   "tel": "(27) 99516-6763",
+   "order": "contato",
+   "muvuca": false
+  },
+  {
+   "name": "Rede de Cantinas da Terra do Meio",
+   "sede": "Altamira/PA",
+   "uf": [
+    "PA"
+   ],
+   "bioma": [
+    "Amazônia"
+   ],
+   "kind": "semente",
+   "url": "https://www.caminhosdasemente.org.br/redes-de-sementes/rede-de-cantinas-da-terra-do-meio",
+   "tel": "(93) 99193-3145",
+   "order": "contato",
+   "muvuca": false,
+   "fallback": true,
+   "note": "O site redeterradomeio.org.br não respondeu em 2026-08-11; o contato é por telefone."
+  },
+  {
+   "name": "Rede de Coletores do Oeste da Bahia",
+   "sede": "Luís Eduardo Magalhães/BA",
+   "uf": [
+    "BA"
+   ],
+   "bioma": [
+    "Cerrado"
+   ],
+   "kind": "semente",
+   "url": "https://www.caminhosdasemente.org.br/redes-de-sementes/rede-de-coletores-do-oeste-da-bahia",
+   "tel": "(77) 99854-5683",
+   "order": "contato",
+   "muvuca": false,
+   "fallback": true
+  },
+  {
+   "name": "Rede de Coletores do Vale do Paraíba",
+   "sede": "Lagoinha/SP",
+   "uf": [
+    "SP"
+   ],
+   "bioma": [
+    "Mata Atlântica"
+   ],
+   "kind": "semente",
+   "url": "https://www.caminhosdasemente.org.br/redes-de-sementes/rede-de-coletores-do-vale-do-paraiba",
+   "tel": "(12) 99647-5849",
+   "order": "contato",
+   "muvuca": false,
+   "fallback": true,
+   "note": "O site sementesdovaledoparaiba.org.br devolveu 404 em 2026-08-11; o contato é por telefone."
+  },
+  {
+   "name": "Rede de Sementes Arboretum",
+   "sede": "Teixeira de Freitas/BA",
+   "uf": [
+    "BA"
+   ],
+   "bioma": [
+    "Mata Atlântica"
+   ],
+   "kind": "semente",
+   "url": "https://www.caminhosdasemente.org.br/redes-de-sementes/rede-de-sementes-arboretum",
+   "tel": "(73) 3011-5700",
+   "order": "contato",
+   "muvuca": false,
+   "fallback": true,
+   "note": "O site programaarboretum.eco.br não respondeu em 2026-08-11; o contato é por telefone."
+  },
+  {
+   "name": "Rede de Sementes Vale do Ribeira",
+   "sede": "Eldorado/SP",
+   "uf": [
+    "SP"
+   ],
+   "bioma": [
+    "Mata Atlântica"
+   ],
+   "kind": "semente",
+   "url": "https://www.caminhosdasemente.org.br/redes-de-sementes/rede-de-sementes-vale-do-ribeira",
+   "tel": "(13) 3851-1545",
+   "order": "contato",
+   "muvuca": false,
+   "fallback": true,
+   "note": "Apoiada pelo Instituto Socioambiental."
+  },
+  {
+   "name": "Rede de Sementes do Araguaia (Black Jaguar)",
+   "sede": "São Paulo/SP",
+   "uf": [
+    "SP"
+   ],
+   "bioma": [
+    "Cerrado",
+    "Amazônia"
+   ],
+   "kind": "semente",
+   "url": "https://www.black-jaguar.org/pt-br/",
+   "tel": "(11) 99248-4000",
+   "order": "contato",
+   "muvuca": false,
+   "note": "Sede em São Paulo, atuação na bacia do Araguaia."
+  },
+  {
+   "name": "Rede de Sementes do Cerrado",
+   "sede": "Brasília/DF",
+   "uf": [
+    "DF"
+   ],
+   "bioma": [
+    "Cerrado"
+   ],
+   "kind": "semente",
+   "url": "https://redecerrado.org.br/",
+   "tel": "(61) 3256-1938",
+   "order": "contato",
+   "muvuca": false,
+   "note": "OSCIP com duas décadas de trabalho no Cerrado."
+  },
+  {
+   "name": "Rede de Sementes do PISF (NEMA/Univasf)",
+   "sede": "Petrolina/PE",
+   "uf": [
+    "PE"
+   ],
+   "bioma": [
+    "Caatinga"
+   ],
+   "kind": "semente",
+   "url": "https://nema-sistemas.univasf.edu.br/sementes/",
+   "tel": "(87) 2101-4867",
+   "order": "contato",
+   "muvuca": false,
+   "note": "Núcleo de Ecologia e Monitoramento Ambiental da Univasf, ligado ao Projeto de Integração do São Francisco."
+  },
+  {
+   "name": "Rede de Sementes do Xingu - PA",
+   "sede": "Altamira/PA",
+   "uf": [
+    "PA"
+   ],
+   "bioma": [
+    "Amazônia"
+   ],
+   "kind": "semente",
+   "url": "https://www.caminhosdasemente.org.br/redes-de-sementes/rede-de-sementes-do-xingu-pa",
+   "tel": "(93) 3515-5749",
+   "order": "contato",
+   "muvuca": false,
+   "fallback": true
+  },
+  {
+   "name": "Rede de Sementes e Mudas do Rio Doce",
+   "sede": "Governador Valadares/MG",
+   "uf": [
+    "MG",
+    "ES"
+   ],
+   "bioma": [
+    "Mata Atlântica"
+   ],
+   "kind": "semente",
+   "url": "https://www.caminhosdasemente.org.br/redes-de-sementes/rede-de-sementes-e-mudas-do-rio-doce",
+   "tel": "(33) 99801-8146",
+   "order": "contato",
+   "muvuca": false,
+   "fallback": true,
+   "note": "Atende toda a bacia do Rio Doce, em Minas Gerais e no Espírito Santo."
+  },
+  {
+   "name": "Sementes Monjolinho",
+   "sede": "São Carlos/SP",
+   "uf": [
+    "SP"
+   ],
+   "bioma": [
+    "Cerrado",
+    "Mata Atlântica"
+   ],
+   "kind": "semente",
+   "url": "https://www.caminhosdasemente.org.br/redes-de-sementes/sementes-monjolinho",
+   "tel": "(11) 96360-3328",
+   "order": "contato",
+   "muvuca": false,
+   "fallback": true
+  },
+  {
+   "name": "Sementes do Paraíso",
+   "sede": "São João do Paraíso/MG",
+   "uf": [
+    "MG"
+   ],
+   "bioma": [
+    "Cerrado",
+    "Caatinga"
+   ],
+   "kind": "semente",
+   "url": "https://www.instagram.com/sementes_paraiso/",
+   "tel": "(38) 99918-8665",
+   "order": "contato",
+   "muvuca": false
+  },
+  {
+   "name": "VerdeNovo",
+   "sede": "Brasília/DF",
+   "uf": [
+    "DF"
+   ],
+   "bioma": [
+    "Cerrado"
+   ],
+   "kind": "semente",
+   "url": "https://www.instagram.com/verdenovosementes/",
+   "tel": "(61) 99949-2444",
+   "order": "contato",
+   "muvuca": false
+  },
+  {
+   "name": "Zé da Lena Sementes",
+   "sede": "Laranjal Paulista/SP",
+   "uf": [
+    "SP"
+   ],
+   "bioma": [
+    "Mata Atlântica",
+    "Cerrado"
+   ],
+   "kind": "semente",
+   "url": "https://www.zedalenasementes.com.br/",
+   "tel": "(15) 99747-5982",
+   "order": "contato",
+   "muvuca": true
+  }
+ ],
+ "hortos_sobre": "Viveiros e hortos municipais que doam mudas. Cada linha foi conferida numa fonte oficial em 2026-08-11. 'scope' diz onde a prefeitura espera que a árvore seja plantada: 'quintal' é área privada, 'calcada' é via pública, 'ambos' é os dois. A cobertura é parcial por construção: não existe cadastro nacional disso.",
+ "hortos": [
+  {
+   "uf": "SP",
+   "municipio": "São Paulo",
+   "name": "Campanha Permanente de Incentivo à Arborização (viveiros Manequinho Lopes e Harry Blossfeld)",
+   "url": "https://sp156.prefeitura.sp.gov.br/portal/servicos/informacao?servico=3670",
+   "free": true,
+   "limit": 5,
+   "scope": "quintal",
+   "requires": [
+    "documento com foto",
+    "IPTU recente ou comprovante de isenção",
+    "croqui e foto da área permeável com medidas",
+    "autorização do proprietário, se você não for o dono",
+    "em condomínio, carta do síndico e ata de eleição"
+   ],
+   "note": "Pedido pelo Portal 156, gratuito, até 30 dias. Vale para a área interna do imóvel, não para a calçada: para a calçada o caminho é pedir no 156 que a prefeitura plante. Regido pelo Decreto 37.587/1998 e pela Instrução Normativa SVMA 13/2022.",
+   "checked": "2026-08"
+  },
+  {
+   "uf": "SP",
+   "municipio": "Mogi das Cruzes",
+   "name": "Viveiro de Mudas",
+   "url": "https://www.mogidascruzes.sp.gov.br/unidade-e-equipamento/0/viveiro-de-mudas",
+   "free": true,
+   "limit": 3,
+   "scope": "ambos",
+   "requires": [
+    "documento de identificação, original e cópia",
+    "comprovante de endereço, original e cópia",
+    "1 kg de material reciclável limpo e seco por muda"
+   ],
+   "note": "Nativas e frutíferas, para arborização urbana e plantio em área rural.",
+   "checked": "2026-08"
+  },
+  {
+   "uf": "SP",
+   "municipio": "São Pedro",
+   "name": "Viveiro Municipal de Mudas",
+   "url": "https://www.semagrisaopedro.com.br/viveiro-de-mudas",
+   "free": true,
+   "limit": null,
+   "scope": "ambos",
+   "requires": [
+    "formulário online ou ida ao viveiro"
+   ],
+   "note": "Av. Paschoal Antonelli, 265. Segunda a sexta, 8h-12h e 13h-15h30. WhatsApp (19) 99798-0983.",
+   "checked": "2026-08"
+  },
+  {
+   "uf": "SP",
+   "municipio": "Ribeirão Preto",
+   "name": "Horto Municipal, no Parque Ecológico Ângelo Rinaldi",
+   "url": "https://www.ribeiraopreto.sp.gov.br/portal/noticia/horto-municipal-doou-mais-de-8mil-mudas-em-2021",
+   "free": true,
+   "limit": null,
+   "scope": "ambos",
+   "requires": [
+    "documento de identidade com foto",
+    "comprovante de endereço",
+    "orientação técnica da equipe do horto"
+   ],
+   "note": "Av. Manoel Antônio Dias, 551, Jardim Marchesi. Segunda a sexta, 7h-10h30 e 13h-16h30. Mais de 100 espécies em estoque. A página oficial que descreve a doação é de 2021.",
+   "checked": "2026-08"
+  },
+  {
+   "uf": "SP",
+   "municipio": "Marília",
+   "name": "Viveiro Municipal, na Secretaria de Agricultura",
+   "url": "https://www.marilia.sp.gov.br/viveiro-de-mudas",
+   "free": true,
+   "limit": 5,
+   "scope": "calcada",
+   "requires": [
+    "ser munícipe"
+   ],
+   "note": "Limite de 5 nativas por munícipe. A doação é voltada a logradouros públicos e a quem recebeu o Habite-se com notificação para plantar em frente ao imóvel. Sítios e chácaras pagam uma taxa por muda.",
+   "checked": "2026-08"
+  },
+  {
+   "uf": "SC",
+   "municipio": "Itajaí",
+   "name": "Viveiro Municipal de Mudas Nativas",
+   "url": "https://servicos.itajai.sc.gov.br/servico/116-doacao_de_mudas_.html",
+   "free": true,
+   "limit": 5,
+   "scope": "ambos",
+   "requires": [
+    "comprovante de residência em Itajaí"
+   ],
+   "note": "Até 5 mudas por residência, direto no viveiro, na Rua Osvaldo Bertemes, 144. Empresas e instituições da cidade podem pedir até 100 por formulário.",
+   "checked": "2026-08"
+  },
+  {
+   "uf": "SC",
+   "municipio": "São José",
+   "name": "Horto Florestal, no Parque Ambiental dos Sabiás",
+   "url": "https://saojose.sc.gov.br/horto-florestal-doacao-de-mudas/",
+   "free": true,
+   "limit": null,
+   "scope": "ambos",
+   "requires": [
+    "Formulário Simplificado de Doação de Mudas",
+    "contato prévio pelo (48) 3288-4313, ramal 2374"
+   ],
+   "note": "Viveiro com mais de 40 mil mudas da Mata Atlântica. A prioridade é dos projetos da FMADS e de escolas e entidades sem fins lucrativos; o excedente vai para doação. Acima de 10 mudas é preciso requerimento à Superintendência.",
+   "checked": "2026-08"
+  },
+  {
+   "uf": "PB",
+   "municipio": "João Pessoa",
+   "name": "Viveiro Florestal de Plantas Nativas (Semam)",
+   "url": "https://www.joaopessoa.pb.gov.br/servico/viveiro-florestal/",
+   "free": true,
+   "limit": 2,
+   "scope": "ambos",
+   "requires": [
+    "ir ao viveiro"
+   ],
+   "note": "Rua Embaixador Sérgio Vieira de Melo, Valentina Figueiredo, em frente ao Sesc Gravatá. Segunda a sexta, 8h-16h. Até 2 mudas por atendimento; a página não menciona cobrança.",
+   "checked": "2026-08"
+  },
+  {
+   "uf": "RJ",
+   "municipio": "Cabo Frio",
+   "name": "Horto Municipal Antônio Ângelo Trindade Marques",
+   "url": "https://noticias.cabofrio.rj.gov.br/prefeitura-de-cabo-frio-retoma-programa-de-doacao-de-mudas-no-horto-municipal/",
+   "free": true,
+   "limit": 2,
+   "scope": "quintal",
+   "requires": [
+    "CPF",
+    "comprovante de residência em Cabo Frio",
+    "formulário de cadastro",
+    "termo de responsabilidade"
+   ],
+   "note": "Programa retomado em fevereiro de 2026, com cadastro online. Intervalo mínimo de 6 meses entre retiradas para o mesmo CPF ou endereço. Av. Henrique Terra, Portinho, segunda a sexta, 9h-16h.",
+   "checked": "2026-08"
+  },
+  {
+   "uf": "RO",
+   "municipio": "Porto Velho",
+   "name": "Viveiro Municipal, no Parque Natural Raimundo Paraguassu (Sema)",
+   "url": "https://sema.portovelho.ro.gov.br/noticias/meio-ambiente-prefeitura-fortalece-acoes-de-plantio-no-viveiro-municipal-para-tornar-porto-velho-uma-cidade-mais-verde-e-mais-sustentavel",
+   "free": true,
+   "limit": 50,
+   "scope": "ambos",
+   "requires": [
+    "RG",
+    "CPF",
+    "comprovante de endereço",
+    "cadastro na Sema e agendamento"
+   ],
+   "note": "O limite mais generoso que encontramos: até 50 mudas por pessoa cadastrada. Cerca de 85 mil mudas de 50 espécies em estoque. Segunda a sexta, 9h-11h e 14h30-16h.",
+   "checked": "2026-08"
+  },
+  {
+   "uf": "MG",
+   "municipio": "Betim",
+   "name": "Viveiro Municipal",
+   "url": "https://www.betim.mg.gov.br/portal/noticias/0/3/11184/viveiro-municipal-de-betim-disponibiliza-mudas-de-arvores-nativas-e-frutiferas-para-a-populacao",
+   "free": true,
+   "limit": null,
+   "scope": "ambos",
+   "requires": [
+    "documento de identidade com foto",
+    "cópia do comprovante de endereço"
+   ],
+   "note": "Mais de 20 espécies nativas e frutíferas, para calçadas, jardins, áreas públicas e quintais. Pedido na Rua Pará de Minas, 640, Brasiléia, 9h-16h. A página oficial é de 2021: confirme por telefone antes de ir.",
+   "checked": "2026-08"
+  },
+  {
+   "uf": "GO",
+   "municipio": "Goiânia",
+   "name": "Viveiro da Amma (Programa Plante Vida)",
+   "url": "https://www.goiania.go.gov.br/shtml/amma/plante_vida.shtml",
+   "free": true,
+   "limit": null,
+   "scope": "ambos",
+   "requires": [
+    "assinar termo de compromisso de que vai plantar a muda"
+   ],
+   "note": "Nativas do Cerrado para calçadas, fundos de vale, praças e também quintais e chácaras. Distribuição em mutirões e eventos. Dúvidas: viveiro@amma.goiania.go.gov.br, (62) 3524-1920.",
+   "checked": "2026-08"
+  },
+  {
+   "uf": "CE",
+   "municipio": "Fortaleza",
+   "name": "Mudário da Seuma",
+   "url": "https://www.fortaleza.ce.gov.br/noticias/prefeitura-amplia-horario-de-atendimento-ao-publico-no-mudario-de-fortaleza",
+   "free": true,
+   "limit": 5,
+   "scope": "ambos",
+   "requires": [
+    "documento oficial com foto",
+    "comprovante de endereço em Fortaleza",
+    "cadastro no mudário"
+   ],
+   "note": "Até 5 mudas por pessoa cadastrada, entre árvores, frutíferas, ornamentais e medicinais. Av. Deputado Paulino Rocha, 1343, Cajazeiras. Segunda a sexta, 9h-11h30 e 13h30-16h.",
+   "checked": "2026-08"
+  }
+ ],
+ "muvuca": {
+  "sobre": "Semeadura direta: em vez de plantar mudas, você espalha uma mistura de sementes de nativas com adubação verde. Sai mais barato e cobre mais área, mas exige mais semente e mais paciência.",
+  "url": "https://www.sementesdoxingu.org.br/muvuca-de-sementes/",
+  "diretorio": "https://www.caminhosdasemente.org.br/redes-de-sementes",
+  "checked": "2026-08"
+ }
+}

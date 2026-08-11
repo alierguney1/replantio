@@ -3,7 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Replantio · inteligência de replantio</title>
+<title>Replantio</title>
+<meta name="description" content="Desenhe uma área em qualquer lugar do mundo e veja o que plantar, quanto rende e como cresce.">
+<meta property="og:title" content="Replantio">
+<meta property="og:description" content="Desenhe uma área em qualquer lugar do mundo e veja o que plantar, quanto rende e como cresce.">
+<meta property="og:image" content="https://replantio.com/og.png">
+<meta property="og:url" content="https://replantio.com">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://replantio.com/og.png">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -27,15 +35,16 @@
     <span id="draw-label">Draw area</span>
   </button>
   <button id="radar-btn" title="Find plantable land">
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v3M21 12h-3M12 21v-3M3 12h3"/></svg>
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="7"/><path d="m21 21-5-5"/><path d="M10.5 13.5V9.8c0-1.8 1.4-3.3 3.2-3.3-.1 1.9-1.5 3.3-3.2 3.3zm0 0c0-1.5-1.2-2.7-2.7-2.7 0 1.5 1.2 2.7 2.7 2.7z" fill="currentColor" stroke="none"/></svg>
+    <span id="radar-label"></span>
   </button>
   <button id="import-btn" title="Import area">
     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 11v6"/><path d="m9 14 3 3 3-3"/></svg>
+    <span id="import-label"></span>
   </button>
   <input id="import-input" type="file" accept=".geojson,.json,.kml,.zip" hidden>
-  <select id="lang-btn" title="Idioma / Language">
-    <option value="pt">PT</option><option value="en">EN</option><option value="es">ES</option><option value="fr">FR</option>
-  </select>
+  <button id="lang-btn" title="Idioma / Language"></button>
+  <div id="langmenu" hidden></div>
 </header>
 
 <div id="about" hidden></div>

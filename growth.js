@@ -63,6 +63,19 @@ export function crownDisplayM(cls, t) {
   return crownDiameterM(d, h);
 }
 
+// Self-thinning for DISPLAY: after canopy closure a stand sheds stems while
+// survivors' crowns widen (-2 rule: sustainable density is what tiles the
+// ground with crowns). Open-grown release factor 1.6, packing 0.7 allows
+// crown overlap. Carbon totals keep their own survival/cap chain; this only
+// shapes what is drawn and labeled.
+export function standDisplay(cls, t) {
+  const cdP = crownDisplayM(cls, t);
+  const cdO = cdP * 1.6;
+  const a0 = 1e4 / STEMS_PER_HA; // m² per tree at planting
+  const keep = Math.min(1, a0 / (Math.PI * (cdO / 2) ** 2 * 0.7));
+  return { keep, crown: cdP + (cdO - cdP) * (1 - keep) };
+}
+
 export function crownDiameterM(d, h) {
   if (h <= 0 || d <= 0) return 0;
   return Math.pow(d / 0.5579, 1.236) / h; // Jucker 2017 inverted
