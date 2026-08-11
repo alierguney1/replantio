@@ -752,6 +752,9 @@ function renderResults() {
 
 // price band for the row chip: what a muda or seed packet of this costs
 function priceBand(sp) {
+  // Brazilian market data (R$): only meaningful for Brazilian sites,
+  // same gate as the "Where to get it" block
+  if (current?.cc !== "BR") return null;
   const bands = SOURCING?.bands;
   if (!bands) return null;
   const key = bands.porte_band?.[sp.porte] ?? (sp.tree || sp.porte === "shrub" ? "muda_nativa" : "semente_pacote");
