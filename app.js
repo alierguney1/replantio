@@ -965,6 +965,15 @@ function sourcingMarkup(sp) {
   if (!SOURCING?.shops?.length || current.cc !== "BR") return "";
   const term = shopTerm(sp);
   const kindWord = sp.tree || sp.porte === "shrub" ? "muda" : "sementes";
+  // verified product links first: only stores that provably stock THIS species
+  const kind = sp.tree || sp.porte === "shrub" ? "muda" : "semente";
+  const prod = SOURCING.products?.[sp.id] ?? {};
+  const direct = SOURCING.shops
+    .map(sh => {
+      const hit = prod[sh.id]?.[kind] ?? prod[sh.id]?.[kind === "muda" ? "semente" : "muda"];
+      return hit ? `<a href="${hit.url}" target="_blank" rel="noopener">${sh.name}${hit.price ? ` <span class="chk">R$${hit.price.toLocaleString("pt-BR")}</span>` : ""}</a>` : null;
+    })
+    .filter(Boolean).join(" &middot; ");
   const links = SOURCING.shops.map(sh => {
     const url = sh.search.includes("{slug}")
       ? sh.search.replace("{slug}", slugify(`${kindWord} ${term}`))
@@ -978,7 +987,8 @@ function sourcingMarkup(sp) {
   return `<div class="section-h">${tr("Where to get it")}</div>
     <div class="stats getrows" style="margin-top:0">
       ${horto ? `<div class="stat wide"><span class="sk gfree">${tr("free")}</span><span class="sv"><a href="${horto.url}" target="_blank" rel="noopener">${horto.name}</a>${horto.limit ? ` &middot; ${tfmt("up to {n} seedlings", { n: horto.limit })}` : ""}${horto.scope === "quintal" ? ` &middot; ${tr("for planting on your own property")}` : ""}</span></div>` : ""}
-      <div class="stat wide"><span class="sk">${tr("buy")}</span><span class="sv">${links}</span></div>
+      ${direct ? `<div class="stat wide"><span class="sk">${tr("buy")}</span><span class="sv">${direct}</span></div>` : ""}
+      <div class="stat wide"><span class="sk">${tr("search stores")}</span><span class="sv">${links}</span></div>
       ${nets.length ? `<div class="stat wide"><span class="sk">${tr("seed networks")}</span><span class="sv">${nets.map(n => `<a href="${n.url}" target="_blank" rel="noopener">${n.name}</a>`).join(" &middot; ")}</span></div>` : ""}
       ${band ? `<div class="stat wide"><span class="sk">${tr("typical price")}</span><span class="sv">${band}${SOURCING.bands?.checked ? ` <span class="chk">(${SOURCING.bands.checked})</span>` : ""}</span></div>` : ""}
     </div>`;

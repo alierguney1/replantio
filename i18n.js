@@ -161,6 +161,7 @@ const PT = {
   "See the planting grow": "Ver o plantio crescer",
   "Find plantable land nearby": "Achar terrenos perto daqui",
   "plants": "plantas",
+  "search stores": "buscar em lojas",
 };
 
 const ES = {
@@ -310,6 +311,7 @@ const ES = {
   "See the planting grow": "Ver crecer la plantación",
   "Find plantable land nearby": "Encontrar terrenos cerca de aquí",
   "plants": "plantas",
+  "search stores": "buscar en tiendas",
 };
 
 const FR = {
@@ -459,6 +461,7 @@ const FR = {
   "See the planting grow": "Voir la plantation pousser",
   "Find plantable land nearby": "Trouver des terrains près d'ici",
   "plants": "plantes",
+  "search stores": "chercher en boutique",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -680,6 +683,7 @@ const ZH = {
   "over 4 MF": "4 MF 以上",
   "springs": "泉眼",
   "lakes and ponds": "湖泊与池塘",
+  "search stores": "在商店搜索",
 };
 const JA = {
   "Analyze": "分析する",
@@ -899,6 +903,7 @@ const JA = {
   "over 4 MF": "4 MF超",
   "springs": "湧水",
   "lakes and ponds": "湖沼",
+  "search stores": "ショップで検索",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1118,6 +1123,7 @@ const RU = {
   "over 4 MF": "свыше 4 MF",
   "springs": "родники",
   "lakes and ponds": "озёра и пруды",
+  "search stores": "искать в магазинах",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -1337,6 +1343,7 @@ const ID = {
   "over 4 MF": "di atas 4 MF",
   "springs": "mata air",
   "lakes and ponds": "danau dan kolam",
+  "search stores": "cari di toko",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -1556,6 +1563,7 @@ const HI = {
   "over 4 MF": "4 MF से अधिक",
   "springs": "जलस्रोत",
   "lakes and ponds": "झीलें और तालाब",
+  "search stores": "दुकानों में खोजें",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -1775,6 +1783,7 @@ const DE = {
   "over 4 MF": "über 4 MF",
   "springs": "Quellen",
   "lakes and ponds": "Seen und Teiche",
+  "search stores": "in Shops suchen",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -1994,6 +2003,7 @@ const SW = {
   "over 4 MF": "zaidi ya MF 4",
   "springs": "chemchemi",
   "lakes and ponds": "maziwa na madimbwi",
+  "search stores": "tafuta madukani",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW };

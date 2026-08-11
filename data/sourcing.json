@@ -748,5 +748,693 @@
   "url": "https://www.sementesdoxingu.org.br/muvuca-de-sementes/",
   "diretorio": "https://www.caminhosdasemente.org.br/redes-de-sementes",
   "checked": "2026-08"
- }
+ },
+ "products": {
+  "7174": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-aromaticas/alfazema-lavanda/",
+     "price": 120.0
+    }
+   }
+  },
+  "3699": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/muda-de-castanha-do-para/",
+     "price": 120.0
+    }
+   }
+  },
+  "482": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/muda-de-limao-biri-biri/",
+     "price": 85.9
+    }
+   }
+  },
+  "1803": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-araca-amarelo/",
+     "price": 49.9
+    }
+   }
+  },
+  "6397": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/muda-de-genipapo/",
+     "price": 54.9
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/frutiferas/muda-de-jenipapo-genipa-amrecana-40-a-60cm",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-da-amazonia/sementes-de-jenipapo-ou-jenipapeiro-genipa-americana",
+     "price": 19.9
+    }
+   }
+  },
+  "880": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/mudas-nativas/mudas-de-flavloyant-delonix-regia/",
+     "price": 65.99
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/floriferas/muda-acacia-rubra-flamboyant-vermelho-linda-arvore-exotica",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/frutiferas-e-ornamentais/kit-50-sementes-de-flamboyant-vermelho-e-amarelo-delonix-regia",
+     "price": 19.9
+    }
+   }
+  },
+  "6054": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-ornamentais/palmeiras/muda-de-acai/",
+     "price": 40.0
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/amazonia/muda-acai-anao-precoce-acaizeiro-euterpe-oleracea",
+     "price": 34.9
+    }
+   }
+  },
+  "945": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/enxertadas/muda-de-caqui/",
+     "price": 98.9
+    }
+   }
+  },
+  "7874": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/enxertadas/jabuticaba-sabara/",
+     "price": 95.0
+    }
+   }
+  },
+  "1714": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-aromaticas/mudas-de-pimento-do-reino/",
+     "price": 54.9
+    }
+   }
+  },
+  "749": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/muda-de-cafe-arabica/",
+     "price": 44.9
+    }
+   }
+  },
+  "2000": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/enxertadas/mudas-de-caja-manga/",
+     "price": 43.4
+    }
+   }
+  },
+  "714": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/enxertadas/mudas-de-limao-siciliano/",
+     "price": 40.0
+    }
+   }
+  },
+  "4631": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/enxertadas/mudas-de-limao-taiti/",
+     "price": 44.0
+    }
+   }
+  },
+  "34722": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-ornamentais/arbustos/mudas-de-clorofitos/",
+     "price": 98.0
+    }
+   }
+  },
+  "28399": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-umbu/",
+     "price": 62.9
+    }
+   },
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/mudas/nativas-mata-atlantica/cebolao-phytolacca-dioica",
+     "price": 10.9
+    }
+   }
+  },
+  "2462": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-aromaticas/mudas-de-cravo-da-india/",
+     "price": 54.9
+    }
+   }
+  },
+  "3581": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/mudas-nativas/mudas-de-neem-indiano/",
+     "price": 54.9
+    }
+   }
+  },
+  "10895": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-uva-isabel/",
+     "price": 89.9
+    }
+   }
+  },
+  "6562": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-mutamba/",
+     "price": 43.9
+    }
+   },
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/mudas/mudas-nativas-e-exoticas/mudas-mata-atlantica/mutambo",
+     "price": 10.9
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/frutiferas/muda-de-mutambo-mutamba-preta-verdadeira-guazuma-ulmifolia",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-da-amazonia/sementes-de-mutambo-ou-mutamba-preta-verdadeira-guazuma-ulmifolia",
+     "price": 29.9
+    }
+   }
+  },
+  "508": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/mudas-nativas/mudas-de-pata-de-vaca-caixa-com-10/",
+     "price": 45.9
+    }
+   },
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/mudas/mudas-nativas-e-exoticas/pata-de-vaca-exotica",
+     "price": 84.5
+    }
+   }
+  },
+  "6809": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/mudas-nativas/mudas-de-jatoba-caixa-com-10/",
+     "price": 60.0
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/mata-atlantica/muda-jatoba-jatobazeiro-ou-jatai-hymenaea-courbaril-nativa",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-mata-atlantica/sementes-de-jatoba-da-mata-ou-jatai-hymenaea-courbaril",
+     "price": 29.9
+    }
+   }
+  },
+  "5809": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/mudas-nativas/muda-de-eritrina/",
+     "price": 54.9
+    }
+   }
+  },
+  "2052": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/mudas-nativas/mudas-de-ipe-de-jardim/",
+     "price": 65.9
+    }
+   }
+  },
+  "1553": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/mudas-nativas/muda-de-oliveira/",
+     "price": 160.0
+    }
+   }
+  },
+  "6001": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-pitanga/",
+     "price": 58.0
+    }
+   },
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/arvores-frutiferas/pitanga",
+     "price": 8.3
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/frutiferas/muda-pitanga-vermelha-pitangueira-uniflora-frutifera-nativa",
+     "price": 34.9
+    }
+   }
+  },
+  "2047": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-tamarindo/",
+     "price": 32.9
+    }
+   }
+  },
+  "1071": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-figo/",
+     "price": 39.9
+    }
+   }
+  },
+  "9326": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-aromaticas/mudas-de-alecrim/",
+     "price": 95.0
+    }
+   }
+  },
+  "2369": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-aromaticas/mudas-de-oregano-2/",
+     "price": 15.0
+    }
+   }
+  },
+  "621": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-aromaticas/mudas-de-pimenta-malagueta/",
+     "price": 32.8
+    }
+   }
+  },
+  "702": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-medicinais/mudas-de-canela-da-india/",
+     "price": 45.9
+    }
+   }
+  },
+  "6983": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/mudas-nativas/mudas-de-jacaranda-mimoso/",
+     "price": 82.7
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/floriferas/muda-jacaranda-azul-mimoso-carobaguacu-jacaranda-mimosifolia",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/frutiferas-e-ornamentais/sementes-jacaranda-azul-mimoso-jacaranda-mimosifolia",
+     "price": 19.9
+    }
+   }
+  },
+  "10015": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/muda-de-siriguela/",
+     "price": 59.9
+    }
+   }
+  },
+  "1033": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-jambo-roxo/",
+     "price": 39.9
+    }
+   }
+  },
+  "2307": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/muda-de-pupunha/",
+     "price": 39.9
+    }
+   }
+  },
+  "232965": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/mudas-nativas/muda-de-canafistula-caixa-com-10/",
+     "price": 60.0
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/floriferas/mudas-de-cassia-do-nordeste-ou-sao-joao-senna-spectabilis",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-mata-atlantica/sementes-de-canafistula-ou-faveira-peltophorum-dubium",
+     "price": 29.9
+    }
+   }
+  },
+  "1260": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-inga/",
+     "price": 35.9
+    }
+   }
+  },
+  "2041": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/mudas-nativas/mudas-de-ipe-rosa/",
+     "price": 77.76
+    }
+   }
+  },
+  "2381": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-maracuja-azedo-2/",
+     "price": 45.0
+    }
+   }
+  },
+  "4074": {
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/mudas/mudas-nativas-e-exoticas/guanandi",
+     "price": 10.9
+    }
+   }
+  },
+  "1804": {
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/mudas/goiaba-vermelha",
+     "price": 8.3
+    }
+   }
+  },
+  "414": {
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/arvores-frutiferas/fruta-do-conde",
+     "price": 64.9
+    }
+   }
+  },
+  "520": {
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/mudas/muda-de-urucum-bixa-orellana-1975",
+     "price": 10.9
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/floriferas/muda-urucum-colorau-bixa-bixa-orellana-flor-nativa",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-da-amazonia/sementes-de-urucum-ou-colorau-bixa-orellana",
+     "price": 29.9
+    }
+   }
+  },
+  "483": {
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/arvores-frutiferas/carambola"
+    }
+   }
+  },
+  "2807": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/floriferas/muda-de-baoba-africano-legitimo-raro-adansonia-digitata",
+     "price": 78.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/frutiferas-e-ornamentais/sementes-de-baoba-africano-legitimo-adansonia-digitata",
+     "price": 29.9
+    }
+   }
+  },
+  "1019": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/floriferas/mudas-eucalipto-arco-iris-legitimas-raro-eucalyptus-deglupta",
+     "price": 49.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/madeira-e-celulose/sementes-eucalipto-arco-iris-eucalyptus-deglupta",
+     "price": 14.9
+    }
+   }
+  },
+  "227247": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/kits-e-mix/kit-3-mudas-de-pinheiro-pinus-elliottii-pinho-americano",
+     "price": 34.9
+    }
+   }
+  },
+  "5842": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/kits-e-mix/kit-3-mudas-de-eucalipto-cidro-limao-citriodora-cheiroso",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/madeira-e-celulose/sementes-eucalipto-cidro-limao-ou-cheiroso-eucalyptus-citriodora",
+     "price": 14.9
+    }
+   }
+  },
+  "6052": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/frutiferas/mudas-de-palmito-jussara-palmeira-jucara-euterpe-edulis-rara",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-mata-atlantica/sementes-palmeira-jussara-palmito-jucara-euterpe-edulis",
+     "price": 39.9
+    }
+   }
+  },
+  "658": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/amazonia/muda-da-gigante-samauma-sumauma-ceiba-pentandra-rara-kapok-tree",
+     "price": 49.9
+    }
+   }
+  },
+  "3318": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/frutiferas/muda-araucaria-angustifolia-pinhao-pinheiro-do-parana-nativa",
+     "price": 34.9
+    }
+   }
+  },
+  "2002": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/frutiferas/muda-de-caja-mirim-tapereba-spondias-mombin-frutifera-nativa",
+     "price": 49.9
+    }
+   }
+  },
+  "9615": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/floriferas/muda-guapuruvu-ficheira-schizolobium-parahyba-arvore-nativa",
+     "price": 34.9
+    }
+   }
+  },
+  "2349": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/frutiferas/muda-de-amora-preta-gigante-portuguesa-ja-produzindo-morus-nigra",
+     "price": 49.9
+    }
+   }
+  },
+  "2022": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/amazonia/muda-mogno-nacional-brasileiro-raro-swietenia-macrophylla",
+     "price": 34.9
+    }
+   }
+  },
+  "7058": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/florestais/mudas-de-mogno-africano-do-senegal-khaya-senegalensis",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/madeira-e-celulose/sementes-de-mogno-africano-khaya-senegalensis",
+     "price": 19.9
+    }
+   }
+  },
+  "2658": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/florestais/mudas-de-acacia-australiana-acacia-mangium-melifera",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/madeira-e-celulose/sementes-de-acacia-australiana-acacia-mangium",
+     "price": 19.9
+    }
+   }
+  },
+  "10458": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/florestais/mudas-de-cedro-australiano-toona-ciliata",
+     "price": 34.9
+    }
+   }
+  },
+  "1212": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/florestais/mudas-de-seringueira-arvore-da-borracha-hevea-brasiliensis",
+     "price": 34.9
+    }
+   }
+  },
+  "355155": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/floriferas/mudas-de-sete-copas-africana-amendoiera-terminalia-mantaly",
+     "price": 49.9
+    }
+   }
+  },
+  "635": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/floriferas/muda-acacia-chuva-de-ouro-cassia-imperial-cassia-fistula",
+     "price": 49.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/frutiferas-e-ornamentais/sementes-acacia-imperial-chuva-de-ouro-cassia-fistula",
+     "price": 14.9
+    }
+   }
+  },
+  "1024": {
+   "plantepassaros": {
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/madeira-e-celulose/sementes-de-eucalipto-de-sidney-eucalyptus-saligna",
+     "price": 29.9
+    }
+   }
+  },
+  "1430": {
+   "plantepassaros": {
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/frutiferas-e-ornamentais/sementes-de-melaleuca-cajuput-tea-tree-melaleuca-leucadendron",
+     "price": 14.9
+    }
+   }
+  },
+  "3310": {
+   "plantepassaros": {
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/leguminosas-e-hortalicas/sementes-de-amendoim-forrageiro-ou-grama-amendoim-arachis-pintoi",
+     "price": 34.9
+    }
+   }
+  },
+  "401": {
+   "plantepassaros": {
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-mata-atlantica/sementes-de-cajueiro-comum-ou-fruta-caju-anacardium-occidentale",
+     "price": 29.9
+    }
+   }
+  },
+  "1686": {
+   "plantepassaros": {
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/frutiferas-e-ornamentais/sementes-da-fruta-fisalis-physalis-peruviana",
+     "price": 14.9
+    }
+   }
+  },
+  "576": {
+   "plantepassaros": {
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/leguminosas-e-hortalicas/sementes-de-feijao-guandu-anao-cajanus-cajan-adubo-verde",
+     "price": 14.9
+    }
+   }
+  },
+  "609": {
+   "plantepassaros": {
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/leguminosas-e-hortalicas/sementes-de-feijao-de-porco-canavalia-ensiformis-recupera-solo-adubo-verde",
+     "price": 19.9
+    }
+   }
+  }
+ },
+ "products_sobre": "Links diretos de produto, casados por binomio declarado na pagina ou nome popular inequivoco; so lojas verificaveis (ML fora). Gerado por scripts/match_products.py"
 }
