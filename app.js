@@ -974,7 +974,7 @@ function sourcingMarkup(sp) {
       return hit ? `<a href="${hit.url}" target="_blank" rel="noopener">${sh.name}${hit.price ? ` <span class="chk">R$${hit.price.toLocaleString("pt-BR")}</span>` : ""}</a>` : null;
     })
     .filter(Boolean).join(" &middot; ");
-  const links = SOURCING.shops.map(sh => {
+  const links = SOURCING.shops.filter(sh => sh.search).map(sh => {
     const url = sh.search.includes("{slug}")
       ? sh.search.replace("{slug}", slugify(`${kindWord} ${term}`))
       : sh.search.replace("{q}", encodeURIComponent(term));

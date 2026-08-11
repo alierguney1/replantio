@@ -44,6 +44,34 @@
    "scope": "BR",
    "search": "https://lista.mercadolivre.com.br/{slug}",
    "note": "Tem de tudo, com qualidade que varia muito. O link abre normalmente no navegador; procedência e tamanho da muda são por conta de quem compra."
+  },
+  {
+   "id": "sitiodamata",
+   "name": "Sítio da Mata",
+   "kinds": [
+    "muda"
+   ],
+   "scope": "BR",
+   "search": "https://www.sitiodamata.com.br/catalogsearch/result/?q={q}",
+   "note": "Viveiro especialista em nativas, Magento, preços online."
+  },
+  {
+   "id": "ciprest",
+   "name": "Ciprest",
+   "kinds": [
+    "muda"
+   ],
+   "scope": "BR",
+   "note": "Viveiro de nativas e exóticas; catálogo em posts, venda sob consulta."
+  },
+  {
+   "id": "isla",
+   "name": "Isla Sementes",
+   "kinds": [
+    "semente"
+   ],
+   "scope": "BR",
+   "note": "Sementes de hortaliças, ervas e flores."
   }
  ],
  "bands": {
@@ -756,6 +784,11 @@
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-acerola/",
      "price": 58.9
     }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2016/12/acerola-malpighia-glabra.html"
+    }
    }
   },
   "7174": {
@@ -772,6 +805,11 @@
      "url": "https://brasilnativas.com.br/loja/plantas-ornamentais/cerca-viva/mudas-de-limaozinho-kit-com-50-mudas/",
      "price": 30.0
     }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/11/bilimbi-ou-carambola-selvagem-averrhoa.html"
+    }
    }
   },
   "1803": {
@@ -779,6 +817,11 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-araca-amarelo/",
      "price": 49.9
+    }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/01/araca-vermelho-anao-psidium-cattleianum.html"
     }
    },
    "clickmudas": {
@@ -796,6 +839,12 @@
      "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-mata-atlantica/sementes-de-araca-amarelo-da-praia-psidium-cattleyanum",
      "price": 29.9
     }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/araca-amarelo-psidium-cattleianum.html",
+     "price": 18.34
+    }
    }
   },
   "6397": {
@@ -803,6 +852,11 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/muda-de-genipapo/",
      "price": 54.9
+    }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/09/jenipapo-genipa-americana.html"
     }
    },
    "plantepassaros": {
@@ -823,6 +877,11 @@
      "price": 65.99
     }
    },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/10/flamboyant-amarelo-delonix-regia.html"
+    }
+   },
    "plantepassaros": {
     "muda": {
      "url": "https://www.plantepassaros.com.br/floriferas/muda-acacia-rubra-flamboyant-vermelho-linda-arvore-exotica",
@@ -832,6 +891,12 @@
      "url": "https://www.plantepassaros.com.br/sementes-diversas/frutiferas-e-ornamentais/kit-50-sementes-de-flamboyant-vermelho-e-amarelo-delonix-regia",
      "price": 19.9
     }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/para-criar-um-bosque-uma-sombra-boa-ou-arborizar-sua-calcada/flamboyant-delonix-regia.html",
+     "price": 24.67
+    }
    }
   },
   "411": {
@@ -839,6 +904,12 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-graviola/",
      "price": 45.0
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/graviola-annona-muricata-l.html",
+     "price": 14.99
     }
    }
   },
@@ -856,6 +927,17 @@
      "url": "https://brasilnativas.com.br/loja/plantas-medicinais/mudas-moringa-oleifera/",
      "price": 35.0
     }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/08/moringa-moringa-oleifera.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/moringa-moringa-oleifera.html",
+     "price": 18.98
+    }
    }
   },
   "1075": {
@@ -871,6 +953,17 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/enxertadas/jabuticaba-sabara/",
      "price": 95.0
+    }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/09/jabuticaba-acu-paulista-plinia.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/jabuticaba-hibrida-myrciaria-cauliflora.html",
+     "price": 19.99
     }
    }
   },
@@ -888,6 +981,12 @@
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/enxertadas/mudas-de-caja-manga/",
      "price": 43.4
     }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/caja-manga-spondias-cytherea.html",
+     "price": 28.8
+    }
    }
   },
   "714": {
@@ -895,6 +994,12 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/enxertadas/mudas-de-limao-siciliano/",
      "price": 40.0
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/limao-cravo-citrus-limon.html",
+     "price": 19.99
     }
    }
   },
@@ -911,6 +1016,11 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-cacau/",
      "price": 45.9
+    }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/09/cacau-amarelo-theobroma-cacao.html"
     }
    }
   },
@@ -936,6 +1046,17 @@
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-lichia/",
      "price": 80.0
     }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/12/lichia-kwai-mai-pink-litchi-chinensis.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/lichia-litchi-chinensis.html",
+     "price": 26.21
+    }
    }
   },
   "3581": {
@@ -943,6 +1064,12 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/mudas-nativas/mudas-de-neem-indiano/",
      "price": 54.9
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/nim-azadirachta-indica.html",
+     "price": 24.99
     }
    }
   },
@@ -978,6 +1105,11 @@
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-uva-isabel/",
      "price": 89.9
     }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2020/02/uva-niagara-rosada-vitis-labrusca.html"
+    }
    }
   },
   "6562": {
@@ -985,6 +1117,11 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-mutamba/",
      "price": 43.9
+    }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/10/mutamba-ou-mutambo-guazuma-ulmifolia.html"
     }
    },
    "clickmudas": {
@@ -1001,6 +1138,12 @@
     "semente": {
      "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-da-amazonia/sementes-de-mutambo-ou-mutamba-preta-verdadeira-guazuma-ulmifolia",
      "price": 29.9
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/mutambo-guazuma-ulmifolia.html",
+     "price": 14.99
     }
    }
   },
@@ -1023,6 +1166,11 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/mudas-nativas/mudas-de-jatoba-caixa-com-10/",
      "price": 60.0
+    }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/09/jatoba-hymenaea-courbaril.html"
     }
    },
    "plantepassaros": {
@@ -1050,6 +1198,11 @@
      "url": "https://brasilnativas.com.br/loja/mudas-nativas/mudas-de-ipe-de-jardim/",
      "price": 65.9
     }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2016/10/ipe-amarelo-de-jardim-tecoma-stans.html"
+    }
    }
   },
   "652": {
@@ -1058,6 +1211,12 @@
      "url": "https://brasilnativas.com.br/loja/plantas-ornamentais/forracao-de-sol/mudas-de-vinca-caixa-com-12/",
      "price": 59.89
     }
+   },
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/vinca-sortida-boa-noite-cartela-c-1000-sementes-461-43",
+     "price": 19.92
+    }
    }
   },
   "1553": {
@@ -1065,6 +1224,12 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/mudas-nativas/muda-de-oliveira/",
      "price": 160.0
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-especies-nobres/oliveira-olea-europaea-l.html",
+     "price": 59.99
     }
    }
   },
@@ -1083,6 +1248,11 @@
      "price": 45.0
     }
    },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/01/cassia-imperial-ou-chuva-de-ouro-cassia.html"
+    }
+   },
    "plantepassaros": {
     "muda": {
      "url": "https://www.plantepassaros.com.br/floriferas/muda-acacia-chuva-de-ouro-cassia-imperial-cassia-fistula",
@@ -1099,6 +1269,11 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-pitanga/",
      "price": 58.0
+    }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2016/08/pitanga-eugenia-uniflora.html"
     }
    },
    "clickmudas": {
@@ -1120,6 +1295,17 @@
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-cupuacu/",
      "price": 45.0
     }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/05/cupuacu-theobroma-grandiflorum.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/cupuacu-theobroma-grandiflorum.html",
+     "price": 23.99
+    }
    }
   },
   "2047": {
@@ -1127,6 +1313,12 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-tamarindo/",
      "price": 32.9
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-frutas-exoticas/tamarindo-tamarindus-indica.html",
+     "price": 21.99
     }
    }
   },
@@ -1136,6 +1328,18 @@
      "url": "https://brasilnativas.com.br/loja/plantas-aromaticas/mudas-de-alecrim/",
      "price": 95.0
     }
+   },
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/alecrim-rosmarinho-env-linha-multi-und-467-51",
+     "price": 3.58
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/mudas-plantas-medicinais/alecrim-rosmarinus-officinalis.html",
+     "price": 3.19
+    }
    }
   },
   "2369": {
@@ -1143,6 +1347,18 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-aromaticas/mudas-de-oregano-2/",
      "price": 15.0
+    }
+   },
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/oregano-verdadeiro-fred-env-linha-multi-und-494-51",
+     "price": 3.58
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/oregano-origanum-vulgare.html",
+     "price": 6.29
     }
    }
   },
@@ -1152,6 +1368,18 @@
      "url": "https://brasilnativas.com.br/loja/plantas-aromaticas/mudas-de-pimenta-malagueta/",
      "price": 32.8
     }
+   },
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/pimenta-ornamental-stromboli-env-linha-multi-und-963-51",
+     "price": 3.58
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/pimenta-boyra-habanero-vermelha-capsicum-frutescens.html",
+     "price": 2.53
+    }
    }
   },
   "702": {
@@ -1159,6 +1387,17 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-medicinais/mudas-de-canela-da-india/",
      "price": 45.9
+    }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2023/06/canela-da-india-cinnamomum-verum.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-sol/canela-da-india-cinnamomum-verum.html",
+     "price": 14.99
     }
    }
   },
@@ -1178,6 +1417,12 @@
      "url": "https://www.plantepassaros.com.br/sementes-diversas/frutiferas-e-ornamentais/sementes-jacaranda-azul-mimoso-jacaranda-mimosifolia",
      "price": 19.9
     }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/para-criar-um-bosque-uma-sombra-boa-ou-arborizar-sua-calcada/jacaranda-mimoso-jacaranda-mimosifolia.html",
+     "price": 14.99
+    }
    }
   },
   "3795": {
@@ -1194,6 +1439,12 @@
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/muda-de-siriguela/",
      "price": 59.9
     }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/seriguela-spondias-purpurea.html",
+     "price": 18.99
+    }
    }
   },
   "1033": {
@@ -1202,6 +1453,11 @@
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-jambo-roxo/",
      "price": 39.9
     }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/07/jambo-vermelho-escuro-ou-roxo-syzygium.html"
+    }
    }
   },
   "2307": {
@@ -1209,6 +1465,11 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/muda-de-pupunha/",
      "price": 39.9
+    }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/04/pupunha-ou-palmito-pupunha-bactris.html"
     }
    }
   },
@@ -1236,6 +1497,17 @@
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-inga/",
      "price": 35.9
     }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2020/04/imga-rabo-de-mico-da-mata-atlantica.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-sol/inga-inga-edulis.html",
+     "price": 14.99
+    }
    }
   },
   "1256": {
@@ -1252,6 +1524,11 @@
      "url": "https://brasilnativas.com.br/loja/mudas-nativas/mudas-de-ipe-rosa/",
      "price": 77.76
     }
+   },
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/06/ipe-rosa-tabebuia-rosea.html"
+    }
    }
   },
   "2381": {
@@ -1262,43 +1539,226 @@
     }
    }
   },
-  "28399": {
-   "clickmudas": {
+  "2698": {
+   "ciprest": {
     "muda": {
-     "url": "https://www.clickmudas.com.br/mudas/nativas-mata-atlantica/cebolao-phytolacca-dioica",
-     "price": 10.9
+     "url": "https://ciprest.blogspot.com/2013/07/acacia-de-tronco-vermelho-ou-acacia.html"
     }
    }
   },
-  "4074": {
-   "clickmudas": {
+  "355155": {
+   "ciprest": {
     "muda": {
-     "url": "https://www.clickmudas.com.br/mudas/mudas-nativas-e-exoticas/guanandi",
-     "price": 10.9
+     "url": "https://ciprest.blogspot.com/2013/07/amendoeira-africana-ou-terminalia.html"
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/floriferas/mudas-de-sete-copas-africana-amendoiera-terminalia-mantaly",
+     "price": 49.9
     }
    }
   },
-  "1804": {
-   "clickmudas": {
+  "3820": {
+   "ciprest": {
     "muda": {
-     "url": "https://www.clickmudas.com.br/mudas/goiaba-vermelha",
-     "price": 8.3
+     "url": "https://ciprest.blogspot.com/2013/07/arvore-do-fogo.html"
     }
    }
   },
-  "414": {
-   "clickmudas": {
+  "3962": {
+   "ciprest": {
     "muda": {
-     "url": "https://www.clickmudas.com.br/arvores-frutiferas/fruta-do-conde",
-     "price": 64.9
+     "url": "https://ciprest.blogspot.com/2019/08/cachos-de-marfim-buckinghamia-celsissima.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-sol/cacho-de-marfim-buckinghamia-celsissima.html",
+     "price": 50.1
+    }
+   }
+  },
+  "4042": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/06/caliandra-candelabro-ou-caliandra-de.html"
+    }
+   }
+  },
+  "9138": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2010/08/carvalho-alemao-quercus-robur.html"
+    }
+   }
+  },
+  "2235": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2016/08/castanheiro-da-australia-castanospermum.html"
+    }
+   }
+  },
+  "1991": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/06/espatodea-amarela-spathodea-campanulata.html"
+    }
+   }
+  },
+  "1019": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2013/05/eucalipto-arco-iris.html"
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/floriferas/mudas-eucalipto-arco-iris-legitimas-raro-eucalyptus-deglupta",
+     "price": 49.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/madeira-e-celulose/sementes-eucalipto-arco-iris-eucalyptus-deglupta",
+     "price": 14.9
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/para-criar-um-bosque-uma-sombra-boa-ou-arborizar-sua-calcada/eucalipto-arco-iris-eucalyptus-deglupta.html",
+     "price": 24.49
+    }
+   }
+  },
+  "5939": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/12/eucalipto-torelliana-eucalyptus.html"
+    }
+   }
+  },
+  "1170": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/08/grevilea-arborea-robusta-grevillea.html"
+    }
+   }
+  },
+  "7846": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/07/curry-indiano-murraya-koenigii.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-frutas-exoticas/condimento-curry-murraya-koenigii.html",
+     "price": 25.28
+    }
+   }
+  },
+  "1796": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/06/pessego-de-brotacao-rubra-prunus.html"
+    }
+   }
+  },
+  "10084": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/04/adocante-natural-estevia-stevia.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/stevia-stevia-rebaudiana-bertoni.html",
+     "price": 9.99
+    }
+   }
+  },
+  "2349": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/09/amora-miura-morus-nigra.html"
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/frutiferas/muda-de-amora-preta-gigante-portuguesa-ja-produzindo-morus-nigra",
+     "price": 49.9
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/amora-morus-nigra.html",
+     "price": 14.99
+    }
+   }
+  },
+  "4567": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/06/canela-de-java-ou-da-indonesia.html"
+    }
+   }
+  },
+  "699": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/05/canfora-cinnamomum-camphora.html"
+    }
+   }
+  },
+  "738": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2016/01/ervilha-borboleta-ou-rainha-azul.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-sol/ervilha-azul-trepadeira-clitoria-ternatea.html",
+     "price": 77.94
+    }
+   }
+  },
+  "8386": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/07/guarana-do-amazonas-paullinia-cupana.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-frutas-exoticas/guarana-paullinia-cupana.html",
+     "price": 31.62
+    }
+   }
+  },
+  "1689": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/04/pimenta-da-jamaica-ou-da-siria-pimenta.html"
     }
    }
   },
   "520": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/05/urucum-amarelo-ou-colorau-bixa-orellana.html"
+    }
+   },
    "clickmudas": {
     "muda": {
      "url": "https://www.clickmudas.com.br/mudas/muda-de-urucum-bixa-orellana-1975",
      "price": 10.9
+    }
+   },
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/urucum-embrapa-36-env-linha-super-und-789-61",
+     "price": 8.62
     }
    },
    "plantepassaros": {
@@ -1312,10 +1772,1084 @@
     }
    }
   },
+  "2242": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/03/limao-galego-comprido-citrus.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/laranja-lima-citrus-ourantifolia.html",
+     "price": 29.99
+    }
+   }
+  },
+  "2002": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/02/caja-mirim-ou-tapereba-spondias-mombin.html"
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/frutiferas/muda-de-caja-mirim-tapereba-spondias-mombin-frutifera-nativa",
+     "price": 49.9
+    }
+   }
+  },
+  "2741": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/12/feijoa-ou-goiaba-serrana-acca-sellowiana.html"
+    }
+   }
+  },
+  "6896": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/01/inga-do-brejo-inga-vera.html"
+    }
+   }
+  },
+  "10714": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2016/11/mirtilo-ou-blueberry-vaccinium-myrtillus.html"
+    }
+   }
+  },
+  "4229": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2016/01/ameixa-de-natal-carissa-macrocarpa.html"
+    }
+   }
+  },
+  "402": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/10/abacaxi-perola-ananas-comosus.html"
+    }
+   }
+  },
+  "7813": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/03/abacaxi-do-reino-ou-costela-de-adao.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-especies-nobres/costela-de-ad-o-variegata-monstera-deliciosa-variegata.html",
+     "price": 1599.0
+    }
+   }
+  },
+  "689": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2016/11/abio-roxo-ou-cainito-chrysophyllum.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/abiu-roxo-chrysophyllum-cainito.html",
+     "price": 34.99
+    }
+   }
+  },
+  "5536": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2016/06/abrico-tropical-ou-dovialis-dovyalis.html"
+    }
+   }
+  },
+  "2214": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/05/akee-ou-castanha-africana-blighia-sapida.html"
+    }
+   }
+  },
+  "8992": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/02/ameixa-leticia-prunus-domestica-salicina.html"
+    }
+   }
+  },
+  "2296": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/03/ameixa-do-governador-flacourtia-indica.html"
+    }
+   }
+  },
+  "1491": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2016/09/amora-branca-morus-alba.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/para-curtir-os-frutos-no-pe-e-formar-um-pomar/amora-morus-indica.html",
+     "price": 14.99
+    }
+   }
+  },
+  "412": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/03/anona-lisa-ou-condessa-annona-reticulata.html"
+    }
+   }
+  },
+  "3241": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2016/12/araticum-amarelo-da-montanha-annona.html"
+    }
+   }
+  },
+  "5995": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2016/11/araca-boi-ou-fruta-iogurte-eugenia.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/araca-boi-eugenia-stipitata.html",
+     "price": 29.99
+    }
+   }
+  },
+  "414": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/08/atemoya-ou-atemoia-annona-cherimola-x.html"
+    }
+   },
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/arvores-frutiferas/fruta-do-conde",
+     "price": 64.9
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/fruta-do-conde-rollinia-silvatica.html",
+     "price": 19.99
+    }
+   }
+  },
+  "7639": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2016/07/buriti-ou-buritizeiro-mauritia-flexuosa.html"
+    }
+   }
+  },
+  "4074": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2017/01/guanandi-ou-jacareuba-calophyllum.html"
+    }
+   },
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/mudas/mudas-nativas-e-exoticas/guanandi",
+     "price": 10.9
+    }
+   }
+  },
+  "1514": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2023/07/noz-moscada-myristica-fragrans.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-especies-nobres/noz-moscada-myristica-fragrans.html",
+     "price": 79.99
+    }
+   }
+  },
+  "6869": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2023/06/erva-mate-ilex-paraguariensis.html"
+    }
+   }
+  },
+  "1071": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2023/05/figo-branco-pingo-de-mel-ficus-carica.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/figo-negrito-preto-pequeno-ficus-carica.html",
+     "price": 59.99
+    }
+   }
+  },
+  "17633": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2023/04/jujuba-indiana-ziziphus-mauritiana.html"
+    }
+   }
+  },
+  "459": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/02/jaca-de-polpa-mole-artocarpus.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/jaca-artocarpus-heterophyllus.html",
+     "price": 14.99
+    }
+   }
+  },
+  "1416": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2021/03/manga-doutor-oliveira-neto-mangifera.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/mangueiras-tommy-atkins-mangifera-indica.html",
+     "price": 24.99
+    }
+   }
+  },
+  "3052": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2021/02/galangal-ou-gengibre-tailandes-alpinia.html"
+    }
+   }
+  },
+  "3699": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2020/03/catanha-do-para-bertholletia-excelsa.html"
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/frutiferas/muda-de-castanheira-da-praia-munguba-branca-mamoarana-pachira-glabra",
+     "price": 34.9
+    }
+   }
+  },
+  "1804": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2020/01/goiaba-vermelha-caipira-psidium-guajava.html"
+    }
+   },
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/mudas/goiaba-vermelha",
+     "price": 8.3
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/para-curtir-os-frutos-no-pe-e-formar-um-pomar/goiaba-psidium-guajava.html",
+     "price": 14.4
+    }
+   }
+  },
+  "1829": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/11/roma-punica-granatum.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/roma.html",
+     "price": 14.99
+    }
+   }
+  },
+  "744": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/10/coco-anao-amarelo-da-bahia-cocos.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-sol/coco-an-o-cocos-nucifera.html",
+     "price": 39.99
+    }
+   }
+  },
+  "5534": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/05/umkolo-ou-maca-kei-dovyalis-caffra.html"
+    }
+   }
+  },
+  "1894": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2019/01/arvore-da-chuva-samanea-saman.html"
+    }
+   }
+  },
+  "8965": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/12/cereja-europeia-ou-chilena-prunus-avium.html"
+    }
+   }
+  },
+  "3597": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/11/mafai-ou-uva-birmanesa-baccaurea.html"
+    }
+   }
+  },
+  "1382": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/05/noz-macadamia-macadamia-integrifolia.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-especies-nobres/macadamia-macadamia-integrifolia.html",
+     "price": 49.99
+    }
+   }
+  },
+  "630": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/05/mamao-amarelo-caipira-carica-papaya.html"
+    }
+   },
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/mamao-papaya-hawaii-pacote-longa-vida-250-g-157-16",
+     "price": 1017.29
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/mamao-papaia-hawai-carica-papaya.html",
+     "price": 1.99
+    }
+   }
+  },
+  "9086": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/04/pera-asiatica-ou-nashi-pyrus-pyrifolia.html"
+    }
+   }
+  },
+  "889": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/04/kiwi-femea-monty-actinidia-chinensis.html"
+    }
+   }
+  },
+  "2315": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/03/noz-europeia-ou-chilena-juglans-regia.html"
+    }
+   }
+  },
+  "1968": {
+   "ciprest": {
+    "muda": {
+     "url": "https://ciprest.blogspot.com/2018/03/naranjilla-ou-lulo-solanum-quitoense.html"
+    }
+   }
+  },
+  "3423": {
+   "ciprest": {
+    "semente": {
+     "url": "https://ciprest.blogspot.com/2018/03/fruta-pao-sem-sementes-artocarpus.html"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-frutas-exoticas/fruta-p-o-artocarpus-altilis.html",
+     "price": 46.39
+    }
+   }
+  },
+  "28399": {
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/mudas/nativas-mata-atlantica/cebolao-phytolacca-dioica",
+     "price": 10.9
+    }
+   }
+  },
   "483": {
    "clickmudas": {
     "muda": {
      "url": "https://www.clickmudas.com.br/arvores-frutiferas/carambola"
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/carambola-averrhoa-carambola.html",
+     "price": 19.99
+    }
+   }
+  },
+  "1547": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/manjericao-toscano-roxo-env-linha-multi-und-416-51",
+     "price": 3.58
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/para-relaxamento-e-cozinhaterapia/manjeric-o-ocimum-basilicum.html",
+     "price": 1.6
+    }
+   }
+  },
+  "819": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/moranga-de-mesa-exposicao-organica-poliniza-env-linha-super-und-528-61",
+     "price": 8.62
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/abobora-brs-brasileirinha-cucurbita-maxima.html",
+     "price": 1.69
+    }
+   }
+  },
+  "871": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/cenoura-hibrido-camila-is-994-pct-longa-vida-5000-sementes-994-50",
+     "price": 1.0
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/cenoura-brs-esplanada-daucus-carota-l.html",
+     "price": 1.88
+    }
+   }
+  },
+  "289": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/quiabo-organico-santa-cruz-47-env-linha-super-und-578-61",
+     "price": 8.62
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/quiabo-santa-cruz-abelmoschus-esculentus.html",
+     "price": 2.68
+    }
+   }
+  },
+  "821": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/abobrinha-decorativa-sortida-env-flores-linha-multi-und-300-53",
+     "price": 3.58
+    }
+   }
+  },
+  "1721": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/ervilha-organico-telefone-alta-alderman-env-linha-super-und-532-61",
+     "price": 8.62
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/ervilha-torta-de-flor-roxa.html",
+     "price": 2.87
+    }
+   }
+  },
+  "815": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/melao-nevado-env-linha-super-und-204-61",
+     "price": 8.62
+    }
+   }
+  },
+  "820": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/abobora-menina-brasileira-env-linha-super-und-2-61",
+     "price": 8.62
+    }
+   }
+  },
+  "1313": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/alface-lisa-vitoria-env-linha-multi-und-39-51",
+     "price": 3.58
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/alface-mimosa-salada-bowl-lactuca-sativa.html",
+     "price": 1.88
+    }
+   }
+  },
+  "784": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/coentro-organico-verdao-env-linha-super-und-529-61",
+     "price": 8.62
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/coentro-verdao-organico-coriandrum-sativum.html",
+     "price": 5.06
+    }
+   }
+  },
+  "1965": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/berinjela-organico-rita-is-057-env-linha-super-und-549-61",
+     "price": 8.62
+    }
+   }
+  },
+  "1997": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/espinafre-hibrido-pina-env-linha-super-und-561-61",
+     "price": 8.62
+    }
+   }
+  },
+  "2146": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/fava-de-sevilha-pacote-longa-vida-500-g-145-11",
+     "price": 65.47
+    }
+   }
+  },
+  "1668": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/feijao-vagem-trepador-xaxa-env-linha-super-und-151-61",
+     "price": 8.62
+    }
+   }
+  },
+  "548": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/mostarda-microverdes-nayana-microverdes-pct-longa-vid-100g-598-36",
+     "price": 36.69
+    }
+   }
+  },
+  "693": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/chicoria-crespa-pacote-longa-vida-500-g-100-11",
+     "price": 217.66
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/chicoria-escarola-lisa-cichorium-endivia-latifolium.html",
+     "price": 2.53
+    }
+   }
+  },
+  "817": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/pepino-branco-meio-comprido-env-linha-super-und-196-61",
+     "price": 8.62
+    }
+   }
+  },
+  "1522": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/agriao-da-agua-folha-larga-pacote-longa-vida-250-g-20-16",
+     "price": 953.63
+    }
+   }
+  },
+  "618": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/pimentao-all-big-env-linha-super-und-206-61",
+     "price": 8.62
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/pimentao-all-big-phytophthora-capsici.html",
+     "price": 2.53
+    }
+   }
+  },
+  "4177": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/pimenta-chapeu-de-bispo-cambuci-env-linha-super-und-213-61",
+     "price": 8.62
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/pimenta-de-cayenne-dedo-de-moca-capsicum-baccatum.html",
+     "price": 2.29
+    }
+   }
+  },
+  "9825": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/jilo-gigante-jaiba-env-linha-super-und-155-61",
+     "price": 8.62
+    }
+   }
+  },
+  "5008": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/maxixe-liso-jaiba-env-linha-super-und-162-61",
+     "price": 8.62
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/maxixe-cucumis-anguria.html",
+     "price": 2.53
+    }
+   }
+  },
+  "708": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/melancia-organico-fairfax-env-linha-super-und-541-61",
+     "price": 8.62
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/melancia-crinson-sweet-citrullus-lanatus.html",
+     "price": 2.53
+    }
+   }
+  },
+  "1666": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/feijao-de-lima-trepador-andino-pacote-longa-vida-500-g-166-11",
+     "price": 88.52
+    }
+   }
+  },
+  "2301": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/morango-ornamental-silvestre-env-linha-super-und-185-61",
+     "price": 8.62
+    }
+   }
+  },
+  "1661": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/salsa-chacara-env-linha-super-und-301-61",
+     "price": 8.62
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/salsa-crespa-petroselinum-crispum.html",
+     "price": 2.99
+    }
+   }
+  },
+  "468": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/aspargo-olivio-cartela-de-10-g-305-29",
+     "price": 18.87
+    }
+   }
+  },
+  "4040": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/calendula-por-do-sol-env-flores-linha-multi-und-364-53",
+     "price": 1.0
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/calendula-bonina-sortida-calendula-officinalis.html",
+     "price": 2.91
+    }
+   }
+  },
+  "4524": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/crisantemo-dobrado-sortido-env-flores-linha-multi-und-373-53",
+     "price": 3.58
+    }
+   }
+  },
+  "5322": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/dedaleira-digitalis-flor-de-gloxinia-sortida-env-flores-linha-multi-und-383-53",
+     "price": 3.58
+    }
+   }
+  },
+  "1191": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/girassol-tarsila-pacote-longa-vida-50-g-781-82",
+     "price": 1.0
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/girassol-outono-bonito-sortido-helianthus-annuus.html",
+     "price": 2.92
+    }
+   }
+  },
+  "5138": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/alcachofra-roxa-romana-pacote-longa-vida-500-g-42-11",
+     "price": 1610.35
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/alcachofra-roxa-romana-cynara-cardunculus-subsp-scolymus.html",
+     "price": 4.44
+    }
+   }
+  },
+  "3549": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/erva-armola-orache-bursa-pacote-longa-vida-500-g-458-11",
+     "price": 961.42
+    }
+   }
+  },
+  "2192": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/aneto-aneto-endro-microverdes-pct-longa-vid-100g-468-36",
+     "price": 90.62
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/aneto-endro-anethum-graveolens.html",
+     "price": 2.82
+    }
+   }
+  },
+  "8595": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/anis-erva-doce-pacote-longa-vida-50-g-470-82",
+     "price": 50.78
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/mudas-plantas-medicinais/erva-doce-pimpinella-anisum-l.html",
+     "price": 9.99
+    }
+   }
+  },
+  "7637": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/camomila-macanilha-verdadeira-pacote-longa-vida-500-g-474-11",
+     "price": 1841.04
+    }
+   }
+  },
+  "810": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/cebolinha-todo-ano-de-tempero-pacote-longa-vida-50-g-476-82",
+     "price": 122.54
+    }
+   }
+  },
+  "3265": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/cerefolio-cerefolio-microverdes-pct-longa-vid-100g-477-36",
+     "price": 51.83
+    }
+   }
+  },
+  "5043": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/cominho-verdadeiro-verdadeiro-cartela-de-5-g-478-30",
+     "price": 13.78
+    }
+   }
+  },
+  "3402": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/estragao-artemisia-russo-env-linha-multi-und-480-51",
+     "price": 3.58
+    }
+   }
+  },
+  "1107": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/funcho-de-cabeca-erva-doce-env-linha-multi-und-482-51",
+     "price": 3.58
+    }
+   }
+  },
+  "6852": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/hissopo-alfazema-de-caboclo-env-linha-multi-und-483-51",
+     "price": 3.58
+    }
+   }
+  },
+  "2099": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/hortela-menta-env-linha-multi-und-484-51",
+     "price": 3.58
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/mudas-plantas-medicinais/hortel-pimenta-mentha-sp.html",
+     "price": 4.99
+    }
+   }
+  },
+  "7172": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/lavanda-verdadeira-alfazema-env-linha-super-und-485-61",
+     "price": 8.62
+    }
+   }
+  },
+  "694": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/almeirao-spadona-env-linha-super-und-51-61",
+     "price": 8.62
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/almeirao-amarelo-cichorium-intybus.html",
+     "price": 2.53
+    }
+   }
+  },
+  "2368": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/manjerona-verdadeira-manjerona-pacote-longa-vida-50-g-490-82",
+     "price": 262.6
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/manjerona-verdadeira-origanum-majorana.html",
+     "price": 6.34
+    }
+   }
+  },
+  "2340": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/melissa-erva-cidreira-melissa-env-linha-multi-und-492-51",
+     "price": 3.58
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/melissa-erva-cidreira-melissa-officinalis-l.html",
+     "price": 2.87
+    }
+   }
+  },
+  "2454": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/ruibarbo-ruibarbo-env-linha-super-und-495-61",
+     "price": 8.62
+    }
+   }
+  },
+  "660": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/celosia-plumosa-plumosa-sortida-rabo-de-galo-env-flores-linha-multi-und-348-53",
+     "price": 3.58
+    }
+   }
+  },
+  "848": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/grama-folha-fina-carpete-pacote-longa-vida-500-g-502-11",
+     "price": 225.89
+    }
+   }
+  },
+  "74953": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/grama-jesuita-missioneira-sao-carlos-folha-larga-pacote-longa-vida-500-g-518-11",
+     "price": 269.33
+    }
+   }
+  },
+  "2412": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/salvia-salvia-env-linha-super-und-496-61",
+     "price": 8.62
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/cultivo-de-flores-do-campo/salvia-salvia-officinalis.html",
+     "price": 6.29
+    }
+   }
+  },
+  "2441": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/tomilho-timo-tomilho-env-linha-super-und-498-61",
+     "price": 8.62
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/mudas-plantas-medicinais/tomilho-comum-thymus-vulgaris.html",
+     "price": 1.99
+    }
+   }
+  },
+  "594": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/nira-alho-japones-nira-cartela-c-1000-sementes-801-43",
+     "price": 43.15
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/cebola-nira-allium-tuberosum.html",
+     "price": 3.19
+    }
+   }
+  },
+  "2114": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/trigo-microverdes-organico-seival-microverdes-pct-longa-vid-100g-864-36",
+     "price": 6.44
+    }
+   }
+  },
+  "4178": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/pimenta-habanero-vermelha-brs-juruti-cartela-de-5-g-959-30",
+     "price": 1.0
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/pimenta-biquinho-capsicum-chinense.html",
+     "price": 9.85
+    }
+   }
+  },
+  "7227": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/agriao-do-seco-microverdes-ravi-microverdes-pct-longa-vid-100g-918-36",
+     "price": 60.37
+    }
+   }
+  },
+  "8037": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/manjericao-sagrado-verde-prana-env-linha-super-und-806-61",
+     "price": 8.62
+    }
+   }
+  },
+  "365": {
+   "isla": {
+    "semente": {
+     "url": "https://www.isla.com.br/cebolinha-verde-pacote-longa-vida-500-g-85-11",
+     "price": 667.21
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/cebolinha-verde-allium-fistulosum.html",
+     "price": 2.87
     }
    }
   },
@@ -1328,6 +2862,12 @@
     "semente": {
      "url": "https://www.plantepassaros.com.br/sementes-diversas/frutiferas-e-ornamentais/sementes-de-baoba-africano-legitimo-adansonia-digitata",
      "price": 29.9
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-especies-nobres/baoba-adansonia-digitata.html",
+     "price": 91.99
     }
    }
   },
@@ -1345,17 +2885,11 @@
      "url": "https://www.plantepassaros.com.br/amazonia/muda-acai-anao-precoce-acaizeiro-euterpe-oleracea",
      "price": 34.9
     }
-   }
-  },
-  "1019": {
-   "plantepassaros": {
+   },
+   "sitiodamata": {
     "muda": {
-     "url": "https://www.plantepassaros.com.br/floriferas/mudas-eucalipto-arco-iris-legitimas-raro-eucalyptus-deglupta",
-     "price": 49.9
-    },
-    "semente": {
-     "url": "https://www.plantepassaros.com.br/sementes-diversas/madeira-e-celulose/sementes-eucalipto-arco-iris-eucalyptus-deglupta",
-     "price": 14.9
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/acai-precoce-brs-para-euterpe-oleracea.html",
+     "price": 24.0
     }
    }
   },
@@ -1385,6 +2919,12 @@
      "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-mata-atlantica/sementes-palmeira-jussara-palmito-jucara-euterpe-edulis",
      "price": 39.9
     }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/palmito-jussara-euterpe-edulis.html",
+     "price": 18.98
+    }
    }
   },
   "656": {
@@ -1413,6 +2953,12 @@
      "url": "https://www.plantepassaros.com.br/frutiferas/muda-araucaria-angustifolia-pinhao-pinheiro-do-parana-nativa",
      "price": 34.9
     }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/pinh-o-araucaria-angustifolia.html",
+     "price": 35.0
+    }
    }
   },
   "235883": {
@@ -1427,14 +2973,6 @@
     }
    }
   },
-  "2002": {
-   "plantepassaros": {
-    "muda": {
-     "url": "https://www.plantepassaros.com.br/frutiferas/muda-de-caja-mirim-tapereba-spondias-mombin-frutifera-nativa",
-     "price": 49.9
-    }
-   }
-  },
   "9615": {
    "plantepassaros": {
     "muda": {
@@ -1444,22 +2982,6 @@
     "semente": {
      "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-mata-atlantica/sementes-guapuruvu-ou-ficheira-schizolobium-parahyba",
      "price": 29.9
-    }
-   }
-  },
-  "2349": {
-   "plantepassaros": {
-    "muda": {
-     "url": "https://www.plantepassaros.com.br/frutiferas/muda-de-amora-preta-gigante-portuguesa-ja-produzindo-morus-nigra",
-     "price": 49.9
-    }
-   }
-  },
-  "3699": {
-   "plantepassaros": {
-    "muda": {
-     "url": "https://www.plantepassaros.com.br/frutiferas/muda-de-castanheira-da-praia-munguba-branca-mamoarana-pachira-glabra",
-     "price": 34.9
     }
    }
   },
@@ -1519,19 +3041,17 @@
     }
    }
   },
-  "355155": {
-   "plantepassaros": {
-    "muda": {
-     "url": "https://www.plantepassaros.com.br/floriferas/mudas-de-sete-copas-africana-amendoiera-terminalia-mantaly",
-     "price": 49.9
-    }
-   }
-  },
   "1024": {
    "plantepassaros": {
     "semente": {
      "url": "https://www.plantepassaros.com.br/sementes-diversas/madeira-e-celulose/sementes-de-eucalipto-de-sidney-eucalyptus-saligna",
      "price": 29.9
+    }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-sol/eucalipto-saligna-eucalyptus-saligna.html",
+     "price": 2.59
     }
    }
   },
@@ -1557,6 +3077,12 @@
      "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-mata-atlantica/sementes-de-cajueiro-comum-ou-fruta-caju-anacardium-occidentale",
      "price": 29.9
     }
+   },
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/caju-anacardium-occidentale.html",
+     "price": 49.13
+    }
    }
   },
   "1686": {
@@ -1580,6 +3106,206 @@
     "semente": {
      "url": "https://www.plantepassaros.com.br/sementes-diversas/leguminosas-e-hortalicas/sementes-de-feijao-de-porco-canavalia-ensiformis-recupera-solo-adubo-verde",
      "price": 19.9
+    }
+   }
+  },
+  "1002": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/ameixa-amarela-eriobotrya-japonica.html",
+     "price": 19.99
+    }
+   }
+  },
+  "2131": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/baunilha-vanilla-planifolia.html",
+     "price": 32.99
+    }
+   }
+  },
+  "1500": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/calabura-muntingia-calabura.html",
+     "price": 18.98
+    }
+   }
+  },
+  "8094": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/figo-da-india-opuntia-ficus-indica.html",
+     "price": 29.99
+    }
+   }
+  },
+  "8530": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/formio-verde-phormium-tenax.html",
+     "price": 35.99
+    }
+   }
+  },
+  "1877": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/framboesa-rubus-idaeus.html",
+     "price": 39.99
+    }
+   }
+  },
+  "14060": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/jambo-amarelo-eugenia-jambos.html",
+     "price": 22.99
+    }
+   }
+  },
+  "720": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/laranja-bahia-citrus-sinensis.html",
+     "price": 19.99
+    }
+   }
+  },
+  "716": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/laranja-cidra-citrus-medica.html",
+     "price": 37.92
+    }
+   }
+  },
+  "5117": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/marmelo-cydonia-oblonga.html",
+     "price": 74.99
+    }
+   }
+  },
+  "493": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/paisagismo-com-bambu/bambu-entouceirante/bambu-imperial-b-vulgaris-vittata-1.html",
+     "price": 26.4
+    }
+   }
+  },
+  "7707": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/poejo-mentha-pulegium-3081.html",
+     "price": 3.29
+    }
+   }
+  },
+  "1673": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/tamareira-phoenix-dactylifera.html",
+     "price": 18.98
+    }
+   }
+  },
+  "5049": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-plantas/tuia-holandesa-cupressus-macrocarpa.html",
+     "price": 19.16
+    }
+   }
+  },
+  "2160": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-especies-nobres/uva-sem-semente.html",
+     "price": 89.99
+    }
+   }
+  },
+  "9612": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/aroeira-salsa-schinus-molle.html",
+     "price": 26.99
+    }
+   }
+  },
+  "7177": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/cultivo-de-flores-do-campo/alfazema-lavandula-latifolia.html",
+     "price": 9.99
+    }
+   }
+  },
+  "5731": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/cultivo-de-flores-do-campo/capim-chor-o-eragrostis-curvula-1.html",
+     "price": 9.49
+    }
+   }
+  },
+  "1488": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-frutas-exoticas/noni-morinda-citrifolia.html",
+     "price": 19.99
+    }
+   }
+  },
+  "1528": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/mudas-de-frutas-exoticas/rambutan-nephelium-lappaceum.html",
+     "price": 24.99
+    }
+   }
+  },
+  "882": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/solucoes-paisagisticas/bambu-gigante-d-giganteus-1.html",
+     "price": 49.22
+    }
+   }
+  },
+  "5794": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/para-quem-esta-em-casa/rucula-cultivada-eruca-sativa.html",
+     "price": 2.53
+    }
+   }
+  },
+  "2681": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-sol/cassia-mimosa-acacia-podalyriifolia.html",
+     "price": 49.14
+    }
+   }
+  },
+  "2234": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-sol/castanha-portuguesa-castanea-sativa.html",
+     "price": 32.79
+    }
+   }
+  },
+  "1407": {
+   "sitiodamata": {
+    "muda": {
+     "url": "https://www.sitiodamata.com.br/especies-de-plantas/novidades/mudas-de-sol/mac-julieta-malus-x-domestica.html",
+     "price": 65.66
     }
    }
   }
