@@ -750,6 +750,14 @@
   "checked": "2026-08"
  },
  "products": {
+  "1406": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-acerola/",
+     "price": 58.9
+    }
+   }
+  },
   "7174": {
    "brasilnativas": {
     "muda": {
@@ -758,19 +766,11 @@
     }
    }
   },
-  "3699": {
-   "brasilnativas": {
-    "muda": {
-     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/muda-de-castanha-do-para/",
-     "price": 120.0
-    }
-   }
-  },
   "482": {
    "brasilnativas": {
     "muda": {
-     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/muda-de-limao-biri-biri/",
-     "price": 85.9
+     "url": "https://brasilnativas.com.br/loja/plantas-ornamentais/cerca-viva/mudas-de-limaozinho-kit-com-50-mudas/",
+     "price": 30.0
     }
    }
   },
@@ -779,6 +779,22 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-araca-amarelo/",
      "price": 49.9
+    }
+   },
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/mudas/araca-vermelho",
+     "price": 11.0
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/frutiferas/mudas-araca-amarelo-araca-da-praia-psidium-cattleianum",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-mata-atlantica/sementes-de-araca-amarelo-da-praia-psidium-cattleyanum",
+     "price": 29.9
     }
    }
   },
@@ -818,17 +834,11 @@
     }
    }
   },
-  "6054": {
+  "411": {
    "brasilnativas": {
     "muda": {
-     "url": "https://brasilnativas.com.br/loja/plantas-ornamentais/palmeiras/muda-de-acai/",
-     "price": 40.0
-    }
-   },
-   "plantepassaros": {
-    "muda": {
-     "url": "https://www.plantepassaros.com.br/amazonia/muda-acai-anao-precoce-acaizeiro-euterpe-oleracea",
-     "price": 34.9
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-graviola/",
+     "price": 45.0
     }
    }
   },
@@ -840,19 +850,27 @@
     }
    }
   },
+  "2348": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-medicinais/mudas-moringa-oleifera/",
+     "price": 35.0
+    }
+   }
+  },
+  "1075": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-ornamentais/interiores/mudas-de-ficus-altissima-2/",
+     "price": 160.0
+    }
+   }
+  },
   "7874": {
    "brasilnativas": {
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/enxertadas/jabuticaba-sabara/",
      "price": 95.0
-    }
-   }
-  },
-  "1714": {
-   "brasilnativas": {
-    "muda": {
-     "url": "https://brasilnativas.com.br/loja/plantas-aromaticas/mudas-de-pimento-do-reino/",
-     "price": 54.9
     }
    }
   },
@@ -888,6 +906,14 @@
     }
    }
   },
+  "2074": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-cacau/",
+     "price": 45.9
+    }
+   }
+  },
   "34722": {
    "brasilnativas": {
     "muda": {
@@ -896,25 +922,19 @@
     }
    }
   },
-  "28399": {
+  "3236": {
    "brasilnativas": {
     "muda": {
-     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-umbu/",
-     "price": 62.9
-    }
-   },
-   "clickmudas": {
-    "muda": {
-     "url": "https://www.clickmudas.com.br/mudas/nativas-mata-atlantica/cebolao-phytolacca-dioica",
-     "price": 10.9
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-atemoia-enxertada/",
+     "price": 150.0
     }
    }
   },
-  "2462": {
+  "1357": {
    "brasilnativas": {
     "muda": {
-     "url": "https://brasilnativas.com.br/loja/plantas-aromaticas/mudas-de-cravo-da-india/",
-     "price": 54.9
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-lichia/",
+     "price": 80.0
     }
    }
   },
@@ -923,6 +943,32 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/mudas-nativas/mudas-de-neem-indiano/",
      "price": 54.9
+    }
+   }
+  },
+  "5842": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/mudas-nativas/muda-de-eucalipto-citriodora-eucalyptus-citriodora-caixa-com-10-2/",
+     "price": 40.0
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/kits-e-mix/kit-3-mudas-de-eucalipto-cidro-limao-citriodora-cheiroso",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/madeira-e-celulose/sementes-eucalipto-cidro-limao-ou-cheiroso-eucalyptus-citriodora",
+     "price": 14.9
+    }
+   }
+  },
+  "841": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-aromaticas/mudas-de-capim-cidreira-ou-capim-cidro-ou-capim-limao/",
+     "price": 40.0
     }
    }
   },
@@ -1006,11 +1052,45 @@
     }
    }
   },
+  "652": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-ornamentais/forracao-de-sol/mudas-de-vinca-caixa-com-12/",
+     "price": 59.89
+    }
+   }
+  },
   "1553": {
    "brasilnativas": {
     "muda": {
      "url": "https://brasilnativas.com.br/loja/mudas-nativas/muda-de-oliveira/",
      "price": 160.0
+    }
+   }
+  },
+  "1634": {
+   "brasilnativas": {
+    "semente": {
+     "url": "https://brasilnativas.com.br/loja/sementes-nativas/maracuja-amarelo/",
+     "price": 150.0
+    }
+   }
+  },
+  "635": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/mudas-nativas/muda-de-cassia-fistula/",
+     "price": 45.0
+    }
+   },
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/floriferas/muda-acacia-chuva-de-ouro-cassia-imperial-cassia-fistula",
+     "price": 49.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-diversas/frutiferas-e-ornamentais/sementes-acacia-imperial-chuva-de-ouro-cassia-fistula",
+     "price": 14.9
     }
    }
   },
@@ -1034,19 +1114,19 @@
     }
    }
   },
+  "10394": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-cupuacu/",
+     "price": 45.0
+    }
+   }
+  },
   "2047": {
    "brasilnativas": {
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-tamarindo/",
      "price": 32.9
-    }
-   }
-  },
-  "1071": {
-   "brasilnativas": {
-    "muda": {
-     "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-figo/",
-     "price": 39.9
     }
    }
   },
@@ -1100,6 +1180,14 @@
     }
    }
   },
+  "3795": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/plantas-ornamentais/trepadeiras/primavera-de-flor-rosa-bougainvillea-glabra/",
+     "price": 88.7
+    }
+   }
+  },
   "10015": {
    "brasilnativas": {
     "muda": {
@@ -1150,6 +1238,14 @@
     }
    }
   },
+  "1256": {
+   "brasilnativas": {
+    "muda": {
+     "url": "https://brasilnativas.com.br/loja/mudas-nativas/mudas-de-amendoim-bravo-caixa-com-10-mudas/",
+     "price": 60.0
+    }
+   }
+  },
   "2041": {
    "brasilnativas": {
     "muda": {
@@ -1163,6 +1259,14 @@
     "muda": {
      "url": "https://brasilnativas.com.br/loja/plantas-frutiferas/mudas-de-maracuja-azedo-2/",
      "price": 45.0
+    }
+   }
+  },
+  "28399": {
+   "clickmudas": {
+    "muda": {
+     "url": "https://www.clickmudas.com.br/mudas/nativas-mata-atlantica/cebolao-phytolacca-dioica",
+     "price": 10.9
     }
    }
   },
@@ -1227,6 +1331,22 @@
     }
    }
   },
+  "2428": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/frutiferas/muda-chicha-da-mata-castanha-xixa-manduvi-sterculia-curiosa",
+     "price": 49.9
+    }
+   }
+  },
+  "6054": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/amazonia/muda-acai-anao-precoce-acaizeiro-euterpe-oleracea",
+     "price": 34.9
+    }
+   }
+  },
   "1019": {
    "plantepassaros": {
     "muda": {
@@ -1247,15 +1367,11 @@
     }
    }
   },
-  "5842": {
+  "3756": {
    "plantepassaros": {
     "muda": {
-     "url": "https://www.plantepassaros.com.br/kits-e-mix/kit-3-mudas-de-eucalipto-cidro-limao-citriodora-cheiroso",
-     "price": 34.9
-    },
-    "semente": {
-     "url": "https://www.plantepassaros.com.br/sementes-diversas/madeira-e-celulose/sementes-eucalipto-cidro-limao-ou-cheiroso-eucalyptus-citriodora",
-     "price": 14.9
+     "url": "https://www.plantepassaros.com.br/floriferas/muda-de-paineira-vermelha-india-bombax-ceiba-malabaricum",
+     "price": 49.9
     }
    }
   },
@@ -1268,6 +1384,18 @@
     "semente": {
      "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-mata-atlantica/sementes-palmeira-jussara-palmito-jucara-euterpe-edulis",
      "price": 39.9
+    }
+   }
+  },
+  "656": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/amazonia/mudas-de-cedro-rosa-verdadeiro-rara-arvore-nativa",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-da-amazonia/sementes-cedro-rosa-verdadeiro-cedrela-fissilis",
+     "price": 29.9
     }
    }
   },
@@ -1287,6 +1415,18 @@
     }
    }
   },
+  "235883": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/floriferas/muda-ipe-amarelo-do-brejo-da-varzea-handroanthus-umbellatus",
+     "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-do-cerrado/sementes-ipe-amarelo-do-cerrado-do-campo-handroanthus-ochraceus",
+     "price": 14.9
+    }
+   }
+  },
   "2002": {
    "plantepassaros": {
     "muda": {
@@ -1300,6 +1440,10 @@
     "muda": {
      "url": "https://www.plantepassaros.com.br/floriferas/muda-guapuruvu-ficheira-schizolobium-parahyba-arvore-nativa",
      "price": 34.9
+    },
+    "semente": {
+     "url": "https://www.plantepassaros.com.br/sementes-nativas/sementes-mata-atlantica/sementes-guapuruvu-ou-ficheira-schizolobium-parahyba",
+     "price": 29.9
     }
    }
   },
@@ -1308,6 +1452,14 @@
     "muda": {
      "url": "https://www.plantepassaros.com.br/frutiferas/muda-de-amora-preta-gigante-portuguesa-ja-produzindo-morus-nigra",
      "price": 49.9
+    }
+   }
+  },
+  "3699": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/frutiferas/muda-de-castanheira-da-praia-munguba-branca-mamoarana-pachira-glabra",
+     "price": 34.9
     }
    }
   },
@@ -1343,6 +1495,14 @@
     }
    }
   },
+  "2023": {
+   "plantepassaros": {
+    "muda": {
+     "url": "https://www.plantepassaros.com.br/florestais/muda-do-raro-mogno-caribenho-folhas-finas-swietenia-mahogani",
+     "price": 34.9
+    }
+   }
+  },
   "10458": {
    "plantepassaros": {
     "muda": {
@@ -1364,18 +1524,6 @@
     "muda": {
      "url": "https://www.plantepassaros.com.br/floriferas/mudas-de-sete-copas-africana-amendoiera-terminalia-mantaly",
      "price": 49.9
-    }
-   }
-  },
-  "635": {
-   "plantepassaros": {
-    "muda": {
-     "url": "https://www.plantepassaros.com.br/floriferas/muda-acacia-chuva-de-ouro-cassia-imperial-cassia-fistula",
-     "price": 49.9
-    },
-    "semente": {
-     "url": "https://www.plantepassaros.com.br/sementes-diversas/frutiferas-e-ornamentais/sementes-acacia-imperial-chuva-de-ouro-cassia-fistula",
-     "price": 14.9
     }
    }
   },

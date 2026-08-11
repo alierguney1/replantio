@@ -39,7 +39,7 @@ uniq_names = sorted((n for n, ids in by_name.items() if len(ids) == 1 and len(n)
                     key=len, reverse=True)
 
 products = {}
-stats = {"binomial": 0, "name": 0, "skipped": 0}
+stats = {"binomial": 0, "binomial_embedded": 0, "name": 0, "skipped": 0}
 for f in sorted(glob.glob("/tmp/shop_*.json")):
     data = json.load(open(f))
     shop = data["shop"]
@@ -48,21 +48,36 @@ for f in sorted(glob.glob("/tmp/shop_*.json")):
             continue
         sids = []
         how = None
+        slug = norm(re.sub(r"\.html?$", "", p["url"].rstrip("/").split("/")[-1]).replace("-", " "))
+        title = norm(p.get("title", ""))
         if p.get("sci"):
             b = binom(p["sci"])
             if b in by_binom and len(by_binom[b]) == 1:
                 sids, how = by_binom[b], "binomial"
         if not sids:
+            # a known binomial hiding in the slug or title: exact word-pair
+            # scan against our own species list, zero-guess precision
+            for text in (slug, title):
+                words = text.split()
+                for i in range(len(words) - 1):
+                    b = f"{words[i]} {words[i + 1]}"
+                    if b in by_binom and len(by_binom[b]) == 1:
+                        sids, how = by_binom[b], "binomial_embedded"
+                        break
+                if sids: break
+        if not sids:
             # strict: the species name must BE the product's object, not a
             # substring ("Manga cv. Ananás" must not match abacaxi). Extract X
-            # from "Muda(s)/Sementes de X", cut at (, -, "ou", digits; require
-            # X == name exactly.
-            t = norm(p.get("title", ""))
-            m = re.search(r"(?:mudas?|sementes?)\s+de\s+(.*)", t)
-            x = (m.group(1) if m else t)
-            x = re.split(r"\(|\bou\b|\d| - |,", x)[0].strip()
-            if x in by_name and len(by_name[x]) == 1:
-                sids, how = [next(iter(by_name[x]))], "name"
+            # from "Muda(s)/Sementes (de) X" in the title, else the URL slug;
+            # cut at junk tokens; require X == name exactly.
+            JUNK = r"\(|\bou\b|\bda\b|\bdo\b|\bpara\b|\bcom\b|\bcaixa\b|\bkit\b|\bund?\b|\bcm\b|\blitros?\b|\bfrutifer[ao]\b|\bornamental\b|\bnativ[ao]s?\b|\bverdadeir[ao]\b|\brar[ao]\b|\bexotic[ao]\b|\barvore\b|\bplanta\b|\benxertad[ao]\b|\badult[ao]\b|\bgrande\b|\bpequen[ao]\b|\d| - |,"
+            for text in (title, slug):
+                m = re.search(r"(?:mudas?|sementes?)\s+(?:de\s+)?(.*)", text)
+                if not m: continue
+                x = re.split(JUNK, m.group(1))[0].strip()
+                if len(x) >= 5 and x in by_name and len(by_name[x]) == 1:
+                    sids, how = [next(iter(by_name[x]))], "name"
+                    break
         if not sids:
             stats["skipped"] += 1
             continue
