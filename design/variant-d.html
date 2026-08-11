@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Canopy · variante D · critérios (refino de B)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --glass: rgba(14, 18, 15, 0.86);
+  --glass-soft: rgba(20, 26, 21, 0.72);
+  --line: rgba(255, 255, 255, 0.09);
+  --text: #e9efe9;
+  --muted: #93a096;
+  --accent: #55d97c;
+  --accent-dim: rgba(85, 217, 124, 0.16);
+  color-scheme: dark;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: #12170f; }
+body { background-image: radial-gradient(120% 90% at 30% 0%, #1d2718 0%, #0d1109 70%); padding: 20px 0 40px; display: flex; justify-content: center; color: var(--text); }
+.panel { width: 420px; background: var(--glass); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 12px 48px rgba(0,0,0,.5); }
+.panel-content { padding: 20px 20px 24px; }
+.readout { font-size: 11px; color: var(--muted); margin: 0 0 4px; line-height: 1.8; }
+.readout b { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--text); font-weight: 500; }
+.section-h { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 28px 0 10px; font-weight: 600; }
+.sp { border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; background: var(--glass-soft); overflow: hidden; }
+.sp-head { display: flex; align-items: center; gap: 11px; padding: 11px 13px; min-height: 54px; cursor: pointer; user-select: none; }
+.sp-rank { font-size: 11px; color: var(--muted); width: 16px; text-align: right; flex-shrink: 0; }
+.sp-thumb { width: 38px; height: 38px; border-radius: 9px; flex-shrink: 0; background-size: cover; background-position: center; }
+.sp-names { flex: 1; min-width: 0; }
+.sp-common { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nearby { font-size: 10px; font-weight: 600; color: var(--accent); margin-left: 4px; letter-spacing: .3px; }
+.sp-sci { font-size: 11px; font-style: italic; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sp-score { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; }
+.sp-score .fit { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.sp-score .pct { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.chip { font: inherit; font-size: 11px; padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.05); border: 1px solid var(--line); color: var(--muted); cursor: pointer; }
+.chip.more { display: block; margin: 10px auto 0; }
+.t1 { background-image: linear-gradient(150deg, #4a6b33, #2c4420 60%, #6d8a3a); }
+.t2 { background-image: linear-gradient(150deg, #7a8f3d, #3d5226 55%, #97a84c); }
+.t3 { background-image: linear-gradient(150deg, #d7a93c, #6f6a26 60%, #3f5024); }
+.t4 { background-image: linear-gradient(150deg, #37502a, #62803a 55%, #23331b); }
+
+/* ---------- VARIANTE D: critérios ---------- */
+.sec-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 28px 0 10px; }
+.sec-row .section-h { margin: 0; }
+
+.crit-toggle {
+  flex: 0 0 auto; font: inherit; font-size: 11px; color: var(--muted);
+  background: none; border: 0; padding: 0; cursor: pointer;
+  white-space: nowrap;
+}
+.crit-toggle b { font-family: var(--mono); font-weight: 500; font-variant-numeric: tabular-nums; color: var(--text); }
+.crit-toggle.active b { color: var(--accent); }
+.crit-toggle:hover { color: var(--text); }
+.crit-toggle .car {
+  display: inline-block; width: 0; height: 0; margin-left: 6px; vertical-align: 2px;
+  border-left: 3.5px solid transparent; border-right: 3.5px solid transparent;
+  border-top: 4px solid currentColor; opacity: .6; transition: transform .16s;
+}
+.crit-toggle[aria-expanded="true"] .car { transform: rotate(180deg); }
+
+.crit-summary {
+  display: block; width: 100%; text-align: left; font: inherit; font-size: 11px;
+  color: var(--muted); background: none; border: 0; padding: 0; margin: -4px 0 12px; cursor: pointer;
+  line-height: 1.7;
+}
+.crit-summary b { font-weight: 400; color: var(--text); }
+.crit-summary .d { opacity: .4; margin: 0 2px; }
+.crit-summary:hover b { color: var(--accent); }
+.crit-summary[hidden] { display: none; }
+
+.crit-panel { margin: 0 0 14px; }
+.crit-panel[hidden] { display: none; }
+.crit-row { display: flex; align-items: baseline; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); }
+.crit-row:last-of-type { border-bottom: 1px solid var(--line); }
+.crit-row .k { flex: 0 0 74px; font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); padding-top: 1px; }
+.crit-row .opts { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 14px; row-gap: 4px; margin: -3px 0; }
+.opt { font: inherit; font-size: 11.5px; background: none; border: 0; cursor: pointer; color: var(--muted); padding: 3px 0; margin: 0; }
+.opt:hover { color: var(--text); }
+.opt.on { color: var(--text); }
+.opt.on.constrained { color: var(--accent); }
+.opt .c { font-family: var(--mono); font-size: 9.5px; color: rgba(147,160,150,.7); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.opt.on .c { display: none; }
+.opt.zero { opacity: .38; cursor: default; }
+.crit-clear { display: block; margin: 9px 0 0 auto; font: inherit; font-size: 10.5px; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; }
+.crit-clear:hover { color: var(--text); }
+.crit-clear[hidden] { display: none; }
+</style>
+</head>
+<body>
+<div class="panel"><div class="panel-content">
+
+  <div class="readout">pH do solo <b>4.9</b> &middot; elevação <b>43 m</b> &middot; duração do dia <b>10.7&ndash;13.6 h</b> &middot; mínima recorde <b>8 °C</b><br>
+  sol <b>4.4 kWh/m²·dia</b> &middot; umidade <b>83%</b> &middot; nuvens <b>65%</b> &middot; declive <b>12° face L</b></div>
+
+  <div class="sec-row">
+    <div class="section-h">Espécies recomendadas</div>
+    <button class="crit-toggle active" id="tg" aria-expanded="false"><b>31</b> de 317 &middot; critérios<i class="car"></i></button>
+  </div>
+
+  <button class="crit-summary" id="sm"><b>nativas daqui</b> <span class="d">&middot;</span> <b>fruta</b> <span class="d">&middot;</span> <b>até 20 anos</b></button>
+
+  <div class="crit-panel" id="cp" hidden>
+    <div class="crit-row"><div class="k">origem</div><div class="opts">
+      <button class="opt">todas <span class="c">317</span></button>
+      <button class="opt on constrained">nativas daqui <span class="c">84</span></button>
+    </div></div>
+    <div class="crit-row"><div class="k">uso</div><div class="opts">
+      <button class="opt">todos <span class="c">84</span></button>
+      <button class="opt">madeira <span class="c">31</span></button>
+      <button class="opt on constrained">fruta <span class="c">27</span></button>
+      <button class="opt">ambiental <span class="c">44</span></button>
+      <button class="opt">medicinal <span class="c">12</span></button>
+      <button class="opt zero">forragem <span class="c">0</span></button>
+    </div></div>
+    <div class="crit-row"><div class="k">maturidade</div><div class="opts">
+      <button class="opt">sem limite <span class="c">27</span></button>
+      <button class="opt on constrained">até 20 anos <span class="c">31</span></button>
+      <button class="opt">até 90 anos <span class="c">24</span></button>
+    </div></div>
+    <div class="crit-row"><div class="k">copa adulta</div><div class="opts">
+      <button class="opt on">sem mínimo <span class="c">31</span></button>
+      <button class="opt">&ge; 4 m <span class="c">26</span></button>
+      <button class="opt">&ge; 5 m <span class="c">19</span></button>
+    </div></div>
+    <button class="crit-clear" id="cl">limpar critérios</button>
+  </div>
+
+  <div id="sp-list">
+    <div class="sp"><div class="sp-head">
+      <div class="sp-rank">1</div><div class="sp-thumb t1"></div>
+      <div class="sp-names"><div class="sp-common">Jaboticabeira <span class="nearby">nativa</span></div><div class="sp-sci">Plinia cauliflora</div></div>
+      <div class="sp-score"><span class="pct" style="color:#55d97c">96%</span><span class="fit">fit 91</span></div>
+    </div></div>
+    <div class="sp"><div class="sp-head">
+      <div class="sp-rank">2</div><div class="sp-thumb t2"></div>
+      <div class="sp-names"><div class="sp-common">Palmito-juçara <span class="nearby">nativa</span></div><div class="sp-sci">Euterpe edulis</div></div>
+      <div class="sp-score"><span class="pct" style="color:#55d97c">94%</span><span class="fit">fit 89</span></div>
+    </div></div>
+    <div class="sp"><div class="sp-head">
+      <div class="sp-rank">3</div><div class="sp-thumb t3"></div>
+      <div class="sp-names"><div class="sp-common">Cambuci <span class="nearby">nativa</span></div><div class="sp-sci">Campomanesia phaea</div></div>
+      <div class="sp-score"><span class="pct" style="color:#8fd36a">91%</span><span class="fit">fit 85</span></div>
+    </div></div>
+    <div class="sp"><div class="sp-head">
+      <div class="sp-rank">4</div><div class="sp-thumb t4"></div>
+      <div class="sp-names"><div class="sp-common">Grumixama <span class="nearby">nativa</span></div><div class="sp-sci">Eugenia brasiliensis</div></div>
+      <div class="sp-score"><span class="pct" style="color:#b8cf5e">88%</span><span class="fit">fit 82</span></div>
+    </div></div>
+  </div>
+  <button class="chip more">Mostrar mais 20</button>
+
+</div></div>
+<script>
+const tg = document.getElementById("tg"), cp = document.getElementById("cp"), sm = document.getElementById("sm");
+function setOpen(open) {
+  tg.setAttribute("aria-expanded", String(open));
+  cp.hidden = !open;
+  sm.hidden = open || !sm.textContent.trim();
+}
+tg.addEventListener("click", () => setOpen(tg.getAttribute("aria-expanded") !== "true"));
+sm.addEventListener("click", () => setOpen(true));
+cp.addEventListener("click", e => {
+  const o = e.target.closest(".opt"); if (!o || o.classList.contains("zero")) return;
+  o.parentElement.querySelectorAll(".opt").forEach(x => x.classList.remove("on", "constrained"));
+  o.classList.add("on");
+  if (o !== o.parentElement.firstElementChild) o.classList.add("constrained");
+});
+if (location.hash === "#open") setOpen(true);
+if (location.hash.startsWith("#none")) {
+  // estado inicial: nenhum critério aplicado
+  tg.classList.remove("active");
+  tg.innerHTML = '<b>317</b> espécies &middot; critérios<i class="car"></i>';
+  sm.textContent = ""; sm.hidden = true;
+  document.getElementById("cl").hidden = true;
+  cp.querySelectorAll(".crit-row").forEach(r => {
+    r.querySelectorAll(".opt").forEach((o, i) => {
+      o.classList.toggle("on", i === 0); o.classList.remove("constrained");
+    });
+  });
+  if (location.hash === "#none-open") setOpen(true);
+}
+</script>
+</body>
+</html>

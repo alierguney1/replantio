@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Canopy · variante A · legenda ajustável</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --glass: rgba(14, 18, 15, 0.86);
+  --glass-soft: rgba(20, 26, 21, 0.72);
+  --line: rgba(255, 255, 255, 0.09);
+  --text: #e9efe9;
+  --muted: #93a096;
+  --accent: #55d97c;
+  --accent-dim: rgba(85, 217, 124, 0.16);
+  --radius: 14px;
+  color-scheme: dark;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: #12170f; }
+body {
+  background-image: radial-gradient(120% 90% at 30% 0%, #1d2718 0%, #0d1109 70%);
+  padding: 20px 0 40px; display: flex; justify-content: center; color: var(--text);
+}
+.panel {
+  width: 420px; background: var(--glass); border: 1px solid var(--line);
+  border-radius: 18px; box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+}
+.panel-content { padding: 20px 20px 24px; }
+.mono { font-family: var(--mono); font-size: 0.95em; font-variant-numeric: tabular-nums; }
+.readout { font-size: 11px; color: var(--muted); margin: 0 0 4px; line-height: 1.8; }
+.readout b { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--text); font-weight: 500; }
+.section-h {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--muted); margin: 28px 0 10px; font-weight: 600;
+}
+.sp { border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; background: var(--glass-soft); overflow: hidden; }
+.sp-head { display: flex; align-items: center; gap: 11px; padding: 11px 13px; min-height: 54px; cursor: pointer; user-select: none; }
+.sp-rank { font-size: 11px; color: var(--muted); width: 16px; text-align: right; flex-shrink: 0; }
+.sp-thumb { width: 38px; height: 38px; border-radius: 9px; flex-shrink: 0; background-size: cover; background-position: center; }
+.sp-names { flex: 1; min-width: 0; }
+.sp-common { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nearby { font-size: 10px; font-weight: 600; color: var(--accent); margin-left: 4px; letter-spacing: 0.3px; }
+.sp-sci { font-size: 11px; font-style: italic; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sp-score { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; }
+.sp-score .fit { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.sp-score .pct { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.chip { font: inherit; font-size: 11px; padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.05); border: 1px solid var(--line); color: var(--muted); cursor: pointer; }
+.chip.more { display: block; margin: 10px auto 0; }
+.t1 { background-image: linear-gradient(150deg, #4a6b33, #2c4420 60%, #6d8a3a); }
+.t2 { background-image: linear-gradient(150deg, #7a8f3d, #3d5226 55%, #97a84c); }
+.t3 { background-image: linear-gradient(150deg, #d7a93c, #6f6a26 60%, #3f5024); }
+.t4 { background-image: linear-gradient(150deg, #37502a, #62803a 55%, #23331b); }
+
+/* ---------- VARIANTE A: legenda ajustável ---------- */
+.crit {
+  display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 15px; row-gap: 5px;
+  font-size: 11px; color: var(--muted); margin: 0 0 14px;
+}
+.crit .n { font-family: var(--mono); font-size: 0.95em; font-variant-numeric: tabular-nums; color: var(--text); font-weight: 500; }
+.crit .sep { display: none; }
+.crit-item { position: relative; display: inline-block; }
+.crit-k { margin-right: 5px; }
+.crit-v {
+  font: inherit; font-size: 11.5px; font-weight: 500;
+  color: var(--text); background: none; border: 0; padding: 1px 0 2px; margin: 0;
+  border-bottom: 1px solid rgba(233, 239, 233, 0.22);
+  cursor: pointer;
+}
+.crit-v::after {
+  content: ""; display: inline-block; vertical-align: 2px; margin-left: 5px;
+  border-left: 3.5px solid transparent; border-right: 3.5px solid transparent;
+  border-top: 4px solid currentColor; opacity: 0.55;
+}
+.crit-v:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.crit-item.unset .crit-v { color: var(--muted); border-bottom-color: rgba(147, 160, 150, 0.35); }
+.crit-item.unset .crit-v:hover { color: var(--text); border-bottom-color: rgba(233, 239, 233, 0.5); }
+.crit-item.open .crit-v { color: var(--accent); border-bottom-color: var(--accent); }
+
+.crit-menu {
+  position: absolute; z-index: 20; top: calc(100% + 7px); left: -9px;
+  min-width: 156px; padding: 5px;
+  background: rgba(18, 23, 19, 0.97); border: 1px solid rgba(255,255,255,.14);
+  border-radius: 11px; box-shadow: 0 10px 32px rgba(0,0,0,.6);
+  line-height: 1.4;
+}
+.crit-menu[hidden] { display: none; }
+.crit-opt {
+  display: flex; width: 100%; align-items: baseline; justify-content: space-between; gap: 10px;
+  font: inherit; font-size: 11.5px; color: var(--text);
+  background: none; border: 0; text-align: left; padding: 6px 8px; border-radius: 7px; cursor: pointer;
+}
+.crit-opt:hover { background: rgba(255,255,255,.07); }
+.crit-opt .c { font-family: var(--mono); font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.crit-opt.on { color: var(--accent); }
+.crit-opt.on .c { color: var(--accent); opacity: .7; }
+.crit-opt[disabled] { opacity: .35; cursor: default; }
+</style>
+</head>
+<body>
+<div class="panel"><div class="panel-content">
+
+  <div class="readout">pH do solo <b>4.9</b> &middot; elevação <b>43 m</b> &middot; duração do dia <b>10.7&ndash;13.6 h</b> &middot; mínima recorde <b>8 °C</b><br>
+  sol <b>4.4 kWh/m²·dia</b> &middot; umidade <b>83%</b> &middot; nuvens <b>65%</b> &middot; declive <b>12° face L</b></div>
+
+  <div class="section-h">Espécies recomendadas</div>
+
+  <div class="crit" id="crit">
+    <span class="crit-count"><span class="n">84</span> espécies</span><span class="sep">&middot;</span><span class="crit-item" data-dim="origem">
+      <span class="crit-k">origem</span><button class="crit-v">nativas daqui</button>
+      <div class="crit-menu" hidden>
+        <button class="crit-opt">todas <span class="c">317</span></button>
+        <button class="crit-opt on">nativas daqui <span class="c">84</span></button>
+      </div>
+    </span><span class="sep">&middot;</span><span class="crit-item" data-dim="uso">
+      <span class="crit-k">uso</span><button class="crit-v">fruta</button>
+      <div class="crit-menu" hidden>
+        <button class="crit-opt">todos <span class="c">317</span></button>
+        <button class="crit-opt">madeira <span class="c">96</span></button>
+        <button class="crit-opt on">fruta <span class="c">84</span></button>
+        <button class="crit-opt">ambiental <span class="c">148</span></button>
+        <button class="crit-opt">medicinal <span class="c">41</span></button>
+        <button class="crit-opt">forragem <span class="c">23</span></button>
+      </div>
+    </span><span class="sep">&middot;</span><span class="crit-item unset" data-dim="maturidade">
+      <span class="crit-k">maturidade</span><button class="crit-v">sem limite</button>
+      <div class="crit-menu" hidden>
+        <button class="crit-opt on">sem limite <span class="c">84</span></button>
+        <button class="crit-opt">até 20 anos <span class="c">31</span></button>
+        <button class="crit-opt">até 90 anos <span class="c">67</span></button>
+      </div>
+    </span><span class="sep">&middot;</span><span class="crit-item unset" data-dim="copa">
+      <span class="crit-k">copa</span><button class="crit-v">sem mínimo</button>
+      <div class="crit-menu" hidden>
+        <button class="crit-opt on">sem mínimo <span class="c">84</span></button>
+        <button class="crit-opt">&ge; 4 m <span class="c">72</span></button>
+        <button class="crit-opt">&ge; 5 m <span class="c">58</span></button>
+      </div>
+    </span>
+  </div>
+
+  <div id="sp-list">
+    <div class="sp"><div class="sp-head">
+      <div class="sp-rank">1</div><div class="sp-thumb t1"></div>
+      <div class="sp-names"><div class="sp-common">Jequitibá-rosa <span class="nearby">nativa</span></div>
+      <div class="sp-sci">Cariniana legalis</div></div>
+      <div class="sp-score"><span class="pct" style="color:#55d97c">100%</span><span class="fit">fit 94</span></div>
+    </div></div>
+    <div class="sp"><div class="sp-head">
+      <div class="sp-rank">2</div><div class="sp-thumb t2"></div>
+      <div class="sp-names"><div class="sp-common">Palmito-juçara <span class="nearby">nativa</span></div>
+      <div class="sp-sci">Euterpe edulis</div></div>
+      <div class="sp-score"><span class="pct" style="color:#55d97c">98%</span><span class="fit">fit 92</span></div>
+    </div></div>
+    <div class="sp"><div class="sp-head">
+      <div class="sp-rank">3</div><div class="sp-thumb t3"></div>
+      <div class="sp-names"><div class="sp-common">Jaboticabeira <span class="nearby">nativa</span></div>
+      <div class="sp-sci">Plinia cauliflora</div></div>
+      <div class="sp-score"><span class="pct" style="color:#8fd36a">94%</span><span class="fit">fit 88</span></div>
+    </div></div>
+    <div class="sp"><div class="sp-head">
+      <div class="sp-rank">4</div><div class="sp-thumb t4"></div>
+      <div class="sp-names"><div class="sp-common">Cambuci <span class="nearby">nativa</span></div>
+      <div class="sp-sci">Campomanesia phaea</div></div>
+      <div class="sp-score"><span class="pct" style="color:#b8cf5e">91%</span><span class="fit">fit 85</span></div>
+    </div></div>
+  </div>
+  <button class="chip more">Mostrar mais 20</button>
+
+</div></div>
+
+<script>
+const crit = document.getElementById("crit");
+crit.addEventListener("click", e => {
+  const v = e.target.closest(".crit-v");
+  const item = e.target.closest(".crit-item");
+  crit.querySelectorAll(".crit-item").forEach(i => {
+    if (i !== item) { i.classList.remove("open"); i.querySelector(".crit-menu").hidden = true; }
+  });
+  if (v) {
+    const open = item.classList.toggle("open");
+    item.querySelector(".crit-menu").hidden = !open;
+    return;
+  }
+  const opt = e.target.closest(".crit-opt");
+  if (opt) {
+    item.querySelectorAll(".crit-opt").forEach(o => o.classList.remove("on"));
+    opt.classList.add("on");
+    item.querySelector(".crit-v").textContent = opt.firstChild.textContent.trim();
+    item.classList.toggle("unset", opt === item.querySelector(".crit-opt"));
+    item.classList.remove("open");
+    item.querySelector(".crit-menu").hidden = true;
+  }
+});
+if (location.hash === "#open") {
+  const it = crit.querySelector('[data-dim="uso"]');
+  it.classList.add("open"); it.querySelector(".crit-menu").hidden = false;
+}
+</script>
+</body>
+</html>

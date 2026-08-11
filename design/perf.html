@@ -1,0 +1,22 @@
+<body><pre id=o>…</pre><canvas id=c width=1600 height=1000></canvas>
+<script src="crown-render.js"></script>
+<script>
+const g = document.getElementById("c").getContext("2d");
+let out = "";
+const t0 = performance.now();
+setCrownSoft(18, 19); crownSet(0,false); crownSet(1,false); crownSet(2,false);
+out += `build tiers 0-2 broadleaf: ${(performance.now()-t0).toFixed(0)} ms\n`;
+const t1 = performance.now(); crownSet(3,false);
+out += `build tier 3: ${(performance.now()-t1).toFixed(0)} ms\n`;
+const t2 = performance.now(); crownSet(0,true); crownSet(1,true); crownSet(2,true);
+out += `build tiers 0-2 conifer: ${(performance.now()-t2).toFixed(0)} ms\n`;
+const rnd = mulberry32(7), trees = [];
+for (let i=0;i<20000;i++) trees.push({x:rnd()*1600,y:rnd()*1000,
+  la:-23.86+rnd()*0.004, ln:-46.44+rnd()*0.004, s:.8+rnd()*.4, seed:Math.floor(rnd()*2147483647)});
+for (const r of [1.0, 3.7, 7.3, 14.6]) {
+  const t = performance.now();
+  for (let f=0;f<5;f++) { g.clearRect(0,0,1600,1000); for (const tr of trees) drawTree(g,tr.x,tr.y,r*tr.s,tr,false); }
+  out += `20000 trees @ r=${r}: ${((performance.now()-t)/5).toFixed(1)} ms/frame\n`;
+}
+document.getElementById("o").textContent = out;
+</script></body>

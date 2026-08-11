@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Canopy · painel B · caderno de campo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* =========================================================================
+   PAINEL B : "caderno de campo"
+   Teses: (1) preto morno, fios mornos: papel, não tela;
+          (2) o número de ordem pendura na margem, fora da coluna de texto;
+          (3) rótulos de seção com régua até a borda;
+          (4) leitura do sítio como tabela de duas colunas, zero quebra de linha;
+          (5) a foto sangra de borda a borda: prancha de espécime.
+   ========================================================================= */
+:root {
+  --ink:    #ece9e2;
+  --ink-2:  #a39c8e;
+  --ink-3:  #74705f;
+  --line:   rgba(255,244,222,.085);
+  --line-2: rgba(255,244,222,.15);
+  --leaf:   #7cc389;
+  --amber:  #d4a05f;
+  --water:  #82a3b8;
+  --warn:   #d9827a;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 22px; --s6: 30px; --s7: 42px;
+  --pad: 24px;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  color-scheme: dark;
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100vh; background: #0a0d0b; color: var(--ink); }
+body { background: url("map-bg.jpg") center / cover no-repeat fixed; }
+
+#panel {
+  position: absolute; top: 16px; right: 16px; width: 420px;
+  border-radius: 6px; border: 0;
+  background:
+    linear-gradient(180deg, rgba(255,240,214,.045) 0, rgba(255,240,214,.008) 140px, rgba(255,240,214,0) 340px),
+    rgba(19,18,15,.88);
+  backdrop-filter: blur(24px) saturate(1.1); -webkit-backdrop-filter: blur(24px) saturate(1.1);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.6),
+    inset 0 0 0 1px rgba(255,244,222,.06),
+    inset 0 1px 0 rgba(255,244,222,.11),
+    0 2px 3px rgba(0,0,0,.4),
+    0 26px 56px -16px rgba(0,0,0,.8);
+  overflow: hidden;
+}
+#panel.clip { max-height: calc(100vh - 32px); overflow-y: auto; }
+
+/* ---------- cabeçalho ---------- */
+.p-head { padding: 20px var(--pad) 16px; border-bottom: 1px solid var(--line-2); }
+.loc-title { font-size: 22px; font-weight: 400; letter-spacing: -.016em; line-height: 1.15; margin: 0 38px 0 0; }
+.loc-title .adm { color: var(--ink-3); }
+.loc-geo { margin-top: 8px; font-family: var(--mono); font-size: 10px; color: var(--ink-2);
+  font-variant-numeric: tabular-nums; text-transform: uppercase; letter-spacing: .05em; }
+.loc-geo .sep { color: var(--ink-3); margin: 0 .5em; }
+.loc-note { margin-top: 8px; font-size: 11px; line-height: 1.5; color: var(--ink-3); }
+.loc-note b { font-family: var(--mono); font-weight: 400; color: var(--ink-2); }
+.panel-close { position: absolute; top: 18px; right: 18px; width: 24px; height: 24px; border: 0; border-radius: 4px;
+  background: none; color: var(--ink-3); font-size: 16px; line-height: 1; cursor: pointer; padding: 0; }
+.panel-close:hover { color: var(--ink); background: rgba(255,244,222,.07); }
+
+.p-body { padding: 0 var(--pad) 26px; }
+
+/* ---------- rótulo de seção com régua ---------- */
+.section-h {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 9.5px; font-weight: 500; text-transform: uppercase; letter-spacing: .16em;
+  color: var(--ink-3); margin: var(--s6) 0 var(--s4);
+}
+.section-h::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+/* ---------- clima ---------- */
+.site-fig { margin: 0 -6px; }
+.site-fig svg { display: block; width: 100%; height: auto; }
+
+/* leitura do sítio: tabela, nunca quebra */
+.readout { margin: var(--s5) 0 0; display: grid; grid-template-columns: 1fr 1fr; column-gap: 26px; }
+.rd { display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+  font-size: 11px; color: var(--ink-3); padding: 4px 0; border-top: 1px solid var(--line); }
+.rd:nth-child(1), .rd:nth-child(2) { border-top: 0; }
+.rd b { font-family: var(--mono); font-size: 10.5px; font-weight: 400; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------- critérios ---------- */
+.sec-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: var(--s7) 0 var(--s4); }
+.sec-row .section-h { margin: 0; flex: 1; }
+.crit-toggle { flex: 0 0 auto; font: inherit; font-size: 10.5px; color: var(--ink-3);
+  background: none; border: 0; padding: 0; cursor: pointer; white-space: nowrap; }
+.crit-toggle b { font-family: var(--mono); font-weight: 400; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.crit-toggle.active b { color: var(--leaf); }
+.crit-toggle .car { display: inline-block; width: 4.5px; height: 4.5px; margin-left: 7px; vertical-align: 2px;
+  border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; transform: rotate(45deg); opacity: .6; transition: transform .18s; }
+.crit-toggle[aria-expanded="true"] .car { transform: rotate(-135deg); }
+.crit-summary { display: block; width: 100%; text-align: left; font: inherit; font-size: 11px; color: var(--ink-3);
+  background: none; border: 0; padding: 0; margin: -8px 0 var(--s3); cursor: pointer; }
+.crit-summary b { font-weight: 400; color: var(--ink-2); }
+.crit-summary .d { color: var(--ink-3); opacity: .5; margin: 0 .4em; }
+.crit-summary[hidden] { display: none; }
+.crit-panel { margin: 0 0 var(--s4); }
+.crit-panel[hidden] { display: none; }
+.crit-row { display: flex; align-items: baseline; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line); }
+.crit-row:last-of-type { border-bottom: 1px solid var(--line); }
+.crit-row .k { flex: 0 0 80px; font-size: 9.5px; text-transform: uppercase; letter-spacing: .11em; color: var(--ink-3); padding-top: 2px; }
+.crit-row .opts { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 15px; row-gap: 4px; margin: -3px 0; }
+.opt { font: inherit; font-size: 11.5px; background: none; border: 0; padding: 3px 0; color: var(--ink-2); cursor: pointer; }
+.opt.on { color: var(--ink); } .opt.on.constrained { color: var(--leaf); }
+.opt .c { font-family: var(--mono); font-size: 9px; color: var(--ink-3); margin-left: 5px; font-variant-numeric: tabular-nums; }
+.opt.on .c { display: none; }
+
+/* ---------- lista: número pendurado na margem ---------- */
+#sp-list { margin: 0; }
+.sp { border-top: 1px solid var(--line); }
+.sp:last-child { border-bottom: 1px solid var(--line); }
+.sp-head { display: grid; grid-template-columns: 20px 46px 1fr auto; align-items: center; gap: 0 14px;
+  padding: 11px 0; min-height: 66px; cursor: pointer; user-select: none; }
+.sp-head:hover .sp-common { color: #fff; }
+.sp-rank { font-family: var(--mono); font-size: 10px; color: var(--ink-3); text-align: right;
+  font-variant-numeric: tabular-nums; align-self: start; padding-top: 4px; }
+.sp-thumb { width: 46px; height: 46px; border-radius: 3px; background-color: rgba(255,244,222,.05);
+  background-size: cover; background-position: center; box-shadow: inset 0 0 0 1px rgba(255,244,222,.12); }
+.sp-names { min-width: 0; }
+.sp-common { font-size: 14px; font-weight: 400; letter-spacing: -.008em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .13s; }
+.sp-sci { font-size: 11px; font-style: italic; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.nearby { font-size: 9.5px; font-weight: 500; letter-spacing: .03em; margin-left: 6px; color: var(--leaf); }
+.nearby.gbif { color: var(--ink-3); font-weight: 400; }
+.sp-score { text-align: right; }
+.sp-score .pct { display: block; font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums; }
+.sp-score .pct .u { font-size: .68em; opacity: .45; }
+.sp-score .fit { display: block; font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+/* ---------- ficha: foto sangra ---------- */
+.sp-body { padding: 0 0 var(--s5); }
+.sp-body[hidden] { display: none; }
+.sp-photo { width: calc(100% + var(--pad) * 2); margin: 0 calc(var(--pad) * -1) 0; height: 176px;
+  background-color: rgba(255,244,222,.04); background-size: cover; background-position: center;
+  box-shadow: inset 0 1px 0 rgba(0,0,0,.4), inset 0 -1px 0 rgba(0,0,0,.4); }
+.sp-meta { margin: var(--s4) 0 0; font-size: 11.5px; line-height: 1.6; color: var(--ink-3); }
+.sp-meta .grade { color: var(--leaf); }
+.sp-meta .sep { color: var(--ink-3); opacity: .5; margin: 0 .45em; }
+
+.factors { margin: var(--s5) 0 0; }
+.factor { display: grid; grid-template-columns: 76px 1fr 58px; align-items: center; gap: 12px; padding: 5px 0; }
+.factor .fk { font-size: 11px; color: var(--ink-2); }
+.factor .fx { font-family: var(--mono); font-size: 10.5px; color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.rtrack { position: relative; height: 4px; background: rgba(255,244,222,.05); }
+.rabs { position: absolute; top: 0; height: 100%; background: rgba(124,195,137,.16); }
+.ropt { position: absolute; top: 0; height: 100%; background: rgba(124,195,137,.38); }
+.rtick { position: absolute; top: -4px; width: 1.5px; height: 12px; background: var(--ink); box-shadow: 0 0 0 2.5px rgba(19,18,15,.75); }
+.rtick.out { background: var(--warn); }
+.evidence { font-size: 10.5px; color: var(--ink-3); margin-top: var(--s3); line-height: 1.6; }
+
+.growth-fig { margin: var(--s5) 0 0; }
+.growth-fig svg { display: block; width: 100%; height: auto; }
+.fig-cap { font-size: 10.5px; color: var(--ink-3); margin-top: var(--s2); line-height: 1.55; }
+
+.stats { margin: var(--s5) 0 0; }
+.stat { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 11.5px;
+  padding: 6px 0; border-top: 1px solid var(--line); }
+.stat:first-child { border-top: 0; }
+.stat .sk { color: var(--ink-2); white-space: nowrap; }
+.stat .sv { font-family: var(--mono); font-size: 11px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.stat.wide { margin-top: var(--s2); border-top: 1px solid var(--line-2); padding-top: var(--s3); font-size: 12.5px; }
+.stat.wide .sv { font-size: 12px; }
+
+.chip.more { display: block; width: calc(100% + var(--pad) * 2); margin: 0 calc(var(--pad) * -1);
+  padding: 15px 0; text-align: center; font: inherit; font-size: 10.5px; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--ink-3); background: none; border: 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+.chip.more:hover { color: var(--ink); background: rgba(255,244,222,.03); }
+
+.footnote { margin-top: var(--s6); padding-top: var(--s4); border-top: 1px solid var(--line); font-size: 10.5px; line-height: 1.8; color: var(--ink-3); }
+.footnote a { color: var(--ink-3); text-decoration: underline; text-decoration-color: rgba(255,244,222,.2); text-underline-offset: 2px; }
+</style>
+</head>
+<body>
+<div id="panel">
+  <div class="p-head">
+    <div class="loc-title">Cubatão<span class="adm">, São Paulo, Brasil</span></div>
+    <div class="loc-geo">-23.8630, -46.4259<span class="sep">·</span>18.035 ha</div>
+    <div class="loc-note"><b>317</b> de <b>1.021</b> espécies avaliadas como adequadas ou melhores</div>
+    <button class="panel-close">&times;</button>
+  </div>
+  <div class="p-body">
+    <div class="section-h">Clima do local · ERA5 2015–2024</div>
+    <div class="site-fig" id="fig"></div>
+    <div class="readout">
+      <div class="rd"><span>pH do solo</span><b>4.9</b></div>
+      <div class="rd"><span>sol</span><b>4.4 kWh/m²·dia</b></div>
+      <div class="rd"><span>elevação</span><b>43 m</b></div>
+      <div class="rd"><span>umidade</span><b>83%</b></div>
+      <div class="rd"><span>duração do dia</span><b>10.7–13.6 h</b></div>
+      <div class="rd"><span>nuvens</span><b>65%</b></div>
+      <div class="rd"><span>mínima recorde</span><b>8 °C</b></div>
+      <div class="rd"><span>declive</span><b>12° face L</b></div>
+    </div>
+
+    <div class="sec-row">
+      <div class="section-h">Espécies recomendadas</div>
+      <button class="crit-toggle" id="tg" aria-expanded="false"><b>374</b> espécies · critérios<i class="car"></i></button>
+    </div>
+    <button class="crit-summary" id="sm" hidden></button>
+    <div class="crit-panel" id="cp" hidden>
+      <div class="crit-row"><div class="k">Origem</div><div class="opts">
+        <button class="opt on">todas</button><button class="opt">nativas daqui <span class="c">42</span></button></div></div>
+      <div class="crit-row"><div class="k">Uso</div><div class="opts">
+        <button class="opt on">todos</button><button class="opt">madeira <span class="c">273</span></button>
+        <button class="opt">fruta <span class="c">102</span></button><button class="opt">ambiental <span class="c">159</span></button>
+        <button class="opt">medicinal <span class="c">111</span></button><button class="opt">forragem <span class="c">68</span></button></div></div>
+      <div class="crit-row"><div class="k">Maturidade</div><div class="opts">
+        <button class="opt on">sem limite</button><button class="opt">até 20 anos <span class="c">93</span></button>
+        <button class="opt">até 90 anos <span class="c">359</span></button></div></div>
+      <div class="crit-row"><div class="k">Copa adulta</div><div class="opts">
+        <button class="opt on">sem mínimo</button><button class="opt">≥ 4 m <span class="c">281</span></button>
+        <button class="opt">≥ 5 m <span class="c">33</span></button></div></div>
+    </div>
+
+    <div id="sp-list"></div>
+    <button class="chip more">Mostrar mais 20</button>
+    <div class="footnote">
+      A adequação segue o modelo EcoCrop da FAO (envelopes climáticos trapezoidais, fator mais limitante). Crescimento e carbono são estimativas por classe (Chapman-Richards, Chave 2014 / Jenkins 2003, IPCC 2006): triagem, não prescrição de plantio.<br>
+      Dados: <a href="#">FAO EcoCrop</a> · <a href="#">Open-Meteo ERA5</a> · <a href="#">SoilGrids 2.0, ISRIC</a> · <a href="#">GBIF</a> · <a href="#">WCVP v16, RBG Kew</a> · <a href="#">Fotos: iNaturalist</a>
+    </div>
+  </div>
+</div>
+<script>
+const TAVG=[26.1,25.9,25.3,23.5,21.4,20.2,19.5,19.8,21.2,22.3,22.9,24.7];
+const PREC=[294,304,349,173,128,116,87,119,136,203,216,258];
+const MEANT=22.7, ANNUAL=2384;
+const MONTHS=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+const nf=(v,d=0)=>v.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
+
+/* duas faixas em um só quadro: guias verticais por mês unem as duas, letras só no pé */
+function climateSvg(){
+  const W=408,L=30,R=62,top=13,tH=44,gap=16,pH=44,axis=15;
+  const H=top+tH+gap+pH+axis, iw=W-L-R;
+  const cx=m=>L+(m+.5)*iw/12, bw=Math.round(iw/12)-7;
+  const tmid=(Math.max(...TAVG)+Math.min(...TAVG))/2;
+  const tspan=Math.max(14,Math.max(...TAVG)-Math.min(...TAVG)+3);
+  const thi=tmid+tspan/2,tlo=tmid-tspan/2;
+  const ty=v=>top+(thi-v)/(thi-tlo)*tH;
+  const pmax=Math.max(...PREC,10)*1.1, pBase=top+tH+gap+pH, py=v=>pBase-(v/pmax)*pH;
+  const warm=TAVG.indexOf(Math.max(...TAVG)),cold=TAVG.indexOf(Math.min(...TAVG)),wet=PREC.indexOf(Math.max(...PREC));
+  const guides=TAVG.map((_,m)=>`<line x1="${cx(m).toFixed(1)}" x2="${cx(m).toFixed(1)}" y1="${top-3}" y2="${pBase}" stroke="rgba(255,244,222,.035)"/>`).join("");
+  const line=TAVG.map((v,m)=>`${m?"L":"M"}${cx(m).toFixed(1)},${ty(v).toFixed(1)}`).join("");
+  const bars=PREC.map((v,m)=>`<rect x="${(cx(m)-bw/2).toFixed(1)}" y="${py(v).toFixed(1)}" width="${bw}" height="${(pBase-py(v)).toFixed(1)}" fill="#82a3b8" opacity="${m===wet?.95:.5}"/>`).join("");
+  const mo=MONTHS.map((_,m)=>`<text x="${cx(m).toFixed(1)}" y="${H-4}" font-size="8" fill="#74705f" text-anchor="middle" letter-spacing=".4">${"JFMAMJJASOND"[m]}</text>`).join("");
+  const hov=TAVG.map((v,m)=>`<rect x="${(cx(m)-iw/24).toFixed(1)}" y="0" width="${(iw/12).toFixed(1)}" height="${H}" fill="transparent"><title>${MONTHS[m]} · ${nf(v,1)} °C · ${PREC[m]} mm</title></rect>`).join("");
+  const tticks=[Math.ceil(tlo/5)*5, Math.floor(thi/5)*5].map(v=>`<text x="${L-6}" y="${(ty(v)+3).toFixed(1)}" font-size="8.5" font-family="IBM Plex Mono" fill="#74705f" text-anchor="end">${v}</text>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="temperatura e chuva mês a mês">
+    ${guides}
+    <line x1="${L}" x2="${L}" y1="${top-3}" y2="${pBase}" stroke="rgba(255,244,222,.12)"/>
+    <line x1="${L}" x2="${L+iw}" y1="${pBase}" y2="${pBase}" stroke="rgba(255,244,222,.12)"/>
+    ${tticks}
+    <line x1="${L}" x2="${L+iw}" y1="${ty(MEANT).toFixed(1)}" y2="${ty(MEANT).toFixed(1)}" stroke="#d4a05f" stroke-opacity=".22" stroke-dasharray="2 3"/>
+    <path d="${line}" fill="none" stroke="#d4a05f" stroke-width="1.8" stroke-linejoin="round"/>
+    <circle cx="${cx(warm)}" cy="${ty(TAVG[warm]).toFixed(1)}" r="2" fill="#d4a05f"/>
+    <text x="${cx(warm)}" y="${(ty(TAVG[warm])-7).toFixed(1)}" font-size="9" font-family="IBM Plex Mono" fill="#a39c8e" text-anchor="middle">${nf(TAVG[warm],0)}°</text>
+    <circle cx="${cx(cold)}" cy="${ty(TAVG[cold]).toFixed(1)}" r="2" fill="#d4a05f"/>
+    <text x="${cx(cold)}" y="${(ty(TAVG[cold])+12).toFixed(1)}" font-size="9" font-family="IBM Plex Mono" fill="#a39c8e" text-anchor="middle">${nf(TAVG[cold],0)}°</text>
+    <text x="${L+iw+9}" y="${(ty(MEANT)+1).toFixed(1)}" font-size="10.5" font-family="IBM Plex Mono" fill="#d4a05f">${nf(MEANT,1)} °C</text>
+    <text x="${L+iw+9}" y="${(ty(MEANT)+12).toFixed(1)}" font-size="8.5" fill="#74705f">média</text>
+    ${bars}
+    <text x="${cx(wet)}" y="${(py(PREC[wet])-5).toFixed(1)}" font-size="9" font-family="IBM Plex Mono" fill="#a39c8e" text-anchor="middle">${PREC[wet]}</text>
+    <text x="${L+iw+9}" y="${pBase-11}" font-size="10.5" font-family="IBM Plex Mono" fill="#82a3b8">${nf(ANNUAL)} mm</text>
+    <text x="${L+iw+9}" y="${pBase-1}" font-size="8.5" fill="#74705f">por ano</text>
+    ${mo}${hov}</svg>`;
+}
+document.getElementById("fig").innerHTML=climateSvg();
+
+const CLS={Hmax:28,k:.037,p:1.08};
+const hAt=t=>CLS.Hmax*Math.pow(1-Math.exp(-CLS.k*t),CLS.p);
+function growthSvg(){
+  const W=372,H=126,L=26,R=4,T=10,B=17,ymax=40;
+  const x=t=>L+(t/40)*(W-L-R), y=h=>T+(1-h/ymax)*(H-T-B);
+  const pts=Array.from({length:41},(_,t)=>({t,h:hAt(t)}));
+  const path=pts.map((p,i)=>`${i?"L":"M"}${x(p.t).toFixed(1)},${y(p.h).toFixed(1)}`).join("");
+  const yr=[20,40].map(v=>`<line x1="${L}" y1="${y(v).toFixed(1)}" x2="${W-R}" y2="${y(v).toFixed(1)}" stroke="rgba(255,244,222,.05)"/>
+    <text x="${L-5}" y="${(y(v)+3).toFixed(1)}" fill="#74705f" font-size="8.5" font-family="IBM Plex Mono" text-anchor="end">${v}m</text>`).join("");
+  const xl=[10,20,30,40].map(t=>`<text x="${x(t).toFixed(1)}" y="${H-4}" fill="#74705f" font-size="8.5" font-family="IBM Plex Mono" text-anchor="${t===40?"end":"middle"}">${t}a</text>`).join("");
+  const mk=[10,20].map(t=>`<circle cx="${x(t).toFixed(1)}" cy="${y(pts[t].h).toFixed(1)}" r="2.2" fill="#7cc389"/>
+    <text x="${x(t).toFixed(1)}" y="${(y(pts[t].h)-7).toFixed(1)}" fill="#ece9e2" font-size="9" font-family="IBM Plex Mono" text-anchor="middle">${pts[t].h.toFixed(0)}m</text>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}"><defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#7cc389" stop-opacity=".14"/><stop offset="1" stop-color="#7cc389" stop-opacity="0"/></linearGradient></defs>
+    ${yr}<path d="M${x(0)},${y(0)}${pts.map(p=>`L${x(p.t).toFixed(1)},${y(p.h).toFixed(1)}`).join("")}L${x(40)},${y(0)}Z" fill="url(#gb)"/>
+    <line x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}" stroke="rgba(255,244,222,.1)"/>
+    <path d="${path}" fill="none" stroke="#7cc389" stroke-width="1.7"/>${mk}${xl}</svg>`;
+}
+const P="ph/",S="ph/";
+const ROWS=[
+  {n:"Breadnut tree",s:"Brosimum alicastrum",nat:1,gb:1,pct:100,fit:94,t:P+"t1.jpg"},
+  {n:"Bergamot orange",s:"Citrus aurantium ssp. bergamia",gb:1,pct:100,fit:90,t:P+"t2.jpg"},
+  {n:"Pinus kesiya",s:"Pinaceae",it:1,gb:1,pct:100,fit:86,t:P+"t3.jpg"},
+  {n:"Ceratopetalum apetalum",s:"Cunoniaceae",it:1,pct:100,fit:84,t:P+"t4.jpg"},
+  {n:"Ilex dipyrena",s:"Aquifoliaceae",it:1,gb:1,pct:100,fit:83,t:P+"t5.jpg"},
+  {n:"Indian chestnut",s:"Aesculus indica",gb:1,pct:100,fit:82,t:P+"t6.jpg"},
+  {n:"Abbo rubber tree",s:"Ficus vogelii",gb:1,pct:100,fit:81,t:P+"t7.jpg"},
+  {n:"Cratylia argentea",s:"Fabaceae",it:1,nat:1,pct:100,fit:81,t:S+"t8.jpg"},
+  {n:"Casuarina junghuhniana",s:"Casuarinaceae",it:1,pct:99,fit:81,t:P+"t9.jpg"},
+  {n:"Oil palm",s:"Elaeis guineensis",gb:1,pct:97,fit:80,t:S+"t10.jpg"},
+  {n:"Mamuang himmaphan",s:"Anacardium occidentale",nat:1,pct:94,fit:80,t:S+"t11.jpg"},
+];
+const GRADE=p=>p>=95?"#7cc389":p>=85?"#9dc87d":"#c2c96e";
+const strip=(l,val,unit,a,b,c,d,dec)=>{
+  const lo=Math.min(a,val),hi=Math.max(d,val),span=hi-lo||1,pc=v=>(((v-lo)/span)*100).toFixed(2);
+  const out=val<a||val>d;
+  return `<div class="factor"><div class="fk">${l}</div>
+    <div class="rtrack" title="tolera ${a} a ${d} · ótimo ${b} a ${c}${unit}">
+      <div class="rabs" style="left:${pc(a)}%;width:${(((d-a)/span)*100).toFixed(2)}%"></div>
+      <div class="ropt" style="left:${pc(b)}%;width:${(((c-b)/span)*100).toFixed(2)}%"></div>
+      <div class="rtick${out?" out":""}" style="left:${pc(val)}%"></div></div>
+    <div class="fx">${nf(val,dec)}${unit}</div></div>`;
+};
+const DETAIL=`
+  <div class="sp-photo" style="background-image:url('${P}hero.jpg')"></div>
+  <div class="sp-meta"><span class="grade">Excelente</span><span class="sep">·</span>crescimento médio<span class="sep">·</span>tropical<span class="sep">·</span>alimento<span class="sep">·</span>forragem<span class="sep">·</span>madeira</div>
+  <div class="factors">${strip("Temperatura",22.7," °C",16,20,28,34,1)}${strip("Chuva",2384," mm",900,1300,2800,4000,0)}${strip("pH do solo",4.9,"",5,5.5,7.5,8.2,1)}</div>
+  <div class="evidence">Fotoperíodo fora da faixa da espécie: penalidade de 0,5 aplicada.</div>
+  <div class="growth-fig">${growthSvg()}<div class="fig-cap">Atinge ~95% da altura máxima em ~83 anos (modelo por classe).</div></div>
+  <div class="stats">
+    <div class="stat"><span class="sk">Tronco ø 20 anos</span><span class="sv">14 cm</span></div>
+    <div class="stat"><span class="sk">Copa, 20 anos</span><span class="sv">3.8 m · 12 m²</span></div>
+    <div class="stat"><span class="sk">CO₂e/árvore, 20 anos</span><span class="sv">178 kg</span></div>
+    <div class="stat"><span class="sk">CO₂e do plantio, 20 anos</span><span class="sv">109 t/ha</span></div>
+    <div class="stat"><span class="sk">Resiste até</span><span class="sv">2 °C</span></div>
+    <div class="stat"><span class="sk">Árvores na área, 3×3 m</span><span class="sv">20.0M</span></div>
+    <div class="stat wide"><span class="sk">CO₂e da área em 20 anos</span><span class="sv">2.0M t</span></div>
+  </div>`;
+document.getElementById("sp-list").innerHTML=ROWS.map((r,i)=>`
+  <div class="sp"><div class="sp-head">
+    <div class="sp-rank">${i+1}</div>
+    <div class="sp-thumb" style="background-image:url('${r.t}')"></div>
+    <div class="sp-names"><div class="sp-common">${r.it?`<i>${r.n}</i>`:r.n}${r.nat?`<span class="nearby">nativa</span>`:""}${r.gb?`<span class="nearby gbif">✓ na região</span>`:""}</div>
+      <div class="sp-sci">${r.s}</div></div>
+    <div class="sp-score"><span class="pct" style="color:${GRADE(r.pct)}">${r.pct}<span class="u">%</span></span><span class="fit">fit ${r.fit}</span></div>
+  </div><div class="sp-body"${i?" hidden":""}>${i?"":DETAIL}</div></div>`).join("");
+const tg=document.getElementById("tg"),cp=document.getElementById("cp"),sm=document.getElementById("sm");
+const setOpen=o=>{tg.setAttribute("aria-expanded",String(o));cp.hidden=!o;sm.hidden=o||!sm.textContent.trim();};
+tg.onclick=()=>setOpen(tg.getAttribute("aria-expanded")!=="true");
+const h=location.hash;
+if(h.includes("clip"))document.getElementById("panel").classList.add("clip");
+if(h.includes("crit"))setOpen(true);
+</script>
+</body>
+</html>

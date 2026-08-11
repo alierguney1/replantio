@@ -1,0 +1,158 @@
+// Self-check for the scoring and growth engines. Run: node test/check.mjs
+import assert from "node:assert";
+import { readFileSync } from "node:fs";
+import { trap, daylength, scoreSpecies, aggregateClimate, grade } from "../scoring.js";
+import { CLASSES, height, dbhCm, co2eKgPerTree, crownDiameterM, crownDisplayM, maturityYears } from "../growth.js";
+
+const species = JSON.parse(readFileSync(new URL("../data/species.json", import.meta.url)));
+const by = sci => species.find(s => s.sci === sci);
+const close = (a, b, tol, msg) => assert.ok(Math.abs(a - b) <= tol, `${msg}: got ${a}, want ${b}±${tol}`);
+
+// --- trapezoid
+assert.equal(trap(5, 0, 10, 20, 30), 0.5);
+assert.equal(trap(15, 0, 10, 20, 30), 1);
+assert.equal(trap(25, 0, 10, 20, 30), 0.5);
+assert.equal(trap(-1, 0, 10, 20, 30), 0);
+assert.equal(trap(30, 0, 10, 20, 30), 0);
+
+// --- daylength (verified anchors: equator/45N/70N, Forsythe p=0.8333)
+close(daylength(0, 172), 12.121, 0.05, "equator Jun21");
+close(daylength(45, 172), 15.618, 0.05, "45N Jun21");
+close(daylength(45, 355), 8.763, 0.05, "45N Dec21");
+assert.equal(daylength(70, 172), 24, "70N polar day");
+assert.equal(daylength(70, 355), 0, "70N polar night");
+
+// --- growth validation targets (research-verified anchors)
+const euc = CLASSES.tropical_fast, oak = CLASSES.temperate_slow;
+close(height(10, euc), 27.8, 0.3, "eucalyptus H(10)");
+close(dbhCm(height(10, euc), euc), 19.9, 0.5, "eucalyptus DBH(10)");
+close(height(10, oak), 4.6, 0.2, "oak H(10)");
+const oakSp = { gclass: "temperate_slow", wood: "broadleaf" };
+close(co2eKgPerTree(oakSp, 10), 21.5, 3, "oak CO2e(10) kg");
+const eucSp = { gclass: "tropical_fast", wood: "broadleaf" };
+const eucCo2 = co2eKgPerTree(eucSp, 10);
+assert.ok(eucCo2 > 400 && eucCo2 < 800, `euc CO2e(10) plausible: ${eucCo2}`);
+close(crownDiameterM(24, 19), 5.6, 0.4, "oak crown dia at D=24 H=19");
+assert.ok(maturityYears(oak) > 60 && maturityYears(euc) < 25, "maturity ordering");
+
+// --- climate aggregation
+const days = { time: [], temperature_2m_mean: [], temperature_2m_min: [], precipitation_sum: [] };
+for (const y of ["2020", "2021"]) for (let m = 1; m <= 12; m++) {
+  days.time.push(`${y}-${String(m).padStart(2, "0")}-15`);
+  days.temperature_2m_mean.push(10 + m);
+  days.temperature_2m_min.push(5 + m);
+  days.precipitation_sum.push(50);
+}
+const agg = aggregateClimate(days);
+close(agg.tavg[0], 11, 0.01, "tavg Jan");
+close(agg.prec[0], 50, 0.01, "prec Jan (per-year mean)");
+close(agg.annualRain, 600, 0.1, "annual rain");
+assert.equal(agg.absMin, 6);
+
+// temp gaps must not swallow precipitation (audit #4)
+const gappy = structuredClone(days);
+gappy.time.push("2020-01-20"); gappy.temperature_2m_mean.push(null);
+gappy.temperature_2m_min.push(null); gappy.precipitation_sum.push(40);
+close(aggregateClimate(gappy).prec[0], 70, 0.01, "precip counted on null-temp day");
+
+// a month with zero valid days must throw, not NaN-poison every score (audit #5)
+const holey = { time: [], temperature_2m_mean: [], temperature_2m_min: [], precipitation_sum: [] };
+for (let m = 1; m <= 12; m++) if (m !== 3) {
+  holey.time.push(`2020-${String(m).padStart(2, "0")}-15`);
+  holey.temperature_2m_mean.push(15); holey.temperature_2m_min.push(10); holey.precipitation_sum.push(50);
+}
+assert.throws(() => aggregateClimate(holey), /incomplete climate/, "missing month throws");
+
+// --- suitability with fixture climates
+const berlin = {
+  lat: 52.5,
+  tavg: [0.6, 1.5, 4.9, 9.4, 14.4, 17.5, 19.5, 19.2, 14.9, 10.2, 5.3, 1.7],
+  tmin: [-2.5, -2.2, 0.9, 4.4, 9.0, 12.4, 14.5, 14.2, 10.7, 6.7, 2.5, -1.0],
+  prec: [43, 37, 41, 36, 54, 69, 56, 58, 45, 44, 45, 55],
+  ph: 6.0, absMin: -15,
+};
+const saoPaulo = {
+  lat: -23.5,
+  tavg: [22.1, 22.4, 21.7, 20.1, 17.6, 16.5, 16.1, 17.5, 18.4, 19.4, 20.4, 21.4],
+  tmin: [18.0, 18.2, 17.6, 15.8, 13.0, 11.8, 11.3, 12.4, 13.5, 14.8, 15.9, 17.2],
+  prec: [240, 215, 160, 75, 60, 50, 45, 40, 80, 125, 145, 200],
+  ph: 5.3, absMin: 3,
+};
+
+const qr = by("Quercus robur"), eg = by("Eucalyptus grandis");
+assert.ok(qr && eg, "key species present in dataset");
+const qrBerlin = scoreSpecies(qr, berlin);
+assert.ok(qrBerlin.score > 0.6, `oak in Berlin should be suitable: ${qrBerlin.score}`);
+const egBerlin = scoreSpecies(eg, berlin);
+assert.equal(egBerlin.score, 0, "E. grandis in Berlin killed by record low");
+assert.equal(egBerlin.factors.frost, 0, "frost factor reports the kill");
+const egSP = scoreSpecies(eg, saoPaulo);
+assert.ok(egSP.score > 0.4, `E. grandis in Sao Paulo should rank: ${egSP.score}`);
+assert.ok(qrBerlin.score > scoreSpecies(qr, saoPaulo).score, "oak prefers Berlin over Sao Paulo");
+
+// missing soil -> ph factor null, not zero
+const noSoil = scoreSpecies(qr, { ...berlin, ph: null });
+assert.equal(noSoil.factors.ph, null);
+assert.ok(noSoil.score > 0, "no-soil site still scores");
+
+// audit #1: tropical species with NO cold data defaults to frost-tender
+const at = by("Acacia tortilis");
+assert.ok(at && at.ktmp == null && at.ktmpr == null, "A. tortilis has no cold data");
+assert.equal(scoreSpecies(at, berlin).score, 0, "Sahel acacia must not rate in Berlin");
+assert.ok(scoreSpecies(at, saoPaulo).factors.frost !== 0, "still fine where frost-free");
+
+// audit #2: perennials must tolerate the annual regime, not just a summer window
+const summerTourist = { temp: [12, 20, 30, 42], rain: [100, 200, 800, 1500], ph: null,
+  ktmp: null, ktmpr: -60, photo: null, cycle: [90, 120], gclass: "tropical_fast", wood: "broadleaf" };
+const st = scoreSpecies(summerTourist, berlin);
+assert.equal(st.factors.annual, 0, "annual gate trips");
+assert.equal(st.score, 0, "4-month window alone cannot qualify a tree in Berlin");
+
+// audit #3: corrupt envelopes are excluded at build time
+assert.equal(by("Faidherbia albida"), undefined, "inverted-envelope rows dropped");
+
+// audit #9: unknown photoperiod reads as no-data, insensitive reads as pass
+assert.equal(scoreSpecies(qr, berlin).factors.photo, null, "oak photoperiod unknown -> null");
+const insensitive = species.find(s => Array.isArray(s.photo) && s.photo.length === 0);
+assert.ok(insensitive, "known-insensitive species exist");
+assert.equal(scoreSpecies(insensitive, saoPaulo).factors.photo, 1, "insensitive scores 1, not null");
+
+// native-range layer (Kew WCVP)
+const natives = JSON.parse(readFileSync(new URL("../data/natives.json", import.meta.url)));
+const idOf = sci => String(species.find(s => s.sci === sci)?.id);
+assert.ok(Object.keys(natives).length > 900, "native-range coverage");
+assert.ok(natives[idOf("Eucalyptus grandis")].includes("AU"), "E. grandis native to AU");
+assert.ok(!natives[idOf("Eucalyptus grandis")].includes("BR"), "E. grandis not native to BR");
+assert.ok(natives[idOf("Quercus robur")].includes("DE"), "Q. robur native to DE");
+const pear = natives[idOf("Pyrus pyrifolia")];
+assert.ok(pear.includes("CN") && !pear.includes("BR"), "Chinese pear is Asian, not Brazilian");
+
+// winter dormancy proxy: Chinese pear must fail in chill-free Cubatao-like climate
+const pearSp = by("Pyrus pyrifolia");
+assert.ok(pearSp?.decid, "pear is deciduous");
+const cubatao = { ...saoPaulo, tavg: saoPaulo.tavg.map(v => v + 2.5), tmin: saoPaulo.tmin.map(v => v + 2.5), absMin: 8 };
+assert.ok(scoreSpecies(pearSp, cubatao).score < 0.05, "no winter chill -> pear fails");
+assert.ok(scoreSpecies(qr, berlin).factors.chill === 1, "oak in Berlin has real winter");
+
+// display crowns widen with age (slenderness decline), biomass chain untouched
+const cd20 = crownDisplayM(CLASSES.tropical_fast, 20);
+const cd60 = crownDisplayM(CLASSES.tropical_fast, 60);
+assert.ok(cd20 > 3.5 && cd20 < 5.5, `euc display crown at 20y plausible: ${cd20}`);
+assert.ok(cd60 > 5 && cd60 < 8, `euc display crown at 60y plausible: ${cd60}`);
+assert.ok(cd60 > cd20, "crowns keep widening with age");
+close(co2eKgPerTree({ gclass: "temperate_slow", wood: "broadleaf" }, 10), 21.5, 3, "carbon anchor unmoved by crown fix");
+
+// habit expansion: non-tree species exist and are flagged
+assert.ok(species.length > 2000, `all life forms present: ${species.length}`);
+const okra = by("Abelmoschus esculentus");
+assert.ok(okra && okra.tree === false && okra.porte === "herb", "okra is a flagged herb");
+assert.ok(by("Quercus robur").tree === true, "oak stays a tree");
+
+// grading bands
+assert.equal(grade(0.9), "Excellent");
+assert.equal(grade(0.5), "Suitable");
+assert.equal(grade(0), "Not suitable");
+
+console.log("all checks passed");
+console.log(`  oak@Berlin ${qrBerlin.score.toFixed(2)} | euc@Berlin ${egBerlin.score.toFixed(2)} | euc@SP ${egSP.score.toFixed(2)}`);
+console.log(`  euc CO2e(10y) ${eucCo2.toFixed(0)} kg | oak CO2e(10y) ${co2eKgPerTree(oakSp, 10).toFixed(1)} kg`);

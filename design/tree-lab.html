@@ -1,0 +1,144 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>tree lab</title>
+<style>
+  body { margin: 0; background: #0b0d0b; color: #9fb79f; font: 11px/1.5 ui-monospace, monospace; }
+  .wrap { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; }
+  figure { margin: 0; }
+  figcaption { padding: 2px 0; color: #7f9a7f; }
+  canvas { display: block; }
+  pre { padding: 6px 12px; color: #86c98d; background: #0f120f; margin: 0 8px 8px; }
+</style>
+<div class="wrap" id="wrap"></div>
+<pre id="stats">measuring…</pre>
+<script src="crown-render.js"></script>
+<script>
+const LAT = -23.8655;
+const MPP = z => 40075016.686 * Math.cos(LAT * Math.PI / 180) / (256 * Math.pow(2, z));
+const SIZE = 360;
+
+const BG = {
+  forest19: { z: 19, pre: "ref/target-z19-", t: [[194505, 297948], [194506, 297948], [194505, 297949], [194506, 297949]] },
+  forest19b: { z: 19, pre: "ref/target-z19-", t: [[194506, 297950], [194507, 297950], [194506, 297951], [194507, 297951]] },
+  forest18: { z: 18, pre: "ref/target-z18-", t: [[97252, 148974], [97253, 148974], [97252, 148975], [97253, 148975]] },
+  forest17: { z: 17, pre: "ref/m-cubatao-", t: [[48626, 74486], [48627, 74486], [48626, 74487], [48627, 74487]] },
+  pasture: { z: 18, single: "ref/euca-sp-z18.jpg" },
+  bare: { z: 18, single: "ref/orchard-z18.jpg" },
+};
+
+// crown 4.0 m on a 3 m grid is what year-25 tropical_medium actually produces
+const C = 4.0, SP = 3;
+const CELLS = [
+  { t: "REAL forest z17 (1.09 m/px)", bg: "forest17", z: 17, mode: "real", sx: 40, sy: 40 },
+  { t: "SEAM z17 · right = sim", bg: "forest17", z: 17, mode: "seam", crown: C, spacing: SP, sx: 40, sy: 40 },
+  { t: "REAL forest z18 (0.55 m/px)", bg: "forest18", z: 18, mode: "real", sx: 60, sy: 40 },
+  { t: "SEAM z18 · right = sim", bg: "forest18", z: 18, mode: "seam", crown: C, spacing: SP, sx: 60, sy: 40 },
+  { t: "REAL forest z19 (0.27 m/px)", bg: "forest19", z: 19, mode: "real", sx: 70, sy: 60 },
+  { t: "SEAM z19 · right = sim", bg: "forest19", z: 19, mode: "seam", crown: C, spacing: SP, sx: 70, sy: 60 },
+  { t: "REAL z19 tile shown at z20 (upscaled, as Leaflet does)", bg: "forest19b", z: 20, mode: "real", sx: 40, sy: 40 },
+  { t: "SEAM z20 · right = sim", bg: "forest19b", z: 20, mode: "seam", crown: C, spacing: SP, sx: 40, sy: 40 },
+  { t: "REAL z19 tile shown at z21", bg: "forest19", z: 21, mode: "real", sx: 90, sy: 90 },
+  { t: "SEAM z21 · right = sim", bg: "forest19", z: 21, mode: "seam", crown: C, spacing: SP, sx: 90, sy: 90 },
+  { t: "SIM closed canopy on bare soil z19 (no real canopy underneath)", bg: "bare", z: 19, mode: "sim", crown: C, spacing: SP, sx: 30, sy: 60 },
+  { t: "REAL pasture, isolated crowns z19", bg: "pasture", z: 19, mode: "real", sx: 20, sy: 20 },
+  { t: "SIM isolated crowns z19 (crown 9 m, 14 m grid) on soil", bg: "bare", z: 19, mode: "sim", crown: 9, spacing: 14, sx: 30, sy: 60 },
+  { t: "SIM conifer closed canopy z19", bg: "bare", z: 19, mode: "sim", crown: C, spacing: SP, conifer: 1, sx: 30, sy: 60 },
+];
+
+const load = s => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = s; });
+
+async function compose(def) {
+  const c = document.createElement("canvas");
+  if (def.single) {
+    c.width = c.height = 256;
+    c.getContext("2d").drawImage(await load(def.single), 0, 0);
+    return c;
+  }
+  c.width = c.height = 512;
+  const g = c.getContext("2d");
+  const xs = [...new Set(def.t.map(a => a[0]))].sort(), ys = [...new Set(def.t.map(a => a[1]))].sort();
+  for (const [x, y] of def.t) {
+    const im = await load(`${def.pre}${x}-${y}.jpg`);
+    if (im) g.drawImage(im, xs.indexOf(x) * 256, ys.indexOf(y) * 256);
+  }
+  return c;
+}
+
+function plant(spacingM, mpp, w, h, seed) {
+  const rnd = mulberry32(seed);
+  const st = spacingM / mpp, out = [];
+  for (let y = -st; y < h + st; y += st)
+    for (let x = -st; x < w + st; x += st)
+      out.push({
+        x: x + (rnd() - 0.5) * st * 0.6, y: y + (rnd() - 0.5) * st * 0.6,
+        // the lab's fake lat/lon just needs to be metric and monotone for tone noise
+        la: -23.8655 + y * mpp / 111320, ln: -46.4416 + x * mpp / 102000,
+        s: 0.8 + rnd() * 0.4, seed: Math.floor(rnd() * 2147483647),
+      });
+  return out.sort((a, b) => a.la - b.la || a.ln - b.ln); // same paint order as drawSim
+}
+
+(async () => {
+  const wrap = document.getElementById("wrap");
+  const bgs = {};
+  for (const k in BG) bgs[k] = await compose(BG[k]);
+  const cells = [];
+  for (const c of CELLS) {
+    const fig = document.createElement("figure");
+    const cv = document.createElement("canvas");
+    cv.width = SIZE; cv.height = SIZE;
+    const cap = document.createElement("figcaption");
+    cap.textContent = c.t;
+    fig.append(cv, cap); wrap.append(fig);
+    const g = cv.getContext("2d", { willReadFrequently: true });
+    const mpp = MPP(c.z), k = Math.pow(2, c.z - BG[c.bg].z);
+    setCrownSoft(c.z, 19);   // the app's Esri layer is maxNativeZoom 19
+    g.drawImage(bgs[c.bg], c.sx, c.sy, SIZE / k, SIZE / k, 0, 0, SIZE, SIZE);
+    if (c.mode !== "real") {
+      const x0 = c.mode === "seam" ? SIZE / 2 : 0;
+      g.save();
+      g.beginPath(); g.rect(x0, 0, SIZE - x0, SIZE); g.clip();
+      for (const t of plant(c.spacing, mpp, SIZE, SIZE, 4242)) {
+        const r = c.crown * t.s / 2 / mpp;
+        if (t.x < x0 - r - 6) continue;
+        drawTree(g, t.x, t.y, Math.max(r, 0.4), t, !!c.conifer);
+      }
+      g.restore();
+    }
+    cells.push({ c, g });
+  }
+
+  const q = (a, p) => { const s = Float64Array.from(a).sort(); return s[Math.floor(p * (s.length - 1))].toFixed(1); };
+  function measure(g, x0, w) {
+    const d = g.getImageData(x0, 0, w, SIZE).data, L = [], H = [], S = [], std = [];
+    const lum = new Float32Array(w * SIZE);
+    for (let i = 0; i < w * SIZE; i++) {
+      const r = d[i * 4] / 255, gg = d[i * 4 + 1] / 255, b = d[i * 4 + 2] / 255;
+      const mx = Math.max(r, gg, b), mn = Math.min(r, gg, b), l = (mx + mn) / 2;
+      let hh = 0, ss = 0;
+      if (mx !== mn) {
+        const dd = mx - mn; ss = l > .5 ? dd / (2 - mx - mn) : dd / (mx + mn);
+        hh = mx === r ? (gg - b) / dd + (gg < b ? 6 : 0) : mx === gg ? (b - r) / dd + 2 : (r - gg) / dd + 4;
+        hh *= 60;
+      }
+      L.push(l * 100); H.push(hh); S.push(ss * 100);
+      lum[i] = 0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2];
+    }
+    for (let by = 0; by + 8 <= SIZE; by += 8) for (let bx = 0; bx + 8 <= w; bx += 8) {
+      let m = 0, m2 = 0;
+      for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) { const v = lum[(by + y) * w + bx + x]; m += v; m2 += v * v; }
+      m /= 64; std.push(Math.sqrt(Math.max(0, m2 / 64 - m * m)));
+    }
+    return `L p10=${q(L, .1)} p25=${q(L, .25)} p50=${q(L, .5)} p75=${q(L, .75)} p90=${q(L, .9)} | ` +
+      `H p50=${q(H, .5)} | S p50=${q(S, .5)} | grain8 p50=${q(std, .5)}`;
+  }
+  let out = "TARGET (real z18/z19): L p10=4.6 p25=13.8 p50=23.2 p75=30.3 p90=34.6 | H p50=123.5 | S p50=22.5 | grain8 p50=11-14\n\n";
+  for (const { c, g } of cells) {
+    out += c.t + "\n";
+    if (c.mode === "seam") out += "  real: " + measure(g, 0, SIZE / 2) + "\n   sim: " + measure(g, SIZE / 2 + 2, SIZE / 2 - 2) + "\n";
+    else out += "   " + (c.mode === "real" ? "real" : " sim") + ": " + measure(g, 0, SIZE) + "\n";
+  }
+  document.getElementById("stats").textContent = out;
+  document.title = "LABDONE";
+})();
+</script>

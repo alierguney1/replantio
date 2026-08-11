@@ -1,0 +1,9 @@
+data/cache
+data/wcvp.zip
+data/wgsrpd_level4.dbf
+data/ecocrop_raw.csv
+design
+test
+scripts
+*.md
+.env.local

@@ -1,0 +1,11 @@
+.vercel
+.env.local
+data/cache/
+data/wcvp.zip
+data/wgsrpd_level4.dbf
+design/*.png
+design/*.jpg
+design/ph/
+design/ref/
+assets/logo-full.png
+.DS_Store

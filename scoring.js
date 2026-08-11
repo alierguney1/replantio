@@ -1,0 +1,163 @@
+// EcoCrop suitability engine, adapted for perennials.
+// Model: trapezoidal membership per factor, min() combination (Liebig),
+// best growing-season window over 12 candidate start months (Hijmans/dismo,
+// DIVA-GIS). Perennial adaptations, documented in README.md:
+//   - temperature scored on window-mean temp (OpenCLIM perennial variant),
+//   - frost kill tested year-round against KTMPR (dormant-season hardiness),
+//   - photoperiod scored from computed daylength (extension; not in dismo).
+
+export function trap(x, a, b, c, d) {
+  if (x <= a || x >= d) return 0;
+  if (x < b) return (x - a) / (b - a);
+  if (x <= c) return 1;
+  return (d - x) / (d - c);
+}
+
+// Forsythe/CBM daylength (hours) at latitude (deg) and day of year. p=0.8333
+// is the US-standard sunrise/sunset definition (sun upper limb + refraction).
+export function daylength(lat, doy, p = 0.8333) {
+  const theta = 0.2163108 + 2 * Math.atan(0.9671396 * Math.tan(0.00860 * (doy - 186)));
+  const phi = Math.asin(0.39795 * Math.cos(theta));
+  const rad = Math.PI / 180;
+  let a = (Math.sin(p * rad) + Math.sin(lat * rad) * Math.sin(phi)) /
+          (Math.cos(lat * rad) * Math.cos(phi));
+  a = Math.max(-1, Math.min(1, a)); // clamps polar day/night
+  return 24 - (24 / Math.PI) * Math.acos(a);
+}
+
+const MID_DOY = [15, 46, 74, 105, 135, 166, 196, 227, 258, 288, 319, 349];
+
+export function monthlyDaylengths(lat) {
+  return MID_DOY.map(d => daylength(lat, d));
+}
+
+// Aggregate Open-Meteo daily arrays into monthly climate normals.
+export function aggregateClimate(daily) {
+  const sum = Array(12).fill(0), n = Array(12).fill(0);
+  const tminSum = Array(12).fill(0), precSum = Array(12).fill(0);
+  const years = Array.from({ length: 12 }, () => new Set());
+  let absMin = Infinity;
+  for (let i = 0; i < daily.time.length; i++) {
+    const m = +daily.time[i].slice(5, 7) - 1;
+    precSum[m] += daily.precipitation_sum[i] ?? 0; // precip counts even when temp has gaps
+    years[m].add(daily.time[i].slice(0, 4));
+    const t = daily.temperature_2m_mean[i];
+    if (t == null) continue;
+    sum[m] += t; n[m]++;
+    tminSum[m] += daily.temperature_2m_min[i] ?? t;
+    if (daily.temperature_2m_min[i] != null) absMin = Math.min(absMin, daily.temperature_2m_min[i]);
+  }
+  if (n.some(v => v === 0)) throw new Error("incomplete climate series (a month has no valid days)");
+  const tavg = sum.map((s, m) => s / n[m]);
+  const tmin = tminSum.map((s, m) => s / n[m]);
+  const prec = precSum.map((s, m) => s / years[m].size); // mean monthly total, mm
+  const meanOf = arr => {
+    const v = (arr ?? []).filter(x => x != null);
+    return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+  };
+  const radMJ = meanOf(daily.shortwave_radiation_sum);
+  return {
+    tavg, tmin, prec,
+    absMin: absMin === Infinity ? null : absMin,
+    annualRain: prec.reduce((a, b) => a + b, 0),
+    meanTemp: tavg.reduce((a, b) => a + b, 0) / 12,
+    rad: radMJ == null ? null : radMJ / 3.6, // kWh/m2/day
+    rh: meanOf(daily.relative_humidity_2m_mean),
+    cloud: meanOf(daily.cloud_cover_mean),
+  };
+}
+
+function dayClasses(d) {
+  // half-hour tolerance on the EcoCrop category boundaries so equatorial
+  // ~12.1h days still count as "short day (<12h)"
+  const c = [];
+  if (d < 12.5) c.push("short");
+  if (d >= 11.5 && d <= 14.5) c.push("neutral");
+  if (d > 13.5) c.push("long");
+  return c;
+}
+
+// site: {tavg[12], tmin[12], prec[12], ph|null, lat}
+export function scoreSpecies(sp, site) {
+  const [gmin, gmax] = sp.cycle ?? [null, null];
+  const G = gmin == null && gmax == null ? 12 :
+    Math.max(1, Math.min(12, Math.round(((gmin ?? gmax) + (gmax ?? gmin)) / 60)));
+
+  let temp = 0, rain = 0, best = 0, bestScore = -1;
+  for (let s = 0; s < 12; s++) {
+    let tsum = 0, rtot = 0;
+    for (let k = 0; k < G; k++) {
+      const m = (s + k) % 12;
+      tsum += site.tavg[m];
+      rtot += site.prec[m];
+    }
+    const t = trap(tsum / G, ...sp.temp);
+    const r = trap(rtot, ...sp.rain);
+    if (Math.min(t, r) > bestScore) { bestScore = Math.min(t, r); temp = t; rain = r; best = s; }
+    if (G === 12) break; // all windows identical for full-year perennials
+  }
+
+  // A perennial lives through the whole year, not just its best window:
+  // the annual regime must sit inside the absolute temperature envelope.
+  const annual = trap(site.tavg.reduce((a, b) => a + b, 0) / 12, ...sp.temp) > 0 ? 1 : 0;
+
+  // Frost: dormant-season hardiness (KTMPR), else early-growth KTMP; species
+  // with no cold data at all default to frost-tender when tropical and to
+  // "unknown" (null, not scored) when temperate. Kill on the dismo monthly
+  // test OR when the observed 10-year record low undercuts the threshold.
+  const kt = sp.ktmpr ?? sp.ktmp ?? (sp.gclass?.startsWith("tropical") ? 0 : null);
+  const frost = kt == null ? null :
+    (Math.min(...site.tmin) < kt + 4 || (site.absMin != null && site.absMin < kt) ? 0 : 1);
+
+  const ph = sp.ph && site.ph != null ? trap(site.ph, ...sp.ph) : null;
+
+  // Winter dormancy proxy: EcoCrop has no chill-hours field, so temperate
+  // deciduous species (which need cold to break dormancy and fruit) are
+  // penalized where the coldest month stays warm. Full credit at <= 10 C,
+  // zero at >= 16 C, linear between. Catches e.g. Asian pear in the tropics.
+  let chill = null;
+  if (sp.decid && sp.gclass?.startsWith("temperate")) {
+    const coldest = Math.min(...site.tavg);
+    chill = coldest <= 10 ? 1 : coldest >= 16 ? 0 : (16 - coldest) / 6;
+  }
+
+  // photo: null = unknown (not scored), [] = known insensitive, else categories
+  let photo = sp.photo == null ? null : 1;
+  if (sp.photo?.length) {
+    const dls = monthlyDaylengths(site.lat);
+    const here = new Set();
+    for (let k = 0; k < G; k++) dayClasses(dls[(best + k) % 12]).forEach(c => here.add(c));
+    photo = sp.photo.some(c => here.has(c)) ? 1 : 0.5;
+  }
+
+  const score = Math.min(temp, rain, ph ?? 1, chill ?? 1) * (frost ?? 1) * (photo ?? 1) * annual;
+
+  // Tie-breaker: EcoCrop plateaus leave many species at the same score, so
+  // also measure how close the site sits to each envelope's center
+  // (triangular membership peaking at the optimal-range midpoint).
+  const tri = (x, a, b, c, d) => trap(x, a, (b + c) / 2, (b + c) / 2, d);
+  let tsum = 0, rtot = 0;
+  for (let k = 0; k < G; k++) { const m = (best + k) % 12; tsum += site.tavg[m]; rtot += site.prec[m]; }
+  const fits = [tri(tsum / G, ...sp.temp), tri(rtot, ...sp.rain)];
+  if (sp.ph && site.ph != null) fits.push(tri(site.ph, ...sp.ph));
+  const fit = fits.reduce((a, b) => a + b, 0) / fits.length;
+
+  return { score, fit, factors: { temp, rain, ph, frost, photo, annual, chill }, window: { start: best, months: G } };
+}
+
+export function grade(s) {
+  if (s <= 0) return "Not suitable";
+  if (s <= 0.2) return "Very marginal";
+  if (s <= 0.4) return "Marginal";
+  if (s <= 0.6) return "Suitable";
+  if (s <= 0.8) return "Very suitable";
+  return "Excellent";
+}
+
+export function gradeColor(s) {
+  if (s > 0.8) return "#63c987";
+  if (s > 0.6) return "#a9cd72";
+  if (s > 0.4) return "#d9c46a";
+  if (s > 0.2) return "#d79a63";
+  return "#d4756f";
+}

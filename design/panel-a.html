@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Canopy · painel A · placa de instrumento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* =========================================================================
+   PAINEL A : "placa de instrumento"
+   Teses: (1) uma superfície contínua, zero caixas dentro de caixas;
+          (2) escala de ritmo vertical explícita;
+          (3) três níveis de texto, não dois;
+          (4) a figura do clima é UMA figura com um só eixo de meses;
+          (5) luz vem de cima: anel escuro fora, fio de luz dentro.
+   ========================================================================= */
+:root {
+  /* --- tinta: três níveis, não dois --- */
+  --ink:    #e8ede8;
+  --ink-2:  #99a69c;
+  --ink-3:  #6b786f;
+  /* --- fios --- */
+  --line:   rgba(255,255,255,.072);
+  --line-2: rgba(255,255,255,.13);
+  /* --- dados: mesma croma baixa nas três matizes --- */
+  --leaf:   #63c987;
+  --amber:  #d7a463;
+  --water:  #79a6c6;
+  --warn:   #e0827b;
+  /* --- ritmo vertical --- */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 22px; --s6: 32px; --s7: 44px;
+  --pad: 22px;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  color-scheme: dark;
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100vh; background: #0a0d0b; color: var(--ink); }
+body {
+  background: url("map-bg.jpg") center / cover no-repeat fixed;
+}
+
+/* ---------- o recipiente ---------- */
+#panel {
+  position: absolute; top: 16px; right: 16px; width: 420px;
+  border-radius: 20px; border: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.05) 0, rgba(255,255,255,.012) 120px, rgba(255,255,255,0) 300px),
+    rgba(12,16,13,.84);
+  backdrop-filter: blur(30px) saturate(1.25);
+  -webkit-backdrop-filter: blur(30px) saturate(1.25);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.55),                 /* anel escuro: a borda existe sobre mapa claro */
+    inset 0 0 0 1px rgba(255,255,255,.055),    /* fio de vidro */
+    inset 0 1px 0 rgba(255,255,255,.10),       /* luz no topo */
+    0 1px 2px rgba(0,0,0,.35),                 /* sombra de contato */
+    0 30px 64px -18px rgba(0,0,0,.78);         /* sombra ambiente */
+  overflow: hidden;
+}
+#panel.clip { max-height: calc(100vh - 32px); overflow-y: auto; overscroll-behavior: contain; }
+#panel.clip::-webkit-scrollbar { width: 10px; }
+#panel.clip::-webkit-scrollbar-track { background: transparent; }
+#panel.clip::-webkit-scrollbar-thumb { background: rgba(255,255,255,.11); border-radius: 99px; border: 3px solid transparent; background-clip: content-box; }
+#panel.clip::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.2); border: 3px solid transparent; background-clip: content-box; }
+
+/* ---------- cabeçalho como zona ---------- */
+.p-head {
+  position: sticky; top: 0; z-index: 3;
+  padding: 19px var(--pad) 15px;
+  background: linear-gradient(180deg, rgba(17,22,18,.97) 0, rgba(17,22,18,.93) 62%, rgba(17,22,18,.72) 88%, rgba(17,22,18,0) 100%);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.p-head::after { /* fio que desvanece nas pontas: nunca bate na quina arredondada */
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0, rgba(255,255,255,.115) 10%, rgba(255,255,255,.115) 90%, transparent 100%);
+}
+.loc-title {
+  font-size: 21px; font-weight: 500; letter-spacing: -.014em; line-height: 1.18;
+  margin: 0 40px 0 0;
+}
+.loc-title .adm { color: var(--ink-3); font-weight: 400; }
+.loc-geo {
+  margin-top: 7px; font-family: var(--mono); font-size: 10.5px; font-weight: 400;
+  color: var(--ink-2); font-variant-numeric: tabular-nums; letter-spacing: .005em;
+}
+.loc-geo .sep { color: rgba(255,255,255,.16); margin: 0 .55em; }
+.loc-note { margin-top: 7px; font-size: 11px; line-height: 1.5; color: var(--ink-3); }
+.loc-note b { font-family: var(--mono); font-size: 10.5px; font-weight: 400; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+.panel-close {
+  position: absolute; top: 17px; right: 16px; width: 26px; height: 26px;
+  border: 0; border-radius: 7px; background: none; color: var(--ink-3);
+  font-size: 17px; line-height: 1; cursor: pointer; padding: 0;
+  transition: color .15s, background .15s;
+}
+.panel-close:hover { color: var(--ink); background: rgba(255,255,255,.07); }
+
+.p-body { padding: 0 var(--pad); }
+
+/* ---------- rótulos de seção ---------- */
+.section-h {
+  font-size: 9.5px; font-weight: 500; text-transform: uppercase; letter-spacing: .145em;
+  color: var(--ink-3); margin: var(--s6) 0 var(--s3);
+}
+
+/* ---------- a figura do clima: herói ---------- */
+.site-fig { margin: 0 -16px; }
+.site-fig svg { display: block; width: 100%; height: auto; }
+/* leitura do sítio: tabela de duas colunas. Enche as colunas de cima para
+   baixo, então a ordem do DOM continua a ordem lógica do texto atual. */
+.readout {
+  margin: var(--s5) 0 0;
+  display: grid; grid-template-rows: repeat(4, auto); grid-auto-flow: column; grid-auto-columns: 1fr;
+  column-gap: 26px;
+}
+.readout .rd {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+  font-size: 11px; color: var(--ink-3); padding: 4.5px 0; border-top: 1px solid var(--line);
+}
+.readout .rd:nth-child(1), .readout .rd:nth-child(5) { border-top: 0; }
+.readout b { font-family: var(--mono); font-size: 10.5px; font-weight: 400; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------- linha de critérios (estrutura fechada, só acabamento) ---------- */
+.sec-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: var(--s7) 0 var(--s3); }
+.sec-row .section-h { margin: 0; }
+.crit-toggle {
+  flex: 0 0 auto; font: inherit; font-size: 10.5px; color: var(--ink-3);
+  background: none; border: 0; padding: 0; cursor: pointer; white-space: nowrap;
+}
+.crit-toggle b { font-family: var(--mono); font-size: 10.5px; font-weight: 400; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.crit-toggle.active b { color: var(--leaf); }
+.crit-toggle:hover { color: var(--ink-2); }
+.crit-toggle .car {
+  display: inline-block; width: 4.5px; height: 4.5px; margin-left: 7px; vertical-align: 2px;
+  border-right: 1px solid currentColor; border-bottom: 1px solid currentColor;
+  transform: rotate(45deg); opacity: .6; transition: transform .18s ease;
+}
+.crit-toggle[aria-expanded="true"] .car { transform: rotate(-135deg); }
+
+.crit-summary {
+  display: block; width: 100%; text-align: left; font: inherit; font-size: 11px; line-height: 1.7;
+  color: var(--ink-3); background: none; border: 0; padding: 0; margin: -6px 0 var(--s3); cursor: pointer;
+}
+.crit-summary b { font-weight: 400; color: var(--ink-2); }
+.crit-summary .d { color: rgba(255,255,255,.15); margin: 0 .4em; }
+.crit-summary:hover b { color: var(--leaf); }
+.crit-summary[hidden] { display: none; }
+
+/* sem régua de fecho: a primeira linha da lista já fecha o bloco, e duas
+   réguas a 12 px uma da outra lêem-se como acidente. Critérios e espécies
+   passam a ser um único livro-razão. */
+.crit-panel { margin: 0 calc(var(--pad) * -1); padding: 0 var(--pad); }
+.crit-panel[hidden] { display: none; }
+.crit-row { display: flex; align-items: baseline; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line); }
+.crit-row .k {
+  flex: 0 0 78px; font-size: 9.5px; text-transform: uppercase; letter-spacing: .11em;
+  color: var(--ink-3); padding-top: 2px;
+}
+.crit-row .opts { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 15px; row-gap: 4px; margin: -3px 0; }
+.opt { font: inherit; font-size: 11.5px; background: none; border: 0; padding: 3px 0; margin: 0; color: var(--ink-2); cursor: pointer; }
+.opt:hover { color: var(--ink); }
+.opt.on { color: var(--ink); }
+.opt.on.constrained { color: var(--leaf); }
+.opt .c { font-family: var(--mono); font-size: 9px; color: var(--ink-3); margin-left: 5px; font-variant-numeric: tabular-nums; }
+.opt.on .c { display: none; }
+.opt[disabled], .opt.zero { opacity: .35; cursor: default; }
+.crit-clear { display: block; margin: 10px 0 0 auto; font: inherit; font-size: 10px; color: var(--ink-3); background: none; border: 0; padding: 0; cursor: pointer; }
+.crit-clear:hover { color: var(--ink); }
+
+/* ---------- lista: livro-razão, sem caixas ---------- */
+#sp-list { margin: 0 calc(var(--pad) * -1); }
+.sp { border-top: 1px solid var(--line); }
+.sp:first-child { border-top: 1px solid var(--line); }
+.sp:last-child { border-bottom: 1px solid var(--line); }
+.sp-head {
+  display: flex; align-items: center; gap: 13px;
+  padding: 10px var(--pad); min-height: 62px; cursor: pointer; user-select: none;
+  transition: background .13s;
+}
+.sp-head:hover { background: rgba(255,255,255,.028); }
+.sp:has(.sp-body:not([hidden])) { background: rgba(255,255,255,.022); }
+.sp-rank { font-family: var(--mono); font-size: 10px; color: var(--ink-3); width: 15px; text-align: right; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.sp-thumb {
+  width: 42px; height: 42px; border-radius: 11px; flex-shrink: 0;
+  background-color: rgba(255,255,255,.045); background-size: cover; background-position: center;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.09);
+}
+.sp-names { flex: 1; min-width: 0; }
+.sp-common { font-size: 13.5px; font-weight: 500; letter-spacing: -.004em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sp-sci { font-size: 11px; font-style: italic; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+.nearby { font-size: 9.5px; font-weight: 500; letter-spacing: .02em; margin-left: 5px; color: var(--leaf); }
+.nearby.gbif { color: var(--ink-3); font-weight: 400; }
+.sp-score { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex-shrink: 0; }
+.sp-score .pct { font-family: var(--mono); font-size: 13px; font-weight: 400; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.sp-score .pct .u { font-size: .68em; opacity: .5; margin-left: .5px; }
+.sp-score .fit { font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+/* ---------- ficha aberta: uma composição ---------- */
+.sp-body { padding: 0 var(--pad) var(--s5); }
+.sp-body[hidden] { display: none; }
+/* a foto sangra até a borda do painel: prancha de espécime, foco único da ficha */
+.sp-photo {
+  width: calc(100% + var(--pad) * 2); margin: 0 calc(var(--pad) * -1); height: 176px;
+  background-color: rgba(255,255,255,.04); background-size: cover; background-position: center;
+  box-shadow: inset 0 1px 0 rgba(0,0,0,.45), inset 0 -1px 0 rgba(0,0,0,.45);
+}
+/* duas linhas deliberadas: veredicto, depois usos. Nunca uma quebra por acidente. */
+.sp-meta { margin: var(--s4) 0 0; font-size: 11.5px; color: var(--ink-2); }
+.sp-meta .grade { color: var(--leaf); }
+.sp-meta .sep { color: rgba(255,255,255,.16); margin: 0 .45em; }
+.sp-uses { margin: 4px 0 0; font-size: 11px; line-height: 1.65; color: var(--ink-3); }
+.sp-uses .it { display: inline-block; white-space: nowrap; margin-right: 13px; }
+
+.factors { margin: var(--s5) 0 0; }
+.factor { display: grid; grid-template-columns: 74px 1fr 60px; align-items: center; gap: 11px; padding: 5px 0; }
+.factor .fk { font-size: 11px; color: var(--ink-2); }
+.factor .fx { font-family: var(--mono); font-size: 10.5px; color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.rtrack { position: relative; height: 4px; border-radius: 2px; background: rgba(255,255,255,.035); }
+.rabs { position: absolute; top: 0; height: 100%; border-radius: 2px; background: rgba(99,201,135,.17); }
+.ropt { position: absolute; top: 0; height: 100%; border-radius: 2px; background: rgba(99,201,135,.40); }
+.rtick { position: absolute; top: -4px; width: 1.5px; height: 12px; border-radius: 1px; background: var(--ink); box-shadow: 0 0 0 2.5px rgba(13,17,14,.7); }
+.rtick.out { background: var(--warn); }
+.evidence { font-size: 10.5px; color: var(--ink-3); margin-top: var(--s3); line-height: 1.6; }
+.evidence a { color: var(--leaf); text-decoration: none; }
+
+.growth-fig { margin: var(--s5) 0 0; }
+.growth-fig svg { display: block; width: 100%; height: auto; }
+.fig-cap { font-size: 10.5px; color: var(--ink-3); margin-top: var(--s2); line-height: 1.55; }
+
+.stats { margin: var(--s5) 0 0; }
+.stat { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 11.5px; padding: 5.5px 0; }
+.stat .sk { color: var(--ink-2); white-space: nowrap; }
+.stat .sv { font-family: var(--mono); font-size: 11px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.stat.wide { margin-top: var(--s2); padding-top: var(--s3); border-top: 1px solid var(--line); font-size: 12.5px; }
+.stat.wide .sv { font-size: 12px; }
+
+/* "mostrar mais": continua o livro-razão, não é uma pílula */
+.chip.more {
+  display: block; width: calc(100% + var(--pad) * 2); margin: 0 calc(var(--pad) * -1);
+  padding: 14px 0; text-align: center; font: inherit; font-size: 11px; color: var(--ink-2);
+  background: none; border: 0; border-bottom: 1px solid var(--line); cursor: pointer; transition: color .13s, background .13s;
+}
+.chip.more:hover { color: var(--ink); background: rgba(255,255,255,.028); }
+.chip {
+  font: inherit; font-size: 11px; padding: 6px 11px; border-radius: 999px;
+  background: rgba(255,255,255,.05); border: 1px solid var(--line); color: var(--ink-2); cursor: pointer;
+}
+
+/* o conteúdo dissolve na borda inferior em vez de ser guilhotinado */
+.panel-fade {
+  position: sticky; bottom: 0; z-index: 2; pointer-events: none;
+  height: 42px;   /* bloco próprio: no fim do rolo não cobre texto nenhum */
+  background: linear-gradient(to top, rgba(13,17,14,.95), rgba(13,17,14,0));
+}
+.footnote { margin-top: var(--s6); padding-top: var(--s4); border-top: 1px solid var(--line); font-size: 10.5px; line-height: 1.8; color: var(--ink-3); }
+.footnote a { color: var(--ink-3); text-decoration: underline; text-decoration-color: rgba(255,255,255,.18); text-underline-offset: 2px; }
+.footnote a:hover { color: var(--ink-2); }
+</style>
+</head>
+<body>
+<div id="panel">
+  <div class="p-head">
+    <div class="loc-title">Cubatão<span class="adm">, São Paulo, Brasil</span></div>
+    <div class="loc-geo">-23.8630, -46.4259<span class="sep">·</span>18.035 ha</div>
+    <div class="loc-note"><b>317</b> de <b>1.021</b> espécies avaliadas como adequadas ou melhores</div>
+    <button class="panel-close">&times;</button>
+  </div>
+
+  <div class="p-body">
+    <div class="section-h">Clima do local · ERA5 2015–2024</div>
+    <div class="site-fig" id="fig"></div>
+    <div class="readout">
+      <div class="rd"><span>pH do solo</span><b>4.9</b></div>
+      <div class="rd"><span>elevação</span><b>43 m</b></div>
+      <div class="rd"><span>duração do dia</span><b>10.7–13.6 h</b></div>
+      <div class="rd"><span>mínima recorde</span><b>8 °C</b></div>
+      <div class="rd"><span>sol</span><b>4.4 kWh/m²·dia</b></div>
+      <div class="rd"><span>umidade</span><b>83%</b></div>
+      <div class="rd"><span>nuvens</span><b>65%</b></div>
+      <div class="rd"><span>declive</span><b>12° face L</b></div>
+    </div>
+
+    <div class="sec-row">
+      <div class="section-h">Espécies recomendadas</div>
+      <button class="crit-toggle" id="tg" aria-expanded="false"><b>374</b> espécies · critérios<i class="car"></i></button>
+    </div>
+    <button class="crit-summary" id="sm" hidden></button>
+    <div class="crit-panel" id="cp" hidden>
+      <div class="crit-row"><div class="k">Origem</div><div class="opts">
+        <button class="opt on">todas</button>
+        <button class="opt">nativas daqui <span class="c">42</span></button></div></div>
+      <div class="crit-row"><div class="k">Uso</div><div class="opts">
+        <button class="opt on">todos</button>
+        <button class="opt">madeira <span class="c">273</span></button>
+        <button class="opt">fruta <span class="c">102</span></button>
+        <button class="opt">ambiental <span class="c">159</span></button>
+        <button class="opt">medicinal <span class="c">111</span></button>
+        <button class="opt">forragem <span class="c">68</span></button></div></div>
+      <div class="crit-row"><div class="k">Maturidade</div><div class="opts">
+        <button class="opt on">sem limite</button>
+        <button class="opt">até 20 anos <span class="c">93</span></button>
+        <button class="opt">até 90 anos <span class="c">359</span></button></div></div>
+      <div class="crit-row"><div class="k">Copa adulta</div><div class="opts">
+        <button class="opt on">sem mínimo</button>
+        <button class="opt">≥ 4 m <span class="c">281</span></button>
+        <button class="opt">≥ 5 m <span class="c">33</span></button></div></div>
+    </div>
+
+    <div id="sp-list"></div>
+    <button class="chip more">Mostrar mais 20</button>
+
+    <div class="footnote">
+      A adequação segue o modelo EcoCrop da FAO (envelopes climáticos trapezoidais, fator mais limitante). Crescimento e carbono são estimativas por classe (Chapman-Richards, Chave 2014 / Jenkins 2003, IPCC 2006): triagem, não prescrição de plantio.<br>
+      Dados: <a href="#">FAO EcoCrop</a> · <a href="#">Open-Meteo ERA5</a> · <a href="#">SoilGrids 2.0, ISRIC (CC-BY 4.0)</a> · <a href="#">GBIF</a> · <a href="#">WCVP v16, RBG Kew (CC BY 3.0)</a> · <a href="#">Fotos: iNaturalist</a>
+    </div>
+    <div class="panel-fade"></div>
+  </div>
+</div>
+
+<script>
+const TAVG = [26.1,25.9,25.3,23.5,21.4,20.2,19.5,19.8,21.2,22.3,22.9,24.7];
+const PREC = [294,304,349,173,128,116,87,119,136,203,216,258];
+const MEANT = 22.7, ANNUAL = 2384;
+const MONTHS = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+const nf = (v, d = 0) => v.toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+
+/* ---- UMA figura, um só eixo de meses: massa morna acima da espinha,
+        massa fria pendurada abaixo. O ano inteiro em um gesto. ---- */
+function climateSvg() {
+  const W = 414, L = 2, R = 64, top = 16, tH = 50, gapA = 9, letters = 13, gapB = 7, pH = 56, bot = 15;
+  const spineY = top + tH + gapA;
+  const barTop = spineY + letters + gapB;
+  const H = barTop + pH + bot;
+  const iw = W - L - R;
+  const cx = m => L + (m + 0.5) * iw / 12;
+  /* barra estreita: no mês mais seco uma barra larga viraria um traço deitado */
+  const bw = Math.max(8, Math.round(iw / 12) - 15);
+  const tmid = (Math.max(...TAVG) + Math.min(...TAVG)) / 2;
+  /* piso de 11 °C em vez de 14: num sítio equatorial a curva usava só metade
+     da faixa e parecia inerte. Os extremos ficam rotulados, então a escala
+     continua legível mesmo variando de lugar para lugar. */
+  const tspan = Math.max(11, Math.max(...TAVG) - Math.min(...TAVG) + 4);
+  const thi = tmid + tspan / 2, tlo = tmid - tspan / 2;
+  const ty = v => top + (thi - v) / (thi - tlo) * tH;
+  const pmax = Math.max(...PREC, 10) * 1.1;
+  const py = v => (v / pmax) * pH;
+  const warm = TAVG.indexOf(Math.max(...TAVG)), cold = TAVG.indexOf(Math.min(...TAVG)), wet = PREC.indexOf(Math.max(...PREC));
+  const line = TAVG.map((v, m) => `${m ? "L" : "M"}${cx(m).toFixed(1)},${ty(v).toFixed(1)}`).join("");
+  const bars = PREC.map((v, m) =>
+    `<rect x="${(cx(m) - bw / 2).toFixed(1)}" y="${barTop}" width="${bw}" height="${py(v).toFixed(1)}" rx="1.5"
+      fill="var(--water)" opacity="${m === wet ? .95 : .52}"/>`).join("");
+  /* dentes de 4 px acima da espinha: o eixo de meses vale para as duas séries */
+  const teeth = TAVG.map((_, m) =>
+    `<line x1="${cx(m).toFixed(1)}" x2="${cx(m).toFixed(1)}" y1="${spineY - 4}" y2="${spineY}" stroke="rgba(255,255,255,.13)"/>`).join("");
+  const mo = MONTHS.map((_, m) =>
+    `<text x="${cx(m).toFixed(1)}" y="${spineY + 10}" font-size="8" fill="var(--ink-3)" text-anchor="middle" letter-spacing=".4">${"JFMAMJJASOND"[m]}</text>`).join("");
+  const hover = TAVG.map((v, m) =>
+    `<rect x="${(cx(m) - iw / 24).toFixed(1)}" y="0" width="${(iw / 12).toFixed(1)}" height="${H}" fill="transparent"><title>${MONTHS[m]} · ${nf(v,1)} °C · ${PREC[m]} mm</title></rect>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="temperatura e chuva mês a mês">
+    <line x1="${L}" x2="${L + iw}" y1="${ty(MEANT).toFixed(1)}" y2="${ty(MEANT).toFixed(1)}" stroke="var(--amber)" stroke-opacity=".26" stroke-dasharray="2 3"/>
+    <path d="${line}" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${cx(warm)}" cy="${ty(TAVG[warm]).toFixed(1)}" r="2" fill="var(--amber)"/>
+    <text x="${cx(warm)}" y="${(ty(TAVG[warm]) - 7).toFixed(1)}" font-size="9" font-family="var(--mono)" fill="var(--ink-2)" text-anchor="middle" paint-order="stroke" stroke="rgba(13,17,14,.9)" stroke-width="2.6" stroke-linejoin="round">${nf(TAVG[warm],0)}°</text>
+    <circle cx="${cx(cold)}" cy="${ty(TAVG[cold]).toFixed(1)}" r="2" fill="var(--amber)"/>
+    <text x="${cx(cold)}" y="${(ty(TAVG[cold]) + 12).toFixed(1)}" font-size="9" font-family="var(--mono)" fill="var(--ink-2)" text-anchor="middle" paint-order="stroke" stroke="rgba(13,17,14,.9)" stroke-width="2.6" stroke-linejoin="round">${nf(TAVG[cold],0)}°</text>
+    <text x="${L + iw + 11}" y="${(ty(MEANT) + 1).toFixed(1)}" font-size="10.5" font-family="var(--mono)" fill="var(--amber)">${nf(MEANT,1)} °C</text>
+    <text x="${L + iw + 11}" y="${(ty(MEANT) + 12).toFixed(1)}" font-size="8.5" fill="var(--ink-3)">média</text>
+
+    ${teeth}
+    <line x1="${(cx(0) - 12).toFixed(1)}" x2="${(cx(11) + 12).toFixed(1)}" y1="${spineY}" y2="${spineY}" stroke="rgba(255,255,255,.2)"/>
+    ${mo}
+    ${bars}
+    <text x="${cx(wet)}" y="${(barTop + py(PREC[wet]) + 10).toFixed(1)}" font-size="9" font-family="var(--mono)" fill="var(--ink-2)" text-anchor="middle">${PREC[wet]}</text>
+    <text x="${L + iw + 11}" y="${barTop + 12}" font-size="10.5" font-family="var(--mono)" fill="var(--water)">${nf(ANNUAL)} mm</text>
+    <text x="${L + iw + 11}" y="${barTop + 23}" font-size="8.5" fill="var(--ink-3)">por ano</text>
+    ${hover}
+  </svg>`;
+}
+document.getElementById("fig").innerHTML = climateSvg();
+
+/* ---- curva de crescimento: Brosimum alicastrum, tropical_medium ---- */
+const CLS = { Hmax: 28, k: .037, p: 1.08, slender: 1.0 };
+const hAt = t => CLS.Hmax * Math.pow(1 - Math.exp(-CLS.k * t), CLS.p);
+function growthSvg() {
+  const W = 376, H = 116, L = 26, R = 4, T = 9, B = 16, ymax = 40;
+  const x = t => L + (t / 40) * (W - L - R);
+  const y = h => T + (1 - h / ymax) * (H - T - B);
+  const pts = Array.from({ length: 41 }, (_, t) => ({ t, h: hAt(t) }));
+  const path = pts.map((p, i) => `${i ? "L" : "M"}${x(p.t).toFixed(1)},${y(p.h).toFixed(1)}`).join("");
+  const area = `M${x(0)},${y(0)}` + pts.map(p => `L${x(p.t).toFixed(1)},${y(p.h).toFixed(1)}`).join("") + `L${x(40)},${y(0)}Z`;
+  const yrules = [20, 40].map(v =>
+    `<line x1="${L}" y1="${y(v).toFixed(1)}" x2="${W - R}" y2="${y(v).toFixed(1)}" stroke="rgba(255,255,255,.055)"/>
+     <text x="${L - 5}" y="${(y(v) + 3).toFixed(1)}" fill="var(--ink-3)" font-size="8.5" font-family="var(--mono)" text-anchor="end">${v}m</text>`).join("");
+  const xlab = [10, 20, 30, 40].map(t =>
+    `<text x="${x(t).toFixed(1)}" y="${H - 4}" fill="var(--ink-3)" font-size="8.5" font-family="var(--mono)" text-anchor="${t === 40 ? "end" : "middle"}">${t}a</text>`).join("");
+  /* recorte escuro atrás do numeral: um rótulo pode cair exactamente sobre
+     uma régua (aos 20 anos, sobre a de 20 m) e ficava ilegível */
+  const KO = `paint-order="stroke" stroke="rgba(13,17,14,.9)" stroke-width="2.6" stroke-linejoin="round"`;
+  const marks = [10, 20].map(t =>
+    `<circle cx="${x(t).toFixed(1)}" cy="${y(pts[t].h).toFixed(1)}" r="2.2" fill="var(--leaf)"/>
+     <text x="${x(t).toFixed(1)}" y="${(y(pts[t].h) - 7).toFixed(1)}" fill="var(--ink)" font-size="9" font-family="var(--mono)" text-anchor="middle" ${KO}>${pts[t].h.toFixed(0)}m</text>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="curva de crescimento em altura">
+    ${yrules}
+    <line x1="${L}" y1="${y(0)}" x2="${W - R}" y2="${y(0)}" stroke="rgba(255,255,255,.09)"/>
+    <path d="${path}" fill="none" stroke="var(--leaf)" stroke-width="1.7" stroke-linecap="round"/>
+    ${marks}${xlab}</svg>`;
+}
+
+/* ---- linhas de espécie ---- */
+const P = "ph/", S = "ph/";
+const ROWS = [
+  { n: "Breadnut tree", s: "Brosimum alicastrum", nat: 1, gb: 1, pct: 100, fit: 94, t: P + "t1.jpg" },
+  { n: "Bergamot orange", s: "Citrus aurantium ssp. bergamia", gb: 1, pct: 100, fit: 90, t: P + "t2.jpg" },
+  { n: "Pinus kesiya", s: "Pinaceae", it: 1, gb: 1, pct: 100, fit: 86, t: P + "t3.jpg" },
+  { n: "Ceratopetalum apetalum", s: "Cunoniaceae", it: 1, pct: 100, fit: 84, t: P + "t4.jpg" },
+  { n: "Ilex dipyrena", s: "Aquifoliaceae", it: 1, gb: 1, pct: 100, fit: 83, t: P + "t5.jpg" },
+  { n: "Indian chestnut", s: "Aesculus indica", gb: 1, pct: 100, fit: 82, t: P + "t6.jpg" },
+  { n: "Abbo rubber tree", s: "Ficus vogelii", gb: 1, pct: 100, fit: 81, t: P + "t7.jpg" },
+  { n: "Cratylia argentea", s: "Fabaceae", it: 1, nat: 1, pct: 100, fit: 81, t: S + "t8.jpg" },
+  { n: "Casuarina junghuhniana", s: "Casuarinaceae", it: 1, pct: 99, fit: 81, t: P + "t9.jpg" },
+  { n: "Oil palm", s: "Elaeis guineensis", gb: 1, pct: 97, fit: 80, t: S + "t10.jpg" },
+  { n: "Mamuang himmaphan", s: "Anacardium occidentale", nat: 1, pct: 94, fit: 80, t: S + "t11.jpg" },
+];
+const GRADE = p => p >= 95 ? "#63c987" : p >= 85 ? "#8fd07a" : "#b9cf6a";
+const strip = (label, val, unit, a, b, c, d, dec) => {
+  const lo = Math.min(a, val), hi = Math.max(d, val), span = hi - lo || 1;
+  const pc = v => (((v - lo) / span) * 100).toFixed(2);
+  const out = val < a || val > d;
+  return `<div class="factor">
+    <div class="fk">${label}</div>
+    <div class="rtrack" title="tolera ${a} a ${d} · ótimo ${b} a ${c}${unit}">
+      <div class="rabs" style="left:${pc(a)}%;width:${(((d - a) / span) * 100).toFixed(2)}%"></div>
+      <div class="ropt" style="left:${pc(b)}%;width:${(((c - b) / span) * 100).toFixed(2)}%"></div>
+      <div class="rtick${out ? " out" : ""}" style="left:${pc(val)}%"></div>
+    </div>
+    <div class="fx">${nf(val, dec)}${unit}</div></div>`;
+};
+const DETAIL = `
+  <div class="sp-photo" style="background-image:url('${P}hero.jpg')"></div>
+  <div class="sp-meta"><span class="grade">Excelente</span><span class="sep">·</span>crescimento médio<span class="sep">·</span>tropical</div>
+  <div class="sp-uses"><span class="it">alimento</span><span class="it">forragem</span><span class="it">madeira</span></div>
+  <div class="factors">
+    ${strip("Temperatura", 22.7, " °C", 16, 20, 28, 34, 1)}
+    ${strip("Chuva", 2384, " mm", 900, 1300, 2800, 4000, 0)}
+    ${strip("pH do solo", 4.9, "", 5.0, 5.5, 7.5, 8.2, 1)}
+  </div>
+  <div class="evidence">Fotoperíodo fora da faixa da espécie: penalidade de 0,5 aplicada.</div>
+  <div class="growth-fig">${growthSvg()}
+    <div class="fig-cap">Atinge ~95% da altura máxima em ~83 anos (modelo por classe).</div>
+  </div>
+  <div class="stats">
+    <div class="stat"><span class="sk">Tronco ø 20 anos</span><span class="sv">14 cm</span></div>
+    <div class="stat"><span class="sk">Copa, 20 anos</span><span class="sv">3.8 m · 12 m²</span></div>
+    <div class="stat"><span class="sk">CO₂e/árvore, 20 anos</span><span class="sv">178 kg</span></div>
+    <div class="stat"><span class="sk">CO₂e do plantio, 20 anos</span><span class="sv">109 t/ha</span></div>
+    <div class="stat"><span class="sk">Resiste até</span><span class="sv">2 °C</span></div>
+    <div class="stat"><span class="sk">Árvores na área, 3×3 m</span><span class="sv">20.0M</span></div>
+    <div class="stat wide"><span class="sk">CO₂e da área em 20 anos</span><span class="sv">2.0M t</span></div>
+  </div>`;
+
+document.getElementById("sp-list").innerHTML = ROWS.map((r, i) => `
+  <div class="sp">
+    <div class="sp-head">
+      <div class="sp-rank">${i + 1}</div>
+      <div class="sp-thumb" style="background-image:url('${r.t}')"></div>
+      <div class="sp-names">
+        <div class="sp-common">${r.it ? `<i>${r.n}</i>` : r.n}${r.nat ? `<span class="nearby">nativa</span>` : ""}${r.gb ? `<span class="nearby gbif">✓ na região</span>` : ""}</div>
+        <div class="sp-sci">${r.s}</div>
+      </div>
+      <div class="sp-score">
+        <span class="pct" style="color:${GRADE(r.pct)}">${r.pct}<span class="u">%</span></span>
+        <span class="fit">fit ${r.fit}</span>
+      </div>
+    </div>
+    <div class="sp-body"${i ? " hidden" : ""}>${i ? "" : DETAIL}</div>
+  </div>`).join("");
+
+/* estados */
+const tg = document.getElementById("tg"), cp = document.getElementById("cp"), sm = document.getElementById("sm");
+const setOpen = o => { tg.setAttribute("aria-expanded", String(o)); cp.hidden = !o; sm.hidden = o || !sm.textContent.trim(); };
+tg.onclick = () => setOpen(tg.getAttribute("aria-expanded") !== "true");
+sm.onclick = () => setOpen(true);
+const h = location.hash;
+if (h.includes("clip")) document.getElementById("panel").classList.add("clip");
+if (h.includes("crit")) setOpen(true);
+if (h.includes("shut")) document.querySelectorAll(".sp-body").forEach(b => b.hidden = true);
+if (h.includes("filt")) {
+  tg.classList.add("active");
+  tg.innerHTML = '<b>31</b> de 374 · critérios<i class="car"></i>';
+  sm.innerHTML = '<b>nativas daqui</b> <span class="d">·</span> <b>fruta</b> <span class="d">·</span> <b>até 20 anos</b>';
+  sm.hidden = false;
+}
+</script>
+</body>
+</html>

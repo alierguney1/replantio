@@ -1,0 +1,33 @@
+<style>body{margin:0;background:#141814;color:#8fa;font:11px monospace}
+canvas{display:block;image-rendering:pixelated}.r{display:flex;gap:6px;flex-wrap:wrap;padding:6px}</style>
+<div class=r id=r></div>
+<script src="crown-render.js"></script>
+<script>
+setCrownSoft(19,19);
+const set = crownSet(2, false);           // tier 2, R0=16
+const r = document.getElementById("r");
+for (let i = 0; i < 14; i++) {
+  const sp = set[i * 3 % set.length];
+  const cv = document.createElement("canvas");
+  cv.width = cv.height = sp.w * 4; 
+  const g = cv.getContext("2d");
+  g.imageSmoothingEnabled = false;
+  g.fillStyle = "#3a2a1a"; g.fillRect(0,0,cv.width,cv.height);
+  g.drawImage(sp.c, 0, 0, cv.width, cv.height);
+  r.append(cv);
+}
+// closed canopy at r=29, no background, to inspect closure + artifacts
+const cv = document.createElement("canvas"); cv.width = 700; cv.height = 340;
+const g = cv.getContext("2d");
+g.fillStyle = "#b06a30"; g.fillRect(0,0,700,340);
+const mpp = 0.0683, st = 3/mpp, rnd = mulberry32(99);
+const ts=[];
+for (let y=-st;y<340+st;y+=st) for (let x=-st;x<700+st;x+=st)
+  ts.push({x:x+(rnd()-.5)*st*.6, y:y+(rnd()-.5)*st*.6, la:-23.8+y*mpp/111320, ln:-46.4+x*mpp/102000,
+           s:.8+rnd()*.4, seed:Math.floor(rnd()*2147483647)});
+ts.sort((a,b)=>a.la-b.la||a.ln-b.ln);
+setCrownSoft(21,19);
+for (const t of ts) drawTree(g, t.x, t.y, 4*t.s/2/mpp, t, false);
+r.append(cv);
+document.title="SPRDONE";
+</script>
