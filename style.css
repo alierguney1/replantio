@@ -451,7 +451,7 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
 .retry-row { margin: 12px 0 0; }
 
 /* loading skeleton: previews the layout that is about to render */
-.skel { margin-top: 22px; }
+.skel { margin: 22px 0; }
 .skel-fig { height: 118px; border-radius: 12px; }
 .skel-row { height: 54px; border-radius: 12px; margin-top: 8px; }
 .skel-fig, .skel-row {
