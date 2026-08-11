@@ -1,7 +1,7 @@
 // Screenshot base for the OG image: brownfield analysis, native filter, simulated stand.
 const puppeteer = require("/Users/guilhermedavid/.nvm/versions/node/v24.18.0/lib/node_modules/puppeteer-core");
 
-const URL = "https://replantio.com/#p=-23.8728,-46.3926;-23.8726,-46.3901;-23.8752,-46.3899;-23.8753,-46.392;-23.8739,-46.3927";
+const URL = "https://replantio.com/#p=-23.87257,-46.39239;-23.87386,-46.38932;-23.87639,-46.3918;-23.87523,-46.39355";
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -15,11 +15,6 @@ const URL = "https://replantio.com/#p=-23.8728,-46.3926;-23.8726,-46.3901;-23.87
   await page.goto(URL, { waitUntil: "networkidle2", timeout: 60000 });
   await page.waitForSelector(".sp[data-id]", { timeout: 90000 });
   await new Promise(r => setTimeout(r, 1500));
-  await page.evaluate(() => {
-    document.querySelector("[data-crit-toggle]").click();
-    document.querySelector('.opt[data-f="origin"][data-v="native"]').click();
-  });
-  await new Promise(r => setTimeout(r, 800));
   await page.evaluate(() => document.querySelector(".sp .sp-head").click()); // top native, sim starts
   await page.waitForSelector("#sim input", { timeout: 20000 });
   await new Promise(r => setTimeout(r, 2500));

@@ -1,0 +1,51 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Traçar área</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  html,body{margin:0;height:100%;font-family:system-ui}
+  #map{position:fixed;inset:0 0 74px 0}
+  #bar{position:fixed;left:0;right:0;bottom:0;height:74px;background:#111;color:#eee;
+    display:flex;gap:10px;align-items:center;padding:0 14px;box-sizing:border-box}
+  #out{flex:1;height:44px;background:#1c1c1c;color:#9fe0b2;border:1px solid #333;border-radius:8px;
+    font:12px ui-monospace,monospace;padding:6px 8px;resize:none}
+  button{font:600 13px system-ui;background:#63c987;border:0;border-radius:8px;padding:10px 16px;cursor:pointer}
+  #hint{position:fixed;top:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#fff;
+    padding:8px 14px;border-radius:99px;font-size:12.5px;z-index:1000}
+</style></head><body>
+<div id="map"></div>
+<div id="hint">arraste os pontos · clique no mapa adiciona · clique direito num ponto remove</div>
+<div id="bar"><textarea id="out" readonly></textarea><button id="copy">Copiar</button></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map = L.map("map").setView([-23.8747, -46.3915], 17);
+L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19 }).addTo(map);
+map.doubleClickZoom.disable();
+
+let pts = [
+  [-23.87317, -46.39312], [-23.87304, -46.39097], [-23.87359, -46.3899],
+  [-23.8741, -46.38938], [-23.87516, -46.38949], [-23.87615, -46.39172],
+  [-23.87641, -46.39207], [-23.87575, -46.39299], [-23.87516, -46.39351],
+];
+let poly = null, marks = [];
+const out = document.getElementById("out");
+
+function render() {
+  if (poly) poly.remove();
+  marks.forEach(m => m.remove());
+  poly = L.polygon(pts, { color: "#63f0a0", weight: 2, dashArray: "6 5", fillOpacity: .08 }).addTo(map);
+  marks = pts.map((p, i) => {
+    const mk = L.marker(p, { draggable: true, icon: L.divIcon({ className: "", iconSize: [16, 16],
+      html: '<div style="width:16px;height:16px;border-radius:50%;background:#fff;border:2.5px solid #2c8f57"></div>' }) }).addTo(map);
+    mk.on("drag", e => { pts[i] = [e.latlng.lat, e.latlng.lng]; poly.setLatLngs(pts); sync(); });
+    mk.on("contextmenu", () => { if (pts.length > 3) { pts.splice(i, 1); render(); } });
+    return mk;
+  });
+  sync();
+}
+function sync() {
+  out.value = pts.map(([a, b]) => `${a.toFixed(5)},${b.toFixed(5)}`).join(";");
+}
+map.on("click", e => { pts.push([e.latlng.lat, e.latlng.lng]); render(); });
+document.getElementById("copy").onclick = () => { out.select(); document.execCommand("copy"); };
+render();
+</script></body></html>

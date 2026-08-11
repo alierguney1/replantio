@@ -10,13 +10,12 @@ const URL = "https://replantio.com";
 
 // riverside brownfield in Cubatão (OSM landuse=brownfield), bare dirt lot
 const POLY = [
-  [-23.8728, -46.3926],
-  [-23.8726, -46.3901],
-  [-23.8752, -46.3899],
-  [-23.8753, -46.392],
-  [-23.8739, -46.3927],
+  [-23.87257, -46.39239],
+  [-23.87386, -46.38932],
+  [-23.87639, -46.3918],
+  [-23.87523, -46.39355],
 ];
-const CENTER = [-23.8739, -46.3913];
+const CENTER = [-23.8745, -46.3918];
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -68,11 +67,11 @@ async function main() {
   const browser = await puppeteer.launch({
     executablePath: CHROME,
     headless: true,
-    args: ["--window-size=1280,820", "--lang=pt-BR", "--force-device-scale-factor=1"],
+    args: ["--window-size=1280,820", "--lang=en-US", "--force-device-scale-factor=1"],
     defaultViewport: { width: 1280, height: 720 },
   });
   const page = await browser.newPage();
-  await page.evaluateOnNewDocument(() => localStorage.setItem("lang", "pt"));
+  await page.evaluateOnNewDocument(() => localStorage.setItem("lang", "en"));
   await page.goto(URL, { waitUntil: "networkidle2", timeout: 60000 });
   await page.waitForFunction("!!window.canopy", { timeout: 30000 });
 
@@ -106,7 +105,7 @@ async function main() {
       const p = window.canopy.map.latLngToContainerPoint([la, ln]);
       return [p.x, p.y];
     }), POLY);
-  for (const [x, y] of pts) { await clickAt(page, x, y, 800); await sleep(300); }
+  for (const [x, y] of pts) { await clickAt(page, x, y, 620); await sleep(230); }
   await clickAt(page, pts[0][0], pts[0][1], 700); // close on first vertex
   await sleep(2200); // loading steps glimpse
   await stopRec();
@@ -127,21 +126,23 @@ async function main() {
     .scrollTo({ top: 0, behavior: "smooth" }));
   await sleep(1300);
 
-  // criteria: filter to native species
-  const tb = await (await page.$("[data-crit-toggle]")).boundingBox();
-  await clickAt(page, tb.x + tb.width / 2, tb.y + tb.height / 2, 600);
-  await sleep(900);
-  const nb = await (await page.$('.opt[data-f="origin"][data-v="native"]')).boundingBox();
+  // chips: flip to shrubs and herbs (seed prices appear), then back to trees
+  const nb = await (await page.$('.chips-row .opt[data-v="nontree"]')).boundingBox();
   await clickAt(page, nb.x + nb.width / 2, nb.y + nb.height / 2, 600);
-  await sleep(1100);
-  const tb2 = await (await page.$("[data-crit-toggle]")).boundingBox();
-  await clickAt(page, tb2.x + tb2.width / 2, tb2.y + tb2.height / 2, 500); // fold; summary chip shows "nativas"
+  await sleep(1700);
+  const tb = await (await page.$('.chips-row .opt[data-v="tree"]')).boundingBox();
+  await clickAt(page, tb.x + tb.width / 2, tb.y + tb.height / 2, 500);
   await sleep(900);
 
   // open the top species: simulation starts immediately
   const hb = await (await page.$(".sp .sp-head")).boundingBox();
   await clickAt(page, hb.x + hb.width / 2, hb.y + hb.height / 2, 650);
-  await sleep(3400); // fitBounds + sprites
+  await sleep(3000); // fitBounds + sprites
+  // the guerrilla answer: where to actually get it
+  await page.evaluate(() => document.querySelector(".sp.open .getrows")?.scrollIntoView({ block: "center", behavior: "smooth" }));
+  await sleep(2300);
+  await page.evaluate(() => document.querySelector("#panel").scrollTo({ top: 0, behavior: "smooth" }));
+  await sleep(1100);
 
   // slider: pull back to year ~3, plant saplings at ~12, sweep to +30y
   const sl = await page.$("#sim input[type=range]");
@@ -192,7 +193,7 @@ async function main() {
         <img src="assets/logo.png" width="46" height="46" style="border-radius:11px">
         <span style="font-size:40px;font-weight:600;color:#e8ede8;letter-spacing:-.5px">Replantio</span>
       </div>
-      <div style="font-size:17px;color:#99a69c">Desenhe uma área em qualquer lugar do mundo e veja o que plantar.</div>
+      <div style="font-size:17px;color:#99a69c">Draw an area anywhere on Earth and see what would grow there.</div>
       <div style="font-size:15px;color:#63c987;font-family:'IBM Plex Mono',monospace">replantio.com</div>`;
     document.body.appendChild(v);
     requestAnimationFrame(() => { v.style.opacity = "1"; });
