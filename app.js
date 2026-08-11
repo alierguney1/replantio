@@ -37,6 +37,9 @@ const speciesReady = Promise.all([
   fetch("data/sourcing.json").then(r => r.json()).then(j => { SOURCING = j; }).catch(() => {}), // optional layer
 ]);
 
+// product analytics: named actions only, no exact coordinates ever
+const track = (name, data) => { try { window.va?.("event", { name, data }); } catch { } };
+
 // display name: Portuguese vernacular when the UI is in PT and we have one;
 // in PT the fallback is the binomial, never an English trade name
 const ptName = sp => NAMES_PT[sp.id]?.nome ?? null;
@@ -224,6 +227,7 @@ function setShape(pts) {
   shapes.push(poly);
   setActive(poly);
   saveAreas();
+  track("area_set", { n: shapes.length, verts: pts.length });
 }
 
 // areas survive reloads; the roll-up pill totals the project
@@ -468,6 +472,7 @@ async function analyze(pts) {
     // native-first by default wherever we know the country AND the ranges loaded
     nativeOnly: !!place?.cc && Object.keys(NATIVES).length > 0, critOpen: false };
   if (shape && shape._pts === pts) shape._analysis = current; // session cache per area
+  track("analysis", { cc: current.cc, city: current.city || undefined, ha: Math.round(ha * 10) / 10, suitable: scored.filter(s => s.score > 0.4).length });
   renderResults();
   loadRowPhotos();
   gbifEvidence(scored.filter(s => s.score > 0.05).slice(0, 20), L.latLngBounds(pts), ctl.signal);
@@ -797,6 +802,7 @@ content.addEventListener("click", e => {
     dbtn.classList.toggle("open", DISC[id]);
     dbtn.setAttribute("aria-expanded", String(DISC[id]));
     dbtn.nextElementSibling.hidden = !DISC[id];
+    if (DISC[id]) track("disc_open", { id });
     return;
   }
   if (e.target.closest("[data-crit-toggle]")) {
@@ -820,6 +826,7 @@ content.addEventListener("click", e => {
       renderResults(); loadRowPhotos();
       return;
     }
+    track("filter", { f: opt.dataset.f, v });
     if (opt.dataset.f === "habit") { current.habit = v; current.matMax = null; current.crownMin = null; }
     if (opt.dataset.f === "origin") current.nativeOnly = v === "native";
     if (opt.dataset.f === "use") current.filter = v;
@@ -827,8 +834,16 @@ content.addEventListener("click", e => {
     if (opt.dataset.f === "crown") current.crownMin = v ? +v : null;
     current.shown = 12; renderResults(); loadRowPhotos(); return;
   }
+  const srcLink = e.target.closest(".getrows a");
+  if (srcLink) { // the loop's conversion moment: intent became a store visit
+    const spEl = e.target.closest(".sp");
+    const sp = current.scored.find(x => x.sp.id === +(spEl?.dataset.id))?.sp;
+    track("sourcing_click", { shop: new URL(srcLink.href).hostname.replace(/^www\./, ""), sci: sp?.sci });
+    return; // native navigation proceeds (target=_blank)
+  }
   const fu = e.target.closest("[data-fu]");
   if (fu) {
+    track("follow_up", { kind: fu.dataset.fu });
     if (fu.dataset.fu === "sim") {
       const head = [...content.querySelectorAll(".sp")].find(el =>
         current.scored.find(x => x.sp.id === +el.dataset.id)?.sp.tree)?.querySelector("[data-toggle]");
@@ -837,9 +852,9 @@ content.addEventListener("click", e => {
     } else radarScan();
     return;
   }
-  if (e.target.closest("[data-print]")) { window.print(); return; }
-  if (e.target.closest("[data-shp]")) { shpExport(); return; }
-  if (e.target.closest("[data-csv]")) { csvExport(); return; }
+  if (e.target.closest("[data-print]")) { track("export", { kind: "print" }); window.print(); return; }
+  if (e.target.closest("[data-shp]")) { track("export", { kind: "shp" }); shpExport(); return; }
+  if (e.target.closest("[data-csv]")) { track("export", { kind: "csv" }); csvExport(); return; }
   if (e.target.closest("[data-more]")) { current.shown += 20; renderResults(); loadRowPhotos(); return; }
   if (e.target.closest("[data-force]")) { current.force = true; renderResults(); loadRowPhotos(); return; }
 
@@ -850,7 +865,7 @@ content.addEventListener("click", e => {
     if (body.hidden && !body.innerHTML) body.innerHTML = speciesDetail(item.sp.id);
     body.hidden = !body.hidden;
     head.parentElement.classList.toggle("open", !body.hidden);
-    if (!body.hidden && item) { fillPhoto(item); startSim(item); }
+    if (!body.hidden && item) { fillPhoto(item); track("species_open", { sci: item.sp.sci, native: nativeHere(item.sp) === true, tree: item.sp.tree }); startSim(item); }
     else stopSim();
   }
 });
@@ -1171,6 +1186,7 @@ function freezeSim() {
     STANDS.set(SIM.poly, { item: SIM.item, cls: SIM.cls, trees: SIM.trees, year: SIM.year, fullCount: SIM.fullCount,
       nt: SIM.nt, cycleDays: SIM.cycleDays, clumpM: SIM.clumpM, coverScale: SIM.coverScale });
   }
+  track("sim_end", { sci: SIM.item.sp.sci, year: Math.round(SIM.year * 10) / 10, manual: SIM.trees.reduce((n, t2) => n + (t2.manual ? 1 : 0), 0) });
   SIM.ctl.remove();
   SIM = null;
   if (!armed) map.getContainer().style.cursor = "";
@@ -1829,6 +1845,7 @@ async function radarScan() {
       });
       return { ...cd, poly };
     });
+    track("radar_scan", { found: cands.length });
     radarLayer = L.layerGroup(radarCands.map(cd => cd.poly)).addTo(map);
     // arrows to walk the candidates one by one
     radarNav = document.createElement("div");
@@ -2164,6 +2181,7 @@ langBtn.addEventListener("click", () => {
 langMenu.addEventListener("click", e => {
   const b = e.target.closest("[data-lang]");
   if (!b) return;
+  track("lang_change", { to: b.dataset.lang });
   localStorage.setItem("lang", b.dataset.lang);
   location.reload(); // the analysis is in the hash, so it survives the reload
 });
@@ -2198,6 +2216,7 @@ if (!location.hash && !shapes.length) {
       try { localStorage.setItem("intro-seen", "1"); } catch {}
     };
     el.querySelector("#intro-go").addEventListener("click", async () => {
+      track("intro_find_land");
       if (map.getZoom() < 13) {           // IP locate still pending, or it failed
         const p = await ipLocate;
         if (p) map.setView(p, 13);
