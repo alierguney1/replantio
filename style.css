@@ -473,7 +473,7 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
 #sim input[type="range"] { width: 240px; accent-color: var(--accent); }
 .sim-name { font-size: 12.5px; font-weight: 500; white-space: nowrap; }
 .sim-label { font-size: 11px; color: var(--muted); white-space: nowrap; }
-.sim-note { font-size: 10px; color: var(--faint); }
+.sim-note { font-size: 9.5px; color: var(--faint); max-width: 210px; line-height: 1.45; }
 #sim .panel-close { position: static; }
 
 /* ---------- leaflet chrome ---------- */

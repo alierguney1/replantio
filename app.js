@@ -228,17 +228,11 @@ function saveAreas() {
   } catch { /* storage full or blocked: areas just will not persist */ }
   updateProj();
 }
+// the aggregate pill read as scoreboard chrome; removed 2026-08-11 (Gui).
+// The per-area numbers live in the panel and the sim label.
 function updateProj() {
   const el = $("#proj");
-  if (!el) return;
-  if (!shapes.length) { el.hidden = true; return; }
-  const totalHa = shapes.reduce((a, s) => a + polyAreaHa(s._pts), 0);
-  let planted = 0;
-  for (const [poly, st] of STANDS) planted += co2eTonsPerHa(st.item.sp, st.year) * polyAreaHa(poly._pts);
-  if (SIM?.poly?._pts) planted += co2eTonsPerHa(SIM.item.sp, SIM.year) * polyAreaHa(SIM.poly._pts);
-  el.innerHTML = `<b>${shapes.length}</b> ${shapes.length === 1 ? tr("area") : tr("areas")} &middot; <b>${fmtHa(totalHa)}</b>` +
-    (planted > 0 ? ` &middot; <b>${fmtC(planted)} t</b> CO&#8322;e ${tr("planted")}` : "");
-  el.hidden = false;
+  if (el) el.hidden = true;
 }
 function restoreAreas() {
   try {
@@ -847,7 +841,7 @@ content.addEventListener("click", e => {
     if (body.hidden && !body.innerHTML) body.innerHTML = speciesDetail(item.sp.id);
     body.hidden = !body.hidden;
     head.parentElement.classList.toggle("open", !body.hidden);
-    if (!body.hidden && item) { fillPhoto(item); if (item.sp.tree) startSim(item); else stopSim(); }
+    if (!body.hidden && item) { fillPhoto(item); startSim(item); }
     else stopSim();
   }
 });
@@ -1100,7 +1094,14 @@ function startSim(item) {
   STANDS.delete(shape); // replanting the active area replaces its previous stand
   const cls = CLASSES[item.sp.gclass];
   const c = current.center;
-  const step = 3 / 111320; // 3 m spacing in degrees latitude
+  // ground cover (shrubs/herbs/grasses/vines) establishes on the species'
+  // CYCLE in days; trees grow on years. Different clock, same simulator.
+  const nt = !item.sp.tree;
+  const cycleDays = nt ? Math.round(item.sp.cycle?.[1] ?? item.sp.cycle?.[0]
+    ?? (item.sp.porte === "shrub" ? 730 : 180)) : 0;
+  const spacingM = nt ? ({ shrub: 1.5, vine: 1.0 }[item.sp.porte] ?? 0.6) : 3;
+  const clumpM = nt ? ({ shrub: 1.8, vine: 1.3, grass: 0.5 }[item.sp.porte] ?? 0.6) : 0;
+  const step = spacingM / 111320; // spacing in degrees latitude
   const stepLng = step / Math.max(0.1, Math.cos(c.lat * Math.PI / 180));
   const b = L.latLngBounds(current.pts);
   const CAP = 20000;
@@ -1116,8 +1117,11 @@ function startSim(item) {
       if (pointInPoly(la, ln, current.pts)) grid.push([la, ln]);
   const keepP = Math.min(1, CAP / grid.length);
   const kept = keepP < 1 ? grid.filter(() => rnd() < keepP) : grid;
-  const fullCount = Math.round(current.ha * STEMS_PER_HA);
-  const note = kept.length < fullCount * 0.98
+  const fullCount = Math.round(current.ha * (nt ? 1e4 / (spacingM * spacingM) : STEMS_PER_HA));
+  // when the grid is thinned, each drawn clump stands for several plants:
+  // widen it so ground cover still reads as cover, not as sparse dots
+  const coverScale = nt ? Math.sqrt(coarse * coarse / keepP) : 1;
+  const note = !nt && kept.length < fullCount * 0.98
     ? tfmt("showing {n} of {t} trees", { n: fmt(kept.length), t: fmtC(fullCount) }) : "";
   const trees = kept.map(([la, ln]) => ({
     la: la + (rnd() - 0.5) * gStep * 0.6,
@@ -1127,17 +1131,23 @@ function startSim(item) {
     rot: rnd() * Math.PI * 2,
     seed: Math.floor(rnd() * 2147483647),
   }));
-  const maxY = Math.min(120, Math.ceil(maturityYears(cls)));
+  // trees: slider in years; ground cover: slider in days across the cycle
+  const maxV = nt ? cycleDays : Math.min(120, Math.ceil(maturityYears(cls)));
+  const startV = nt ? cycleDays : Math.min(10, maxV);
   const ctl = document.createElement("div");
   ctl.id = "sim";
   ctl.innerHTML = `<span class="sim-name">${plainName(item.sp)}</span>
-    <input type="range" min="0" max="${maxY}" step="1" value="${Math.min(10, maxY)}">
+    <input type="range" min="0" max="${maxV}" step="1" value="${startV}">
     <span class="sim-label mono"></span>
     <span class="sim-note">${note ? note + " &middot; " : ""}${tr("click plants a sapling · right-click removes it · Cmd+Z undoes")}</span>
     <button class="panel-close" data-simclose title="${tr("Close")}">&times;</button>`;
   document.body.appendChild(ctl);
-  SIM = { item, cls, trees, ctl, year: Math.min(10, maxY), fullCount, rnd, poly: shape };
-  ctl.querySelector("input").addEventListener("input", e => { SIM.year = +e.target.value; drawSim(); });
+  SIM = { item, cls, trees, ctl, year: nt ? startV / 365 : startV, fullCount, rnd, poly: shape,
+    nt, cycleDays, clumpM, coverScale, t0: Date.now() };
+  ctl.querySelector("input").addEventListener("input", e => {
+    SIM.year = SIM.nt ? +e.target.value / 365 : +e.target.value;
+    drawSim();
+  });
   ctl.querySelector("[data-simclose]").addEventListener("click", stopSim);
   ensureSimLayer();
   map.getContainer().style.cursor = "copy"; // planting is armed while the pill is up
@@ -1149,7 +1159,8 @@ function startSim(item) {
 function freezeSim() {
   if (!SIM) return;
   if (SIM.poly && shapes.includes(SIM.poly)) {
-    STANDS.set(SIM.poly, { item: SIM.item, cls: SIM.cls, trees: SIM.trees, year: SIM.year, fullCount: SIM.fullCount });
+    STANDS.set(SIM.poly, { item: SIM.item, cls: SIM.cls, trees: SIM.trees, year: SIM.year, fullCount: SIM.fullCount,
+      nt: SIM.nt, cycleDays: SIM.cycleDays, clumpM: SIM.clumpM, coverScale: SIM.coverScale });
   }
   SIM.ctl.remove();
   SIM = null;
@@ -1223,11 +1234,15 @@ document.addEventListener("keydown", e => {
 // Leaflet zoom animation transforms each layer individually (panes are not
 // scaled), so the canvas must ride the same zoomanim path as every renderer.
 function simZoomAnim(e) {
-  // the exact leaflet.heat formula: canvas anchored at the container origin
-  if (!simCanvas || !map._getCenterOffset) return;
-  const scale = map.getZoomScale(e.zoom);
-  const offset = map._getCenterOffset(e.center)._multiplyBy(-scale).subtract(map._getMapPanePos());
-  L.DomUtil.setTransform(simCanvas, offset, scale);
+  // L.SVG/L.Canvas's own _animateZoom math: transform is computed FROM THE
+  // DRAW-TIME ANCHOR (latlng + zoom stored by drawSim), never from the pane's
+  // current mid-animation state. leaflet.heat's formula composes wrongly when
+  // a second wheel zoom lands before the first animation ends (trees "fly").
+  // This is the exact algorithm the dashed polygon uses, so both move as one.
+  if (!simCanvas || !simAnchor || !map._latLngToNewLayerPoint) return;
+  const scale = map.getZoomScale(e.zoom, simAnchor.zoom);
+  const pos = map._latLngToNewLayerPoint(simAnchor.latlng, e.zoom, e.center);
+  L.DomUtil.setTransform(simCanvas, pos, scale);
 }
 
 let simAnchor = null; // where the canvas was drawn, for zoom-animation transforms
@@ -1246,11 +1261,19 @@ function drawSim() {
   for (const stand of STANDS.values()) renderStand(g, stand, size, mpp, false);
   if (SIM) {
     renderStand(g, SIM, size, mpp, true);
-    const h = height(SIM.year, SIM.cls);
-    const disp = standDisplay(SIM.cls, SIM.year);
     const manual = SIM.trees.reduce((n, tr2) => n + (tr2.manual ? 1 : 0), 0);
-    SIM.ctl.querySelector(".sim-label").textContent =
-      `${tr("year")} ${THIS_YEAR + Math.round(SIM.year)} · ${h.toFixed(1)} m · ${tr("crown")} ${disp.crown.toFixed(1)} m · ${fmtC(Math.round(SIM.fullCount * disp.keep) + manual)} ${tr("trees")}`;
+    let label;
+    if (SIM.nt) {
+      // ground cover lives on the species' cycle: label is a calendar date
+      const d = new Date(SIM.t0 + SIM.year * 365.25 * 864e5);
+      const day = SIM.cycleDays <= 90 ? `${d.getDate()} ` : "";
+      label = `${d.getFullYear()}, ${day}${MONTHS[d.getMonth()]} · ${fmtC(SIM.fullCount + manual)} ${tr("plants")}`;
+    } else {
+      const h = height(SIM.year, SIM.cls);
+      const disp = standDisplay(SIM.cls, SIM.year);
+      label = `${tr("year")} ${THIS_YEAR + Math.round(SIM.year)} · ${h.toFixed(1)} m · ${tr("crown")} ${disp.crown.toFixed(1)} m · ${fmtC(Math.round(SIM.fullCount * disp.keep) + manual)} ${tr("trees")}`;
+    }
+    SIM.ctl.querySelector(".sim-label").textContent = label;
     updateProj();
   }
 }
@@ -1267,11 +1290,15 @@ function renderStand(g, stand, size, mpp, active) {
     let m = byAge.get(pl);
     if (m === undefined) {
       const age = t - pl;
-      if (age <= 0.01) m = null;
-      else m = { h: height(age, cls), cd: crownDisplayM(cls, age), std: standDisplay(cls, age) };
+      if (age <= (stand.nt ? 0.003 : 0.01)) m = null;
+      else if (stand.nt) {
+        // ground cover: clump grows over the cycle (smoothstep), no thinning
+        const f = Math.min(1, age * 365 / stand.cycleDays);
+        m = { h: 1, cd: stand.clumpM * f * f * (3 - 2 * f) };
+      } else m = { h: height(age, cls), cd: crownDisplayM(cls, age), std: standDisplay(cls, age) };
       byAge.set(pl, m);
     }
-    if (m && !tree.manual && tree.seed / 2147483647 > m.std.keep) continue; // self-thinned
+    if (m && !stand.nt && !tree.manual && tree.seed / 2147483647 > m.std.keep) continue; // self-thinned
     if (!m || m.h < 0.3) {
       if (active && tree.manual) {
         const p = map.latLngToContainerPoint([tree.la, tree.ln]);
@@ -1282,8 +1309,10 @@ function renderStand(g, stand, size, mpp, active) {
     const p = map.latLngToContainerPoint([tree.la, tree.ln]);
     if (!inView(p)) continue;
     // isolated trees spread full open-grown crowns; stand survivors widen as
-    // self-thinning releases them (standDisplay blend)
-    const r = (tree.manual ? m.cd * 1.6 : m.std.crown) * tree.s / 2 / mpp;
+    // self-thinning releases them (standDisplay blend); ground-cover clumps
+    // scale up when the grid was thinned so cover still reads as cover
+    const r = (stand.nt ? m.cd * (tree.manual ? 1 : stand.coverScale)
+      : tree.manual ? m.cd * 1.6 : m.std.crown) * tree.s / 2 / mpp;
     if (r <= 0.05) {
       if (active && tree.manual) saplings.push(p);
       continue;
@@ -1699,8 +1728,9 @@ async function restoreFromHash() {
   await analyze(pts);
   if (expand) content.querySelector("[data-toggle]")?.click(); // ;x = expand first row (testing)
   if (expand === ";s" && SIM) { // ;s = preview a mature stand (testing)
-    SIM.year = Math.min(25, +SIM.ctl.querySelector("input").max);
-    SIM.ctl.querySelector("input").value = SIM.year;
+    const inp = SIM.ctl.querySelector("input");
+    inp.value = SIM.nt ? +inp.max : Math.min(25, +inp.max);
+    SIM.year = SIM.nt ? +inp.value / 365 : +inp.value;
     drawSim();
   }
 }

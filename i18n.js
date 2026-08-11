@@ -131,7 +131,7 @@ const PT = {
   "central sample of {n} trees": "amostra central de {n} árvores",
   "showing {n} of {t} trees": "mostrando {n} de {t} árvores",
   "trees": "árvores",
-  "click plants a sapling · right-click removes it · Cmd+Z undoes": "clique planta uma muda · botão direito remove · Cmd+Z desfaz",
+  "click plants a sapling · right-click removes it · Cmd+Z undoes": "clique planta · direito remove · ⌘Z desfaz",
   "more filters": "mais filtros",
   "shrubs and herbs": "arbustos e ervas",
   "everything": "tudo",
@@ -160,6 +160,7 @@ const PT = {
   "plantable land": "terreno plantável",
   "See the planting grow": "Ver o plantio crescer",
   "Find plantable land nearby": "Achar terrenos perto daqui",
+  "plants": "plantas",
 };
 
 const ES = {
@@ -239,7 +240,7 @@ const ES = {
   "central sample of {n} trees": "muestra central de {n} árboles",
   "showing {n} of {t} trees": "mostrando {n} de {t} árboles",
   "trees": "árboles",
-  "click plants a sapling · right-click removes it · Cmd+Z undoes": "clic planta un plantín · clic derecho lo quita · Cmd+Z deshace",
+  "click plants a sapling · right-click removes it · Cmd+Z undoes": "clic planta · derecho quita · ⌘Z deshace",
   "Close": "Cerrar", "Selected area": "Área seleccionada", "fit": "ajuste",
   "Delete area": "Eliminar área",
   "Import area (GeoJSON, KML, zipped shapefile)": "Importar área (GeoJSON, KML, shapefile comprimido)",
@@ -308,6 +309,7 @@ const ES = {
   "Stop simulation": "Parar simulación",
   "See the planting grow": "Ver crecer la plantación",
   "Find plantable land nearby": "Encontrar terrenos cerca de aquí",
+  "plants": "plantas",
 };
 
 const FR = {
@@ -387,7 +389,7 @@ const FR = {
   "central sample of {n} trees": "échantillon central de {n} arbres",
   "showing {n} of {t} trees": "affichage de {n} sur {t} arbres",
   "trees": "arbres",
-  "click plants a sapling · right-click removes it · Cmd+Z undoes": "clic plante un jeune arbre · clic droit le retire · Cmd+Z annule",
+  "click plants a sapling · right-click removes it · Cmd+Z undoes": "clic plante · clic droit retire · ⌘Z annule",
   "Close": "Fermer", "Selected area": "Zone sélectionnée", "fit": "ajust.",
   "Delete area": "Supprimer la zone",
   "Import area (GeoJSON, KML, zipped shapefile)": "Importer une zone (GeoJSON, KML, shapefile zippé)",
@@ -456,6 +458,7 @@ const FR = {
   "Stop simulation": "Arrêter la simulation",
   "See the planting grow": "Voir la plantation pousser",
   "Find plantable land nearby": "Trouver des terrains près d'ici",
+  "plants": "plantes",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
