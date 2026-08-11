@@ -211,7 +211,13 @@ function setShape(pts) {
   const poly = L.polygon(pts, SHAPE_STYLE).addTo(map);
   poly._pts = pts;
   poly.on("click", () => {
-    if (armed || poly === shape) return; // active shape stays clickable for sapling planting
+    if (armed) return;
+    if (poly === shape) {
+      // while a sim is live, clicks on the active area plant saplings;
+      // otherwise clicking it reopens its analysis (panel may be closed)
+      if (!SIM && $("#panel").hidden) analyze(poly._pts);
+      return;
+    }
     setActive(poly);
     analyze(poly._pts);
   });
@@ -2143,7 +2149,15 @@ const langMenu = $("#langmenu");
 const READY_LANGS = LANGS.filter(l => l === "en" || Object.keys(DICTS[l] ?? {}).length > 0);
 langMenu.innerHTML = READY_LANGS.map(l =>
   `<button data-lang="${l}" class="${l === LANG ? "on" : ""}">${NAMES[l]}</button>`).join("");
-langBtn.addEventListener("click", () => { langMenu.hidden = !langMenu.hidden; });
+langBtn.addEventListener("click", () => {
+  langMenu.hidden = !langMenu.hidden;
+  if (!langMenu.hidden && matchMedia("(min-width: 761px)").matches) {
+    // anchor the menu under its button, right-aligned (mobile CSS spans full width)
+    const r = langBtn.getBoundingClientRect();
+    langMenu.style.left = Math.max(10, r.right - langMenu.offsetWidth) + "px";
+    langMenu.style.top = r.bottom + 8 + "px";
+  }
+});
 langMenu.addEventListener("click", e => {
   const b = e.target.closest("[data-lang]");
   if (!b) return;
