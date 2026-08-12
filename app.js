@@ -2145,17 +2145,19 @@ function csvExport() {
   const head = ["scientific_name", "common_name", "family", "score", "fit", "score_2040s",
     "temp_factor", "rain_factor", "ph_factor", "photo_factor", "frost_factor", "chill_factor",
     "native_here", "growth_class", "uses"];
-  // the CSV honors the same guardrail as the panel: recorded invasives for
-  // this country are not part of any recommendation output
-  const rows = current.scored.filter(s => !invasiveHere(s.sp)).map(s => [
+  // the CSV mirrors the panel exactly: active filters, the marginality cut
+  // and the invasive exclusion all apply; clear the filters to export wide
+  const rows = current.scored.filter(s => critMatch(s, critState())).map(s => [
     s.sp.sci, s.sp.common, s.sp.family,
     s.score.toFixed(3), s.fit.toFixed(3), s.f45 != null ? s.f45.toFixed(3) : "",
     ...[s.factors.temp, s.factors.rain, s.factors.ph, s.factors.photo, s.factors.frost, s.factors.chill]
       .map(v => v == null ? "" : (+v).toFixed(3)),
     nativeHere(s.sp) ?? "", s.sp.gclass, s.sp.uses.join("|"),
   ].map(esc).join(","));
-  const meta = `# Canopy ${new Date().toISOString().slice(0, 10)} · ${current.center.lat.toFixed(4)},${current.center.lng.toFixed(4)} · ${current.ha.toFixed(1)} ha\n`;
-  downloadBlob(`canopy-especies-${current.center.lat.toFixed(3)}_${current.center.lng.toFixed(3)}.csv`,
+  const c = critState();
+  const meta = `# Replantio ${new Date().toISOString().slice(0, 10)} · ${current.center.lat.toFixed(4)},${current.center.lng.toFixed(4)} · ${current.ha.toFixed(1)} ha\n`
+    + `# filters: origin=${c.nativeOnly ? "native" : "all"} habit=${c.habit} use=${c.use}${c.matMax ? ` maturity<=${c.matMax}y` : ""}${c.crownMin ? ` crown>=${c.crownMin}m` : ""} · score>0.05 · invasives excluded (GRIIS${current.cc === "BR" ? " + Instituto Horus" : ""}) · ${rows.length} species\n`;
+  downloadBlob(`replantio-especies-${current.center.lat.toFixed(3)}_${current.center.lng.toFixed(3)}.csv`,
     new Blob([meta + head.join(",") + "\n" + rows.join("\n")], { type: "text/csv;charset=utf-8" }));
 }
 
