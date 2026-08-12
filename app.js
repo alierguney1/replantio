@@ -960,26 +960,31 @@ const slugify = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerC
   .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 // "Onde conseguir": the first block of the detail, because it is the only fact
-// here that converts intent into action. Brazilian stores only, so BR-gated.
+// here that converts intent into action. Everything is country-scoped: shops
+// carry a scope (BR, US, ...), directories a cc; nothing Brazilian leaks abroad.
 function sourcingMarkup(sp) {
-  if (!SOURCING?.shops?.length || current.cc !== "BR") return "";
-  const term = shopTerm(sp);
+  const cc = current.cc;
+  const shops = (SOURCING?.shops ?? []).filter(sh => sh.scope === cc);
+  const dirs = (SOURCING?.directories ?? []).filter(d => d.cc === cc);
+  if (!shops.length && !dirs.length) return "";
+  const term = cc === "BR" ? shopTerm(sp) : (sp.common !== sp.sci ? cap(sp.common) : sp.sci);
   const kindWord = sp.tree || sp.porte === "shrub" ? "muda" : "sementes";
   // verified product links first: only stores that provably stock THIS species
   const kind = sp.tree || sp.porte === "shrub" ? "muda" : "semente";
   const prod = SOURCING.products?.[sp.id] ?? {};
-  const direct = SOURCING.shops
+  const direct = shops
     .map(sh => {
       const hit = prod[sh.id]?.[kind] ?? prod[sh.id]?.[kind === "muda" ? "semente" : "muda"];
-      return hit ? `<a href="${hit.url}" target="_blank" rel="noopener">${sh.name}${hit.price ? ` <span class="chk">R$${hit.price.toLocaleString("pt-BR")}</span>` : ""}</a>` : null;
+      return hit ? `<a href="${hit.url}" target="_blank" rel="noopener">${sh.name}${hit.price ? ` <span class="chk">${sh.cur ?? "$"}${hit.price.toLocaleString(LOCALE)}</span>` : ""}</a>` : null;
     })
     .filter(Boolean).join(" &middot; ");
-  const links = SOURCING.shops.filter(sh => sh.search).map(sh => {
+  const links = shops.filter(sh => sh.search).map(sh => {
     const url = sh.search.includes("{slug}")
       ? sh.search.replace("{slug}", slugify(`${kindWord} ${term}`))
       : sh.search.replace("{q}", encodeURIComponent(term));
     return `<a href="${url}" target="_blank" rel="noopener">${sh.name}</a>`;
   }).join(" &middot; ");
+  const dirRow = dirs.map(d => `<a href="${d.url}" target="_blank" rel="noopener"${d.note ? ` title="${d.note}"` : ""}>${d.name}</a>`).join(" &middot; ");
   const band = priceBand(sp);
   const horto = (SOURCING.hortos || []).find(h =>
     h.municipio && current.city && h.municipio.localeCompare(current.city, "pt", { sensitivity: "base" }) === 0);
@@ -988,7 +993,8 @@ function sourcingMarkup(sp) {
     <div class="stats getrows" style="margin-top:0">
       ${horto ? `<div class="stat wide"><span class="sk gfree">${tr("free")}</span><span class="sv"><a href="${horto.url}" target="_blank" rel="noopener">${horto.name}</a>${horto.limit ? ` &middot; ${tfmt("up to {n} seedlings", { n: horto.limit })}` : ""}${horto.scope === "quintal" ? ` &middot; ${tr("for planting on your own property")}` : ""}</span></div>` : ""}
       ${direct ? `<div class="stat wide"><span class="sk">${tr("buy")}</span><span class="sv">${direct}</span></div>` : ""}
-      <div class="stat wide"><span class="sk">${tr("search stores")}</span><span class="sv">${links}</span></div>
+      ${links ? `<div class="stat wide"><span class="sk">${tr("search stores")}</span><span class="sv">${links}</span></div>` : ""}
+      ${dirRow ? `<div class="stat wide"><span class="sk">${tr("find a nursery")}</span><span class="sv">${dirRow}</span></div>` : ""}
       ${nets.length ? `<div class="stat wide"><span class="sk">${tr("seed networks")}</span><span class="sv">${nets.map(n => `<a href="${n.url}" target="_blank" rel="noopener">${n.name}</a>`).join(" &middot; ")}</span></div>` : ""}
       ${band ? `<div class="stat wide"><span class="sk">${tr("typical price")}</span><span class="sv">${band}${SOURCING.bands?.checked ? ` <span class="chk">(${SOURCING.bands.checked})</span>` : ""}</span></div>` : ""}
     </div>`;

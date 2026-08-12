@@ -40,10 +40,12 @@ uniq_names = sorted((n for n, ids in by_name.items() if len(ids) == 1 and len(n)
 
 products = {}
 stats = {"binomial": 0, "binomial_embedded": 0, "name": 0, "skipped": 0}
-for f in sorted(glob.glob("/tmp/shop_*.json")):
+for f in sorted(glob.glob("/tmp/shop_*.json") + glob.glob("/tmp/usshop_*.json")):
     data = json.load(open(f))
     shop = data["shop"]
     for p in data.get("products", []):
+        kind_map = {"seedling": "muda", "seed": "semente"}  # US kinds normalize to internal keys
+        p["kind"] = kind_map.get(p.get("kind"), p.get("kind"))
         if p.get("kind") not in ("muda", "semente"):
             continue
         sids = []

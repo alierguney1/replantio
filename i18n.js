@@ -162,6 +162,7 @@ const PT = {
   "Find plantable land nearby": "Achar terrenos perto daqui",
   "plants": "plantas",
   "search stores": "buscar em lojas",
+  "find a nursery": "achar um viveiro",
 };
 
 const ES = {
@@ -312,6 +313,7 @@ const ES = {
   "Find plantable land nearby": "Encontrar terrenos cerca de aquí",
   "plants": "plantas",
   "search stores": "buscar en tiendas",
+  "find a nursery": "encontrar un vivero",
 };
 
 const FR = {
@@ -462,6 +464,7 @@ const FR = {
   "Find plantable land nearby": "Trouver des terrains près d'ici",
   "plants": "plantes",
   "search stores": "chercher en boutique",
+  "find a nursery": "trouver une pépinière",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -684,6 +687,7 @@ const ZH = {
   "springs": "泉眼",
   "lakes and ponds": "湖泊与池塘",
   "search stores": "在商店搜索",
+  "find a nursery": "查找苗圃",
 };
 const JA = {
   "Analyze": "分析する",
@@ -904,6 +908,7 @@ const JA = {
   "springs": "湧水",
   "lakes and ponds": "湖沼",
   "search stores": "ショップで検索",
+  "find a nursery": "苗木店を探す",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1124,6 +1129,7 @@ const RU = {
   "springs": "родники",
   "lakes and ponds": "озёра и пруды",
   "search stores": "искать в магазинах",
+  "find a nursery": "найти питомник",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -1344,6 +1350,7 @@ const ID = {
   "springs": "mata air",
   "lakes and ponds": "danau dan kolam",
   "search stores": "cari di toko",
+  "find a nursery": "cari pembibitan",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -1564,6 +1571,7 @@ const HI = {
   "springs": "जलस्रोत",
   "lakes and ponds": "झीलें और तालाब",
   "search stores": "दुकानों में खोजें",
+  "find a nursery": "नर्सरी खोजें",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -1784,6 +1792,7 @@ const DE = {
   "springs": "Quellen",
   "lakes and ponds": "Seen und Teiche",
   "search stores": "in Shops suchen",
+  "find a nursery": "Baumschule finden",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -2004,6 +2013,7 @@ const SW = {
   "springs": "chemchemi",
   "lakes and ponds": "maziwa na madimbwi",
   "search stores": "tafuta madukani",
+  "find a nursery": "tafuta kitalu",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW };
