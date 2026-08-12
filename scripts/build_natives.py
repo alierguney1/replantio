@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""Build data/natives.json: the countries where each species.json taxon is native.
+"""Build the nativity layers for species.json: which countries, and where inside
+the countries too big for that to mean anything.
+
+  data/natives.json     {"<species id>": ["AU", "PG", ...]}  ISO 3166-1 alpha-2
+  data/natives_l3.json  {"<species id>": ["BZL", "BZS", ...]} TDWG level-3 codes,
+                        carried only for the nine countries in SUBNATIONAL
+  data/l3_regions.json  {"BR": {"SP": "BZL", ...}, ...} ISO 3166-2 subdivision
+                        code -> level-3 region, so a reverse geocode can reach
+                        the level-3 layer
 
 Sources (both cached under data/ on first run):
   WCVP    https://sftp.kew.org/pub/data-repositories/WCVP/wcvp.zip
@@ -17,10 +25,17 @@ Sources (both cached under data/ on first run):
           Brummitt R.K. 2001. World Geographic Scheme for Recording Plant
           Distributions, ed. 2. Hunt Institute / TDWG.
 
-Output is {"<species id>": ["AU", "PG", ...]} with ISO 3166-1 alpha-2 codes, so the
-app can compare against the country code it gets from reverse geocoding. Species
-with no WCVP match, or matched but with no native distribution, are left out
-entirely -- absent means "unknown", not "not native anywhere".
+natives.json carries ISO 3166-1 alpha-2 codes, so the app can compare against the
+country code it gets from reverse geocoding. Species with no WCVP match, or
+matched but with no native distribution, are left out entirely -- absent means
+"unknown", not "not native anywhere".
+
+natives_l3.json is a strict refinement: it holds the same native areas one level
+finer, for the countries where the country answer is too coarse to be worth
+anything. A species listed there under BR always has BR in natives.json, and a
+species native to BR always has at least one BZ* code here -- both files are the
+same WCVP rows, collapsed differently. Species with no level-3 code in any of
+those countries are absent, and the app falls back to the country layer.
 """
 import collections, csv, difflib, io, json, pathlib, struct, sys, urllib.request, zipfile
 
@@ -29,6 +44,8 @@ SPECIES = ROOT / "data" / "species.json"
 WCVP_ZIP = ROOT / "data" / "wcvp.zip"
 LEVEL4 = ROOT / "data" / "wgsrpd_level4.dbf"
 OUT = ROOT / "data" / "natives.json"
+OUT_L3 = ROOT / "data" / "natives_l3.json"
+OUT_REGIONS = ROOT / "data" / "l3_regions.json"
 
 WCVP_URL = "https://sftp.kew.org/pub/data-repositories/WCVP/wcvp.zip"
 LEVEL4_URL = "https://raw.githubusercontent.com/tdwg/wgsrpd/master/level4/level4.dbf"
@@ -65,6 +82,137 @@ ISO_FIX = {
     "SCS-PI": (),            # Paracel Is.  -- ditto
 }
 RETIRED = {"UK", "AN", "YU", "TP", "SP", "PI"}  # must not survive ISO_FIX
+
+# Countries wide enough that "native here" stops being a fact about the place.
+# Pau-brasil and the castanheira are both native to Brazil and have never shared a
+# forest. For these, natives_l3.json keeps the level-3 codes WCVP already records
+# instead of collapsing them; everywhere else level 3 is at or below country size,
+# so splitting would only add bytes.
+SUBNATIONAL = ("AR", "AU", "BR", "CA", "CN", "IN", "MX", "RU", "US")
+
+# Level-4 area -> ISO 3166-2 subdivision code with the country prefix dropped,
+# which is the form reverse geocoders hand back (Nominatim's ISO3166-2-lvl4,
+# Google's administrative_area_level_1 short_name). WGSRPD's own level-4 suffixes
+# look close enough to ISO to be a trap -- CHN-HB is Hebei where ISO CN-HB is
+# Hubei, and BZN-RM is Roraima whose UF is RR -- so every one is written out.
+# Several areas may share a subdivision (Puducherry is four exclaves); they just
+# have to agree on the level-3 region, which subnational() enforces.
+SUBDIVISIONS = {
+    "AR": {  # ISO 3166-2:AR is single letters, and not the obvious ones
+        "AGE-BA": "B", "AGE-CH": "H", "AGE-CN": "W", "AGE-CO": "X", "AGE-DF": "C",
+        "AGE-ER": "E", "AGE-FO": "P", "AGE-LP": "L", "AGE-MI": "N", "AGE-SF": "S",
+        "AGS-CB": "U", "AGS-NE": "Q", "AGS-RN": "R", "AGS-SC": "Z", "AGS-TF": "V",
+        "AGW-CA": "K", "AGW-JU": "Y", "AGW-LR": "F", "AGW-ME": "M", "AGW-SA": "A",
+        "AGW-SE": "G", "AGW-SJ": "J", "AGW-SL": "D", "AGW-TU": "T",
+    },
+    "AU": {
+        "NSW-CT": "ACT", "NSW-NS": "NSW", "NTA-OO": "NT", "QLD-QU": "QLD",
+        "SOA-OO": "SA", "TAS-OO": "TAS", "VIC-OO": "VIC", "WAU-WA": "WA",
+    },
+    "BR": {
+        "BZC-DF": "DF", "BZC-GO": "GO", "BZC-MS": "MS", "BZC-MT": "MT",
+        "BZE-AL": "AL", "BZE-BA": "BA", "BZE-CE": "CE", "BZE-MA": "MA",
+        "BZE-PB": "PB", "BZE-PE": "PE", "BZE-PI": "PI", "BZE-RN": "RN",
+        "BZE-SE": "SE", "BZE-FN": "PE",  # Fernando de Noronha is a PE district
+        "BZL-ES": "ES", "BZL-MG": "MG", "BZL-RJ": "RJ", "BZL-SP": "SP",
+        "BZL-TR": "ES",                  # Trindade is administered from Vitória
+        "BZN-AC": "AC", "BZN-AM": "AM", "BZN-AP": "AP", "BZN-PA": "PA",
+        "BZN-RM": "RR", "BZN-RO": "RO", "BZN-TO": "TO",  # RM is WGSRPD's Roraima
+        "BZS-PR": "PR", "BZS-RS": "RS", "BZS-SC": "SC",
+    },
+    "CA": {
+        "ABT-OO": "AB", "BRC-OO": "BC", "MAN-OO": "MB", "NBR-OO": "NB",
+        "NSC-OO": "NS", "NUN-OO": "NU", "NWT-OO": "NT", "ONT-OO": "ON",
+        "PEI-OO": "PE", "QUE-OO": "QC", "SAS-OO": "SK", "YUK-OO": "YT",
+    },
+    "CN": {
+        "CHC-CQ": "CQ", "CHC-GZ": "GZ", "CHC-HU": "HB", "CHC-SC": "SC",
+        "CHC-YN": "YN", "CHH-OO": "HI", "CHI-NM": "NM", "CHI-NX": "NX",
+        "CHM-HJ": "HL", "CHM-JL": "JL", "CHM-LN": "LN", "CHN-BJ": "BJ",
+        "CHN-GS": "GS", "CHN-HB": "HE", "CHN-SA": "SN", "CHN-SD": "SD",
+        "CHN-SX": "SX", "CHN-TJ": "TJ", "CHQ-OO": "QH", "CHS-AH": "AH",
+        "CHS-FJ": "FJ", "CHS-GD": "GD", "CHS-GX": "GX", "CHS-HE": "HA",
+        "CHS-HK": "HK", "CHS-HN": "HN", "CHS-JS": "JS", "CHS-JX": "JX",
+        "CHS-SH": "SH", "CHS-ZJ": "ZJ", "CHT-OO": "XZ", "CHX-OO": "XJ",
+    },
+    "IN": {
+        "ASS-AS": "AS", "ASS-MA": "MN", "ASS-ME": "ML", "ASS-MI": "MZ",
+        "ASS-NA": "NL", "ASS-TR": "TR", "EHM-AP": "AR", "EHM-SI": "SK",
+        "IND-AP": "AP", "IND-BI": "BR", "IND-CH": "CH", "IND-CT": "CG",
+        "IND-DE": "DL", "IND-GO": "GA", "IND-GU": "GJ", "IND-HA": "HR",
+        "IND-JK": "JH", "IND-KE": "KL", "IND-KT": "KA", "IND-MP": "MP",
+        "IND-MR": "MH", "IND-OR": "OD", "IND-PU": "PB", "IND-RA": "RJ",
+        "IND-TN": "TN", "IND-UP": "UP", "IND-WB": "WB", "LDV-OO": "LD",
+        "WHM-HP": "HP", "WHM-JK": "JK", "WHM-UT": "UK",
+        "IND-DD": "DH", "IND-DM": "DH", "IND-DI": "DH",  # merged into one UT, 2020
+        "IND-PO": "PY", "IND-KL": "PY", "IND-MH": "PY", "IND-YA": "PY",
+    , "TS": "IND",  # Telangana: post-2001 split, geocoders return TS
+    },
+    "MX": {
+        "MXC-DF": "CMX", "MXC-ME": "MEX", "MXC-MO": "MOR", "MXC-PU": "PUE",
+        "MXC-TL": "TLA", "MXE-AG": "AGU", "MXE-CO": "COA", "MXE-CU": "CHH",
+        "MXE-DU": "DUR", "MXE-GU": "GUA", "MXE-HI": "HID", "MXE-NL": "NLE",
+        "MXE-QU": "QUE", "MXE-SL": "SLP", "MXE-TA": "TAM", "MXE-ZA": "ZAC",
+        "MXG-VC": "VER", "MXN-BC": "BCN", "MXN-BS": "BCS", "MXN-SI": "SIN",
+        "MXN-SO": "SON", "MXS-CL": "COL", "MXS-GR": "GRO", "MXS-JA": "JAL",
+        "MXS-MI": "MIC", "MXS-NA": "NAY", "MXS-OA": "OAX", "MXT-CA": "CAM",
+        "MXT-CI": "CHP", "MXT-QR": "ROO", "MXT-TB": "TAB", "MXT-YU": "YUC",
+    },
+    "US": {
+        "ALA-OO": "AL", "ARI-OO": "AZ", "ARK-OO": "AR", "ASK-OO": "AK",
+        "CAL-OO": "CA", "CNT-OO": "CT", "COL-OO": "CO", "DEL-OO": "DE",
+        "FLA-OO": "FL", "GEO-OO": "GA", "HAW-HI": "HI", "IDA-OO": "ID",
+        "ILL-OO": "IL", "INI-OO": "IN", "IOW-OO": "IA", "KAN-OO": "KS",
+        "KTY-OO": "KY", "LOU-OO": "LA", "MAI-OO": "ME", "MAS-OO": "MA",
+        "MIC-OO": "MI", "MIN-OO": "MN", "MNT-OO": "MT", "MRY-OO": "MD",
+        "MSI-OO": "MS", "MSO-OO": "MO", "NCA-OO": "NC", "NDA-OO": "ND",
+        "NEB-OO": "NE", "NEV-OO": "NV", "NWH-OO": "NH", "NWJ-OO": "NJ",
+        "NWM-OO": "NM", "NWY-OO": "NY", "OHI-OO": "OH", "OKL-OO": "OK",
+        "ORE-OO": "OR", "PEN-OO": "PA", "RHO-OO": "RI", "SCA-OO": "SC",
+        "SDA-OO": "SD", "TEN-OO": "TN", "TEX-OO": "TX", "UTA-OO": "UT",
+        "VER-OO": "VT", "VRG-OO": "VA", "WAS-OO": "WA", "WDC-OO": "DC",
+        "WIS-OO": "WI", "WVA-OO": "WV", "WYO-OO": "WY",
+    },
+}
+
+# Level-4 areas of a SUBNATIONAL country left out of l3_regions, and why. Most are
+# one subdivision split across two level-3 regions: a state code alone cannot say
+# which half you are standing in, and guessing would hand back a native range from
+# the wrong side of the country. Anything in neither table stops the build, so a
+# WGSRPD update cannot quietly drop a state.
+SUBDIVISION_SKIP = {
+    "ALU-OO": "Aleutian Is., part of US-AK -> ASK",
+    "LAB-OO": "Labrador and Newfoundland are both CA-NL",
+    "NFL-NE": "Newfoundland and Labrador are both CA-NL",
+    "AND-AN": "Andaman and Nicobar Is. are both IN-AN",
+    "NCB-OO": "Nicobar and Andaman Is. are both IN-AN",
+    "EHM-DJ": "Darjiling is a district of IN-WB -> IND",
+    "MXI-GU": "Guadalupe I., part of MX-BCN -> MXN",
+    "MXI-RA": "Rocas Alijos, part of MX-BCS -> MXN",
+    "MXI-RG": "Revillagigedo Is., part of MX-COL -> MXS",
+    "NFK-LH": "Lord Howe I., part of AU-NSW -> NSW",
+    "MAQ-OO": "Macquarie I., part of AU-TAS -> TAS",
+    "QLD-CS": "Coral Sea Is., an external territory with no AU subdivision",
+    "WAU-AC": "Ashmore-Cartier Is., an external territory with no AU subdivision",
+}
+
+# Subdivisions that did not exist when WGSRPD ed. 2 froze in 2001, filed under the
+# level-3 region of the parent they were carved out of.
+SUBDIVISION_EXTRA = {
+    "IN": {"TG": "IND", "LA": "WHM"},  # Telangana from AP 2014, Ladakh from J&K 2019
+}
+
+# Printed on every run: the sub-national split is the whole point of the second
+# file, and a silent regression in it looks exactly like a correct build. Ranges
+# cross-checked against Flora e Funga do Brasil and the Jepson eFlora.
+SPOT_CHECK = [
+    # Caesalpinia echinata rather than Paubrasilia, to exercise the synonym path
+    (("Caesalpinia", "echinata"), {"BZE", "BZL"}, {"BZC", "BZN", "BZS"}),
+    (("Araucaria", "angustifolia"), {"BZL", "BZS"}, {"BZN"}),
+    (("Bertholletia", "excelsa"), {"BZN"}, {"BZE", "BZL", "BZS"}),
+    (("Euterpe", "edulis"), {"BZE", "BZL", "BZS"}, {"BZN"}),
+    (("Sequoia", "sempervirens"), {"CAL"}, {"FLA", "TEX", "WAS"}),
+]
 
 
 def fetch(url, path):
@@ -116,6 +264,38 @@ def l3_to_iso(path):
     if stale:
         sys.exit(f"WGSRPD shipped unmapped legacy codes {sorted(stale)}; update ISO_FIX")
     return {k: sorted(v) for k, v in mapping.items()}
+
+
+def subnational(path):
+    """(level-3 codes inside SUBNATIONAL countries, {country: {subdivision: L3}}).
+
+    The first is the filter for natives_l3.json, the second is the bridge from a
+    reverse geocode to it. Russia gets the first and not the second: WGSRPD splits
+    European Russia into five compass regions ("Central European Russia") that are
+    not oblasts and nest no administrative units, so there is nothing to key ~50
+    federal subjects on. Its level-3 codes are still recorded, in case a mapping
+    for them ever lands.
+    """
+    rows = [r for r in read_dbf(path) if r["ISO_Code"] in SUBNATIONAL]
+    codes = {r["Level3_cod"] for r in rows}
+
+    regions = {}
+    for row in rows:
+        area, country = row["Level4_cod"], row["ISO_Code"]
+        table = SUBDIVISIONS.get(country, {})
+        if area not in table:
+            if country in SUBDIVISIONS and area not in SUBDIVISION_SKIP:
+                sys.exit(f"WGSRPD area {area} ({row['Level_4_Na']}, {country}) is in "
+                         f"neither SUBDIVISIONS nor SUBDIVISION_SKIP")
+            continue
+        sub, l3 = table[area], row["Level3_cod"]
+        held = regions.setdefault(country, {}).setdefault(sub, l3)
+        if held != l3:
+            sys.exit(f"{country}-{sub} spans {held} and {l3}; it belongs in "
+                     f"SUBDIVISION_SKIP, not SUBDIVISIONS")
+    for country, extra in SUBDIVISION_EXTRA.items():
+        regions[country].update(extra)
+    return codes, regions
 
 
 def binomial(sci):
@@ -268,11 +448,28 @@ def resolve(zf, keys):
     return resolved, notes, how, homonyms
 
 
+def spot_check(resolved, areas, fine):
+    """Print the sub-national range of the SPOT_CHECK taxa, and whether it holds up."""
+    print("\nspot check (level-3 codes in the sub-national countries):")
+    ok = True
+    for key, present, absent in SPOT_CHECK:
+        pid = resolved.get(key)
+        got = sorted(areas.get(pid, frozenset()) & fine) if pid else []
+        bad = sorted((present - set(got)) | (absent & set(got)))
+        ok &= not bad and bool(got)
+        print(f"  {'ok ' if not bad and got else 'FAIL'} {key[0] + ' ' + key[1]:26s} "
+              f"{' '.join(got) or '(nothing)'}"
+              f"{'   wrong: ' + ' '.join(bad) if bad else ''}")
+    return ok
+
+
 def main():
     fetch(LEVEL4_URL, LEVEL4)
     fetch(WCVP_URL, WCVP_ZIP)
     iso = l3_to_iso(LEVEL4)
-    print(f"WGSRPD: {len(iso)} level-3 regions mapped to ISO codes")
+    fine, regions = subnational(LEVEL4)
+    print(f"WGSRPD: {len(iso)} level-3 regions mapped to ISO codes; "
+          f"{len(fine)} of them inside the {len(SUBNATIONAL)} sub-national countries")
 
     species = json.loads(SPECIES.read_text())
     keys = {s["id"]: binomial(s["sci"]) for s in species}
@@ -282,8 +479,13 @@ def main():
           f"({len(skipped)} unusable: {', '.join(skipped)})")
 
     zf = zipfile.ZipFile(WCVP_ZIP)
-    resolved, notes, how, homonyms = resolve(zf, wanted)
-    print(f"WCVP names: {len(resolved)}/{len(wanted)} binomials resolved  {dict(how)}")
+    # The spot-check taxa ride along through name resolution and the distribution
+    # pass; the ones outside species.json simply never reach an output file.
+    extra = {k for k, _, _ in SPOT_CHECK} - wanted
+    resolved, notes, how, homonyms = resolve(zf, wanted | extra)
+    hit = sum(1 for k in wanted if k in resolved)
+    print(f"WCVP names: {hit}/{len(wanted)} binomials resolved  {dict(how)} "
+          f"(tallies include {len(extra)} spot-check taxa outside species.json)")
     for key, found, kind in sorted(notes):
         print(f"  {kind:14s} {key[0]} {key[1]} -> {found[0]} {found[1]}")
     if homonyms:
@@ -291,7 +493,7 @@ def main():
               f"{', '.join(f'{g} {e}' for g, e in sorted(homonyms))}")
 
     areas = native_areas(zf, set(resolved.values()))
-    natives, no_dist, unmatched = {}, [], []
+    natives, fine_natives, no_dist, unmatched = {}, {}, [], []
     for sp in species:
         pid = resolved.get(keys[sp["id"]]) if keys[sp["id"]] else None
         if pid is None:
@@ -304,13 +506,34 @@ def main():
         natives[str(sp["id"])] = codes
         if not codes:
             no_dist.append(sp["sci"])
+        # No empty lists here: nothing to say about a species that reaches none of
+        # the nine countries, and the country layer already covers it.
+        if detail := sorted(areas.get(pid, frozenset()) & fine):
+            fine_natives[str(sp["id"])] = detail
 
-    OUT.write_text(json.dumps(natives, separators=(",", ":"), sort_keys=True))
+    for path, obj in ((OUT, natives), (OUT_L3, fine_natives), (OUT_REGIONS, regions)):
+        path.write_text(json.dumps(obj, separators=(",", ":"), sort_keys=True))
+
     total = len(species)
     print(f"\nwrote {OUT.relative_to(ROOT)}: {len(natives)}/{total} species "
           f"({100 * len(natives) / total:.1f}%), {OUT.stat().st_size / 1024:.0f} KB")
     print(f"  no WCVP match ({len(unmatched)}): {', '.join(sorted(unmatched))}")
     print(f"  matched, no native range ({len(no_dist)}): {', '.join(sorted(no_dist))}")
+
+    per_country = collections.Counter()
+    for detail in fine_natives.values():
+        per_country.update({c for l3 in detail for c in iso[l3] if c in SUBNATIONAL})
+    print(f"\nwrote {OUT_L3.relative_to(ROOT)}: {len(fine_natives)}/{total} species "
+          f"({100 * len(fine_natives) / total:.1f}%), {OUT_L3.stat().st_size / 1024:.0f} KB")
+    print("  species with level-3 detail per country: " + ", ".join(
+        f"{c} {per_country[c]}" for c in SUBNATIONAL))
+    print(f"wrote {OUT_REGIONS.relative_to(ROOT)}: " + ", ".join(
+        f"{c} {len(subs)}" for c, subs in sorted(regions.items())) +
+        f"  ({', '.join(c for c in SUBNATIONAL if c not in regions)}: no usable "
+        f"subdivision bridge, level-3 only)")
+
+    if not spot_check(resolved, areas, fine):
+        sys.exit("spot check failed; the level-3 output is wrong")
 
 
 if __name__ == "__main__":

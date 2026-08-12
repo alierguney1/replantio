@@ -163,6 +163,10 @@ const PT = {
   "plants": "plantas",
   "search stores": "buscar em lojas",
   "find a nursery": "achar um viveiro",
+  "native · other region": "nativa · outra região",
+  "Native to this country, but not to this region (WCVP)": "Nativa deste país, mas não desta região (WCVP)",
+  "Part of the native flora of this region (WCVP)": "Parte da flora nativa desta região (WCVP)",
+  "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "{n} espécies com registro de invasoras neste país foram excluídas destas recomendações ({src}).",
 };
 
 const ES = {
@@ -314,6 +318,10 @@ const ES = {
   "plants": "plantas",
   "search stores": "buscar en tiendas",
   "find a nursery": "encontrar un vivero",
+  "native · other region": "nativa · otra región",
+  "Native to this country, but not to this region (WCVP)": "Nativa de este país, pero no de esta región (WCVP)",
+  "Part of the native flora of this region (WCVP)": "Parte de la flora nativa de esta región (WCVP)",
+  "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "{n} especies registradas como invasoras en este país fueron excluidas de estas recomendaciones ({src}).",
 };
 
 const FR = {
@@ -465,6 +473,10 @@ const FR = {
   "plants": "plantes",
   "search stores": "chercher en boutique",
   "find a nursery": "trouver une pépinière",
+  "native · other region": "indigène · autre région",
+  "Native to this country, but not to this region (WCVP)": "Indigène de ce pays, mais pas de cette région (WCVP)",
+  "Part of the native flora of this region (WCVP)": "Fait partie de la flore indigène de cette région (WCVP)",
+  "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "{n} espèces recensées comme envahissantes dans ce pays ont été exclues de ces recommandations ({src}).",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -688,6 +700,10 @@ const ZH = {
   "lakes and ponds": "湖泊与池塘",
   "search stores": "在商店搜索",
   "find a nursery": "查找苗圃",
+  "native · other region": "原生 · 其他地区",
+  "Native to this country, but not to this region (WCVP)": "原生于本国，但非本地区（WCVP）",
+  "Part of the native flora of this region (WCVP)": "本地区原生植物区系的一部分（WCVP）",
+  "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "已从推荐中排除 {n} 个在本国有入侵记录的物种（{src}）。",
 };
 const JA = {
   "Analyze": "分析する",
@@ -909,6 +925,10 @@ const JA = {
   "lakes and ponds": "湖沼",
   "search stores": "ショップで検索",
   "find a nursery": "苗木店を探す",
+  "native · other region": "在来 · 他地域",
+  "Native to this country, but not to this region (WCVP)": "この国の在来種ですが、この地域には自生しません（WCVP）",
+  "Part of the native flora of this region (WCVP)": "この地域の在来植物相の一部（WCVP）",
+  "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "この国で侵略的と記録されている{n}種を推奨から除外しました（{src}）。",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1130,6 +1150,10 @@ const RU = {
   "lakes and ponds": "озёра и пруды",
   "search stores": "искать в магазинах",
   "find a nursery": "найти питомник",
+  "native · other region": "местный · другой регион",
+  "Native to this country, but not to this region (WCVP)": "Местный для страны, но не для этого региона (WCVP)",
+  "Part of the native flora of this region (WCVP)": "Часть местной флоры этого региона (WCVP)",
+  "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "{n} видов, отмеченных как инвазивные в этой стране, исключены из рекомендаций ({src}).",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -1351,6 +1375,10 @@ const ID = {
   "lakes and ponds": "danau dan kolam",
   "search stores": "cari di toko",
   "find a nursery": "cari pembibitan",
+  "native · other region": "asli · wilayah lain",
+  "Native to this country, but not to this region (WCVP)": "Asli negara ini, tetapi bukan wilayah ini (WCVP)",
+  "Part of the native flora of this region (WCVP)": "Bagian dari flora asli wilayah ini (WCVP)",
+  "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "{n} spesies yang tercatat invasif di negara ini dikecualikan dari rekomendasi ({src}).",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -1572,6 +1600,10 @@ const HI = {
   "lakes and ponds": "झीलें और तालाब",
   "search stores": "दुकानों में खोजें",
   "find a nursery": "नर्सरी खोजें",
+  "native · other region": "देशज · अन्य क्षेत्र",
+  "Native to this country, but not to this region (WCVP)": "इस देश की देशज, पर इस क्षेत्र की नहीं (WCVP)",
+  "Part of the native flora of this region (WCVP)": "इस क्षेत्र की देशज वनस्पतियों का हिस्सा (WCVP)",
+  "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "इस देश में आक्रामक दर्ज {n} प्रजातियों को इन सिफ़ारिशों से बाहर रखा गया ({src})।",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -1793,6 +1825,10 @@ const DE = {
   "lakes and ponds": "Seen und Teiche",
   "search stores": "in Shops suchen",
   "find a nursery": "Baumschule finden",
+  "native · other region": "heimisch · andere Region",
+  "Native to this country, but not to this region (WCVP)": "In diesem Land heimisch, aber nicht in dieser Region (WCVP)",
+  "Part of the native flora of this region (WCVP)": "Teil der heimischen Flora dieser Region (WCVP)",
+  "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "{n} Arten, die in diesem Land als invasiv erfasst sind, wurden aus diesen Empfehlungen ausgeschlossen ({src}).",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -2014,6 +2050,10 @@ const SW = {
   "lakes and ponds": "maziwa na madimbwi",
   "search stores": "tafuta madukani",
   "find a nursery": "tafuta kitalu",
+  "native · other region": "asili · eneo jingine",
+  "Native to this country, but not to this region (WCVP)": "Asili ya nchi hii, lakini si eneo hili (WCVP)",
+  "Part of the native flora of this region (WCVP)": "Sehemu ya mimea asilia ya eneo hili (WCVP)",
+  "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "Spishi {n} zilizorekodiwa kuwa vamizi nchini humu zimeondolewa kwenye mapendekezo haya ({src}).",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW };

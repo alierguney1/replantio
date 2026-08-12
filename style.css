@@ -358,6 +358,7 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
 .sp-sci { font-size: 11px; font-style: italic; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
 .nearby { font-size: 9.5px; font-weight: 500; letter-spacing: .02em; margin-left: 5px; color: var(--accent); }
 .nearby.gbif { color: var(--faint); font-weight: 400; }
+.nearby.otherreg { color: var(--amber); font-weight: 400; font-style: normal; } /* lives on the sci line */
 /* the acquisition column: the one thing on the row that converts intent to action */
 .sp-get { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex-shrink: 0; }
 .sp-get .spd { font-size: 10px; color: var(--faint); letter-spacing: .01em; }

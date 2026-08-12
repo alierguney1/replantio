@@ -29,13 +29,38 @@ L.tileLayer("https://basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
   maxZoom: 20, attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
 }).addTo(map);
 
-let SPECIES = [], NATIVES = {}, NAMES_PT = {}, SOURCING = null;
+let SPECIES = [], NATIVES = {}, NAMES_PT = {}, SOURCING = null, INVASIVES = {}, NATIVES_L3 = {}, L3_REGIONS = {};
 const speciesReady = Promise.all([
   fetch("data/species.json").then(r => r.json()).then(j => { SPECIES = j; }),
   fetch("data/natives.json").then(r => r.json()).then(j => { NATIVES = j; }).catch(() => {}), // optional layer
   fetch("data/names_pt.json").then(r => r.json()).then(j => { NAMES_PT = j; }).catch(() => {}), // optional layer
   fetch("data/sourcing.json").then(r => r.json()).then(j => { SOURCING = j; }).catch(() => {}), // optional layer
+  fetch("data/invasives.json").then(r => r.json()).then(j => { INVASIVES = j; }).catch(() => {}), // optional layer
+  fetch("data/natives_l3.json").then(r => r.json()).then(j => { NATIVES_L3 = j; }).catch(() => {}), // optional layer
+  fetch("data/l3_regions.json").then(r => r.json()).then(j => { L3_REGIONS = j; }).catch(() => {}), // optional layer
 ]);
+
+// ecological guardrails: a species recorded as invasive in the analysed
+// country is never recommended, full stop (GRIIS). And where WCVP gives us
+// sub-national ranges, "native here" means THIS region, not the whole country.
+const l3Here = () => L3_REGIONS[current?.cc]?.[current?.uf] ?? null;
+const nativeRegion = sp => { // true/false when resolvable, null when unknown
+  const l3 = l3Here();
+  if (!l3 || !NATIVES_L3[sp.id]) return null;
+  return NATIVES_L3[sp.id].includes(l3);
+};
+// country-level invasive flags sometimes record intra-country translocation
+// (Hórus lists açaí as invasive in BR because it invades the Mata Atlântica)
+// or island-only invasions (GRIIS-EC records Galápagos, not the mainland).
+// Being native to THIS region overrides the flag; where we cannot resolve a
+// region at all, a species is never blocked in a country it is native to:
+// blocking a native in its homeland is the worse error.
+const invasiveHere = sp => {
+  if (!current?.cc || !(INVASIVES[sp.id] ?? []).includes(current.cc)) return false;
+  if (nativeRegion(sp) === true) return false;
+  if (!L3_REGIONS[current.cc] && nativeHere(sp) === true) return false;
+  return true;
+};
 
 // product analytics: named actions only, no exact coordinates ever
 const track = (name, data) => { try { window.va?.("event", { name, data }); } catch { } };
@@ -475,7 +500,7 @@ async function analyze(pts) {
   track("analysis", { cc: current.cc, city: current.city || undefined, ha: Math.round(ha * 10) / 10, suitable: scored.filter(s => s.score > 0.4).length });
   renderResults();
   loadRowPhotos();
-  gbifEvidence(scored.filter(s => s.score > 0.05).slice(0, 20), L.latLngBounds(pts), ctl.signal);
+  gbifEvidence(scored.filter(s => s.score > 0.05 && !invasiveHere(s.sp)).slice(0, 20), L.latLngBounds(pts), ctl.signal);
   futureOutlook(ctl);
 }
 
@@ -592,9 +617,10 @@ const matCls = g => MAT_CLS[g] ??= maturityYears(CLASSES[g]);
 const crownCls = g => CROWN_CLS[g] ??= crownDisplayM(CLASSES[g], Math.min(maturityYears(CLASSES[g]), 120));
 
 const critMatch = (s, c) => s.score > 0.05
+  && !invasiveHere(s.sp) // never recommend a recorded invasive, under any filter
   && (c.habit === "all" || (c.habit === "nontree" ? s.sp.porte !== "tree" : s.sp.porte === c.habit))
   && (c.use === "all" || s.sp.uses.includes(c.use))
-  && (!c.nativeOnly || nativeHere(s.sp) === true)
+  && (!c.nativeOnly || (nativeHere(s.sp) === true && nativeRegion(s.sp) !== false))
   && (!c.matMax || (s.sp.tree && matCls(s.sp.gclass) <= c.matMax))
   && (!c.crownMin || (s.sp.tree && crownCls(s.sp.gclass) >= c.crownMin));
 
@@ -734,6 +760,10 @@ function renderResults() {
     ${critMarkup()}
     <div id="sp-list">${rows.map((s, i) => speciesRow(s, i)).join("") || `<div class="sp-empty">${tr("Nothing clears the bar for this filter here.")}</div>`}</div>
     ${pool.length > shown ? `<button class="chip more" data-more>${tfmt("Show {n} more", { n: Math.min(20, pool.length - shown) })}</button>` : ""}
+    ${(() => {
+      const cut = current.cc ? scored.filter(s => s.score > 0.05 && invasiveHere(s.sp)).length : 0;
+      return cut ? `<div class="land-note">${tfmt("{n} species recorded as invasive in this country were excluded from these recommendations ({src}).", { n: cut, src: current.cc === "BR" ? "GRIIS · Instituto Hórus" : "GRIIS" })}</div>` : "";
+    })()}
     ${current.cc === "BR" ? `<div class="land-note">${tr("Public land? You can plant, just tell the city first and follow the local urban forestry plan. Private land? Talk to the owner before anything.")}</div>` : ""}
     ${rows.length ? `<div class="follow">
       ${rows.some(r => r.sp.tree) ? `<button class="fu" data-fu="sim"><span class="fa">&#8629;</span>${tr("See the planting grow")}</button>` : ""}
@@ -778,11 +808,13 @@ function speciesRow(s, i) {
       <div class="sp-thumb" data-thumb="${s.sp.id}"${s.photo?.sq ? ` style="background-image:url(&quot;${s.photo.sq}&quot;)"` : ""}></div>
       <div class="sp-names">
         <div class="sp-common">${name}
-          ${nativeHere(s.sp) === true ? `<span class="nearby" title="${tr("Part of the native flora of this country (WCVP)")}">${tr("native")}</span>` : ""}
+          ${nativeHere(s.sp) === true && nativeRegion(s.sp) !== false
+            ? `<span class="nearby" title="${nativeRegion(s.sp) === true ? tr("Part of the native flora of this region (WCVP)") : tr("Part of the native flora of this country (WCVP)")}">${tr("native")}</span>` : ""}
           <span class="nearby gbif" data-nearby="${s.sp.id}" ${s.gbif?.count > 0 ? "" : "hidden"} title="${tr("GBIF occurrence records near this area")}">&#10003; ${tr("nearby")}</span>
           <span class="nearby warn45" data-f45="${s.sp.id}" ${s.score > 0.4 && s.f45 != null && s.f45 <= 0.4 ? "" : "hidden"} title="${tr("Falls below suitable in the 2040s climate (CMIP6)")}">2045 &#9662;</span>
         </div>
-        <div class="sp-sci">${showSci ? s.sp.sci : s.sp.family}</div>
+        <div class="sp-sci">${showSci ? s.sp.sci : s.sp.family}${nativeHere(s.sp) === true && nativeRegion(s.sp) === false
+          ? ` <span class="nearby otherreg" title="${tr("Native to this country, but not to this region (WCVP)")}">${tr("native · other region")}</span>` : ""}</div>
       </div>
       <div class="sp-get">
         ${speed ? `<span class="spd">${speed}</span>` : ""}
@@ -963,6 +995,7 @@ const slugify = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerC
 // here that converts intent into action. Everything is country-scoped: shops
 // carry a scope (BR, US, ...), directories a cc; nothing Brazilian leaks abroad.
 function sourcingMarkup(sp) {
+  if (invasiveHere(sp)) return ""; // never help buy a recorded invasive
   const cc = current.cc;
   const shops = (SOURCING?.shops ?? []).filter(sh => sh.scope === cc);
   const dirs = (SOURCING?.directories ?? []).filter(d => d.cc === cc);
@@ -2112,7 +2145,9 @@ function csvExport() {
   const head = ["scientific_name", "common_name", "family", "score", "fit", "score_2040s",
     "temp_factor", "rain_factor", "ph_factor", "photo_factor", "frost_factor", "chill_factor",
     "native_here", "growth_class", "uses"];
-  const rows = current.scored.map(s => [
+  // the CSV honors the same guardrail as the panel: recorded invasives for
+  // this country are not part of any recommendation output
+  const rows = current.scored.filter(s => !invasiveHere(s.sp)).map(s => [
     s.sp.sci, s.sp.common, s.sp.family,
     s.score.toFixed(3), s.fit.toFixed(3), s.f45 != null ? s.f45.toFixed(3) : "",
     ...[s.factors.temp, s.factors.rain, s.factors.ph, s.factors.photo, s.factors.frost, s.factors.chill]
