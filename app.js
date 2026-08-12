@@ -29,7 +29,7 @@ L.tileLayer("https://basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
   maxZoom: 20, attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
 }).addTo(map);
 
-let SPECIES = [], NATIVES = {}, NAMES_PT = {}, SOURCING = null, INVASIVES = {}, NATIVES_L3 = {}, L3_REGIONS = {};
+let SPECIES = [], NATIVES = {}, NAMES_PT = {}, SOURCING = null, INVASIVES = {}, NATIVES_L3 = {}, L3_REGIONS = {}, NATIVES_GEO = {};
 const speciesReady = Promise.all([
   fetch("data/species.json").then(r => r.json()).then(j => { SPECIES = j; }),
   fetch("data/natives.json").then(r => r.json()).then(j => { NATIVES = j; }).catch(() => {}), // optional layer
@@ -38,13 +38,44 @@ const speciesReady = Promise.all([
   fetch("data/invasives.json").then(r => r.json()).then(j => { INVASIVES = j; }).catch(() => {}), // optional layer
   fetch("data/natives_l3.json").then(r => r.json()).then(j => { NATIVES_L3 = j; }).catch(() => {}), // optional layer
   fetch("data/l3_regions.json").then(r => r.json()).then(j => { L3_REGIONS = j; }).catch(() => {}), // optional layer
+  fetch("data/natives_geo.json").then(r => r.json()).then(j => { NATIVES_GEO = j; }).catch(() => {}), // optional layer
 ]);
+
+// Little's digitized range polygons (USGS, public domain), rasterized to a
+// 0.5° grid: the finest native-range signal we have, North America only.
+// Decoder mirrors scripts/build_natives_geo.py's documented format.
+function geoInRange(enc, lat, lng) {
+  const G = NATIVES_GEO._grid;
+  const row = Math.floor((lat - G.lat0) / G.cell);
+  const col = Math.floor((lng - G.lng0) / G.cell);
+  const w = G.digitos;
+  for (const chunk of enc.split(";")) {
+    if (parseInt(chunk.slice(0, w), G.base) !== row) continue;
+    for (let i = w; i < chunk.length; i += 2 * w) {
+      const start = parseInt(chunk.slice(i, i + w), G.base);
+      const len = parseInt(chunk.slice(i + w, i + 2 * w), G.base);
+      if (col >= start && col < start + len) return true;
+    }
+    return false; // rows are unique: one miss settles it
+  }
+  return false;
+}
+const nativeGeo = sp => { // true/false inside Little's mapped domain, else null
+  const enc = NATIVES_GEO[sp.id];
+  const d = NATIVES_GEO._dominio;
+  const c = current?.center;
+  if (!enc || !d || !c) return null;
+  if (c.lat < d.lat[0] || c.lat > d.lat[1] || c.lng < d.lng[0] || c.lng > d.lng[1]) return null;
+  return geoInRange(enc, c.lat, c.lng);
+};
 
 // ecological guardrails: a species recorded as invasive in the analysed
 // country is never recommended, full stop (GRIIS). And where WCVP gives us
 // sub-national ranges, "native here" means THIS region, not the whole country.
 const l3Here = () => L3_REGIONS[current?.cc]?.[current?.uf] ?? null;
 const nativeRegion = sp => { // true/false when resolvable, null when unknown
+  const geo = nativeGeo(sp); // Little polygons (~50 km) outrank province-scale
+  if (geo !== null) return geo;
   const l3 = l3Here();
   if (!l3 || !NATIVES_L3[sp.id]) return null;
   return NATIVES_L3[sp.id].includes(l3);
@@ -824,17 +855,21 @@ function speciesRow(s, i) {
       <div class="sp-names">
         <div class="sp-common">${name}
           ${nativeHere(s.sp) === true && nativeRegion(s.sp) !== false
-            ? `<span class="nearby" title="${nativeRegion(s.sp) === true
-              ? (regionName()
-                ? tfmt("Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.", { region: regionName() })
-                : tr("Part of the native flora of this region (WCVP)"))
-              : tr("Part of the native flora of this country (WCVP)")}">${tr("native")}</span>` : ""}
+            ? `<span class="nearby" title="${nativeGeo(s.sp) === true
+              ? tr("Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)")
+              : nativeRegion(s.sp) === true
+                ? (regionName()
+                  ? tfmt("Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.", { region: regionName() })
+                  : tr("Part of the native flora of this region (WCVP)"))
+                : tr("Part of the native flora of this country (WCVP)")}">${tr("native")}</span>` : ""}
           <span class="nearby gbif" data-nearby="${s.sp.id}" ${s.gbif?.count > 0 ? "" : "hidden"} title="${tr("GBIF occurrence records near this area")}">&#10003; ${tr("nearby")}</span>
           <span class="nearby warn45" data-f45="${s.sp.id}" ${s.score > 0.4 && s.f45 != null && s.f45 <= 0.4 ? "" : "hidden"} title="${tr("Falls below suitable in the 2040s climate (CMIP6)")}">2045 &#9662;</span>
           ${s.score <= 0.4 ? `<span class="nearby mgnl">${tr(grade(s.score)).toLowerCase()}</span>` : ""}
         </div>
         <div class="sp-sci">${showSci ? s.sp.sci : s.sp.family}${nativeHere(s.sp) === true && nativeRegion(s.sp) === false
-          ? ` <span class="nearby otherreg" title="${tr("Native to this country, but not to this region (WCVP)")}">${tr("native · other region")}</span>` : ""}</div>
+          ? ` <span class="nearby otherreg" title="${nativeGeo(s.sp) === false
+            ? tr("Native to this country, but its mapped range (Little/USGS) does not reach here")
+            : tr("Native to this country, but not to this region (WCVP)")}">${tr("native · other region")}</span>` : ""}</div>
       </div>
       <div class="sp-get">
         ${speed ? `<span class="spd">${speed}</span>` : ""}

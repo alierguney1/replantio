@@ -170,6 +170,8 @@ const PT = {
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Nenhuma nativa da nossa base passa do corte aqui. A base (FAO EcoCrop) cobre espécies cultivadas e representa mal floras nativas silvestres, como a desta região; veja em 'tudo', ou consulte um viveiro local de restauração.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "A mínima recorde aqui fica dentro da margem de geada da grade. Reanálise subestima geadas noturnas de vale e de altitude, então esta espécie sensível à geada leva meia penalidade.",
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Parte da flora nativa de {region} (WCVP). Os alcances resolvem na escala da província/região inteira; onde a espécie ocorre dentro de {region} varia.",
+  "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Dentro do alcance nativo mapeado desta espécie (polígonos digitalizados de Little/USGS, resolução de ~50 km)",
+  "Native to this country, but its mapped range (Little/USGS) does not reach here": "Nativa deste país, mas o alcance mapeado dela (Little/USGS) não chega até aqui",
 };
 
 const ES = {
@@ -328,6 +330,8 @@ const ES = {
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Ninguna nativa de nuestra base pasa el corte aquí. La base (FAO EcoCrop) cubre especies cultivadas y representa mal las floras nativas silvestres, como la de esta región; mira en 'todo' o consulta un vivero local de restauración.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "La mínima récord aquí queda dentro del margen de helada de la grilla. El reanálisis subestima las heladas nocturnas de valle y de altura, así que esta especie sensible recibe media penalización.",
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Parte de la flora nativa de {region} (WCVP). Los rangos se resuelven a escala de provincia entera; dónde crece la especie dentro de {region} varía.",
+  "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Dentro del rango nativo cartografiado de esta especie (polígonos digitalizados de Little/USGS, resolución de ~50 km)",
+  "Native to this country, but its mapped range (Little/USGS) does not reach here": "Nativa de este país, pero su rango cartografiado (Little/USGS) no llega hasta aquí",
 };
 
 const FR = {
@@ -486,6 +490,8 @@ const FR = {
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Aucune indigène de notre base ne passe le seuil ici. La base (FAO EcoCrop) couvre des espèces cultivées et représente mal les flores sauvages, comme celle de cette région ; essayez « tout » ou une pépinière locale de restauration.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "Le minimum record ici tombe dans la marge de gel de la grille. La réanalyse sous-estime les gelées nocturnes de vallée et d'altitude ; cette espèce sensible au gel prend une demi-pénalité.",
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Fait partie de la flore indigène de {region} (WCVP). Les aires se résolvent à l'échelle de la province entière ; la présence locale dans {region} varie.",
+  "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Dans l'aire indigène cartographiée de cette espèce (polygones numérisés Little/USGS, résolution ~50 km)",
+  "Native to this country, but its mapped range (Little/USGS) does not reach here": "Indigène de ce pays, mais son aire cartographiée (Little/USGS) n'atteint pas cet endroit",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -716,6 +722,8 @@ const ZH = {
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "我们数据库中没有本地原生物种在此达标。该数据库（FAO EcoCrop）覆盖栽培物种，对本地区这类野生原生植物区系覆盖很少；试试“全部”，或咨询当地的生态修复苗圃。",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "此处的极端最低温落在网格的霜冻余量内。再分析资料会低估山谷和高原的夜间霜冻，因此这一不耐霜物种被减半计分。",
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "属于{region}的原生植物区系（WCVP）。分布范围以整省为单位解析；该物种在{region}内的实际分布有差异。",
+  "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "位于该物种测绘的原生分布范围内（Little/USGS 数字化多边形，分辨率约 50 公里）",
+  "Native to this country, but its mapped range (Little/USGS) does not reach here": "为本国原生物种，但其测绘分布范围（Little/USGS）未到达此处",
 };
 const JA = {
   "Analyze": "分析する",
@@ -944,6 +952,8 @@ const JA = {
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "当データベースの在来種でここの基準を満たすものはありません。ベース（FAO EcoCrop）は栽培種中心で、この地域のような野生の在来植物相の収録は薄いです。「すべて」を試すか、地元の再生苗木店にご相談を。",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "ここの過去最低気温はグリッドの霜マージン内にあります。再解析データは谷間や高地の夜間霜を過小評価するため、この霜に弱い種は半分のペナルティを受けます。",
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "{region}の在来植物相の一部（WCVP）。分布は州・省全体の解像度で、{region}内のどこに生えるかは場所により異なります。",
+  "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "この種の地図化された自生域の内側です（Little/USGSデジタル化ポリゴン、解像度約50 km）",
+  "Native to this country, but its mapped range (Little/USGS) does not reach here": "この国の在来種ですが、地図化された分布域（Little/USGS）はここまで届いていません",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1172,6 +1182,8 @@ const RU = {
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Ни один местный вид из нашей базы здесь не проходит порог. База (FAO EcoCrop) охватывает культурные виды и слабо покрывает дикие местные флоры, как здешняя; попробуйте «всё» или спросите в местном питомнике восстановления.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "Рекордный минимум здесь попадает в запас на заморозки для ячейки сетки. Реанализ занижает ночные заморозки долин и высокогорий, поэтому этот неморозостойкий вид получает половинный штраф.",
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Часть местной флоры региона {region} (WCVP). Ареалы разрешаются на уровне целой провинции; где именно вид растёт в пределах {region}, различается.",
+  "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Внутри картированного естественного ареала этого вида (оцифрованные полигоны Little/USGS, разрешение ~50 км)",
+  "Native to this country, but its mapped range (Little/USGS) does not reach here": "Местный для страны вид, но его картированный ареал (Little/USGS) сюда не доходит",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -1400,6 +1412,8 @@ const ID = {
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Tidak ada spesies asli dari basis data kami yang lolos ambang di sini. Basisnya (FAO EcoCrop) mencakup spesies budidaya dan kurang mewakili flora asli liar seperti di wilayah ini; coba 'semua', atau tanya pembibitan restorasi setempat.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "Rekor terendah di sini berada dalam margin embun beku grid. Reanalisis kurang melaporkan embun beku malam di lembah dan dataran tinggi, jadi spesies rentan beku ini kena penalti setengah.",
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Bagian dari flora asli {region} (WCVP). Sebaran terpetakan pada skala provinsi utuh; lokasi tumbuhnya di dalam {region} bervariasi.",
+  "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Berada dalam sebaran asli terpetakan spesies ini (poligon digital Little/USGS, resolusi ~50 km)",
+  "Native to this country, but its mapped range (Little/USGS) does not reach here": "Asli negara ini, tetapi sebaran terpetakannya (Little/USGS) tidak mencapai sini",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -1628,6 +1642,8 @@ const HI = {
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "हमारे डेटाबेस की कोई देशज प्रजाति यहाँ मानक पार नहीं करती। यह आधार (FAO EcoCrop) खेती की प्रजातियाँ कवर करता है और इस क्षेत्र जैसी जंगली देशज वनस्पतियों को कम; 'सब कुछ' आज़माएँ या स्थानीय पुनर्स्थापन नर्सरी से पूछें।",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "यहाँ का रिकॉर्ड न्यूनतम ग्रिड की पाला-सीमा के भीतर है। पुनर्विश्लेषण घाटी और ऊँचाई के रात्रि पाले को कम आँकता है, इसलिए इस पाला-संवेदी प्रजाति को आधा दंड मिलता है।",
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "{region} की देशज वनस्पतियों का हिस्सा (WCVP)। रेंज पूरे प्रांत के पैमाने पर तय होती है; {region} के भीतर प्रजाति कहाँ उगती है, यह अलग-अलग है।",
+  "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "इस प्रजाति की मानचित्रित देशज रेंज के भीतर (Little/USGS डिजिटाइज़्ड बहुभुज, ~50 किमी रेज़ोल्यूशन)",
+  "Native to this country, but its mapped range (Little/USGS) does not reach here": "इस देश की देशज, पर इसकी मानचित्रित रेंज (Little/USGS) यहाँ तक नहीं पहुँचती",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -1856,6 +1872,8 @@ const DE = {
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Keine heimische Art unserer Datenbasis schafft es hier über die Hürde. Die Basis (FAO EcoCrop) deckt Kulturarten ab und bildet wilde heimische Floren wie die dieser Region schlecht ab; probiere „alles“ oder frag eine lokale Baumschule für Renaturierung.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "Das Rekordtief liegt hier innerhalb der Frostmarge des Rasters. Reanalysen unterschätzen nächtliche Tal- und Höhenfröste, daher erhält diese frostempfindliche Art einen halben Abzug.",
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Teil der heimischen Flora von {region} (WCVP). Verbreitungen lösen auf Ebene ganzer Provinzen auf; wo die Art innerhalb von {region} wächst, variiert.",
+  "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Innerhalb des kartierten natürlichen Verbreitungsgebiets dieser Art (digitalisierte Little/USGS-Polygone, ~50 km Auflösung)",
+  "Native to this country, but its mapped range (Little/USGS) does not reach here": "In diesem Land heimisch, aber ihr kartiertes Verbreitungsgebiet (Little/USGS) reicht nicht bis hierher",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -2084,6 +2102,8 @@ const SW = {
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Hakuna spishi asilia kutoka hifadhidata yetu inayofikia kiwango hapa. Msingi (FAO EcoCrop) unahusu spishi zinazolimwa na hauwakilishi vizuri mimea asilia ya porini kama ya eneo hili; jaribu 'zote', au uliza kitalu cha urejeshaji cha karibu.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "Kiwango cha chini kabisa hapa kiko ndani ya ukingo wa barafu wa gridi. Uchambuzi-upya hupunguza barafu za usiku za mabondeni na nyanda za juu, hivyo spishi hii isiyostahimili barafu inapata adhabu nusu.",
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Sehemu ya mimea asilia ya {region} (WCVP). Mipaka hubainishwa kwa kiwango cha jimbo zima; mahali spishi inapoota ndani ya {region} hutofautiana.",
+  "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Ndani ya eneo asilia lililochorwa la spishi hii (poligoni za kidijitali za Little/USGS, azimio ~50 km)",
+  "Native to this country, but its mapped range (Little/USGS) does not reach here": "Asili ya nchi hii, lakini eneo lake lililochorwa (Little/USGS) halifiki hapa",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW };
