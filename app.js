@@ -10,7 +10,7 @@ const LANG = LANGS.includes(storedLang) ? storedLang : (LANGS.includes(navLang) 
 const LOCALE = LOCALES[LANG];
 const DICT = DICTS[LANG];
 const tr = s => DICT?.[s] ?? s;
-const tfmt = (s, vars) => Object.entries(vars).reduce((a, [k, v]) => a.replace(`{${k}}`, v), tr(s));
+const tfmt = (s, vars) => Object.entries(vars).reduce((a, [k, v]) => a.replaceAll(`{${k}}`, v), tr(s));
 
 const fmt = (x, d = 0) => x.toLocaleString(LOCALE, { maximumFractionDigits: d });
 const fmtC = x => x >= 1e6 ? (x / 1e6).toFixed(1) + "M" : x >= 1e4 ? Math.round(x / 1e3) + "k" : fmt(x);
@@ -49,6 +49,19 @@ const nativeRegion = sp => { // true/false when resolvable, null when unknown
   if (!l3 || !NATIVES_L3[sp.id]) return null;
   return NATIVES_L3[sp.id].includes(l3);
 };
+// name of the resolved native-range region, for scale-honest badge tooltips:
+// provinces/states name themselves via the geocoder; Brazil's macro-regions
+// span several states and carry their own names
+const BR_REGION_NAMES = { BZN: "Norte", BZC: "Centro-Oeste", BZE: "Nordeste", BZL: "Sudeste", BZS: "Sul" };
+const regionName = () => {
+  const l3 = l3Here();
+  if (!l3) return null;
+  if (current.cc === "BR") return BR_REGION_NAMES[l3] ?? null;
+  const m = L3_REGIONS[current.cc] ?? {};
+  // only borrow the geocoder's subdivision name when it maps 1:1 to this region
+  return Object.values(m).filter(v => v === l3).length === 1 ? (current.state || null) : null;
+};
+
 // country-level invasive flags sometimes record intra-country translocation
 // (Hórus lists açaí as invasive in BR because it invades the Mata Atlântica)
 // or island-only invasions (GRIIS-EC records Galápagos, not the mainland).
@@ -811,7 +824,11 @@ function speciesRow(s, i) {
       <div class="sp-names">
         <div class="sp-common">${name}
           ${nativeHere(s.sp) === true && nativeRegion(s.sp) !== false
-            ? `<span class="nearby" title="${nativeRegion(s.sp) === true ? tr("Part of the native flora of this region (WCVP)") : tr("Part of the native flora of this country (WCVP)")}">${tr("native")}</span>` : ""}
+            ? `<span class="nearby" title="${nativeRegion(s.sp) === true
+              ? (regionName()
+                ? tfmt("Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.", { region: regionName() })
+                : tr("Part of the native flora of this region (WCVP)"))
+              : tr("Part of the native flora of this country (WCVP)")}">${tr("native")}</span>` : ""}
           <span class="nearby gbif" data-nearby="${s.sp.id}" ${s.gbif?.count > 0 ? "" : "hidden"} title="${tr("GBIF occurrence records near this area")}">&#10003; ${tr("nearby")}</span>
           <span class="nearby warn45" data-f45="${s.sp.id}" ${s.score > 0.4 && s.f45 != null && s.f45 <= 0.4 ? "" : "hidden"} title="${tr("Falls below suitable in the 2040s climate (CMIP6)")}">2045 &#9662;</span>
           ${s.score <= 0.4 ? `<span class="nearby mgnl">${tr(grade(s.score)).toLowerCase()}</span>` : ""}

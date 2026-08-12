@@ -169,6 +169,7 @@ const PT = {
   "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "{n} espécies com registro de invasoras neste país foram excluídas destas recomendações ({src}).",
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Nenhuma nativa da nossa base passa do corte aqui. A base (FAO EcoCrop) cobre espécies cultivadas e representa mal floras nativas silvestres, como a desta região; veja em 'tudo', ou consulte um viveiro local de restauração.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "A mínima recorde aqui fica dentro da margem de geada da grade. Reanálise subestima geadas noturnas de vale e de altitude, então esta espécie sensível à geada leva meia penalidade.",
+  "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Parte da flora nativa de {region} (WCVP). Os alcances resolvem na escala da província/região inteira; onde a espécie ocorre dentro de {region} varia.",
 };
 
 const ES = {
@@ -326,6 +327,7 @@ const ES = {
   "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "{n} especies registradas como invasoras en este país fueron excluidas de estas recomendaciones ({src}).",
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Ninguna nativa de nuestra base pasa el corte aquí. La base (FAO EcoCrop) cubre especies cultivadas y representa mal las floras nativas silvestres, como la de esta región; mira en 'todo' o consulta un vivero local de restauración.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "La mínima récord aquí queda dentro del margen de helada de la grilla. El reanálisis subestima las heladas nocturnas de valle y de altura, así que esta especie sensible recibe media penalización.",
+  "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Parte de la flora nativa de {region} (WCVP). Los rangos se resuelven a escala de provincia entera; dónde crece la especie dentro de {region} varía.",
 };
 
 const FR = {
@@ -483,6 +485,7 @@ const FR = {
   "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "{n} espèces recensées comme envahissantes dans ce pays ont été exclues de ces recommandations ({src}).",
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Aucune indigène de notre base ne passe le seuil ici. La base (FAO EcoCrop) couvre des espèces cultivées et représente mal les flores sauvages, comme celle de cette région ; essayez « tout » ou une pépinière locale de restauration.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "Le minimum record ici tombe dans la marge de gel de la grille. La réanalyse sous-estime les gelées nocturnes de vallée et d'altitude ; cette espèce sensible au gel prend une demi-pénalité.",
+  "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Fait partie de la flore indigène de {region} (WCVP). Les aires se résolvent à l'échelle de la province entière ; la présence locale dans {region} varie.",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -712,6 +715,7 @@ const ZH = {
   "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "已从推荐中排除 {n} 个在本国有入侵记录的物种（{src}）。",
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "我们数据库中没有本地原生物种在此达标。该数据库（FAO EcoCrop）覆盖栽培物种，对本地区这类野生原生植物区系覆盖很少；试试“全部”，或咨询当地的生态修复苗圃。",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "此处的极端最低温落在网格的霜冻余量内。再分析资料会低估山谷和高原的夜间霜冻，因此这一不耐霜物种被减半计分。",
+  "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "属于{region}的原生植物区系（WCVP）。分布范围以整省为单位解析；该物种在{region}内的实际分布有差异。",
 };
 const JA = {
   "Analyze": "分析する",
@@ -939,6 +943,7 @@ const JA = {
   "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "この国で侵略的と記録されている{n}種を推奨から除外しました（{src}）。",
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "当データベースの在来種でここの基準を満たすものはありません。ベース（FAO EcoCrop）は栽培種中心で、この地域のような野生の在来植物相の収録は薄いです。「すべて」を試すか、地元の再生苗木店にご相談を。",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "ここの過去最低気温はグリッドの霜マージン内にあります。再解析データは谷間や高地の夜間霜を過小評価するため、この霜に弱い種は半分のペナルティを受けます。",
+  "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "{region}の在来植物相の一部（WCVP）。分布は州・省全体の解像度で、{region}内のどこに生えるかは場所により異なります。",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1166,6 +1171,7 @@ const RU = {
   "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "{n} видов, отмеченных как инвазивные в этой стране, исключены из рекомендаций ({src}).",
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Ни один местный вид из нашей базы здесь не проходит порог. База (FAO EcoCrop) охватывает культурные виды и слабо покрывает дикие местные флоры, как здешняя; попробуйте «всё» или спросите в местном питомнике восстановления.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "Рекордный минимум здесь попадает в запас на заморозки для ячейки сетки. Реанализ занижает ночные заморозки долин и высокогорий, поэтому этот неморозостойкий вид получает половинный штраф.",
+  "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Часть местной флоры региона {region} (WCVP). Ареалы разрешаются на уровне целой провинции; где именно вид растёт в пределах {region}, различается.",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -1393,6 +1399,7 @@ const ID = {
   "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "{n} spesies yang tercatat invasif di negara ini dikecualikan dari rekomendasi ({src}).",
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Tidak ada spesies asli dari basis data kami yang lolos ambang di sini. Basisnya (FAO EcoCrop) mencakup spesies budidaya dan kurang mewakili flora asli liar seperti di wilayah ini; coba 'semua', atau tanya pembibitan restorasi setempat.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "Rekor terendah di sini berada dalam margin embun beku grid. Reanalisis kurang melaporkan embun beku malam di lembah dan dataran tinggi, jadi spesies rentan beku ini kena penalti setengah.",
+  "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Bagian dari flora asli {region} (WCVP). Sebaran terpetakan pada skala provinsi utuh; lokasi tumbuhnya di dalam {region} bervariasi.",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -1620,6 +1627,7 @@ const HI = {
   "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "इस देश में आक्रामक दर्ज {n} प्रजातियों को इन सिफ़ारिशों से बाहर रखा गया ({src})।",
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "हमारे डेटाबेस की कोई देशज प्रजाति यहाँ मानक पार नहीं करती। यह आधार (FAO EcoCrop) खेती की प्रजातियाँ कवर करता है और इस क्षेत्र जैसी जंगली देशज वनस्पतियों को कम; 'सब कुछ' आज़माएँ या स्थानीय पुनर्स्थापन नर्सरी से पूछें।",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "यहाँ का रिकॉर्ड न्यूनतम ग्रिड की पाला-सीमा के भीतर है। पुनर्विश्लेषण घाटी और ऊँचाई के रात्रि पाले को कम आँकता है, इसलिए इस पाला-संवेदी प्रजाति को आधा दंड मिलता है।",
+  "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "{region} की देशज वनस्पतियों का हिस्सा (WCVP)। रेंज पूरे प्रांत के पैमाने पर तय होती है; {region} के भीतर प्रजाति कहाँ उगती है, यह अलग-अलग है।",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -1847,6 +1855,7 @@ const DE = {
   "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "{n} Arten, die in diesem Land als invasiv erfasst sind, wurden aus diesen Empfehlungen ausgeschlossen ({src}).",
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Keine heimische Art unserer Datenbasis schafft es hier über die Hürde. Die Basis (FAO EcoCrop) deckt Kulturarten ab und bildet wilde heimische Floren wie die dieser Region schlecht ab; probiere „alles“ oder frag eine lokale Baumschule für Renaturierung.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "Das Rekordtief liegt hier innerhalb der Frostmarge des Rasters. Reanalysen unterschätzen nächtliche Tal- und Höhenfröste, daher erhält diese frostempfindliche Art einen halben Abzug.",
+  "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Teil der heimischen Flora von {region} (WCVP). Verbreitungen lösen auf Ebene ganzer Provinzen auf; wo die Art innerhalb von {region} wächst, variiert.",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -2074,6 +2083,7 @@ const SW = {
   "{n} species recorded as invasive in this country were excluded from these recommendations ({src}).": "Spishi {n} zilizorekodiwa kuwa vamizi nchini humu zimeondolewa kwenye mapendekezo haya ({src}).",
   "No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.": "Hakuna spishi asilia kutoka hifadhidata yetu inayofikia kiwango hapa. Msingi (FAO EcoCrop) unahusu spishi zinazolimwa na hauwakilishi vizuri mimea asilia ya porini kama ya eneo hili; jaribu 'zote', au uliza kitalu cha urejeshaji cha karibu.",
   "The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty.": "Kiwango cha chini kabisa hapa kiko ndani ya ukingo wa barafu wa gridi. Uchambuzi-upya hupunguza barafu za usiku za mabondeni na nyanda za juu, hivyo spishi hii isiyostahimili barafu inapata adhabu nusu.",
+  "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Sehemu ya mimea asilia ya {region} (WCVP). Mipaka hubainishwa kwa kiwango cha jimbo zima; mahali spishi inapoota ndani ya {region} hutofautiana.",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW };
