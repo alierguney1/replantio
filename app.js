@@ -531,8 +531,17 @@ async function analyze(pts) {
 
   await speciesReady;
   const site = { ...agg, ph: soil?.phh2o ?? null, lat: c.lat, elevation: clim.elevation, place: place?.label ?? null, terrain };
+  // native-evidence for the scorer: the species' polygon (Little) or regional
+  // (WCVP L3) range covers this exact point, so the local regime is survivable
+  const evL3 = L3_REGIONS[place?.cc]?.[place?.uf] ?? null;
+  const evNative = sp => {
+    const enc = NATIVES_GEO[sp.id], d = NATIVES_GEO._dominio;
+    if (enc && d && c.lat >= d.lat[0] && c.lat <= d.lat[1] && c.lng >= d.lng[0] && c.lng <= d.lng[1])
+      return geoInRange(enc, c.lat, c.lng);
+    return !!(evL3 && NATIVES_L3[sp.id]?.includes(evL3));
+  };
   const scored = SPECIES
-    .map(sp => ({ sp, ...scoreSpecies(sp, site) }))
+    .map(sp => ({ sp, ...scoreSpecies(sp, site, { native: evNative(sp) }) }))
     .sort((a, b) => (b.score - a.score) || (b.fit - a.fit));
   step("ls-score");
 
@@ -1106,7 +1115,12 @@ function speciesDetail(id) {
     const { wt, wr } = windowVals(s);
     const notes = [];
     if (s.factors.photo != null && s.factors.photo < 1) notes.push(tr("Photoperiod outside this species' range: 0.5 penalty applied."));
-    if (s.factors.frost === 0.5) notes.push(tr("The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty."));
+    if (s.factors.frost === 0.5) {
+      const kt = sp.ktmpr ?? sp.ktmp ?? 0;
+      notes.push(current.site.absMin != null && current.site.absMin < kt
+        ? tr("EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.")
+        : tr("The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty."));
+    }
     if (s.factors.chill != null && s.factors.chill < 1) notes.push(tr("Needs winter dormancy; the coldest month here is too warm for it."));
     return `<div class="factors">
       ${rangeStrip(tr("Temperature"), " °C", sp.temp, wt, 1)}
@@ -1744,7 +1758,7 @@ async function futureOutlook(ctl) {
     const agg = aggregateClimate(j.daily);
     const fsite = { ...agg, ph: current.site.ph, lat: c.lat };
     for (const s of current.scored) {
-      s.f45 = scoreSpecies(s.sp, fsite).score;
+      s.f45 = scoreSpecies(s.sp, fsite, { native: nativeRegion(s.sp) === true }).score;
       updateF45(s);
     }
   } catch { /* the projection is an enhancement; fail silent */ }

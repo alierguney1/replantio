@@ -78,28 +78,58 @@ function dayClasses(d) {
 }
 
 // site: {tavg[12], tmin[12], prec[12], ph|null, lat}
-export function scoreSpecies(sp, site) {
+// ev (optional): { native: true } = the species' own mapped/regional native
+// range covers this exact site, which is evidence the regime is survivable
+// even where EcoCrop's crop-oriented fields say otherwise.
+export function scoreSpecies(sp, site, ev = null) {
   const [gmin, gmax] = sp.cycle ?? [null, null];
   const G = gmin == null && gmax == null ? 12 :
     Math.max(1, Math.min(12, Math.round(((gmin ?? gmax) + (gmax ?? gmin)) / 60)));
+  // A TREE declaring deep dormant hardiness (KTMPR <= -10) does not grow
+  // through its winter: its TEMPERATURE is scored on the growing season
+  // (months averaging >= 5 C, capped by its own cycle), otherwise a
+  // 12-month mean blends saskatoon's Winnipeg summers with -20 C januaries
+  // and kills it in the town it was named after. Its RAIN is the full year
+  // (temperate trees live on stored/annual water, and sugar maple's 6-month
+  // envelope would starve in Toronto on window rain alone). Herbaceous
+  // hardy crops keep the classic cycle-window scoring.
+  const dormantTree = sp.tree && (sp.ktmpr ?? 99) <= -10;
+  let Gt = G;
+  if (dormantTree) {
+    const warm = site.tavg.filter(t => t >= 5).length;
+    Gt = Math.min(G, Math.max(3, warm));
+    if (G === 12) Gt = Math.min(12, Math.max(3, warm));
+  }
 
   let temp = 0, rain = 0, best = 0, bestScore = -1;
-  for (let s = 0; s < 12; s++) {
-    let tsum = 0, rtot = 0;
-    for (let k = 0; k < G; k++) {
-      const m = (s + k) % 12;
-      tsum += site.tavg[m];
-      rtot += site.prec[m];
+  if (dormantTree) { // annual rain, warm-season temperature, decoupled
+    rain = trap(site.prec.reduce((a, b) => a + b, 0), ...sp.rain);
+    for (let s = 0; s < 12; s++) {
+      let tsum = 0;
+      for (let k = 0; k < Gt; k++) tsum += site.tavg[(s + k) % 12];
+      const t = trap(tsum / Gt, ...sp.temp);
+      if (t > bestScore) { bestScore = t; temp = t; best = s; }
     }
-    const t = trap(tsum / G, ...sp.temp);
-    const r = trap(rtot, ...sp.rain);
-    if (Math.min(t, r) > bestScore) { bestScore = Math.min(t, r); temp = t; rain = r; best = s; }
-    if (G === 12) break; // all windows identical for full-year perennials
+  } else {
+    for (let s = 0; s < 12; s++) {
+      let tsum = 0, rtot = 0;
+      for (let k = 0; k < G; k++) {
+        const m = (s + k) % 12;
+        tsum += site.tavg[m];
+        rtot += site.prec[m];
+      }
+      const t = trap(tsum / G, ...sp.temp);
+      const r = trap(rtot, ...sp.rain);
+      if (Math.min(t, r) > bestScore) { bestScore = Math.min(t, r); temp = t; rain = r; best = s; }
+      if (G === 12) break; // all windows identical for full-year perennials
+    }
   }
 
   // A perennial lives through the whole year, not just its best window:
   // the annual regime must sit inside the absolute temperature envelope.
-  const annual = trap(site.tavg.reduce((a, b) => a + b, 0) / 12, ...sp.temp) > 0 ? 1 : 0;
+  let annual = trap(site.tavg.reduce((a, b) => a + b, 0) / 12, ...sp.temp) > 0 ? 1 : 0;
+  // native right here beats the envelope: the regime is survivable by observation
+  if (!annual && ev?.native) annual = 1;
 
   // Frost: dormant-season hardiness (KTMPR), else early-growth KTMP; species
   // with no cold data at all default to frost-tender when tropical and to
@@ -112,9 +142,14 @@ export function scoreSpecies(sp, site) {
   // observed record low sits within FROST_MARGIN of the kill threshold, the
   // species is not killed but takes a half penalty and wears a caveat.
   const FROST_MARGIN = 4;
-  const frost = kt == null ? null :
+  let frost = kt == null ? null :
     (Math.min(...site.tmin) < kt + 4 || (site.absMin != null && site.absMin < kt) ? 0 :
       (site.absMin != null && site.absMin - FROST_MARGIN <= kt ? 0.5 : 1));
+  // EcoCrop hardiness fields are unreliable for wild cold-climate trees
+  // (sugar maple carries KTMPR -18 and would die in Toronto): when the
+  // species is native to this exact site, a frost kill demotes to a half
+  // penalty instead, and the card says which field we distrusted.
+  if (frost === 0 && ev?.native) frost = 0.5;
 
   const ph = sp.ph && site.ph != null ? trap(site.ph, ...sp.ph) : null;
 
@@ -149,7 +184,7 @@ export function scoreSpecies(sp, site) {
   if (sp.ph && site.ph != null) fits.push(tri(site.ph, ...sp.ph));
   const fit = fits.reduce((a, b) => a + b, 0) / fits.length;
 
-  return { score, fit, factors: { temp, rain, ph, frost, photo, annual, chill }, window: { start: best, months: G } };
+  return { score, fit, factors: { temp, rain, ph, frost, photo, annual, chill }, window: { start: best, months: Gt } };
 }
 
 export function grade(s) {

@@ -172,6 +172,7 @@ const PT = {
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Parte da flora nativa de {region} (WCVP). Os alcances resolvem na escala da província/região inteira; onde a espécie ocorre dentro de {region} varia.",
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Dentro do alcance nativo mapeado desta espécie (polígonos digitalizados de Little/USGS, resolução de ~50 km)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "Nativa deste país, mas o alcance mapeado dela (Little/USGS) não chega até aqui",
+  "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "O EcoCrop lista uma temperatura letal acima da mínima recorde deste local, mas a espécie é nativa exatamente aqui pelo alcance mapeado. Meia penalidade em vez de exclusão; o campo de resistência é o suspeito.",
 };
 
 const ES = {
@@ -332,6 +333,7 @@ const ES = {
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Parte de la flora nativa de {region} (WCVP). Los rangos se resuelven a escala de provincia entera; dónde crece la especie dentro de {region} varía.",
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Dentro del rango nativo cartografiado de esta especie (polígonos digitalizados de Little/USGS, resolución de ~50 km)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "Nativa de este país, pero su rango cartografiado (Little/USGS) no llega hasta aquí",
+  "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop lista una temperatura letal por encima de la mínima récord de este sitio, pero la especie es nativa justo aquí según su rango cartografiado. Media penalización en vez de exclusión; el campo de resistencia es el sospechoso.",
 };
 
 const FR = {
@@ -492,6 +494,7 @@ const FR = {
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Fait partie de la flore indigène de {region} (WCVP). Les aires se résolvent à l'échelle de la province entière ; la présence locale dans {region} varie.",
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Dans l'aire indigène cartographiée de cette espèce (polygones numérisés Little/USGS, résolution ~50 km)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "Indigène de ce pays, mais son aire cartographiée (Little/USGS) n'atteint pas cet endroit",
+  "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop indique une température létale au-dessus du minimum record de ce site, mais l'espèce est indigène ici même selon son aire cartographiée. Demi-pénalité au lieu d'une exclusion ; le champ de rusticité est le suspect.",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -724,6 +727,7 @@ const ZH = {
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "属于{region}的原生植物区系（WCVP）。分布范围以整省为单位解析；该物种在{region}内的实际分布有差异。",
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "位于该物种测绘的原生分布范围内（Little/USGS 数字化多边形，分辨率约 50 公里）",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "为本国原生物种，但其测绘分布范围（Little/USGS）未到达此处",
+  "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop 给出的致死温度高于此地的极端最低温，但按其测绘分布该物种恰恰原生于此。改为减半计分而非排除；耐寒字段是可疑项。",
 };
 const JA = {
   "Analyze": "分析する",
@@ -954,6 +958,7 @@ const JA = {
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "{region}の在来植物相の一部（WCVP）。分布は州・省全体の解像度で、{region}内のどこに生えるかは場所により異なります。",
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "この種の地図化された自生域の内側です（Little/USGSデジタル化ポリゴン、解像度約50 km）",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "この国の在来種ですが、地図化された分布域（Little/USGS）はここまで届いていません",
+  "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCropの致死温度はこの地点の過去最低気温より高いですが、この種は地図化された分布によればまさにここの在来種です。除外ではなく半減点とし、耐寒性フィールドを疑っています。",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1184,6 +1189,7 @@ const RU = {
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Часть местной флоры региона {region} (WCVP). Ареалы разрешаются на уровне целой провинции; где именно вид растёт в пределах {region}, различается.",
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Внутри картированного естественного ареала этого вида (оцифрованные полигоны Little/USGS, разрешение ~50 км)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "Местный для страны вид, но его картированный ареал (Little/USGS) сюда не доходит",
+  "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop указывает губительную температуру выше рекордного минимума этого места, но по картированному ареалу вид здесь местный. Половинный штраф вместо исключения; поле морозостойкости под подозрением.",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -1414,6 +1420,7 @@ const ID = {
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Bagian dari flora asli {region} (WCVP). Sebaran terpetakan pada skala provinsi utuh; lokasi tumbuhnya di dalam {region} bervariasi.",
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Berada dalam sebaran asli terpetakan spesies ini (poligon digital Little/USGS, resolusi ~50 km)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "Asli negara ini, tetapi sebaran terpetakannya (Little/USGS) tidak mencapai sini",
+  "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop mencantumkan suhu mematikan di atas rekor terendah situs ini, tetapi spesies ini asli tepat di sini menurut sebaran terpetakannya. Penalti setengah alih-alih dikecualikan; kolom ketahanan dingin yang dicurigai.",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -1644,6 +1651,7 @@ const HI = {
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "{region} की देशज वनस्पतियों का हिस्सा (WCVP)। रेंज पूरे प्रांत के पैमाने पर तय होती है; {region} के भीतर प्रजाति कहाँ उगती है, यह अलग-अलग है।",
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "इस प्रजाति की मानचित्रित देशज रेंज के भीतर (Little/USGS डिजिटाइज़्ड बहुभुज, ~50 किमी रेज़ोल्यूशन)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "इस देश की देशज, पर इसकी मानचित्रित रेंज (Little/USGS) यहाँ तक नहीं पहुँचती",
+  "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop इस स्थल के रिकॉर्ड न्यूनतम से ऊपर घातक तापमान बताता है, पर मानचित्रित रेंज के अनुसार प्रजाति ठीक यहीं की देशज है। बहिष्कार के बजाय आधा दंड; संदेह कठोरता वाले फ़ील्ड पर है।",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -1874,6 +1882,7 @@ const DE = {
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Teil der heimischen Flora von {region} (WCVP). Verbreitungen lösen auf Ebene ganzer Provinzen auf; wo die Art innerhalb von {region} wächst, variiert.",
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Innerhalb des kartierten natürlichen Verbreitungsgebiets dieser Art (digitalisierte Little/USGS-Polygone, ~50 km Auflösung)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "In diesem Land heimisch, aber ihr kartiertes Verbreitungsgebiet (Little/USGS) reicht nicht bis hierher",
+  "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop nennt eine Absterbetemperatur über dem Rekordtief dieses Standorts, doch die Art ist laut kartiertem Verbreitungsgebiet genau hier heimisch. Halber Abzug statt Ausschluss; das Winterhärte-Feld ist der Verdächtige.",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -2104,6 +2113,7 @@ const SW = {
   "Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.": "Sehemu ya mimea asilia ya {region} (WCVP). Mipaka hubainishwa kwa kiwango cha jimbo zima; mahali spishi inapoota ndani ya {region} hutofautiana.",
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Ndani ya eneo asilia lililochorwa la spishi hii (poligoni za kidijitali za Little/USGS, azimio ~50 km)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "Asili ya nchi hii, lakini eneo lake lililochorwa (Little/USGS) halifiki hapa",
+  "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop inaonyesha joto la kuua juu ya kiwango cha chini kabisa cha eneo hili, lakini spishi ni asilia hapa hasa kwa mujibu wa eneo lililochorwa. Adhabu nusu badala ya kuondolewa; sehemu ya ustahimilivu ndiyo inayoshukiwa.",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW };

@@ -57,6 +57,18 @@ Documented adaptations for perennials (`scoring.js`):
   threshold outright. Tropical-class species with no cold data at all default to
   frost-tender at 0 C; temperate species with no cold data show frost as "no data"
   rather than silently passing.
+- **Dormant-tree scoring**: a tree declaring deep dormant hardiness (KTMPR
+  <= -10 C) is scored on its growing season for temperature (months averaging
+  >= 5 C, capped by its cycle) and on the full year for rainfall. Without
+  this, a 12-month mean kills saskatoon in Winnipeg and window-rain starves
+  sugar maple in Toronto.
+- **Native evidence beats crop fields**: where a species' own mapped range
+  (Little/USGS polygons) or regional WCVP range covers the analysed point,
+  the annual-regime gate is waived and a frost kill demotes to a half
+  penalty, with the distrusted field named on the card. EcoCrop's hardiness
+  and envelope values are calibrated for cultivation, and they contradict
+  observed wild ranges for cold-climate natives. Evidence never revives a
+  true climate kill: the temperature and rainfall factors still rule.
 - **Frost margin**: reanalysis grid minima run warm against radiative valley and
   highland night frosts (an ERA5 cell can record +1 C where growers see real
   freezes; field-reported from highland Bolivia). When the observed record low

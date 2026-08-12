@@ -185,6 +185,31 @@ assert.equal(scoreSpecies(jabo, bariloche).score, 0, "jaboticaba dead in Bariloc
 assert.equal(scoreSpecies(coca, bariloche).score, 0, "coca dead in Bariloche");
 close(scoreSpecies(eg, saoPaulo).score, egSP.score, 0.001, "frost margin does not touch São Paulo eucalyptus");
 
+// hardiness-vs-envelope contradictions (field report, Toronto 2026-08):
+// EcoCrop's crop-oriented fields killed cold-hardy natives in their homeland
+const toronto = {
+  lat: 43.616,
+  tavg: [-3.3, -3.1, 1.0, 6.3, 13.2, 18.9, 22.3, 21.7, 18.5, 11.9, 5.1, 0.5],
+  tmin: [-6.8, -7.4, -3.0, 2.1, 8.7, 14.6, 17.9, 17.8, 14.6, 8.4, 1.8, -2.4],
+  prec: [66, 59, 66, 99, 70, 93, 78, 70, 56, 83, 61, 72],
+  ph: null, absMin: -26,
+};
+const winnipeg = {
+  lat: 49.895,
+  tavg: [-13.2, -13.9, -4.9, 3.1, 12.4, 18.8, 21.1, 19.9, 15.4, 6.5, -2.1, -10.0],
+  tmin: [-17.5, -18.9, -10.0, -2.5, 6.3, 13.4, 16.1, 14.8, 10.9, 2.6, -5.5, -13.9],
+  prec: [17, 16, 21, 45, 70, 83, 86, 76, 76, 48, 34, 29],
+  ph: null, absMin: -38,
+};
+const maple = by("Acer saccharum"), sask = by("Aronia alnifolia");
+assert.ok(maple && sask, "north-american natives present");
+const NATIVE = { native: true };
+assert.ok(scoreSpecies(maple, toronto, NATIVE).score >= 0.4, "sugar maple rates in Toronto with native evidence");
+assert.equal(scoreSpecies(maple, toronto, NATIVE).factors.frost, 0.5, "hardiness contradiction demoted to half, not kill");
+assert.ok(scoreSpecies(sask, winnipeg, NATIVE).score >= 0.6, "saskatoon rates in the town it is named after");
+assert.ok(scoreSpecies(sask, winnipeg).score === 0, "without native evidence the annual gate still holds");
+assert.ok(scoreSpecies(by("Erythroxylum coca"), winnipeg, NATIVE).score === 0, "evidence never revives a true climate kill");
+
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");
