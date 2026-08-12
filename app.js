@@ -1224,7 +1224,10 @@ function startSim(item) {
   ctl.querySelector("[data-simclose]").addEventListener("click", stopSim);
   ensureSimLayer();
   map.getContainer().style.cursor = "copy"; // planting is armed while the pill is up
-  map.fitBounds(b.pad(0.2));
+  // on mobile the bottom sheet covers 62vh: frame the stand in the visible strip
+  const sheetPx = matchMedia("(max-width: 760px)").matches && !$("#panel").hidden
+    ? Math.round(map.getSize().y * 0.62) : 0;
+  map.fitBounds(b.pad(0.2), sheetPx ? { paddingBottomRight: [0, sheetPx] } : undefined);
   drawSim();
 }
 
