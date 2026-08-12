@@ -106,8 +106,15 @@ export function scoreSpecies(sp, site) {
   // "unknown" (null, not scored) when temperate. Kill on the dismo monthly
   // test OR when the observed 10-year record low undercuts the threshold.
   const kt = sp.ktmpr ?? sp.ktmp ?? (sp.gclass?.startsWith("tropical") ? 0 : null);
+  // Reanalysis minima run warm against radiative valley/highland frost: an
+  // ERA5 grid cell can report a +1 C record low where growers see real
+  // frosts (caught by an agronomist in highland Bolivia, 2026-08). When the
+  // observed record low sits within FROST_MARGIN of the kill threshold, the
+  // species is not killed but takes a half penalty and wears a caveat.
+  const FROST_MARGIN = 4;
   const frost = kt == null ? null :
-    (Math.min(...site.tmin) < kt + 4 || (site.absMin != null && site.absMin < kt) ? 0 : 1);
+    (Math.min(...site.tmin) < kt + 4 || (site.absMin != null && site.absMin < kt) ? 0 :
+      (site.absMin != null && site.absMin - FROST_MARGIN <= kt ? 0.5 : 1));
 
   const ph = sp.ph && site.ph != null ? trap(site.ph, ...sp.ph) : null;
 

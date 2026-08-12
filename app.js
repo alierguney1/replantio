@@ -758,7 +758,9 @@ function renderResults() {
     <div class="p-body">
     ${noLand ? `<div class="error-box" style="margin-top:12px">${tfmt("This area looks like open water (no soil data, elevation {e} m). Species scores here reflect climate only and are unlikely to be meaningful.", { e: fmt(site.elevation) })}</div><div class="retry-row"><button class="chip" data-force>${tr("Show scores anyway")}</button> <button class="chip" data-print>${tr("Report")}</button> <button class="chip" data-shp>${tr("SHP (SARE)")}</button> <button class="chip" data-csv>${tr("CSV")}</button></div>${whyBlock}` : `
     ${critMarkup()}
-    <div id="sp-list">${rows.map((s, i) => speciesRow(s, i)).join("") || `<div class="sp-empty">${tr("Nothing clears the bar for this filter here.")}</div>`}</div>
+    <div id="sp-list">${rows.map((s, i) => speciesRow(s, i)).join("") || `<div class="sp-empty">${current.nativeOnly
+      ? tr("No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.")
+      : tr("Nothing clears the bar for this filter here.")}</div>`}</div>
     ${pool.length > shown ? `<button class="chip more" data-more>${tfmt("Show {n} more", { n: Math.min(20, pool.length - shown) })}</button>` : ""}
     ${(() => {
       const cut = current.cc ? scored.filter(s => s.score > 0.05 && invasiveHere(s.sp)).length : 0;
@@ -812,6 +814,7 @@ function speciesRow(s, i) {
             ? `<span class="nearby" title="${nativeRegion(s.sp) === true ? tr("Part of the native flora of this region (WCVP)") : tr("Part of the native flora of this country (WCVP)")}">${tr("native")}</span>` : ""}
           <span class="nearby gbif" data-nearby="${s.sp.id}" ${s.gbif?.count > 0 ? "" : "hidden"} title="${tr("GBIF occurrence records near this area")}">&#10003; ${tr("nearby")}</span>
           <span class="nearby warn45" data-f45="${s.sp.id}" ${s.score > 0.4 && s.f45 != null && s.f45 <= 0.4 ? "" : "hidden"} title="${tr("Falls below suitable in the 2040s climate (CMIP6)")}">2045 &#9662;</span>
+          ${s.score <= 0.4 ? `<span class="nearby mgnl">${tr(grade(s.score)).toLowerCase()}</span>` : ""}
         </div>
         <div class="sp-sci">${showSci ? s.sp.sci : s.sp.family}${nativeHere(s.sp) === true && nativeRegion(s.sp) === false
           ? ` <span class="nearby otherreg" title="${tr("Native to this country, but not to this region (WCVP)")}">${tr("native · other region")}</span>` : ""}</div>
@@ -1051,6 +1054,7 @@ function speciesDetail(id) {
     const { wt, wr } = windowVals(s);
     const notes = [];
     if (s.factors.photo != null && s.factors.photo < 1) notes.push(tr("Photoperiod outside this species' range: 0.5 penalty applied."));
+    if (s.factors.frost === 0.5) notes.push(tr("The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty."));
     if (s.factors.chill != null && s.factors.chill < 1) notes.push(tr("Needs winter dormancy; the coldest month here is too warm for it."));
     return `<div class="factors">
       ${rangeStrip(tr("Temperature"), " °C", sp.temp, wt, 1)}

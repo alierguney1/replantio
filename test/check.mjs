@@ -160,6 +160,31 @@ const okra = by("Abelmoschus esculentus");
 assert.ok(okra && okra.tree === false && okra.porte === "herb", "okra is a flagged herb");
 assert.ok(by("Quercus robur").tree === true, "oak stays a tree");
 
+// agronomist regressions (field report, 2026-08): highland Bolivia and Bariloche
+const cochabamba = { // ~2500 m semi-arid valley; ERA5 grid never records frost (absMin +1)
+  lat: -17.39,
+  tavg: [17, 16, 16, 16, 16, 15, 15, 16, 17, 19, 19, 17],
+  tmin: [13, 12, 12, 11, 10, 9, 9, 9, 11, 12, 13, 13],
+  prec: [190, 140, 95, 25, 6, 4, 4, 10, 20, 45, 90, 160],
+  ph: null, absMin: 1,
+};
+const bariloche = {
+  lat: -41.13,
+  tavg: [16, 16, 13, 10, 6, 4, 3, 3, 5, 7, 11, 14],
+  tmin: [10, 11, 9, 6, 4, 1, 0, 1, 1, 3, 6, 8],
+  prec: [25, 25, 45, 90, 175, 190, 180, 140, 85, 55, 45, 35],
+  ph: null, absMin: -8.9,
+};
+const jabo = by("Myrciaria cauliflora"), coca = by("Erythroxylum coca");
+assert.ok(jabo && coca, "field-report species present");
+const jaboCbba = scoreSpecies(jabo, cochabamba);
+assert.equal(jaboCbba.factors.frost, 0.5, "grid frost margin penalizes jaboticaba at 2500 m");
+assert.ok(jaboCbba.score <= 0.4, `jaboticaba must not rate suitable in highland Bolivia: ${jaboCbba.score}`);
+assert.ok(scoreSpecies(coca, cochabamba).score <= 0.4, "coca stays marginal at best there");
+assert.equal(scoreSpecies(jabo, bariloche).score, 0, "jaboticaba dead in Bariloche");
+assert.equal(scoreSpecies(coca, bariloche).score, 0, "coca dead in Bariloche");
+close(scoreSpecies(eg, saoPaulo).score, egSP.score, 0.001, "frost margin does not touch São Paulo eucalyptus");
+
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");

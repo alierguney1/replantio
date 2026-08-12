@@ -57,6 +57,11 @@ Documented adaptations for perennials (`scoring.js`):
   threshold outright. Tropical-class species with no cold data at all default to
   frost-tender at 0 C; temperate species with no cold data show frost as "no data"
   rather than silently passing.
+- **Frost margin**: reanalysis grid minima run warm against radiative valley and
+  highland night frosts (an ERA5 cell can record +1 C where growers see real
+  freezes; field-reported from highland Bolivia). When the observed record low
+  sits within 4 C of a species' kill threshold, the species takes a 0.5 frost
+  penalty and the card says why, instead of silently passing.
 - **Photoperiod** is an extension (no published EcoCrop implementation scores it).
   Daylength comes from the Forsythe/CBM formula; months classify as short (<12 h),
   neutral (12 to 14 h) or long (>14 h) with a half-hour tolerance at the boundaries.
