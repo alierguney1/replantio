@@ -217,7 +217,7 @@ const hill = { ...saoPaulo, terrain: { slope: 6, facing: "N" } };
 const flat = { ...saoPaulo, terrain: { slope: 1, facing: null } };
 assert.equal(scoreSpecies(typha, hill).score, 0, "cattail dies on a 6-degree hillside");
 assert.equal(scoreSpecies(typha, hill).factors.drain, 0, "drainage factor reports the kill");
-assert.ok(scoreSpecies(typha, flat).score > 0, "cattail survives on flat ground (water table unknowable)");
+assert.equal(scoreSpecies(typha, flat).factors.drain, null, "flat ground leaves drainage unscored (water table unknowable)");
 assert.ok(!by("Quercus robur").wet, "oak is not wetland-flagged");
 close(scoreSpecies(qr, { ...berlin, terrain: { slope: 6 } }).score, qrBerlin.score, 0.001, "slope does not touch non-wetland species");
 
