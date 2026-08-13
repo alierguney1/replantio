@@ -210,6 +210,17 @@ assert.ok(scoreSpecies(sask, winnipeg, NATIVE).score >= 0.6, "saskatoon rates in
 assert.ok(scoreSpecies(sask, winnipeg).score === 0, "without native evidence the annual gate still holds");
 assert.ok(scoreSpecies(by("Erythroxylum coca"), winnipeg, NATIVE).score === 0, "evidence never revives a true climate kill");
 
+// wetland-on-a-hill (field report, 2026-08): obligate wetland species die on real slopes
+const typha = by("Typha latifolia");
+assert.ok(typha?.wet, "cattail is flagged obligate wetland");
+const hill = { ...saoPaulo, terrain: { slope: 6, facing: "N" } };
+const flat = { ...saoPaulo, terrain: { slope: 1, facing: null } };
+assert.equal(scoreSpecies(typha, hill).score, 0, "cattail dies on a 6-degree hillside");
+assert.equal(scoreSpecies(typha, hill).factors.drain, 0, "drainage factor reports the kill");
+assert.ok(scoreSpecies(typha, flat).score > 0, "cattail survives on flat ground (water table unknowable)");
+assert.ok(!by("Quercus robur").wet, "oak is not wetland-flagged");
+close(scoreSpecies(qr, { ...berlin, terrain: { slope: 6 } }).score, qrBerlin.score, 0.001, "slope does not touch non-wetland species");
+
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");

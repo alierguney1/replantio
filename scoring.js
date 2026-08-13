@@ -153,6 +153,14 @@ export function scoreSpecies(sp, site, ev = null) {
 
   const ph = sp.ph && site.ph != null ? trap(site.ph, ...sp.ph) : null;
 
+  // Obligate wetland species (EcoCrop absolute drainage = saturated only:
+  // duckweed, cattail, mangroves) cannot live on drained ground. A real
+  // slope from the DEM is the one drainage signal we can trust from space;
+  // flat ground stays unscored (null) because we cannot see the water table.
+  const drain = sp.wet
+    ? (site.terrain?.slope != null ? (site.terrain.slope >= 4 ? 0 : null) : null)
+    : null;
+
   // Winter dormancy proxy: EcoCrop has no chill-hours field, so temperate
   // deciduous species (which need cold to break dormancy and fruit) are
   // penalized where the coldest month stays warm. Full credit at <= 10 C,
@@ -172,7 +180,7 @@ export function scoreSpecies(sp, site, ev = null) {
     photo = sp.photo.some(c => here.has(c)) ? 1 : 0.5;
   }
 
-  const score = Math.min(temp, rain, ph ?? 1, chill ?? 1) * (frost ?? 1) * (photo ?? 1) * annual;
+  const score = Math.min(temp, rain, ph ?? 1, chill ?? 1) * (frost ?? 1) * (photo ?? 1) * (drain ?? 1) * annual;
 
   // Tie-breaker: EcoCrop plateaus leave many species at the same score, so
   // also measure how close the site sits to each envelope's center
@@ -184,7 +192,7 @@ export function scoreSpecies(sp, site, ev = null) {
   if (sp.ph && site.ph != null) fits.push(tri(site.ph, ...sp.ph));
   const fit = fits.reduce((a, b) => a + b, 0) / fits.length;
 
-  return { score, fit, factors: { temp, rain, ph, frost, photo, annual, chill }, window: { start: best, months: Gt } };
+  return { score, fit, factors: { temp, rain, ph, frost, photo, annual, chill, drain }, window: { start: best, months: Gt } };
 }
 
 export function grade(s) {

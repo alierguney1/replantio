@@ -173,6 +173,9 @@ const PT = {
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Dentro do alcance nativo mapeado desta espécie (polígonos digitalizados de Little/USGS, resolução de ~50 km)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "Nativa deste país, mas o alcance mapeado dela (Little/USGS) não chega até aqui",
   "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "O EcoCrop lista uma temperatura letal acima da mínima recorde deste local, mas a espécie é nativa exatamente aqui pelo alcance mapeado. Meia penalidade em vez de exclusão; o campo de resistência é o suspeito.",
+  "wetland": "brejo",
+  "Needs standing water or saturated soil year-round (EcoCrop drainage)": "Precisa de água parada ou solo saturado o ano todo (drenagem EcoCrop)",
+  "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "Esta é uma espécie de brejo (precisa de solo saturado ou água parada), e este ponto está num declive de {n}°.",
 };
 
 const ES = {
@@ -334,6 +337,9 @@ const ES = {
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Dentro del rango nativo cartografiado de esta especie (polígonos digitalizados de Little/USGS, resolución de ~50 km)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "Nativa de este país, pero su rango cartografiado (Little/USGS) no llega hasta aquí",
   "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop lista una temperatura letal por encima de la mínima récord de este sitio, pero la especie es nativa justo aquí según su rango cartografiado. Media penalización en vez de exclusión; el campo de resistencia es el sospechoso.",
+  "wetland": "humedal",
+  "Needs standing water or saturated soil year-round (EcoCrop drainage)": "Necesita agua estancada o suelo saturado todo el año (drenaje EcoCrop)",
+  "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "Es una especie de humedal (necesita suelo saturado o agua estancada), y este punto está en una pendiente de {n}°.",
 };
 
 const FR = {
@@ -495,6 +501,9 @@ const FR = {
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Dans l'aire indigène cartographiée de cette espèce (polygones numérisés Little/USGS, résolution ~50 km)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "Indigène de ce pays, mais son aire cartographiée (Little/USGS) n'atteint pas cet endroit",
   "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop indique une température létale au-dessus du minimum record de ce site, mais l'espèce est indigène ici même selon son aire cartographiée. Demi-pénalité au lieu d'une exclusion ; le champ de rusticité est le suspect.",
+  "wetland": "zone humide",
+  "Needs standing water or saturated soil year-round (EcoCrop drainage)": "A besoin d'eau stagnante ou de sol saturé toute l'année (drainage EcoCrop)",
+  "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "C'est une espèce de zone humide (sol saturé ou eau stagnante requis), et ce point se trouve sur une pente de {n}°.",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -728,6 +737,9 @@ const ZH = {
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "位于该物种测绘的原生分布范围内（Little/USGS 数字化多边形，分辨率约 50 公里）",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "为本国原生物种，但其测绘分布范围（Little/USGS）未到达此处",
   "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop 给出的致死温度高于此地的极端最低温，但按其测绘分布该物种恰恰原生于此。改为减半计分而非排除；耐寒字段是可疑项。",
+  "wetland": "湿地",
+  "Needs standing water or saturated soil year-round (EcoCrop drainage)": "全年需要积水或饱和土壤（EcoCrop 排水属性）",
+  "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "这是湿地物种（需要饱和土壤或积水），而该点位于 {n}° 的坡地上。",
 };
 const JA = {
   "Analyze": "分析する",
@@ -959,6 +971,9 @@ const JA = {
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "この種の地図化された自生域の内側です（Little/USGSデジタル化ポリゴン、解像度約50 km）",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "この国の在来種ですが、地図化された分布域（Little/USGS）はここまで届いていません",
   "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCropの致死温度はこの地点の過去最低気温より高いですが、この種は地図化された分布によればまさにここの在来種です。除外ではなく半減点とし、耐寒性フィールドを疑っています。",
+  "wetland": "湿地",
+  "Needs standing water or saturated soil year-round (EcoCrop drainage)": "一年中、滞水または飽和した土壌が必要です（EcoCrop排水特性）",
+  "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "これは湿地性の種（飽和土壌または滞水が必要）ですが、この地点は{n}°の斜面にあります。",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1190,6 +1205,9 @@ const RU = {
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Внутри картированного естественного ареала этого вида (оцифрованные полигоны Little/USGS, разрешение ~50 км)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "Местный для страны вид, но его картированный ареал (Little/USGS) сюда не доходит",
   "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop указывает губительную температуру выше рекордного минимума этого места, но по картированному ареалу вид здесь местный. Половинный штраф вместо исключения; поле морозостойкости под подозрением.",
+  "wetland": "водно-болотный",
+  "Needs standing water or saturated soil year-round (EcoCrop drainage)": "Нужна стоячая вода или насыщенная влагой почва круглый год (дренаж EcoCrop)",
+  "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "Это водно-болотный вид (нужна насыщенная почва или стоячая вода), а эта точка находится на склоне {n}°.",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -1421,6 +1439,9 @@ const ID = {
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Berada dalam sebaran asli terpetakan spesies ini (poligon digital Little/USGS, resolusi ~50 km)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "Asli negara ini, tetapi sebaran terpetakannya (Little/USGS) tidak mencapai sini",
   "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop mencantumkan suhu mematikan di atas rekor terendah situs ini, tetapi spesies ini asli tepat di sini menurut sebaran terpetakannya. Penalti setengah alih-alih dikecualikan; kolom ketahanan dingin yang dicurigai.",
+  "wetland": "lahan basah",
+  "Needs standing water or saturated soil year-round (EcoCrop drainage)": "Butuh air tergenang atau tanah jenuh sepanjang tahun (drainase EcoCrop)",
+  "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "Ini spesies lahan basah (butuh tanah jenuh atau air tergenang), dan titik ini berada di lereng {n}°.",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -1652,6 +1673,9 @@ const HI = {
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "इस प्रजाति की मानचित्रित देशज रेंज के भीतर (Little/USGS डिजिटाइज़्ड बहुभुज, ~50 किमी रेज़ोल्यूशन)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "इस देश की देशज, पर इसकी मानचित्रित रेंज (Little/USGS) यहाँ तक नहीं पहुँचती",
   "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop इस स्थल के रिकॉर्ड न्यूनतम से ऊपर घातक तापमान बताता है, पर मानचित्रित रेंज के अनुसार प्रजाति ठीक यहीं की देशज है। बहिष्कार के बजाय आधा दंड; संदेह कठोरता वाले फ़ील्ड पर है।",
+  "wetland": "आर्द्रभूमि",
+  "Needs standing water or saturated soil year-round (EcoCrop drainage)": "साल भर ठहरा पानी या संतृप्त मिट्टी चाहिए (EcoCrop जल निकासी)",
+  "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "यह आर्द्रभूमि प्रजाति है (संतृप्त मिट्टी या ठहरा पानी चाहिए), और यह बिंदु {n}° ढलान पर है।",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -1883,6 +1907,9 @@ const DE = {
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Innerhalb des kartierten natürlichen Verbreitungsgebiets dieser Art (digitalisierte Little/USGS-Polygone, ~50 km Auflösung)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "In diesem Land heimisch, aber ihr kartiertes Verbreitungsgebiet (Little/USGS) reicht nicht bis hierher",
   "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop nennt eine Absterbetemperatur über dem Rekordtief dieses Standorts, doch die Art ist laut kartiertem Verbreitungsgebiet genau hier heimisch. Halber Abzug statt Ausschluss; das Winterhärte-Feld ist der Verdächtige.",
+  "wetland": "Feuchtgebiet",
+  "Needs standing water or saturated soil year-round (EcoCrop drainage)": "Braucht ganzjährig stehendes Wasser oder gesättigten Boden (EcoCrop-Drainage)",
+  "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "Dies ist eine Feuchtgebietsart (braucht gesättigten Boden oder stehendes Wasser), und dieser Punkt liegt an einem Hang mit {n}°.",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -2114,6 +2141,9 @@ const SW = {
   "Inside this species' mapped native range (Little/USGS digitized polygons, ~50 km resolution)": "Ndani ya eneo asilia lililochorwa la spishi hii (poligoni za kidijitali za Little/USGS, azimio ~50 km)",
   "Native to this country, but its mapped range (Little/USGS) does not reach here": "Asili ya nchi hii, lakini eneo lake lililochorwa (Little/USGS) halifiki hapa",
   "EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.": "EcoCrop inaonyesha joto la kuua juu ya kiwango cha chini kabisa cha eneo hili, lakini spishi ni asilia hapa hasa kwa mujibu wa eneo lililochorwa. Adhabu nusu badala ya kuondolewa; sehemu ya ustahimilivu ndiyo inayoshukiwa.",
+  "wetland": "ardhioevu",
+  "Needs standing water or saturated soil year-round (EcoCrop drainage)": "Inahitaji maji yaliyotuama au udongo uliolowa mwaka mzima (mifereji ya EcoCrop)",
+  "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "Hii ni spishi ya ardhioevu (inahitaji udongo uliolowa au maji yaliyotuama), na eneo hili liko kwenye mteremko wa {n}°.",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW };

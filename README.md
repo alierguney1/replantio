@@ -57,6 +57,11 @@ Documented adaptations for perennials (`scoring.js`):
   threshold outright. Tropical-class species with no cold data at all default to
   frost-tender at 0 C; temperate species with no cold data show frost as "no data"
   rather than silently passing.
+- **Obligate wetland gate**: species whose EcoCrop absolute drainage tolerates
+  only saturated soil (duckweed, cattail, mangroves; 55 species) are killed on
+  DEM slopes >= 4 degrees, with the reason on the card, and wear a "wetland"
+  trait chip everywhere. Flat ground stays unscored: the water table is not
+  visible from space, so the chip carries the requirement instead.
 - **Dormant-tree scoring**: a tree declaring deep dormant hardiness (KTMPR
   <= -10 C) is scored on its growing season for temperature (months averaging
   >= 5 C, capped by its cycle) and on the full year for rainfall. Without

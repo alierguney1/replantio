@@ -1115,6 +1115,7 @@ function speciesDetail(id) {
     const { wt, wr } = windowVals(s);
     const notes = [];
     if (s.factors.photo != null && s.factors.photo < 1) notes.push(tr("Photoperiod outside this species' range: 0.5 penalty applied."));
+    if (s.factors.drain === 0) notes.push(tfmt("This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.", { n: fmt(current.site.terrain?.slope ?? 0) }));
     if (s.factors.frost === 0.5) {
       const kt = sp.ktmpr ?? sp.ktmp ?? 0;
       notes.push(current.site.absMin != null && current.site.absMin < kt
@@ -1132,7 +1133,7 @@ function speciesDetail(id) {
   return `
     <div class="sp-photo" data-hero="${sp.id}" hidden></div>
     <div class="sp-meta"><span class="grade">${tr(grade(s.score))}</span><span class="sep">&middot;</span>${tfmt("{rate} growth &middot; {zone}", { rate: tr(rate), zone: tr(zone) })}</div>
-    <div class="sp-uses">${sp.uses.map(u => `<span class="it">${tr(USE_LABELS[u] ?? u)}</span>`).join("")}</div>
+    <div class="sp-uses">${sp.wet ? `<span class="it wet" title="${tr("Needs standing water or saturated soil year-round (EcoCrop drainage)")}">${tr("wetland")}</span>` : ""}${sp.uses.map(u => `<span class="it">${tr(USE_LABELS[u] ?? u)}</span>`).join("")}</div>
     ${sourcingMarkup(sp)}
     ${sp.tree ? `<div class="growth-fig">${growthSvg(sp)}
       <div class="fig-cap">${tfmt("Reaches ~95% of its max height in ~{n} years (class-level model).", { n: fmt(mat) })}</div>

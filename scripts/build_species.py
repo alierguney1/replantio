@@ -120,7 +120,9 @@ def main():
             "rain": [vals["RMIN"], vals["ROPMN"], vals["ROPMX"], vals["RMAX"]],
             "ph": ph,
             "ktmp": vals["KTMP"],       # killing temp, early growth
-            "ktmpr": vals["KTMPR"],     # killing temp, dormant season
+            "ktmpr": vals["KTMPR"],
+            # obligate wetland: EcoCrop absolute drainage tolerates ONLY saturated soil
+            **({"wet": True} if (row.get("DRAR") or row.get("DRA") or "").strip() == "poorly (saturated >50% of year)" else {}),     # killing temp, dormant season
             "photo": photoperiod(r["PHOTO"]),
             "cycle": cyc,
             "altmax": vals["ALTMX"],
