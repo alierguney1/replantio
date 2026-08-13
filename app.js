@@ -29,11 +29,13 @@ L.tileLayer("https://basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
   maxZoom: 20, attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
 }).addTo(map);
 
-let SPECIES = [], NATIVES = {}, NAMES_PT = {}, SOURCING = null, INVASIVES = {}, NATIVES_L3 = {}, L3_REGIONS = {}, NATIVES_GEO = {};
+let SPECIES = [], NATIVES = {}, NAMES_LANG = {}, SOURCING = null, INVASIVES = {}, NATIVES_L3 = {}, L3_REGIONS = {}, NATIVES_GEO = {};
 const speciesReady = Promise.all([
   fetch("data/species.json").then(r => r.json()).then(j => { SPECIES = j; }),
   fetch("data/natives.json").then(r => r.json()).then(j => { NATIVES = j; }).catch(() => {}), // optional layer
-  fetch("data/names_pt.json").then(r => r.json()).then(j => { NAMES_PT = j; }).catch(() => {}), // optional layer
+  (LANG !== "en"
+    ? fetch(`data/names_${LANG}.json`).then(r => r.ok ? r.json() : {}).then(j => { NAMES_LANG = j; }).catch(() => {})
+    : Promise.resolve()),
   fetch("data/sourcing.json").then(r => r.json()).then(j => { SOURCING = j; }).catch(() => {}), // optional layer
   fetch("data/invasives.json").then(r => r.json()).then(j => { INVASIVES = j; }).catch(() => {}), // optional layer
   fetch("data/natives_l3.json").then(r => r.json()).then(j => { NATIVES_L3 = j; }).catch(() => {}), // optional layer
@@ -109,22 +111,23 @@ const invasiveHere = sp => {
 // product analytics: named actions only, no exact coordinates ever
 const track = (name, data) => { try { window.va?.("event", { name, data }); } catch { } };
 
-// display name: Portuguese vernacular when the UI is in PT and we have one;
-// in PT the fallback is the binomial, never an English trade name
-const ptName = sp => NAMES_PT[sp.id]?.nome ?? null;
+// display name: Localized vernacular when available for current language;
+// fallback to binomial (never English trade name in non-EN locales) or English trade name in EN
+const localName = sp => NAMES_LANG[sp.id]?.nome ?? null;
 const dispName = sp => {
-  if (LANG === "pt") {
-    const n = ptName(sp);
-    return n ? cap(n) : `<i>${sp.sci}</i>`;
-  }
-  return sp.common === sp.sci ? `<i>${sp.sci}</i>` : cap(sp.common);
+  const n = localName(sp);
+  if (n) return cap(n);
+  if (LANG === "en" && sp.common && sp.common !== sp.sci) return cap(sp.common);
+  return `<i>${sp.sci}</i>`;
 };
-// what a Brazilian store search box wants: the vernacular, else the binomial
-const shopTerm = sp => ptName(sp) ?? sp.sci;
+// what a regional store search box wants: localized vernacular, else common or binomial
+const shopTerm = sp => localName(sp) ?? (sp.common && sp.common !== sp.sci ? sp.common : sp.sci);
 // plain-text display name (no markup), for the sim pill and exports
 const plainName = sp => {
-  if (LANG === "pt") { const n = ptName(sp); return n ? cap(n) : sp.sci; }
-  return sp.common === sp.sci ? sp.sci : cap(sp.common);
+  const n = localName(sp);
+  if (n) return cap(n);
+  if (LANG === "en" && sp.common && sp.common !== sp.sci) return cap(sp.common);
+  return sp.sci;
 };
 
 // ---------- geocoding search ----------
@@ -1064,7 +1067,7 @@ function sourcingMarkup(sp) {
   const shops = (SOURCING?.shops ?? []).filter(sh => sh.scope === cc);
   const dirs = (SOURCING?.directories ?? []).filter(d => d.cc === cc);
   if (!shops.length && !dirs.length) return "";
-  const term = cc === "BR" ? shopTerm(sp) : (sp.common !== sp.sci ? cap(sp.common) : sp.sci);
+  const term = shopTerm(sp);
   const kindWord = sp.tree || sp.porte === "shrub" ? "muda" : "sementes";
   // verified product links first: only stores that provably stock THIS species
   const kind = sp.tree || sp.porte === "shrub" ? "muda" : "semente";
@@ -2221,7 +2224,7 @@ function csvExport() {
   // the CSV mirrors the panel exactly: active filters, the marginality cut
   // and the invasive exclusion all apply; clear the filters to export wide
   const rows = current.scored.filter(s => critMatch(s, critState())).map(s => [
-    s.sp.sci, s.sp.common, s.sp.family,
+    s.sp.sci, plainName(s.sp), s.sp.family,
     s.score.toFixed(3), s.fit.toFixed(3), s.f45 != null ? s.f45.toFixed(3) : "",
     ...[s.factors.temp, s.factors.rain, s.factors.ph, s.factors.photo, s.factors.frost, s.factors.chill]
       .map(v => v == null ? "" : (+v).toFixed(3)),
@@ -2357,5 +2360,5 @@ if (!location.hash && !shapes.length) {
   }
 }
 
-const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const cap = s => s ? s.charAt(0).toLocaleUpperCase(LOCALE || undefined) + s.slice(1) : "";
 window.canopy = { map, analyze, get current() { return current; } }; // test hook
