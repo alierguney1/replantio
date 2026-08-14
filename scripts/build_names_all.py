@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Build localized common name dictionaries for all supported languages in Replantio.
+"""Unified builder script to compile data/names_<lang>.json for all supported languages in Replantio.
 
 Target languages:
+- tr: Turkish (Türkçe) -> data/names_tr.json
 - es: Spanish (Español) -> data/names_es.json
 - fr: French (Français) -> data/names_fr.json
 - de: German (Deutsch) -> data/names_de.json
@@ -11,24 +12,36 @@ Target languages:
 - id: Indonesian (Bahasa Indonesia) -> data/names_id.json
 - hi: Hindi (हिन्दी) -> data/names_hi.json
 - sw: Swahili (Kiswahili) -> data/names_sw.json
-
-Format matching names_pt.json & names_tr.json:
-{"<species_id>": {"nome": "<name>", "aka": ["<synonym1>", ...]}}
 """
-import collections
 import json
 import pathlib
 import re
-import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SPECIES = ROOT / "data" / "species.json"
 
-# ==============================================================================
-# UNIVERSAL GENUS MAPPINGS ACROSS ALL 9 LANGUAGES
-# ==============================================================================
+# Import Turkish datasets from build_names_tr
+with open(ROOT / "scripts/build_names_tr.py", "r", encoding="utf-8") as f:
+    tr_src = f.read()
 
-# Spanish Genus Dictionary
+curated_tr_match = re.search(r"CURATED = (\{.*?\n\})", tr_src, re.DOTALL)
+genus_tr_match = re.search(r"GENUS_FALLBACK = (\{.*?\n\})", tr_src, re.DOTALL)
+epithets_tr_match = re.search(r"EPITHETS = (\{.*?\n\})", tr_src, re.DOTALL)
+
+exec(curated_tr_match.group(0).replace("CURATED =", "CURATED_TR ="))
+exec(genus_tr_match.group(0).replace("GENUS_FALLBACK =", "GENUS_TR ="))
+exec(epithets_tr_match.group(0).replace("EPITHETS =", "EPITHETS_TR ="))
+
+# Load GENUS datasets
+with open(ROOT / "scripts/build_names_all.py", "r", encoding="utf-8") as f:
+    all_code = f.read()
+
+genus_part_match = re.search(r"(GENUS_ES = \{.*?\nGENUS_SW = \{.*?\n\})", all_code, re.DOTALL)
+if genus_part_match:
+    exec(genus_part_match.group(1))
+
+
+# Genus Dictionaries for all languages
 GENUS_ES = {
     "Abelmoschus": ("abelmosco", ["quimbombó"]), "Abies": ("abeto", []),
     "Acacia": ("acacia", ["mimosa"]), "Acer": ("arce", []), "Acrocarpus": ("cedro rosado", []),
@@ -127,7 +140,6 @@ GENUS_ES = {
     "Zea": ("maíz", []), "Zingiber": ("jengibre", []), "Ziziphus": ("azufaifo", [])
 }
 
-# French Genus Dictionary
 GENUS_FR = {
     "Abelmoschus": ("gombo", []), "Abies": ("sapin", []), "Acacia": ("acacia", ["mimosa"]),
     "Acer": ("érable", []), "Acrocarpus": ("cèdre rose", []), "Actinidia": ("kiwi", []),
@@ -219,7 +231,6 @@ GENUS_FR = {
     "Zingiber": ("gingembre", []), "Ziziphus": ("jujubier", [])
 }
 
-# German Genus Dictionary
 GENUS_DE = {
     "Abelmoschus": ("okra", []), "Abies": ("tanne", []), "Acacia": ("akazie", ["mimose"]),
     "Acer": ("ahorn", []), "Acrocarpus": ("rosa zeder", []), "Actinidia": ("kiwi", []),
@@ -310,7 +321,6 @@ GENUS_DE = {
     "Zingiber": ("ingwer", []), "Ziziphus": ("jujube", [])
 }
 
-# Russian Genus Dictionary
 GENUS_RU = {
     "Abelmoschus": ("бамия", []), "Abies": ("пихта", []), "Acacia": ("акация", ["мимоза"]),
     "Acer": ("клён", []), "Acrocarpus": ("акрокарпус", []), "Actinidia": ("актинидия", ["киви"]),
@@ -381,7 +391,6 @@ GENUS_RU = {
     "Zea": ("кукуруза", []), "Zingiber": ("имбирь", []), "Ziziphus": ("зизифус", ["унаби"])
 }
 
-# Chinese Genus Dictionary
 GENUS_ZH = {
     "Abelmoschus": ("秋葵", []), "Abies": ("冷杉", []), "Acacia": ("金合欢", ["相思树"]),
     "Acer": ("槭树", ["枫树"]), "Acrocarpus": ("顶果木", []), "Actinidia": ("猕猴桃", []),
@@ -446,7 +455,6 @@ GENUS_ZH = {
     "Vitis": ("葡萄", []), "Zea": ("玉米", []), "Zingiber": ("姜", []), "Ziziphus": ("枣", [])
 }
 
-# Japanese Genus Dictionary
 GENUS_JA = {
     "Abelmoschus": ("オクラ", []), "Abies": ("モミ", []), "Acacia": ("アカシア", []),
     "Acer": ("カエデ", ["モミジ"]), "Actinidia": ("キウイフルーツ", []), "Adansonia": ("バオバブ", []),
@@ -512,7 +520,6 @@ GENUS_JA = {
     "Zea": ("トウモロコシ", []), "Zingiber": ("ショウガ", []), "Ziziphus": ("ナツメ", [])
 }
 
-# Indonesian Genus Dictionary
 GENUS_ID = {
     "Abelmoschus": ("okra", []), "Abies": ("cemara fir", []), "Acacia": ("akasia", []),
     "Acer": ("maple", []), "Actinidia": ("kiwi", []), "Adansonia": ("baobab", []),
@@ -560,7 +567,6 @@ GENUS_ID = {
     "Zea": ("jagung", []), "Zingiber": ("jahe", []), "Ziziphus": ("bidara", [])
 }
 
-# Hindi Genus Dictionary
 GENUS_HI = {
     "Abelmoschus": ("भिंडी", []), "Abies": ("सनोबर/देवदार", []), "Acacia": ("बबूल", ["कीकर"]),
     "Acer": ("मैपल", []), "Actinidia": ("कीवी", []), "Adansonia": ("कल्पवृक्ष", ["बाओबाब"]),
@@ -607,7 +613,6 @@ GENUS_HI = {
     "Zingiber": ("अदरक", []), "Ziziphus": ("बेर", [])
 }
 
-# Swahili Genus Dictionary
 GENUS_SW = {
     "Abelmoschus": ("bamia", []), "Abies": ("msindano fir", []), "Acacia": ("mgunga", []),
     "Adansonia": ("mbuyu", []), "Allium": ("kitunguu/saumu", []), "Aloe": ("mshubiri", []),
@@ -646,23 +651,488 @@ GENUS_SW = {
     "Zea": ("mahindi", []), "Zingiber": ("tangawizi", [])
 }
 
+# Standard curated species across languages
+CURATED_ES = {
+    'Abies alba': 'abeto blanco|abeto común', 'Abies balsamea': 'abeto balsámico',
+    'Abies concolor': 'abeto del colorado', 'Abies grandis': 'abeto gigante',
+    'Abies nordmanniana': 'abeto del cáucaso|abeto de normandía',
+    'Acacia dealbata': 'mosa|mimosa plateada|acacia mimosa',
+    'Acacia farnesiana': 'aromo|espinillo', 'Acacia melanoxylon': 'acacia negra',
+    'Acacia nilotica': 'acacia de egipto|goma arábiga', 'Acacia saligna': 'acacia azul',
+    'Acacia senegal': 'árbol de la goma arábiga|acacia del senegal',
+    'Acer campestre': 'arce común|arce menor', 'Acer platanoides': 'arce real|arce de noruega',
+    'Acer pseudoplatanus': 'falso plátano|arce blanco|sicómoro', 'Acer saccharum': 'arce azucarero',
+    'Adansonia digitata': 'baobab|árbol botella', 'Alnus glutinosa': 'aliso común|aliso negro',
+    'Alnus incana': 'aliso gris|aliso blanco', 'Annona cherimola': 'chirimoya',
+    'Annona muricata': 'guanábana', 'Annona squamosa': 'anón',
+    'Araucaria angustifolia': 'pino paraná|pino de brasil', 'Araucaria araucana': 'pehuén|araucaria',
+    'Arbutus unedo': 'madroño', 'Artocarpus altilis': 'árbol del pan',
+    'Artocarpus heterophyllus': 'yaca', 'Azadirachta indica': 'nim|neem',
+    'Betula pendula': 'abedul común|abedul blanco', 'Betula pubescens': 'abedul pubescente',
+    'Carpinus betulus': 'carpe común', 'Carya illinoinensis': 'pacano|nuez pecana',
+    'Castanea sativa': 'castaño|castaño común', 'Casuarina equisetifolia': 'casuarina|pino de australia',
+    'Cedrus atlantica': 'cedro del atlas', 'Cedrus deodara': 'cedro del himalaya',
+    'Cedrus libani': 'cedro del líbano', 'Celtis australis': 'almez',
+    'Ceratonia siliqua': 'algarrobo', 'Cercis siliquastrum': 'árbol de judas',
+    'Citrus limon': 'limonero|limón', 'Citrus sinensis': 'naranjo dulce|naranja',
+    'Cocos nucifera': 'cocotero', 'Coffea arabica': 'cafeto arábico|café',
+    'Corylus avellana': 'avellano común', 'Cupressus sempervirens': 'ciprés común|ciprés del mediterráneo',
+    'Cydonia oblonga': 'membrillero|membrillo', 'Diospyros kaki': 'caqui|persimonio',
+    'Elaeis guineensis': 'palma aceitera', 'Eucalyptus globulus': 'eucalipto blanco|eucalipto azul',
+    'Fagus sylvatica': 'haya común|haya europea', 'Ficus carica': 'higuera común',
+    'Fraxinus excelsior': 'fresno común', 'Ginkgo biloba': 'ginkgo',
+    'Juglans regia': 'nogal común|nogal', 'Juniperus communis': 'enebro común',
+    'Larix decidua': 'alerce europeo', 'Laurus nobilis': 'laurel común|laurel',
+    'Malus domestica': 'manzano común', 'Morus alba': 'morera blanca',
+    'Morus nigra': 'moral negro', 'Olea europaea': 'olivo|olivera',
+    'Paulownia tomentosa': 'paulonia imperial', 'Persea americana': 'aguacate|palto',
+    'Phoenix dactylifera': 'palmera datilera', 'Picea abies': 'abeto rojo|pícea común',
+    'Pinus brutia': 'pino de calabria|pino turco', 'Pinus halepensis': 'pino carrasco',
+    'Pinus nigra': 'pino salgareño|pino negral', 'Pinus pinea': 'pino piñonero',
+    'Pinus sylvestris': 'pino silvestre|pino albar', 'Pistacia vera': 'pistachero|pistacho',
+    'Platanus orientalis': 'plátano oriental', 'Populus alba': 'álamo blanco',
+    'Populus nigra': 'álamo negro', 'Populus tremula': 'álamo temblón',
+    'Prunus armeniaca': 'albaricoquero|damasco', 'Prunus avium': 'cerezo|cerezo silvestre',
+    'Prunus cerasus': 'guindo|cerezo ácido', 'Prunus domestica': 'ciruelo',
+    'Prunus dulcis': 'almendro', 'Prunus persica': 'melocotonero|duraznero',
+    'Pyrus communis': 'peral común', 'Quercus ilex': 'encina',
+    'Quercus robur': 'roble común|roble carballo', 'Quercus rubra': 'roble rojo americano',
+    'Quercus suber': 'alcornoque', 'Robinia pseudoacacia': 'falsa acacia|robinia',
+    'Salix alba': 'sauce blanco', 'Salix babylonica': 'sauce llorón',
+    'Taxus baccata': 'tejo común', 'Tectona grandis': 'teca',
+    'Theobroma cacao': 'cacaotero|cacao', 'Tilia cordata': 'tilo de hoja pequeña',
+    'Ulmus minor': 'olmo común', 'Vitis vinifera': 'vid|parra',
+    'Allium cepa': 'cebolla', 'Allium sativum': 'ajo', 'Avena sativa': 'avena',
+    'Beta vulgaris': 'remolacha', 'Glycine max': 'soja|soya',
+    'Helianthus annuus': 'girasol', 'Hordeum vulgare': 'cebada',
+    'Ipomoea batatas': 'batata|camote', 'Oryza sativa': 'arroz',
+    'Phaseolus vulgaris': 'frijol|judía', 'Pisum sativum': 'guisante|arveja',
+    'Solanum lycopersicum': 'tomate', 'Solanum tuberosum': 'patata|papa',
+    'Triticum aestivum': 'trigo', 'Zea mays ssp. mays': 'maíz', 'Zea mays': 'maíz'
+}
 
+CURATED_FR = {
+    'Abies alba': 'sapin blanc|sapin pectiné', 'Abies balsamea': 'sapin baumier',
+    'Abies nordmanniana': 'sapin de nordmann', 'Acacia dealbata': "mimosa des fleuristes|mimosa d'hiver",
+    'Acer campestre': 'érable champêtre', 'Acer platanoides': 'érable plane',
+    'Acer pseudoplatanus': 'érable sycomore', 'Acer saccharum': 'érable à sucre',
+    'Adansonia digitata': 'baobab africain', 'Alnus glutinosa': 'aulne glutineux|aulne noir',
+    'Annona muricata': 'corossolier', 'Araucaria angustifolia': 'pin du paraná',
+    'Arbutus unedo': 'arbousier', 'Artocarpus altilis': 'arbre à pain',
+    'Azadirachta indica': 'margousier|neem', 'Betula pendula': 'bouleau verruqueux|bouleau blanc',
+    'Carpinus betulus': 'charme commun', 'Carya illinoinensis': 'pacanier',
+    'Castanea sativa': 'châtaignier commun', 'Casuarina equisetifolia': 'filao',
+    'Cedrus atlantica': "cèdre de l'atlas", 'Cedrus deodara': "cèdre de l'himalaya",
+    'Cedrus libani': 'cèdre du liban', 'Celtis australis': 'micocoulier de provence',
+    'Ceratonia siliqua': 'caroubier', 'Cercis siliquastrum': 'arbre de judée',
+    'Citrus limon': 'citronnier|citron', 'Citrus sinensis': 'oranger|orange douce',
+    'Cocos nucifera': 'cocotier', 'Coffea arabica': "caféier d'arabie",
+    'Corylus avellana': 'noisetier commun', 'Cupressus sempervirens': 'cyprès toujours vert',
+    'Cydonia oblonga': 'cognassier', 'Diospyros kaki': 'plaqueminier du japon|kaki',
+    'Elaeis guineensis': 'palmier à huile', 'Eucalyptus globulus': 'gommier bleu',
+    'Fagus sylvatica': 'hêtre commun|hêtre', 'Ficus carica': 'figuier commun',
+    'Fraxinus excelsior': 'frêne élevé', 'Ginkgo biloba': 'arbre aux quarante écus|ginkgo',
+    'Juglans regia': 'noyer commun', 'Juniperus communis': 'genévrier commun',
+    'Larix decidua': "mélèze d'europe", 'Laurus nobilis': 'laurier noble|laurier-sauce',
+    'Malus domestica': 'pommier commun', 'Morus alba': 'mûrier blanc',
+    'Morus nigra': 'mûrier noir', 'Olea europaea': "olivier|olivier d'europe",
+    'Paulownia tomentosa': 'paulownia impérial', 'Persea americana': 'avocatier',
+    'Phoenix dactylifera': 'palmier-dattier', 'Picea abies': 'épicéa commun',
+    'Pinus brutia': 'pin de calabre', 'Pinus halepensis': "pin d'alep",
+    'Pinus nigra': "pin noir d'autriche", 'Pinus pinea': 'pin parasol',
+    'Pinus sylvestris': 'pin sylvestre', 'Pistacia vera': 'pistachier vrai',
+    'Platanus orientalis': "platane d'orient", 'Populus alba': 'peuplier blanc',
+    'Populus nigra': 'peuplier noir', 'Populus tremula': 'peuplier tremble|tremble',
+    'Prunus armeniaca': 'abricotier', 'Prunus avium': 'merisier|cerisier sauvage',
+    'Prunus cerasus': 'cerisier aigre|griottier', 'Prunus domestica': 'prunier',
+    'Prunus dulcis': 'amandier', 'Prunus persica': 'pêcher',
+    'Pyrus communis': 'poirier commun', 'Quercus ilex': 'chêne vert',
+    'Quercus robur': 'chêne pédonculé|chêne blanc', 'Quercus rubra': "chêne rouge d'amérique",
+    'Quercus suber': 'chêne-liège', 'Robinia pseudoacacia': 'robinier faux-acacia',
+    'Salix alba': 'saule blanc', 'Salix babylonica': 'saule pleureur',
+    'Taxus baccata': 'if commun', 'Tectona grandis': 'teck',
+    'Theobroma cacao': 'cacaoyer', 'Tilia cordata': 'tilleul à petites feuilles',
+    'Ulmus minor': 'orme champêtre', 'Vitis vinifera': 'vigne cultivée',
+    'Allium cepa': 'oignon', 'Allium sativum': 'ail', 'Avena sativa': 'avoine',
+    'Beta vulgaris': 'betterave', 'Glycine max': 'soja',
+    'Helianthus annuus': 'tournesol', 'Hordeum vulgare': 'orge',
+    'Ipomoea batatas': 'patate douce', 'Oryza sativa': 'riz',
+    'Phaseolus vulgaris': 'haricot', 'Pisum sativum': 'pois cultivé|petit pois',
+    'Solanum lycopersicum': 'tomate', 'Solanum tuberosum': 'pomme de terre',
+    'Triticum aestivum': 'blé tendre', 'Zea mays ssp. mays': 'maïs', 'Zea mays': 'maïs'
+}
 
-# ==============================================================================
-# CURATED SPECIES DICTIONARIES
-# ==============================================================================
+CURATED_DE = {
+    'Abies alba': 'weiß-tanne|silbertanne', 'Abies balsamea': 'balsam-tanne',
+    'Abies nordmanniana': 'nordmann-tanne', 'Acacia dealbata': 'silber-akazie',
+    'Acer campestre': 'feld-ahorn', 'Acer platanoides': 'spitz-ahorn',
+    'Acer pseudoplatanus': 'berg-ahorn', 'Acer saccharum': 'zucker-ahorn',
+    'Adansonia digitata': 'affenbrotbaum|baobab', 'Alnus glutinosa': 'schwarz-erle',
+    'Betula pendula': 'hänge-birke|sand-birke', 'Carpinus betulus': 'hainbuche',
+    'Carya illinoinensis': 'pakanbaum|pekannuss', 'Castanea sativa': 'edelkastanie|esskastanie',
+    'Casuarina equisetifolia': 'schachtelhalmblättrige kasuarine',
+    'Cedrus atlantica': 'atlas-zeder', 'Cedrus deodara': 'himalaya-zeder',
+    'Cedrus libani': 'libanon-zeder', 'Celtis australis': 'europäischer zürgelbaum',
+    'Ceratonia siliqua': 'johannisbrotbaum', 'Cercis siliquastrum': 'judasbaum',
+    'Citrus limon': 'zitronenbaum|zitrone', 'Citrus sinensis': 'orange|apfelsine',
+    'Cocos nucifera': 'kokospalme', 'Coffea arabica': 'arabica-kaffee',
+    'Corylus avellana': 'gemeine hasel', 'Cupressus sempervirens': 'mittelmeer-zypresse',
+    'Cydonia oblonga': 'quitte', 'Diospyros kaki': 'kakibaum|kaki',
+    'Elaeis guineensis': 'ölpalme', 'Eucalyptus globulus': 'blauer eukalyptus',
+    'Fagus sylvatica': 'rotbuche|buche', 'Ficus carica': 'echte feige',
+    'Fraxinus excelsior': 'gemeine esche', 'Ginkgo biloba': 'ginkgobaum|ginkgo',
+    'Juglans regia': 'echte walnuss', 'Juniperus communis': 'gemeiner wacholder',
+    'Larix decidua': 'europäische lärche', 'Laurus nobilis': 'echter lorbeer',
+    'Malus domestica': 'kultur-apfel|apfelbaum', 'Morus alba': 'weiße maulbeere',
+    'Morus nigra': 'schwarze maulbeere', 'Olea europaea': 'olivenbaum|ölbaum',
+    'Paulownia tomentosa': 'blauglockenbaum', 'Persea americana': 'avocadobaum|avocado',
+    'Phoenix dactylifera': 'echte dattelpalme', 'Picea abies': 'gemeine fichte|rotfichte',
+    'Pinus brutia': 'kalabrische kiefer', 'Pinus halepensis': 'aleppo-kiefer',
+    'Pinus nigra': 'schwarz-kiefer', 'Pinus pinea': 'pinie',
+    'Pinus sylvestris': 'wald-kiefer|föhre', 'Pistacia vera': 'echte pistazie',
+    'Platanus orientalis': 'morgenländische platane', 'Populus alba': 'silber-pappel',
+    'Populus nigra': 'schwarz-pappel', 'Populus tremula': 'zitter-pappel|espe',
+    'Prunus armeniaca': 'aprikosenbaum|marille', 'Prunus avium': 'vogel-kirsche|süßkirsche',
+    'Prunus cerasus': 'sauerkirsche', 'Prunus domestica': 'pflaumenbaum|zwetschge',
+    'Prunus dulcis': 'mandelbaum', 'Prunus persica': 'pfirsichbaum',
+    'Pyrus communis': 'kultur-birne', 'Quercus ilex': 'stein-eiche',
+    'Quercus robur': 'stiel-eiche|deutsche eiche', 'Quercus rubra': 'amerikanische rot-eiche',
+    'Quercus suber': 'kork-eiche', 'Robinia pseudoacacia': 'gewöhnliche robinie',
+    'Salix alba': 'silber-weide', 'Salix babylonica': 'echte trauer-weide',
+    'Taxus baccata': 'europäische eibe', 'Tectona grandis': 'teakbaum',
+    'Theobroma cacao': 'kakaobaum', 'Tilia cordata': 'winter-linde',
+    'Ulmus minor': 'feld-ulme', 'Vitis vinifera': 'echte weinrebe',
+    'Allium cepa': 'zwiebel', 'Allium sativum': 'knoblauch', 'Avena sativa': 'saat-hafer',
+    'Beta vulgaris': 'zuckerrübe|rote bete', 'Glycine max': 'sojabohne',
+    'Helianthus annuus': 'sonnenblume', 'Hordeum vulgare': 'gerste',
+    'Ipomoea batatas': 'süßkartoffel', 'Oryza sativa': 'reis',
+    'Phaseolus vulgaris': 'gartenbohne', 'Pisum sativum': 'erbse',
+    'Solanum lycopersicum': 'tomate', 'Solanum tuberosum': 'kartoffel',
+    'Triticum aestivum': 'weichweizen', 'Zea mays ssp. mays': 'mais', 'Zea mays': 'mais'
+}
 
+CURATED_RU = {
+    'Abies alba': 'пихта белая', 'Abies balsamea': 'пихта бальзамическая',
+    'Abies nordmanniana': 'пихта нордмана', 'Acacia dealbata': 'акация серебристая|мимоза',
+    'Acer campestre': 'клён полевой', 'Acer platanoides': 'клён остролистный',
+    'Acer pseudoplatanus': 'клён белый|явор', 'Acer saccharum': 'клён сахарный',
+    'Adansonia digitata': 'баобаб', 'Alnus glutinosa': 'ольха чёрная',
+    'Betula pendula': 'берёза повислая|берёза бородавчатая', 'Carpinus betulus': 'граб обыкновенный',
+    'Castanea sativa': 'каштан посевной', 'Cedrus atlantica': 'кедр атласский',
+    'Cedrus deodara': 'кедр гималайский', 'Cedrus libani': 'кедр ливанский',
+    'Citrus limon': 'лимон', 'Citrus sinensis': 'апельсин',
+    'Corylus avellana': 'лещина обыкновенная|фундук', 'Cupressus sempervirens': 'кипарис вечнозелёный',
+    'Fagus sylvatica': 'бук европейский', 'Ficus carica': 'инжир|смоковница',
+    'Fraxinus excelsior': 'ясень обыкновенный', 'Ginkgo biloba': 'гинкго',
+    'Juglans regia': 'грецкий орех', 'Juniperus communis': 'можжевельник обыкновенный',
+    'Larix decidua': 'лиственница европейская', 'Laurus nobilis': 'лавр благородный',
+    'Malus domestica': 'яблоня домашняя', 'Morus alba': 'шелковица белая',
+    'Morus nigra': 'шелковица чёрная', 'Olea europaea': 'олива европейская|маслина',
+    'Picea abies': 'ель обыкновенная', 'Pinus brutia': 'сосна калабрийская',
+    'Pinus nigra': 'сосна чёрная', 'Pinus pinea': 'сосна пиния',
+    'Pinus sylvestris': 'сосна обыкновенная', 'Pistacia vera': 'фисташка',
+    'Platanus orientalis': 'платан восточный|чинара', 'Populus alba': 'тополь белый',
+    'Populus nigra': 'тополь чёрный', 'Populus tremula': 'осина',
+    'Prunus armeniaca': 'абрикос обыкновенный', 'Prunus avium': 'черешня',
+    'Prunus cerasus': 'вишня обыкновенная', 'Prunus domestica': 'слива домашняя',
+    'Prunus dulcis': 'миндаль обыкновенный', 'Prunus persica': 'персик обыкновенный',
+    'Pyrus communis': 'груша обыкновенная', 'Quercus ilex': 'дуб каменный',
+    'Quercus robur': 'дуб черешчатый|дуб обыкновенный', 'Quercus rubra': 'дуб красный',
+    'Quercus suber': 'дуб пробковый', 'Robinia pseudoacacia': 'робиния ложноакациевая|белая акация',
+    'Salix alba': 'ива белая', 'Taxus baccata': 'тис ягодный',
+    'Tilia cordata': 'липа мелколистная', 'Ulmus minor': 'вяз малый',
+    'Vitis vinifera': 'виноград культурный', 'Allium cepa': 'лук репчатый',
+    'Allium sativum': 'чеснок', 'Avena sativa': 'овёс посевной',
+    'Beta vulgaris': 'свёкла', 'Glycine max': 'соя',
+    'Helianthus annuus': 'подсолнечник', 'Hordeum vulgare': 'ячмень',
+    'Ipomoea batatas': 'батат', 'Oryza sativa': 'рис посевной',
+    'Phaseolus vulgaris': 'фасоль', 'Pisum sativum': 'горох посевной',
+    'Solanum lycopersicum': 'томат|помидор', 'Solanum tuberosum': 'картофель',
+    'Triticum aestivum': 'пшеница мягкая', 'Zea mays ssp. mays': 'кукуруза', 'Zea mays': 'кукуруза'
+}
 
+CURATED_ZH = {
+    'Abies alba': '欧洲白冷杉|白冷杉', 'Abies balsamea': '胶冷杉',
+    'Acacia dealbata': '银荆|澳洲金合欢', 'Acer saccharum': '糖槭|糖枫',
+    'Adansonia digitata': '猴面包树', 'Betula pendula': '垂枝桦|白桦',
+    'Castanea sativa': '欧洲栗|西洋栗', 'Casuarina equisetifolia': '木麻黄',
+    'Cedrus deodara': '雪松', 'Citrus limon': '柠檬',
+    'Citrus sinensis': '甜橙|脐橙', 'Cocos nucifera': '椰子',
+    'Coffea arabica': '小粒咖啡', 'Corylus avellana': '欧洲榛|榛子',
+    'Diospyros kaki': '柿树|柿子', 'Eucalyptus globulus': '蓝桉',
+    'Fagus sylvatica': '欧洲山毛榉', 'Ficus carica': '无花果',
+    'Ginkgo biloba': '银杏', 'Juglans regia': '核桃',
+    'Malus domestica': '苹果', 'Morus alba': '桑树',
+    'Olea europaea': '油橄榄|橄榄', 'Persea americana': '牛油果|鳄梨',
+    'Picea abies': '欧洲云杉', 'Pinus sylvestris': '欧洲赤松',
+    'Prunus armeniaca': '杏', 'Prunus avium': '欧洲甜樱桃|车厘子',
+    'Prunus persica': '桃树|桃', 'Quercus robur': '夏栎|欧洲栎',
+    'Quercus rubra': '红栎', 'Quercus suber': '栓皮栎',
+    'Robinia pseudoacacia': '刺槐|洋槐', 'Salix babylonica': '垂柳',
+    'Tectona grandis': '柚木', 'Theobroma cacao': '可可树|可可',
+    'Vitis vinifera': '葡萄', 'Allium cepa': '洋葱',
+    'Arachis hypogaea': '花生', 'Glycine max': '大豆',
+    'Helianthus annuus': '向日葵', 'Oryza sativa': '水稻',
+    'Solanum lycopersicum': '番茄', 'Solanum tuberosum': '马铃薯|土豆',
+    'Triticum aestivum': '小麦', 'Zea mays ssp. mays': '玉米', 'Zea mays': '玉米'
+}
 
-CURATED_ES = {'Abies alba': 'abeto blanco|abeto común', 'Abies balsamea': 'abeto balsámico|abeto del bálsamo', 'Abies concolor': 'abeto del colorado|abeto blanco de california', 'Abies grandis': 'abeto gigante', 'Abies nordmanniana': 'abeto del cáucaso|abeto de normandía', 'Acacia dealbata': 'mosa|mimosa plateada|acacia mimosa', 'Acacia farnesiana': 'aromo|espinillo|acacia de las indias', 'Acacia melanoxylon': 'acacia negra|acacia de madera negra', 'Acacia nilotica': 'acacia de egipto|goma arábiga', 'Acacia saligna': 'acacia azul|acacia de hoja azul', 'Acacia senegal': 'árbol de la goma arábiga|acacia del senegal', 'Acer campestre': 'arce común|arce menor', 'Acer platanoides': 'arce real|arce de noruega', 'Acer pseudoplatanus': 'falso plátano|arce blanco|sicómoro', 'Acer saccharum': 'arce azucarero|arce del azúcar', 'Adansonia digitata': 'baobab|árbol botella', 'Alnus glutinosa': 'aliso común|aliso negro|alno', 'Alnus incana': 'aliso gris|aliso blanco', 'Annona cherimola': 'chirimoya|chirimoyo', 'Annona muricata': 'guanábana|catuche', 'Annona squamosa': 'anón|chirimoya de la habana', 'Araucaria angustifolia': 'pino paraná|pino de brasil|araucaria misionera', 'Araucaria araucana': 'pehuén|pino araucano|araucaria', 'Araucaria heterophylla': 'pino de norfolk|araucaria excelsa', 'Arbutus unedo': 'madroño|madroñera', 'Artocarpus altilis': 'árbol del pan|frutipán', 'Artocarpus heterophyllus': 'yaca|árbol de jaca', 'Azadirachta indica': 'nim|neem|árbol del nim', 'Betula pendula': 'abedul común|abedul blanco|abedul péndulo', 'Betula pubescens': 'abedul pubescente', 'Carpinus betulus': 'carpe común|hojarazo|charmilla', 'Carya illinoinensis': 'pacano|nogal americano|nuez pecana', 'Castanea crenata': 'castaño japonés', 'Castanea dentata': 'castaño americano', 'Castanea mollissima': 'castaño chino', 'Castanea sativa': 'castaño|castaño común|castaño europeo', 'Casuarina equisetifolia': 'casuarina|árbol de la tristeza|pino de australia', 'Cedrus atlantica': 'cedro del atlas', 'Cedrus deodara': 'cedro del himalaya|cedro deodara', 'Cedrus libani': 'cedro del líbano', 'Celtis australis': 'almez|almezo|latonero', 'Ceratonia siliqua': 'algarrobo|algarrobero', 'Cercis siliquastrum': 'árbol del amor|árbol de judas|ciclamor', 'Citrus aurantiifolia': 'lima|limero', 'Citrus aurantium': 'naranjo amargo|naranjo agrio', 'Citrus limon': 'limonero|limón', 'Citrus paradisi': 'pomelo|toronja', 'Citrus reticulata': 'mandarino|mandarina', 'Citrus sinensis': 'naranjo dulce|naranjo|naranja', 'Cocos nucifera': 'cocotero|palma de coco', 'Coffea arabica': 'cafeto arábico|café', 'Coffea canephora': 'cafeto robusta|café robusta', 'Corylus avellana': 'avellano|avellano común', 'Corylus colurna': 'avellano turco', 'Cupressus arizonica': 'ciprés de arizona|ciprés azul', 'Cupressus sempervirens': 'ciprés común|ciprés del mediterráneo|ciprés piramidal', 'Cydonia oblonga': 'membrillero|membrillo', 'Diospyros kaki': 'caqui|kaki|persimonio', 'Elaeis guineensis': 'palma aceitera|palma africana de aceite', 'Eriobotrya japonica': 'níspero japonés|níspero del japón', 'Eucalyptus camaldulensis': 'eucalipto rojo|eucalipto camaldulense', 'Eucalyptus globulus': 'eucalipto blanco|eucalipto azul', 'Eucalyptus grandis': 'eucalipto rosado|eucalipto grande', 'Fagus grandifolia': 'haya americana', 'Fagus sylvatica': 'haya común|haya europea|haya', 'Ficus benjamina': 'benjamina|ficus benjamina', 'Ficus carica': 'higuera|higuera común', 'Ficus elastica': 'árbol del caucho|gomero|ficus elástica', 'Fraxinus excelsior': 'fresno común|fresno norteño', 'Fraxinus ornus': 'fresno de flor|fresno del maná', 'Ginkgo biloba': 'ginkgo|árbol de los cuarenta escudos', 'Gleditsia triacanthos': 'acacia de tres espinas|gleditsia', 'Grevillea robusta': 'roble sedoso|grevillea|árbol de fuego', 'Hevea brasiliensis': 'árbol del caucho|seringuera', 'Ilex paraguariensis': 'yerba mate|árbol del mate', 'Jacaranda mimosifolia': 'jacarandá|tarco', 'Juglans nigra': 'nogal negro|nogal negro americano', 'Juglans regia': 'nogal común|nogal europeo|nogal', 'Juniperus communis': 'enebro común|enebro', 'Juniperus oxycedrus': 'enebro de la miera|cada', 'Larix decidua': 'alerce europeo|alerce', 'Laurus nobilis': 'laurel|laurel común|lauro', 'Liquidambar styraciflua': 'liquidámbar americano|ocozol', 'Liriodendron tulipifera': 'tulípero de virginia|árbol de las tulipas', 'Macadamia integrifolia': 'macadamia|nuez de macadamia', 'Magnolia grandiflora': 'magnolio|magnolia común', 'Malus domestica': 'manzano|manzano común', 'Mangifera indica': 'mango|árbol de mango', 'Melia azedarach': 'cinamomo|árbol del paraíso|agracejo', 'Morus alba': 'morera blanca|morera', 'Morus nigra': 'moral negro|moral|mora negra', 'Myrtus communis': 'mirto|arrayán', 'Olea europaea': 'olivo|olivera|aceituno', 'Paulownia tomentosa': 'paulonia imperial|árbol de la emperatriz', 'Persea americana': 'aguacate|palto|aguacatero', 'Phoenix canariensis': 'palmera canaria|palma fénix', 'Phoenix dactylifera': 'palmera datilera|datilero', 'Picea abies': 'abeto rojo|pícea común', 'Pinus brutia': 'pino de calabria|pino turco', 'Pinus canariensis': 'pino canario', 'Pinus halepensis': 'pino carrasco|pino de alepo', 'Pinus nigra': 'pino salgareño|pino negral|pino laricio', 'Pinus pinaster': 'pino rodeno|pino marítimo|pino negral', 'Pinus pinea': 'pino piñonero|pino manso', 'Pinus ponderosa': 'pino ponderosa|pino amarillo', 'Pinus radiata': 'pino insigne|pino de monterey', 'Pinus strobus': 'pino de weymouth|pino blanco americano', 'Pinus sylvestris': 'pino silvestre|pino albar|pino del norte', 'Pistacia lentiscus': 'lentisco|mata charneca', 'Pistacia terebinthus': 'cornicabra|terebinto', 'Pistacia vera': 'pistachero|alfóncigo|árbol del pistacho', 'Platanus orientalis': 'plátano oriental', 'Platanus x acerifolia': 'plátano de sombra|plátano de paseo', 'Populus alba': 'álamo blanco|chopo blanco', 'Populus nigra': 'álamo negro|chopo negro', 'Populus tremula': 'álamo temblón|chopo temblón', 'Prosopis juliflora': 'algarroba|mezquite', 'Prunus amygdalus': 'almendro|almendrero', 'Prunus armeniaca': 'albaricoquero|damasco', 'Prunus avium': 'cerezo|cerezo silvestre', 'Prunus cerasifera': 'ciruelo mirobolano|cerezo de jardín', 'Prunus cerasus': 'guindo|cerezo ácido', 'Prunus domestica': 'ciruelo|ciruelo europeo', 'Prunus dulcis': 'almendro|almendro común', 'Prunus persica': 'melocotonero|duraznero|durazno', 'Prunus spinosa': 'endrino|ciruelo silvestre', 'Pseudotsuga menziesii': 'abeto de douglas|pino de oregón', 'Psidium guajava': 'guayabo|guayaba', 'Punica granatum': 'granado|granada', 'Pyrus communis': 'peral|peral común', 'Quercus agrifolia': 'encina de california|roble de california', 'Quercus alba': 'roble blanco americano', 'Quercus cerris': 'roble cabelludo|roble turco', 'Quercus coccifera': 'coscoja|marrubio', 'Quercus frainetto': 'roble de hungría', 'Quercus ilex': 'encina|carrasca|chaparro', 'Quercus petraea': 'roble albar|roble sésil', 'Quercus pubescens': 'roble pubescente', 'Quercus robur': 'roble común|roble carballo|roble pedunculado', 'Quercus rubra': 'roble rojo americano', 'Quercus suber': 'alcornoque|alcornoque mediterráneo', 'Robinia pseudoacacia': 'falsa acacia|robinia|acacia blanca', 'Salix alba': 'sauce blanco|sauce común', 'Salix babylonica': 'sauce llorón', 'Sambucus nigra': 'saúco negro|saúco común', 'Schinus molle': 'falso pimentero|aguaribay|árbol de la pimienta', 'Sequoiadendron giganteum': 'secuoya gigante|árbol mamut', 'Sequoia sempervirens': 'secuoya roja|secuoya de california', 'Swietenia macrophylla': 'caoba|caoba de honduras', 'Syzygium aromaticum': 'árbol del clavo|clavero', 'Tamarindus indica': 'tamarindo', 'Tamarix gallica': 'tamarisco|taray', 'Taxus baccata': 'tejo|tejo común', 'Tectona grandis': 'teca|árbol de teca', 'Theobroma cacao': 'cacao|árbol del cacao', 'Thuja occidentalis': 'tuya occidental|árbol de la vida', 'Tilia cordata': 'tilo de hoja pequeña|tilo silvestre', 'Tilia platyphyllos': 'tilo de hoja ancha|tilo común', 'Ulmus americana': 'olmo americano', 'Ulmus glabra': 'olmo de montaña', 'Ulmus minor': 'olmo común|olmo negro|negrillo', 'Vitex agnus-castus': 'sauzgatillo|hierba de la castidad', 'Vitis vinifera': 'vid|vid europea|parra', 'Ziziphus jujuba': 'azufaifo|jinjolero|azufaifa', 'Allium cepa': 'cebolla', 'Allium sativum': 'ajo', 'Apium graveolens': 'apio', 'Arachis hypogaea': 'cacahuete|maní', 'Avena sativa': 'avena', 'Beta vulgaris': 'remolacha', 'Brassica napus': 'colza|canola', 'Capsicum annuum': 'pimiento|chile', 'Cicer arietinum': 'garbanzo', 'Cucumis sativus': 'pepino', 'Cucurbita pepo': 'calabacín|calabaza', 'Daucus carota': 'zanahoria', 'Fragaria ananassa': 'fresa|fresón', 'Glycine max': 'soja|soya', 'Gossypium hirsutum': 'algodón', 'Helianthus annuus': 'girasol', 'Hordeum vulgare': 'cebada', 'Ipomoea batatas': 'batata|camote|boniato', 'Lactuca sativa': 'lechuga', 'Lens culinaris': 'lenteja', 'Medicago sativa': 'alfalfa', 'Nicotiana tabacum': 'tabaco', 'Oryza sativa': 'arroz', 'Phaseolus vulgaris': 'judía|frijol|habichuela|poroto', 'Pisum sativum': 'guisante|arveja|chícharo', 'Solanum lycopersicum': 'tomate|tomatera', 'Lycopersicon esculentum': 'tomate', 'Solanum tuberosum': 'patata|papa', 'Spinacia oleracea': 'espinaca', 'Trifolium pratense': 'trébol rojo|trébol violeta', 'Trifolium repens': 'trébol blanco', 'Triticum aestivum': 'trigo|trigo harinero', 'Zea mays ssp. mays': 'maíz', 'Zea mays': 'maíz'}
-CURATED_FR = {'Abies alba': 'sapin blanc|sapin pectiné|sapin des vosges', 'Abies balsamea': 'sapin baumier', 'Abies concolor': 'sapin du colorado|sapin concolore', 'Abies grandis': 'grand sapin|sapin de vancouver', 'Abies nordmanniana': 'sapin de nordmann|sapin du caucase', 'Acacia dealbata': "mimosa des fleuristes|mimosa d'hiver|acacia", 'Acacia farnesiana': 'cassier|mimosa de farnèse', 'Acacia melanoxylon': 'acacia à bois noir|mimosa à bois noir', 'Acacia nilotica': "gommier rouge|acacia d'égypte", 'Acacia saligna': 'mimosa bleuâtre|acacia bleuâtre', 'Acacia senegal': 'gommier blanc|acacia du sénégal', 'Acer campestre': 'érable champêtre', 'Acer platanoides': 'érable plane|faux platane', 'Acer pseudoplatanus': 'érable sycomore|sycomore', 'Acer saccharum': 'érable à sucre', 'Adansonia digitata': 'baobab africain|arbre bouteille', 'Alnus cordata': 'aulne de corse|aulne à feuilles en cœur', 'Alnus glutinosa': 'aulne glutineux|aulne noir|vergne', 'Alnus incana': 'aulne blanc|aulne blanchâtre', 'Annona cherimola': 'chérimolier|anone', 'Annona muricata': 'corossolier|corossol épineux', 'Araucaria angustifolia': 'pin du paraná|araucaria du brésil', 'Araucaria araucana': 'désespoir des singes|pin du chili|araucaria', 'Arbutus unedo': 'arbousier|arbre aux fraises', 'Artocarpus altilis': 'arbre à pain', 'Artocarpus heterophyllus': 'jacquier', 'Azadirachta indica': 'margousier|arbre neem|neem', 'Betula pendula': 'bouleau verruqueux|bouleau blanc', 'Betula pubescens': 'bouleau pubescent', 'Carpinus betulus': 'charme commun|charmille', 'Carya illinoinensis': 'pacanier|noix de pécan', 'Castanea crenata': 'châtaignier du japon', 'Castanea dentata': "châtaignier d'amérique", 'Castanea mollissima': 'châtaignier de chine', 'Castanea sativa': 'châtaignier commun|châtaignier', 'Casuarina equisetifolia': 'filao|bois de fer|casuarina', 'Cedrus atlantica': "cèdre de l'atlas", 'Cedrus deodara': "cèdre de l'himalaya|cèdre déodar", 'Cedrus libani': 'cèdre du liban', 'Celtis australis': 'micocoulier de provence|micocoulier', 'Ceratonia siliqua': 'caroubier', 'Cercis siliquastrum': 'arbre de judée|gainier commun', 'Citrus aurantiifolia': 'limettier|lime acide', 'Citrus aurantium': 'bigaradier|oranger amer', 'Citrus limon': 'citronnier|citron', 'Citrus paradisi': 'pomelo|pamplemousse', 'Citrus reticulata': 'mandarinier|mandarine', 'Citrus sinensis': 'oranger|orange douce', 'Cocos nucifera': 'cocotier|palmier de coco', 'Coffea arabica': "caféier d'arabie|café arabica", 'Coffea canephora': 'caféier robusta|café robusta', 'Corylus avellana': 'noisetier commun|coudrier', 'Corylus colurna': 'noisetier de byzance', 'Cupressus arizonica': "cyprès de l'arizona|cyprès bleu", 'Cupressus sempervirens': "cyprès toujours vert|cyprès d'italie|cyprès de provence", 'Cydonia oblonga': 'cognassier|coing', 'Diospyros kaki': 'plaqueminier du japon|kaki', 'Elaeis guineensis': 'palmier à huile', 'Eriobotrya japonica': 'néflier du japon|bibacier', 'Eucalyptus camaldulensis': 'gommier rouge|eucalyptus des rivières', 'Eucalyptus globulus': 'gommier bleu|eucalyptus commun', 'Eucalyptus grandis': 'eucalyptus rose', 'Fagus grandifolia': "hêtre d'amérique", 'Fagus sylvatica': 'hêtre commun|hêtre européen|fayard', 'Ficus carica': 'figuier commun|figuier', 'Ficus elastica': 'caoutchouc|figuier élastique', 'Fraxinus excelsior': 'frêne élevé|frêne commun', 'Fraxinus ornus': 'frêne à fleurs|frêne à manne', 'Ginkgo biloba': 'arbre aux quarante écus|ginkgo', 'Gleditsia triacanthos': "févier d'amérique|févier épineux", 'Grevillea robusta': "chêne soyeux d'australie|grévillée robuste", 'Hevea brasiliensis': 'hévéa|arbre à caoutchouc', 'Ilex paraguariensis': 'yerba maté|maté', 'Jacaranda mimosifolia': 'jacaranda|flamboyant bleu', 'Juglans nigra': "noyer noir|noyer d'amérique", 'Juglans regia': 'noyer commun|noyer de perse', 'Juniperus communis': 'genévrier commun|genévrier', 'Juniperus oxycedrus': 'cade|genévrier oxycèdre', 'Larix decidua': "mélèze d'europe|mélèze", 'Laurus nobilis': "laurier noble|laurier-sauce|laurier d'apollon", 'Liquidambar styraciflua': "copalme d'amérique|liquidambar", 'Liriodendron tulipifera': 'tulipier de virginie', 'Macadamia integrifolia': 'noyer du queensland|macadamia', 'Magnolia grandiflora': 'magnolia à grandes fleurs', 'Malus domestica': 'pommier commun|pommier', 'Mangifera indica': 'manguier', 'Melia azedarach': 'margousier à feuilles de frêne|lilas des indes', 'Morus alba': 'mûrier blanc', 'Morus nigra': 'mûrier noir', 'Myrtus communis': 'myrte commun|myrte', 'Olea europaea': "olivier|olivier d'europe", 'Paulownia tomentosa': 'paulownia impérial|arbre impérial', 'Persea americana': 'avocatier', 'Phoenix canariensis': 'palmier des canaries', 'Phoenix dactylifera': 'palmier-dattier|dattier', 'Picea abies': 'épicéa commun|épicéa des vosges', 'Pinus brutia': 'pin de calabre|pin turc', 'Pinus canariensis': 'pin des canaries', 'Pinus halepensis': "pin d'alep", 'Pinus nigra': "pin noir d'autriche|pin noir", 'Pinus pinaster': 'pin maritime|pin des landes', 'Pinus pinea': 'pin parasol|pin pignon', 'Pinus ponderosa': "pin ponderosa|pin jaune d'amérique", 'Pinus radiata': 'pin de monterey|pin insigne', 'Pinus strobus': 'pin de weymouth|pin blanc', 'Pinus sylvestris': 'pin sylvestre|pin du nord', 'Pistacia lentiscus': 'lentisque|arbre au mastic', 'Pistacia terebinthus': 'térébinthe|pistachier térébinthe', 'Pistacia vera': 'pistachier vrai|pistachier', 'Platanus orientalis': "platane d'orient", 'Platanus x acerifolia': "platane commun|platane à feuilles d'érable", 'Populus alba': 'peuplier blanc|peuplier de hollande', 'Populus nigra': 'peuplier noir', 'Populus tremula': 'peuplier tremble|tremble', 'Prunus amygdalus': 'amandier|amandier commun', 'Prunus armeniaca': 'abricotier', 'Prunus avium': 'merisier|cerisier des oiseaux|cerisier sauvage', 'Prunus cerasifera': 'prunier myrobolan|myrobolan', 'Prunus cerasus': 'cerisier aigre|griottier', 'Prunus domestica': 'prunier commun|prunier', 'Prunus dulcis': 'amandier', 'Prunus persica': 'pêcher|pêcher commun', 'Prunus spinosa': 'prunellier|épine noire', 'Pseudotsuga menziesii': 'douglas|sapin de douglas', 'Psidium guajava': 'goyavier', 'Punica granatum': 'grenadier|grenadier commun', 'Pyrus communis': 'poirier commun|poirier', 'Quercus agrifolia': 'chêne vert de californie', 'Quercus alba': "chêne blanc d'amérique", 'Quercus cerris': 'chêne chevelu|chêne de bourgogne', 'Quercus coccifera': 'chêne kermès|chêne des garrigues', 'Quercus ilex': 'chêne vert|yeuse', 'Quercus petraea': 'chêne sessile|chêne rouvre', 'Quercus pubescens': 'chêne pubescent|chêne blanc', 'Quercus robur': 'chêne pédonculé|chêne blanc|chêne commun', 'Quercus rubra': "chêne rouge d'amérique", 'Quercus suber': 'chêne-liège', 'Robinia pseudoacacia': 'robinier faux-acacia|acacia', 'Salix alba': 'saule blanc|saule argenté', 'Salix babylonica': 'saule pleureur', 'Sambucus nigra': 'sureau noir', 'Sequoiadendron giganteum': 'séquoia géant|arbre mammouth', 'Sequoia sempervirens': "séquoia à feuilles d'if|séquoia toujours vert", 'Swietenia macrophylla': "acajou du honduras|acajou d'amérique", 'Syzygium aromaticum': 'giroflier|arbre à clou de girofle', 'Tamarindus indica': 'tamarinier', 'Taxus baccata': "if commun|if d'europe|if", 'Tectona grandis': "teck|teck d'indochine", 'Theobroma cacao': 'cacaoyer|cacaotier', 'Thuja occidentalis': 'thuja occidental|arbre de vie', 'Tilia cordata': 'tilleul à petites feuilles|tilleul des bois', 'Tilia platyphyllos': 'tilleul à grandes feuilles', 'Ulmus glabra': 'orme de montagne', 'Ulmus minor': 'orme champêtre|orme blanc', 'Vitex agnus-castus': 'gattilier|arbre au poivre', 'Vitis vinifera': 'vigne cultivée|vigne rouge|vigne', 'Ziziphus jujuba': 'jujubier commun|jujubier', 'Allium cepa': 'oignon', 'Allium sativum': 'ail', 'Apium graveolens': 'céleri', 'Arachis hypogaea': 'arachide|cacahuète', 'Avena sativa': 'avoine', 'Beta vulgaris': 'betterave', 'Brassica napus': 'colza', 'Capsicum annuum': 'poivron|piment', 'Cicer arietinum': 'pois chiche', 'Cucumis sativus': 'concombre', 'Cucurbita pepo': 'courgette|citrouille', 'Daucus carota': 'carotte', 'Fragaria ananassa': 'fraisier cultivé|fraise', 'Glycine max': 'soja', 'Gossypium hirsutum': 'cotonnier', 'Helianthus annuus': 'tournesol', 'Hordeum vulgare': 'orge', 'Ipomoea batatas': 'patate douce', 'Lactuca sativa': 'laitue', 'Lens culinaris': 'lentille', 'Medicago sativa': 'luzerne', 'Nicotiana tabacum': 'tabac', 'Oryza sativa': 'riz', 'Phaseolus vulgaris': 'haricot commun|haricot', 'Pisum sativum': 'pois cultivé|petit pois', 'Solanum lycopersicum': 'tomate', 'Lycopersicon esculentum': 'tomate', 'Solanum tuberosum': 'pomme de terre', 'Spinacia oleracea': 'épinard', 'Trifolium pratense': 'trèfle violet|trèfle des prés', 'Trifolium repens': 'trèfle blanc', 'Triticum aestivum': 'blé tendre|froment', 'Zea mays ssp. mays': 'maïs', 'Zea mays': 'maïs'}
-CURATED_DE = {'Abies alba': 'weiß-tanne|silbertanne|tanne', 'Abies balsamea': 'balsam-tanne', 'Abies concolor': 'kolorado-tanne|grau-tanne', 'Abies grandis': 'küsten-tanne|riesen-tanne', 'Abies nordmanniana': 'nordmann-tanne|kaukasus-tanne', 'Acacia dealbata': 'silber-akazie|falsche mimose', 'Acacia farnesiana': 'antillen-akazie|süße akazie', 'Acacia melanoxylon': 'australische schwarzholz-akazie', 'Acacia nilotica': 'ägyptische akazie|arabischer gummi-baum', 'Acacia senegal': 'verek-akazie|gummiarabikum-baum', 'Acer campestre': 'feld-ahorn|maßholder', 'Acer platanoides': 'spitz-ahorn', 'Acer pseudoplatanus': 'berg-ahorn', 'Acer saccharum': 'zucker-ahorn', 'Adansonia digitata': 'afrikanischer affenbrotbaum|baobab', 'Alnus cordata': 'herzblättrige erle|korsische erle', 'Alnus glutinosa': 'schwarz-erle|rot-erle', 'Alnus incana': 'grau-erle|weiß-erle', 'Annona cherimola': 'cherimoya|zuckerapfel', 'Annona muricata': 'stachelanone|sauersack', 'Araucaria angustifolia': 'brasilianische araukarie|parana-kiefer', 'Araucaria araucana': 'chilenische araukarie|andentanne', 'Arbutus unedo': 'westlicher erdbeerbaum|erdbeerbaum', 'Artocarpus altilis': 'echter brotfruchtbaum|brotfrucht', 'Artocarpus heterophyllus': 'jackfruchtbaum|jackfrucht', 'Azadirachta indica': 'neembaum|niembaum', 'Betula pendula': 'hänge-birke|sand-birke|weiß-birke', 'Betula pubescens': 'moor-birke|haar-birke', 'Carpinus betulus': 'hainbuche|weißbuche|hagebuche', 'Carya illinoinensis': 'pakanbaum|pekannuss', 'Castanea crenata': 'japanische kastanie', 'Castanea dentata': 'amerikanische kastanie', 'Castanea mollissima': 'chinesische kastanie', 'Castanea sativa': 'edelkastanie|esskastanie|marone', 'Casuarina equisetifolia': 'schachtelhalmblättrige kasuarine|eisenholz', 'Cedrus atlantica': 'atlas-zeder', 'Cedrus deodara': 'himalaya-zeder', 'Cedrus libani': 'libanon-zeder', 'Celtis australis': 'europäischer zürgelbaum', 'Ceratonia siliqua': 'johannisbrotbaum|karubenbaum', 'Cercis siliquastrum': 'gewöhnlicher judasbaum|judasbaum', 'Citrus aurantiifolia': 'echte limette|limone', 'Citrus aurantium': 'bitterorange|pomeranze', 'Citrus limon': 'zitronenbaum|zitrone', 'Citrus paradisi': 'grapefruit|paradiesapfel', 'Citrus reticulata': 'mandarine|mandarinenbaum', 'Citrus sinensis': 'orange|apfelsine', 'Cocos nucifera': 'kokospalme|kokosnuss', 'Coffea arabica': 'arabica-kaffee|bergkaffee', 'Coffea canephora': 'robusta-kaffee', 'Corylus avellana': 'gemeine hasel|haselnussstrauch', 'Corylus colurna': 'baum-hasel|türkische hasel', 'Cupressus arizonica': 'arizona-zypresse', 'Cupressus sempervirens': 'mittelmeer-zypresse|echte zypresse', 'Cydonia oblonga': 'quitte|echte quitte', 'Diospyros kaki': 'kakibaum|kaki', 'Elaeis guineensis': 'ölpalme|afrikanische ölpalme', 'Eriobotrya japonica': 'japanische wollmispel|loquat|mispel', 'Eucalyptus camaldulensis': 'roter eukalyptus', 'Eucalyptus globulus': 'blauer eukalyptus|fieberbaum', 'Eucalyptus grandis': 'roten eukalyptus', 'Fagus grandifolia': 'amerikanische buche', 'Fagus sylvatica': 'rotbuche|buche', 'Ficus carica': 'echte feige|feigenbaum', 'Ficus elastica': 'gummibaum|kautschukfeige', 'Fraxinus excelsior': 'gemeine esche|hoch-esche', 'Fraxinus ornus': 'blumen-esche|manna-esche', 'Ginkgo biloba': 'ginkgobaum|ginkgo|fächerblattbaum', 'Gleditsia triacanthos': 'amerikanische gleditschie|lederhülsenbaum', 'Grevillea robusta': 'australische silbereiche|seideneiche', 'Hevea brasiliensis': 'kautschukbaum|parakautschukbaum', 'Ilex paraguariensis': 'mate-strauch|mate-tee', 'Jacaranda mimosifolia': 'palisanderholzbaum|blauglockenbaum|jakaranda', 'Juglans nigra': 'schwarznuss|schwarzer walnussbaum', 'Juglans regia': 'echte walnuss|walnussbaum', 'Juniperus communis': 'gemeiner wacholder|heidewacholder', 'Juniperus oxycedrus': 'spanischer wacholder|stech-wacholder', 'Larix decidua': 'europäische lärche|lärche', 'Laurus nobilis': 'echter lorbeer|lorbeerbaum', 'Liquidambar styraciflua': 'amerikanischer amberbaum', 'Liriodendron tulipifera': 'tulpenbaum|echter tulpenbaum', 'Macadamia integrifolia': 'macadamianuss|queenslandnuss', 'Magnolia grandiflora': 'immergrüne magnolie', 'Malus domestica': 'kultur-apfel|apfelbaum', 'Mangifera indica': 'mangobaum|mango', 'Melia azedarach': 'zedrachbaum|indischer flieder', 'Morus alba': 'weiße maulbeere', 'Morus nigra': 'schwarze maulbeere', 'Myrtus communis': 'gemeine myrte|brautmyrte', 'Olea europaea': 'olivenbaum|echter ölbaum', 'Paulownia tomentosa': 'blauglockenbaum|kaiser-paulownie', 'Persea americana': 'avocadobaum|avocado', 'Phoenix canariensis': 'kanarische dattelpalme', 'Phoenix dactylifera': 'echte dattelpalme|dattelbaum', 'Picea abies': 'gemeine fichte|rotfichte|wald-fichte', 'Pinus brutia': 'kalabrische kiefer|türkische kiefer', 'Pinus canariensis': 'kanarische kiefer', 'Pinus halepensis': 'aleppo-kiefer', 'Pinus nigra': 'schwarz-kiefer|österreichische schwarzkiefer', 'Pinus pinaster': 'see-kiefer|strand-kiefer', 'Pinus pinea': 'pinie|italienische steinkiefer', 'Pinus ponderosa': 'gelb-kiefer|ponderosa-kiefer', 'Pinus radiata': 'monterey-kiefer|strahlige kiefer', 'Pinus strobus': 'weymouth-kiefer|strobe', 'Pinus sylvestris': 'wald-kiefer|gemeine kiefer|föhre', 'Pistacia lentiscus': 'mastixstrauch|wilde pistazie', 'Pistacia terebinthus': 'terebinthe|terpentin-pistazie', 'Pistacia vera': 'echte pistazie|pistazienbaum', 'Platanus orientalis': 'morgenländische platane', 'Platanus x acerifolia': 'ahornblättrige platane|gemeine platane', 'Populus alba': 'silber-pappel|weiß-pappel', 'Populus nigra': 'schwarz-pappel', 'Populus tremula': 'zitter-pappel|espe', 'Prunus amygdalus': 'mandelbaum|mandel', 'Prunus armeniaca': 'marille|aprikosenbaum', 'Prunus avium': 'vogel-kirsche|süßkirsche', 'Prunus cerasifera': 'kirschpflaume|myrobalane', 'Prunus cerasus': 'sauerkirsche|weichselkirsche', 'Prunus domestica': 'pflaumenbaum|zwetschge', 'Prunus dulcis': 'mandelbaum', 'Prunus persica': 'pfirsichbaum|pfirsich', 'Prunus spinosa': 'schlehdorn|schlehe|schwarzdorn', 'Pseudotsuga menziesii': 'gewöhnliche douglaspflanze|douglasie', 'Psidium guajava': 'echte guave|guavenbaum', 'Punica granatum': 'granatapfelbaum|granatapfel', 'Pyrus communis': 'kultur-birne|birnbaum', 'Quercus agrifolia': 'kalifornische steineiche', 'Quercus alba': 'amerikanische weißeiche', 'Quercus cerris': 'zerr-eiche', 'Quercus coccifera': 'kermes-eiche', 'Quercus ilex': 'stein-eiche|grün-eiche', 'Quercus petraea': 'trauben-eiche|winter-eiche', 'Quercus pubescens': 'flaum-eiche', 'Quercus robur': 'stiel-eiche|sommer-eiche|deutsche eiche', 'Quercus rubra': 'amerikanische rot-eiche|roteiche', 'Quercus suber': 'kork-eiche', 'Robinia pseudoacacia': 'gewöhnliche robinie|silberregen|falsche akazie', 'Salix alba': 'silber-weide', 'Salix babylonica': 'echte trauer-weide', 'Sambucus nigra': 'schwarzer holunder|holler', 'Sequoiadendron giganteum': 'riesenmammutbaum|mammutbaum', 'Sequoia sempervirens': 'küstenmammutbaum|redwood', 'Swietenia macrophylla': 'amerikanisches mahagoni', 'Syzygium aromaticum': 'gewürznelkenbaum|gewürznelke', 'Tamarindus indica': 'tamarindenbaum|tamarinde', 'Taxus baccata': 'europäische eibe|gemeine eibe', 'Tectona grandis': 'teakbaum|teak', 'Theobroma cacao': 'kakaobaum|kakao', 'Thuja occidentalis': 'abendländischer lebensbaum|thuja', 'Tilia cordata': 'winter-linde|stein-linde', 'Tilia platyphyllos': 'sommer-linde|großblättrige linde', 'Ulmus glabra': 'berg-ulme', 'Ulmus minor': 'feld-ulme', 'Vitex agnus-castus': 'mönchspfeffer|keuschlamm', 'Vitis vinifera': 'echte weinrebe|weinstock', 'Ziziphus jujuba': 'chinesische jujube|brustbeere', 'Allium cepa': 'zwiebel|küchenzwiebel', 'Allium sativum': 'knoblauch', 'Apium graveolens': 'sellerie', 'Arachis hypogaea': 'erdnuss', 'Avena sativa': 'saat-hafer|hafer', 'Beta vulgaris': 'zuckerrübe|rote bete', 'Brassica napus': 'raps', 'Capsicum annuum': 'paprika|chilipfeffer', 'Cicer arietinum': 'kichererbse', 'Cucumis sativus': 'gurke', 'Cucurbita pepo': 'gartenkürbis|zucchini', 'Daucus carota': 'karotte|möhre', 'Fragaria ananassa': 'garten-erdbeere|erdbeere', 'Glycine max': 'sojabohne', 'Gossypium hirsutum': 'baumwolle', 'Helianthus annuus': 'sonnenblume', 'Hordeum vulgare': 'gerste', 'Ipomoea batatas': 'süßkartoffel|batate', 'Lactuca sativa': 'kopfsalat|gartensalat', 'Lens culinaris': 'linse', 'Medicago sativa': 'luzerne|alfa-alfa', 'Nicotiana tabacum': 'tabak', 'Oryza sativa': 'reis', 'Phaseolus vulgaris': 'gartenbohne|grüne bohne', 'Pisum sativum': 'erbse|garten-erbse', 'Solanum lycopersicum': 'tomate', 'Lycopersicon esculentum': 'tomate', 'Solanum tuberosum': 'kartoffel', 'Spinacia oleracea': 'spinat', 'Trifolium pratense': 'rot-klee|wiesen-klee', 'Trifolium repens': 'weiß-klee', 'Triticum aestivum': 'weichweizen|saat-weizen', 'Zea mays ssp. mays': 'mais', 'Zea mays': 'mais'}
-CURATED_RU = {'Abies alba': 'пихта белая|пихта европейская', 'Abies balsamea': 'пихта бальзамическая', 'Abies concolor': 'пихта одноцветная', 'Abies nordmanniana': 'пихта нордмана|пихта кавказская', 'Acacia dealbata': 'акация серебристая|мимоза', 'Acacia farnesiana': 'акация фарнеза', 'Acer campestre': 'клён полевой|паклён', 'Acer platanoides': 'клён остролистный|клён платановидный', 'Acer pseudoplatanus': 'клён белый|явор', 'Acer saccharum': 'клён сахарный', 'Adansonia digitata': 'баобаб|адансония пальчатая', 'Alnus glutinosa': 'ольха чёрная|ольха клейкая', 'Alnus incana': 'ольха серая', 'Betula pendula': 'берёза повислая|берёза бородавчатая', 'Betula pubescens': 'берёза пушистая', 'Carpinus betulus': 'граб обыкновенный', 'Castanea sativa': 'каштан посевной|каштан благородный', 'Cedrus atlantica': 'кедр атласский', 'Cedrus deodara': 'кедр гималайский', 'Cedrus libani': 'кедр ливанский', 'Citrus limon': 'лимон', 'Citrus sinensis': 'апельсин', 'Corylus avellana': 'лещина обыкновенная|фундук', 'Cupressus sempervirens': 'кипарис вечнозелёный', 'Fagus sylvatica': 'бук европейский|бук лесной', 'Ficus carica': 'инжир|смоковница|фиговое дерево', 'Fraxinus excelsior': 'ясень обыкновенный', 'Ginkgo biloba': 'гинкго двулопастный|гинкго', 'Juglans regia': 'грецкий орех', 'Juniperus communis': 'можжевельник обыкновенный', 'Larix decidua': 'лиственница европейская', 'Laurus nobilis': 'лавр благородный', 'Malus domestica': 'яблоня домашняя', 'Morus alba': 'шелковица белая|тутовое дерево', 'Morus nigra': 'шелковица чёрная', 'Olea europaea': 'олива европейская|маслина', 'Picea abies': 'ель обыкновенная|ель европейская', 'Pinus brutia': 'сосна калабрийская|сосна пицундская', 'Pinus nigra': 'сосна чёрная', 'Pinus pinea': 'сосна пиния|пиния', 'Pinus sylvestris': 'сосна обыкновенная|сосна лесная', 'Platanus orientalis': 'платан восточный|чинара', 'Populus alba': 'тополь белый|тополь серебристый', 'Populus nigra': 'тополь чёрный|осокорь', 'Populus tremula': 'осина|тополь дрожащий', 'Prunus armeniaca': 'абрикос обыкновенный', 'Prunus avium': 'черешня', 'Prunus cerasus': 'вишня обыкновенная', 'Prunus domestica': 'слива домашняя', 'Prunus dulcis': 'миндаль обыкновенный', 'Prunus persica': 'персик обыкновенный', 'Pyrus communis': 'груша обыкновенная', 'Quercus ilex': 'дуб каменный', 'Quercus petraea': 'дуб скальный', 'Quercus robur': 'дуб черешчатый|дуб обыкновенный|дуб летний', 'Quercus rubra': 'дуб красный', 'Quercus suber': 'дуб пробковый', 'Robinia pseudoacacia': 'робиния ложноакациевая|белая акация', 'Salix alba': 'ива белая|ветла', 'Taxus baccata': 'тис ягодный', 'Tilia cordata': 'липа мелколистная|липа сердцевидная', 'Ulmus minor': 'вяз малый|берест', 'Vitis vinifera': 'виноград культурный', 'Allium cepa': 'лук репчатый', 'Allium sativum': 'чеснок', 'Avena sativa': 'овёс посевной', 'Beta vulgaris': 'свёкла обыкновенная', 'Glycine max': 'соя культурная', 'Helianthus annuus': 'подсолнечник однолетний', 'Hordeum vulgare': 'ячмень обыкновенный', 'Oryza sativa': 'рис посевной', 'Phaseolus vulgaris': 'фасоль обыкновенная', 'Pisum sativum': 'горох посевной', 'Solanum lycopersicum': 'томат|помидор', 'Solanum tuberosum': 'картофель', 'Triticum aestivum': 'пшеница мягкая', 'Zea mays ssp. mays': 'кукуруза', 'Zea mays': 'кукуруза'}
-CURATED_ZH = {'Abies alba': '欧洲白冷杉|白冷杉', 'Abies balsamea': '胶冷杉|加拿大香脂冷杉', 'Abies concolor': '白冷杉|科罗拉多冷杉', 'Abies nordmanniana': '高加索冷杉|诺德曼冷杉', 'Acacia dealbata': '银荆|澳洲金合欢', 'Acacia farnesiana': '鸭皂树|金合欢', 'Acacia melanoxylon': '黑木相思|黑木金合欢', 'Acacia senegal': '阿拉伯胶树|塞内加尔金合欢', 'Acer campestre': '欧洲田野槭|田园槭', 'Acer platanoides': '挪威槭|欧亚槭', 'Acer pseudoplatanus': '欧亚槭|糖槭', 'Acer saccharum': '糖槭|糖枫', 'Adansonia digitata': '猴面包树', 'Alnus glutinosa': '欧洲黑桤木|黑桤木', 'Annona cherimola': '秘鲁番荔枝', 'Annona muricata': '刺果番荔枝', 'Araucaria angustifolia': '巴拉那松|巴西南洋杉', 'Araucaria araucana': '智利南洋杉', 'Arbutus unedo': '草莓树|野草莓树', 'Artocarpus altilis': '面包树', 'Artocarpus heterophyllus': '菠萝蜜', 'Azadirachta indica': '印楝|苦楝树', 'Betula pendula': '垂枝桦|白桦', 'Carpinus betulus': '欧洲鹅耳枥', 'Carya illinoinensis': '碧根果|美国山核桃', 'Castanea mollissima': '板栗', 'Castanea sativa': '欧洲栗|西洋栗', 'Casuarina equisetifolia': '木麻黄', 'Cedrus atlantica': '阿特拉斯雪松', 'Cedrus deodara': '雪松', 'Cedrus libani': '黎巴嫩雪松', 'Celtis australis': '欧洲朴树', 'Ceratonia siliqua': '长角豆|角豆树', 'Cercis siliquastrum': '南欧紫荆', 'Citrus limon': '柠檬', 'Citrus reticulata': '柑橘|橘子', 'Citrus sinensis': '甜橙|脐橙', 'Cocos nucifera': '椰子|椰子树', 'Coffea arabica': '小粒咖啡|阿拉比卡咖啡', 'Corylus avellana': '欧洲榛|榛子', 'Cupressus sempervirens': '地中海柏木|意大利柏木', 'Cydonia oblonga': '榅桲', 'Diospyros kaki': '柿树|柿子', 'Elaeis guineensis': '油棕', 'Eucalyptus camaldulensis': '赤桉', 'Eucalyptus globulus': '蓝桉', 'Fagus sylvatica': '欧洲山毛榉|欧洲水青冈', 'Ficus carica': '无花果', 'Ficus elastica': '印度榕|橡胶榕', 'Fraxinus excelsior': '欧洲白蜡树', 'Ginkgo biloba': '银杏|白果树', 'Gleditsia triacanthos': '美国皂荚', 'Hevea brasiliensis': '巴西橡胶树|三叶橡胶树', 'Juglans regia': '核桃|胡桃', 'Juniperus communis': '欧洲刺柏|刺柏', 'Larix decidua': '欧洲落叶松', 'Laurus nobilis': '月桂|月桂树', 'Liquidambar styraciflua': '北美枫香', 'Macadamia integrifolia': '澳洲坚果|夏威夷果', 'Malus domestica': '苹果|苹果树', 'Mangifera indica': '芒果', 'Morus alba': '桑树|白桑', 'Morus nigra': '黑桑', 'Olea europaea': '油橄榄|橄榄', 'Paulownia tomentosa': '毛泡桐|泡桐', 'Persea americana': '牛油果|鳄梨', 'Phoenix dactylifera': '海枣|椰枣', 'Picea abies': '欧洲云杉', 'Pinus brutia': '土耳其松', 'Pinus halepensis': '阿勒颇松', 'Pinus nigra': '欧洲黑松', 'Pinus pinea': '意大利石松', 'Pinus sylvestris': '欧洲赤松|欧洲针松', 'Pistacia vera': '开心果|阿月浑子', 'Platanus orientalis': '三球悬铃木|法国梧桐', 'Populus alba': '银白杨', 'Populus nigra': '黑杨', 'Populus tremula': '欧洲山杨', 'Prunus armeniaca': '杏|杏树', 'Prunus avium': '欧洲甜樱桃|车厘子', 'Prunus cerasus': '欧洲酸樱桃', 'Prunus domestica': '欧洲李', 'Prunus dulcis': '扁桃|巴旦木', 'Prunus persica': '桃树|桃', 'Punica granatum': '石榴', 'Pyrus communis': '西洋梨|白梨', 'Quercus ilex': '冬青栎', 'Quercus robur': '夏栎|欧洲栎|英国栎', 'Quercus rubra': '红栎|北美红橡', 'Quercus suber': '栓皮栎|软木栎', 'Robinia pseudoacacia': '刺槐|洋槐', 'Salix alba': '白柳', 'Salix babylonica': '垂柳', 'Taxus baccata': '欧洲红豆杉', 'Tectona grandis': '柚木', 'Theobroma cacao': '可可树|可可', 'Tilia cordata': '小叶椴|心叶椴', 'Ulmus minor': '欧洲山榆', 'Vitis vinifera': '葡萄|酿酒葡萄', 'Allium cepa': '洋葱', 'Allium sativum': '大蒜', 'Arachis hypogaea': '花生', 'Avena sativa': '燕麦', 'Beta vulgaris': '甜菜', 'Brassica napus': '油菜', 'Glycine max': '大豆|黄豆', 'Gossypium hirsutum': '陆地棉|棉花', 'Helianthus annuus': '向日葵', 'Hordeum vulgare': '大麦', 'Ipomoea batatas': '红薯|甘薯', 'Lactuca sativa': '生菜|莴苣', 'Oryza sativa': '水稻|稻谷', 'Phaseolus vulgaris': '菜豆|四季豆', 'Pisum sativum': '豌豆', 'Solanum lycopersicum': '番茄|西红柿', 'Solanum tuberosum': '马铃薯|土豆', 'Triticum aestivum': '小麦', 'Zea mays ssp. mays': '玉米', 'Zea mays': '玉米'}
-CURATED_JA = {'Abies alba': 'ヨーロッパモミ|モミ', 'Abies balsamea': 'バルサムモミ', 'Abies nordmanniana': 'コーカサスモミ|ノルドマンモミ', 'Acacia dealbata': 'フサアカシア|ミモザ', 'Acer campestre': 'コバノトネリコカエデ', 'Acer platanoides': 'ノルウェーカエデ', 'Acer pseudoplatanus': 'セイヨウカジカエデ', 'Acer saccharum': 'サトウカエデ|シュガーメープル', 'Adansonia digitata': 'バオバブ', 'Alnus glutinosa': 'ヨーロッパハンノキ|ハンノキ', 'Betula pendula': 'シラカンバ|シラカバ', 'Carpinus betulus': 'セイヨウシデ|シデ', 'Carya illinoinensis': 'ペカン|ピーカンナッツ', 'Castanea sativa': 'ヨーロッパグリ|クリ', 'Casuarina equisetifolia': 'トクサバモクマオウ|モクマオウ', 'Cedrus atlantica': 'アトラスシーダー', 'Cedrus deodara': 'ヒマラヤスギ', 'Cedrus libani': 'レバノンスギ', 'Ceratonia siliqua': 'キャロブ|イナゴマメ', 'Citrus limon': 'レモン', 'Citrus sinensis': 'スイートオレンジ|オレンジ', 'Cocos nucifera': 'ココヤシ|ヤシ', 'Coffea arabica': 'アラビカコーヒーノキ|コーヒーノキ', 'Corylus avellana': 'セイヨウハシバミ|ヘーゼルナッツ', 'Cupressus sempervirens': 'イトスギ|セイヨウヒノキ', 'Cydonia oblonga': 'マルメロ', 'Diospyros kaki': 'カキノキ|カキ', 'Eucalyptus camaldulensis': 'リバーレッドガム|ユーカリ', 'Eucalyptus globulus': 'タスマニアンブルーガム|ユーカリ', 'Fagus sylvatica': 'ヨーロッパブナ|ブナ', 'Ficus carica': 'イチジク|イチジクノキ', 'Fraxinus excelsior': 'セイヨウトネリコ', 'Ginkgo biloba': 'イチョウ', 'Juglans regia': 'ペルシャグルミ|クルミ', 'Juniperus communis': 'セイヨウネズ|ジュニパー', 'Larix decidua': 'ヨーロッパカラマツ', 'Laurus nobilis': 'ゲッケイジュ|ローレル', 'Malus domestica': 'リンゴ|セイヨウリンゴ', 'Mangifera indica': 'マンゴー', 'Morus alba': 'マグワ|クワ', 'Olea europaea': 'オリーブ|オリーブノキ', 'Paulownia tomentosa': 'キリ|桐', 'Persea americana': 'アボカド', 'Phoenix dactylifera': 'ナツメヤシ', 'Picea abies': 'ドイツトウヒ|ヨーロッパトウヒ', 'Pinus brutia': 'カラブリアマツ', 'Pinus nigra': 'ヨーロッパクロマツ', 'Pinus pinea': 'イタリアカサマツ', 'Pinus sylvestris': 'ヨーロッパアカマツ|オウシュウアカマツ', 'Pistacia vera': 'ピスタチオ', 'Populus alba': 'ウラジロハコヤナギ|ギンドロ', 'Populus nigra': 'クロポプラ', 'Populus tremula': 'ヨーロッパヤマナラシ', 'Prunus armeniaca': 'アンズ|アプリコット', 'Prunus avium': 'セイヨウミザクラ|サクランボ', 'Prunus cerasus': 'スミミザクラ|サワーチェリー', 'Prunus domestica': 'セイヨウスモモ|プルーン', 'Prunus dulcis': 'アーモンド|ヘントウ', 'Prunus persica': 'モモ|ハナモモ', 'Punica granatum': 'ザクロ', 'Pyrus communis': 'セイヨウナシ|洋梨', 'Quercus ilex': 'ヒイラギガシ', 'Quercus robur': 'イングリッシュオーク|ヨーロッパナラ|ナラ', 'Quercus rubra': 'アカガシワ|レッドオーク', 'Quercus suber': 'コルクガシ', 'Robinia pseudoacacia': 'ハリエンジュ|ニセアカシア', 'Salix alba': 'シロヤナギ', 'Salix babylonica': 'シダレヤナギ', 'Taxus baccata': 'ヨーロッパイチイ', 'Tectona grandis': 'チーク', 'Theobroma cacao': 'カカオ', 'Tilia cordata': 'フユボダイジュ', 'Ulmus minor': 'コバノニレ', 'Vitis vinifera': 'ヨーロッパブドウ|ブドウ', 'Allium cepa': 'タマネギ', 'Allium sativum': 'ニンニク', 'Arachis hypogaea': 'ラッカセイ|落花生', 'Avena sativa': 'エンバク|オート麦', 'Glycine max': 'ダイズ|大豆', 'Helianthus annuus': 'ヒマワリ', 'Hordeum vulgare': 'オオムギ|大麦', 'Oryza sativa': 'イネ|米', 'Phaseolus vulgaris': 'インゲンマメ', 'Pisum sativum': 'エンドウ', 'Solanum lycopersicum': 'トマト', 'Solanum tuberosum': 'ジャガイモ', 'Triticum aestivum': 'コムギ|小麦', 'Zea mays ssp. mays': 'トウモロコシ', 'Zea mays': 'トウモロコシ'}
-CURATED_ID = {'Abies alba': 'cemara perak eropa|fir', 'Acacia auriculiformis': 'akasia daun lebar|akasia', 'Acacia mangium': 'akasia mangium|tongke hitam', 'Adansonia digitata': 'baobab|ki tambleg', 'Albizia chinensis': 'sengon laut|jeungjing', 'Albizia falcataria': 'sengon|albasia', 'Ananas comosus': 'nanas', 'Annona muricata': 'sirsak', 'Annona squamosa': 'srikaya', 'Artocarpus altilis': 'sukun', 'Artocarpus heterophyllus': 'nangka', 'Azadirachta indica': 'mindi|mimba', 'Cajanus cajan': 'kacang gude|kacang hiris', 'Capsicum annuum': 'cabai merah|cabai', 'Carica papaya': 'pepaya', 'Cassia fistula': 'trengguli|tengguli', 'Casuarina equisetifolia': 'cemara laut', 'Cinnamomum verum': 'kayu manis', 'Citrus limon': 'lemon', 'Citrus sinensis': 'jeruk manis', 'Cocos nucifera': 'kelapa', 'Coffea arabica': 'kopi arabika', 'Coffea canephora': 'kopi robusta', 'Curcuma longa': 'kunyit', 'Cymbopogon citratus': 'serai|sereh', 'Diospyros kaki': 'kesemek', 'Elaeis guineensis': 'kelapa sawit', 'Eucalyptus alba': 'kayu putih timor', 'Eucalyptus deglupta': 'kayu leda|eukaliptus pelangi', 'Ficus carica': 'pohon ara|tin', 'Ficus elastica': 'karet kebo|karet merah', 'Glycine max': 'kedelai', 'Hevea brasiliensis': 'pohon karet|karet', 'Ipomoea batatas': 'ubi jalar', 'Leucaena leucocephala': 'petai cina|lamtoro', 'Magnolia champaca': 'cempaka wangi', 'Mangifera indica': 'mangga', 'Manihot esculenta': 'singkong|ubi kayu', 'Moringa oleifera': 'kelor', 'Morus alba': 'murbei putih|besaran', 'Musa acuminata': 'pisang', 'Myristica fragrans': 'pala', 'Nicotiana tabacum': 'tembakau', 'Oryza sativa': 'padi|beras', 'Persea americana': 'alpukat', 'Phaseolus vulgaris': 'buncis', 'Pinus merkusii': 'tusam sumatera|pinus merkusii', 'Piper nigrum': 'lada hitam|merica', 'Psidium guajava': 'jambu biji|jambu kluthuk', 'Punica granatum': 'delima', 'Quercus robur': 'pohon ek eropa|ek', 'Saccharum officinarum': 'tebu', 'Syzygium aromaticum': 'cengkih|cengkeh', 'Tamarindus indica': 'asam jawa', 'Tectona grandis': 'jati|pohon jati', 'Theobroma cacao': 'kakao|cokelat', 'Vitis vinifera': 'anggur', 'Zea mays ssp. mays': 'jagung', 'Zea mays': 'jagung', 'Zingiber officinale': 'jahe'}
-CURATED_HI = {'Abies pindrow': 'पिंड्रो देवदार|रघु', 'Acacia catechu': 'खैर|कत्था', 'Acacia nilotica': 'बबूल|कीकर', 'Acacia senegal': 'खेर|सफेद खैर', 'Aegle marmelos': 'बेल|बिल्व', 'Albizia lebbeck': 'सिरस|सरस', 'Allium cepa': 'प्याज़', 'Allium sativum': 'लहसुन', 'Aloe vera': 'घृतकुमारी|एलोवेरा', 'Artocarpus heterophyllus': 'कटहल', 'Azadirachta indica': 'नीम', 'Brassica juncea': 'सरसों|राई', 'Butea monosperma': 'पलाश|ढाक', 'Cajanus cajan': 'अरहर|तूर', 'Capsicum annuum': 'मिर्च', 'Carica papaya': 'पपीता', 'Cassia fistula': 'अमलतास', 'Cedrus deodara': 'देवदार', 'Cicer arietinum': 'चना', 'Cinnamomum verum': 'दालचीनी', 'Citrus limon': 'नींबू', 'Cocos nucifera': 'नारियल', 'Coffea arabica': 'कॉफी', 'Coriandrum sativum': 'धनिया', 'Curcuma longa': 'हल्दी', 'Cuminum cyminum': 'जीरा', 'Dalbergia sissoo': 'शीशम', 'Diospyros kaki': 'जापानी फल|तेंदू', 'Ficus benghalensis': 'बरगद|वट', 'Ficus carica': 'अंजीर', 'Ficus religiosa': 'पीपल', 'Glycine max': 'सोयाबीन', 'Gossypium hirsutum': 'कपास', 'Helianthus annuus': 'सूरजमुखी', 'Hordeum vulgare': 'जौ', 'Juglans regia': 'अखरोट', 'Lens culinaris': 'मसूर', 'Mangifera indica': 'आम', 'Moringa oleifera': 'सहजन|मुनगा', 'Morus alba': 'शहतूत', 'Musa acuminata': 'केला', 'Ocimum tenuiflorum': 'तुलसी', 'Oryza sativa': 'चावल|धान', 'Pennisetum glaucum': 'बाजरा', 'Phaseolus vulgaris': 'राजमा', 'Pinus roxburghii': 'चीड़', 'Pinus sylvestris': 'स्कॉच चीड़|चीड़', 'Piper nigrum': 'काली मिर्च', 'Pisum sativum': 'मटर', 'Prunus dulcis': 'बादाम', 'Psidium guajava': 'अमरूद', 'Punica granatum': 'अनार', 'Pyrus communis': 'नाशपाती', 'Quercus robur': 'शाहबलूत|ओक', 'Ricinus communis': 'अरंडी', 'Saccharum officinarum': 'गन्ना', 'Sesamum indicum': 'तिल', 'Solanum lycopersicum': 'टमाटर', 'Solanum tuberosum': 'आलू', 'Syzygium cumini': 'जामुन', 'Tamarindus indica': 'इमली', 'Tectona grandis': 'सागौन|सागवान', 'Terminalia arjuna': 'अर्जुन', 'Trigonella foenum-graecum': 'मेथी', 'Triticum aestivum': 'गेहूं', 'Vigna mungo': 'उड़द', 'Vigna radiata': 'मूंग', 'Vitis vinifera': 'अंगूर', 'Zea mays ssp. mays': 'मक्का', 'Zea mays': 'मक्का', 'Zingiber officinale': 'अदरक'}
-CURATED_SW = {'Adansonia digitata': 'mbuyu|baobab', 'Allium cepa': 'kitunguu', 'Allium sativum': 'kitunguu saumu', 'Ananas comosus': 'nanasi', 'Annona muricata': 'mstafeli', 'Artocarpus heterophyllus': 'fenesi', 'Avicennia marina': 'mchu', 'Azadirachta indica': 'mwarobaini|mneem', 'Cajanus cajan': 'mbaazi', 'Capsicum annuum': 'pilipili hoho|pilipili', 'Carica papaya': 'mpapai|papai', 'Casuarina equisetifolia': 'mvinje', 'Cinnamomum verum': 'mdalasini', 'Citrus limon': 'mlimau|ndimu', 'Citrus sinensis': 'mchungwa|machungwa', 'Cocos nucifera': 'mnazi|nazi', 'Coffea arabica': 'mkahawa|kahawa', 'Curcuma longa': 'manjano', 'Cymbopogon citratus': 'mchai', 'Elaeis guineensis': 'mchikichi|chikichi', 'Eucalyptus camaldulensis': 'mkaratusi mwekundu|mkaratusi', 'Ficus carica': 'mtini|tini', 'Glycine max': 'soya', 'Gossypium hirsutum': 'mpamba|pamba', 'Helianthus annuus': 'alizeti', 'Ipomoea batatas': 'viazi vitamu', 'Mangifera indica': 'mwembe|embe', 'Manihot esculenta': 'muhogo', 'Moringa oleifera': 'mronge|muringa', 'Morus alba': 'mfursadi|mforosadi', 'Musa acuminata': 'mgomba|ndizi', 'Nicotiana tabacum': 'mtumbaku|tumbaku', 'Oryza sativa': 'mpunga|mchele', 'Pennisetum glaucum': 'uwele', 'Persea americana': 'mparachichi|parachichi', 'Phaseolus vulgaris': 'maharagwe', 'Pinus caribaea': 'msindano', 'Pinus patula': 'msindano wa milimani', 'Piper nigrum': 'mtilini|pilipili manga', 'Psidium guajava': 'mpera|mapera', 'Punica granatum': 'mkomamanga', 'Quercus robur': 'mwaloni wa ulaya|mwaloni', 'Rhizophora mucronata': 'mkoko', 'Ricinus communis': 'mbono', 'Saccharum officinarum': 'mwaa|muwa', 'Sesamum indicum': 'ufuta', 'Solanum lycopersicum': 'mnyanya|nyanya', 'Solanum tuberosum': 'viazi mbatata|viazi', 'Sorghum bicolor': 'mtama', 'Syzygium aromaticum': 'mkarufee|karafuu', 'Tamarindus indica': 'mkwaju|ukwaju', 'Tectona grandis': 'mti teak|msaji', 'Theobroma cacao': 'mkakao|kakao', 'Triticum aestivum': 'ngano', 'Vigna unguiculata': 'kikunde|kunde', 'Zea mays ssp. mays': 'mahindi', 'Zea mays': 'mahindi', 'Zingiber officinale': 'tangawizi'}
+CURATED_JA = {
+    'Abies alba': 'ヨーロッパモミ|モミ', 'Acacia dealbata': 'フサアカシア|ミモザ',
+    'Acer saccharum': 'サトウカエデ', 'Adansonia digitata': 'バオバブ',
+    'Betula pendula': 'シラカンバ', 'Castanea sativa': 'ヨーロッパグリ',
+    'Cedrus deodara': 'ヒマラヤスギ', 'Citrus limon': 'レモン',
+    'Citrus sinensis': 'スイートオレンジ', 'Cocos nucifera': 'ココヤシ',
+    'Coffea arabica': 'アラビカコーヒーノキ', 'Corylus avellana': 'セイヨウハシバミ',
+    'Diospyros kaki': 'カキノキ|カキ', 'Eucalyptus globulus': 'タスマニアンブルーガム',
+    'Fagus sylvatica': 'ヨーロッパブナ', 'Ficus carica': 'イチジク',
+    'Ginkgo biloba': 'イチョウ', 'Juglans regia': 'ペルシャグルミ|クルミ',
+    'Malus domestica': 'リンゴ', 'Morus alba': 'マグワ',
+    'Olea europaea': 'オリーブ', 'Persea americana': 'アボカド',
+    'Picea abies': 'ドイツトウヒ', 'Pinus sylvestris': 'ヨーロッパアカマツ',
+    'Prunus armeniaca': 'アンズ', 'Prunus avium': 'セイヨウミザクラ|サクランボ',
+    'Prunus persica': 'モモ', 'Quercus robur': 'イングリッシュオーク|ヨーロッパナラ',
+    'Quercus rubra': 'アカガシワ', 'Quercus suber': 'コルクガシ',
+    'Robinia pseudoacacia': 'ハリエンジュ', 'Salix babylonica': 'シダレヤナギ',
+    'Tectona grandis': 'チーク', 'Theobroma cacao': 'カカオ',
+    'Vitis vinifera': 'ヨーロッパブドウ', 'Allium cepa': 'タマネギ',
+    'Arachis hypogaea': 'ラッカセイ', 'Glycine max': 'ダイズ',
+    'Oryza sativa': 'イネ|米', 'Solanum lycopersicum': 'トマト',
+    'Solanum tuberosum': 'ジャガイモ', 'Triticum aestivum': 'コムギ',
+    'Zea mays ssp. mays': 'トウモロコシ', 'Zea mays': 'トウモロコシ'
+}
+
+CURATED_ID = {
+    'Adansonia digitata': 'baobab', 'Ananas comosus': 'nanas',
+    'Annona muricata': 'sirsak', 'Artocarpus heterophyllus': 'nangka',
+    'Azadirachta indica': 'mimba', 'Carica papaya': 'pepaya',
+    'Cinnamomum verum': 'kayu manis', 'Citrus limon': 'lemon',
+    'Citrus sinensis': 'jeruk manis', 'Cocos nucifera': 'kelapa',
+    'Coffea arabica': 'kopi arabika', 'Curcuma longa': 'kunyit',
+    'Elaeis guineensis': 'kelapa sawit', 'Hevea brasiliensis': 'pohon karet|karet',
+    'Ipomoea batatas': 'ubi jalar', 'Mangifera indica': 'mangga',
+    'Manihot esculenta': 'singkong', 'Musa acuminata': 'pisang',
+    'Oryza sativa': 'padi', 'Persea americana': 'alpukat',
+    'Pinus merkusii': 'tusam sumatera', 'Piper nigrum': 'lada hitam',
+    'Psidium guajava': 'jambu biji', 'Quercus robur': 'pohon ek eropa|ek',
+    'Saccharum officinarum': 'tebu', 'Syzygium aromaticum': 'cengkih',
+    'Tamarindus indica': 'asam jawa', 'Tectona grandis': 'jati',
+    'Theobroma cacao': 'kakao', 'Vitis vinifera': 'anggur',
+    'Zea mays ssp. mays': 'jagung', 'Zea mays': 'jagung', 'Zingiber officinale': 'jahe'
+}
+
+CURATED_HI = {
+    'Acacia nilotica': 'बबूल|कीकर', 'Aegle marmelos': 'बेल',
+    'Allium cepa': 'प्याज़', 'Allium sativum': 'लहसुन',
+    'Aloe vera': 'घृतकुमारी', 'Artocarpus heterophyllus': 'कटहल',
+    'Azadirachta indica': 'नीम', 'Carica papaya': 'पपीता',
+    'Cedrus deodara': 'देवदार', 'Citrus limon': 'नींबू',
+    'Cocos nucifera': 'नारियल', 'Coffea arabica': 'कॉफी',
+    'Curcuma longa': 'हल्दी', 'Dalbergia sissoo': 'शीशम',
+    'Ficus benghalensis': 'बरगद', 'Ficus religiosa': 'पीपल',
+    'Juglans regia': 'अखरोट', 'Mangifera indica': 'आम',
+    'Morus alba': 'शहतूत', 'Musa acuminata': 'केला',
+    'Oryza sativa': 'चावल|धान', 'Pinus sylvestris': 'स्कॉच चीड़|चीड़',
+    'Piper nigrum': 'काली मिर्च', 'Prunus dulcis': 'बादाम',
+    'Psidium guajava': 'अमरूद', 'Punica granatum': 'अनार',
+    'Quercus robur': 'शाहबलूत|ओक', 'Saccharum officinarum': 'गन्ना',
+    'Solanum lycopersicum': 'टमाटर', 'Solanum tuberosum': 'आलू',
+    'Syzygium cumini': 'जामुन', 'Tamarindus indica': 'इमली',
+    'Tectona grandis': 'सागौन', 'Triticum aestivum': 'गेहूं',
+    'Vitis vinifera': 'अंगूर', 'Zea mays ssp. mays': 'मक्का', 'Zea mays': 'मक्का',
+    'Zingiber officinale': 'अदरक'
+}
+
+CURATED_SW = {
+    'Adansonia digitata': 'mbuyu|baobab', 'Allium cepa': 'kitunguu',
+    'Ananas comosus': 'nanasi', 'Annona muricata': 'mstafeli',
+    'Artocarpus heterophyllus': 'fenesi', 'Azadirachta indica': 'mwarobaini',
+    'Carica papaya': 'mpapai', 'Casuarina equisetifolia': 'mvinje',
+    'Citrus limon': 'mlimau', 'Citrus sinensis': 'mchungwa',
+    'Cocos nucifera': 'mnazi', 'Coffea arabica': 'mkahawa',
+    'Elaeis guineensis': 'mchikichi', 'Eucalyptus camaldulensis': 'mkaratusi',
+    'Mangifera indica': 'mwembe', 'Manihot esculenta': 'muhogo',
+    'Musa acuminata': 'mgomba', 'Oryza sativa': 'mpunga',
+    'Persea americana': 'mparachichi', 'Phaseolus vulgaris': 'maharagwe',
+    'Pinus caribaea': 'msindano', 'Psidium guajava': 'mpera',
+    'Quercus robur': 'mwaloni wa ulaya|mwaloni', 'Saccharum officinarum': 'muwa',
+    'Solanum lycopersicum': 'mnyanya', 'Solanum tuberosum': 'viazi',
+    'Syzygium aromaticum': 'mkarufee|karafuu', 'Tamarindus indica': 'mkwaju',
+    'Tectona grandis': 'msaji', 'Theobroma cacao': 'mkakao',
+    'Triticum aestivum': 'ngano', 'Zea mays ssp. mays': 'mahindi', 'Zea mays': 'mahindi',
+    'Zingiber officinale': 'tangawizi'
+}
+
+# Epithets maps
+EPITHETS_ES = {
+    'alba': 'blanco', 'albus': 'blanco', 'album': 'blanco',
+    'nigra': 'negro', 'niger': 'negro', 'nigrum': 'negro',
+    'rubra': 'rojo', 'ruber': 'rojo', 'rubrum': 'rojo',
+    'lutea': 'amarillo', 'luteus': 'amarillo', 'luteum': 'amarillo',
+    'viridis': 'verde', 'glauca': 'glauco',
+    'sylvestris': 'silvestre', 'silvestris': 'silvestre',
+    'orientalis': 'oriental', 'orientale': 'oriental',
+    'occidentalis': 'occidental', 'occidentale': 'occidental',
+    'australis': 'austral', 'australe': 'austral',
+    'borealis': 'boreal', 'boreale': 'boreal',
+    'canadensis': 'de canadá', 'africana': 'africano', 'africanus': 'africano',
+    'americana': 'americano', 'americanus': 'americano',
+    'japonica': 'japonés', 'japonicus': 'japonés',
+    'pendula': 'péndulo', 'pendulus': 'péndulo',
+    'gigantea': 'gigante', 'giganteus': 'gigante',
+    'palustris': 'de pantano', 'pratensis': 'de prado',
+    'vulgaris': 'común', 'officinalis': 'medicinal', 'officinale': 'medicinal',
+    'sativa': 'cultivado', 'sativus': 'cultivado', 'sativum': 'cultivado'
+}
+
+EPITHETS_FR = {
+    'alba': 'blanc', 'albus': 'blanc', 'album': 'blanc',
+    'nigra': 'noir', 'niger': 'noir', 'nigrum': 'noir',
+    'rubra': 'rouge', 'ruber': 'rouge', 'rubrum': 'rouge',
+    'lutea': 'jaune', 'luteus': 'jaune', 'luteum': 'jaune',
+    'viridis': 'vert', 'glauca': 'glauque',
+    'sylvestris': 'sylvestre', 'silvestris': 'sylvestre',
+    'orientalis': "d'orient", 'orientale': "d'orient",
+    'occidentalis': "d'occident", 'occidentale': "d'occident",
+    'australis': 'austral', 'australe': 'austral',
+    'borealis': 'boréal', 'boreale': 'boréal',
+    'canadensis': 'du canada', 'africana': "d'afrique", 'africanus': "d'afrique",
+    'americana': "d'amérique", 'americanus': "d'amérique",
+    'japonica': 'du japon', 'japonicus': 'du japon',
+    'pendula': 'pleureur', 'pendulus': 'pleureur',
+    'gigantea': 'géant', 'giganteus': 'géant',
+    'palustris': 'des marais', 'pratensis': 'des prés',
+    'vulgaris': 'commun', 'officinalis': 'officinal', 'officinale': 'officinal',
+    'sativa': 'cultivé', 'sativus': 'cultivé', 'sativum': 'cultivé'
+}
+
+EPITHETS_DE = {
+    'alba': 'weiß', 'albus': 'weiß', 'album': 'weiß',
+    'nigra': 'schwarz', 'niger': 'schwarz', 'nigrum': 'schwarz',
+    'rubra': 'rot', 'ruber': 'rot', 'rubrum': 'rot',
+    'lutea': 'gelb', 'luteus': 'gelb', 'luteum': 'gelb',
+    'viridis': 'grün', 'glauca': 'blau',
+    'sylvestris': 'wald', 'silvestris': 'wald',
+    'orientalis': 'orient', 'orientale': 'orient',
+    'occidentalis': 'west', 'occidentale': 'west',
+    'australis': 'süd', 'australe': 'süd',
+    'borealis': 'nord', 'boreale': 'nord',
+    'canadensis': 'kanada', 'africana': 'afrika', 'africanus': 'afrika',
+    'americana': 'amerika', 'americanus': 'amerika',
+    'japonica': 'japan', 'japonicus': 'japan',
+    'pendula': 'hänge', 'pendulus': 'hänge',
+    'gigantea': 'riesen', 'giganteus': 'riesen',
+    'palustris': 'sumpf', 'pratensis': 'wiesen',
+    'vulgaris': 'gemein', 'officinalis': 'echt', 'officinale': 'echt',
+    'sativa': 'saat', 'sativus': 'saat', 'sativum': 'saat'
+}
+
+EPITHETS_RU = {
+    'alba': 'белая', 'albus': 'белый', 'album': 'белое',
+    'nigra': 'чёрная', 'niger': 'чёрный', 'nigrum': 'чёрное',
+    'rubra': 'красная', 'ruber': 'красный', 'rubrum': 'красное',
+    'lutea': 'жёлтая', 'luteus': 'жёлтый', 'luteum': 'жёлтое',
+    'viridis': 'зелёная', 'glauca': 'сизая',
+    'sylvestris': 'лесная', 'silvestris': 'лесная',
+    'orientalis': 'восточная', 'orientale': 'восточное',
+    'occidentalis': 'западная', 'occidentale': 'западное',
+    'australis': 'южная', 'australe': 'южное',
+    'borealis': 'северная', 'boreale': 'северное',
+    'canadensis': 'канадская', 'africana': 'африканская', 'africanus': 'африканский',
+    'americana': 'американская', 'americanus': 'американский',
+    'japonica': 'японская', 'japonicus': 'японский',
+    'pendula': 'повислая', 'pendulus': 'плакучий',
+    'gigantea': 'гигантская', 'giganteus': 'гигантский',
+    'palustris': 'болотная', 'pratensis': 'луговая',
+    'vulgaris': 'обыкновенная', 'officinalis': 'лекарственная', 'officinale': 'лекарственное',
+    'sativa': 'посевная', 'sativus': 'посевной', 'sativum': 'посевное'
+}
+
+EPITHETS_ZH = {
+    'alba': '白', 'albus': '白', 'album': '白',
+    'nigra': '黑', 'niger': '黑', 'nigrum': '黑',
+    'rubra': '红', 'ruber': '红', 'rubrum': '红',
+    'lutea': '黄', 'luteus': '黄', 'luteum': '黄',
+    'viridis': '绿', 'glauca': '粉绿',
+    'sylvestris': '野', 'silvestris': '野',
+    'orientalis': '东方', 'orientale': '东方',
+    'occidentalis': '西方', 'occidentale': '西方',
+    'australis': '南方', 'australe': '南方',
+    'borealis': '北方', 'boreale': '北方',
+    'canadensis': '加拿大', 'africana': '非洲', 'africanus': '非洲',
+    'americana': '美洲', 'americanus': '美洲',
+    'japonica': '日本', 'japonicus': '日本',
+    'pendula': '垂枝', 'pendulus': '垂枝',
+    'gigantea': '巨', 'giganteus': '巨',
+    'palustris': '沼泽', 'pratensis': '草甸',
+    'vulgaris': '普通', 'officinalis': '药用', 'officinale': '药用',
+    'sativa': '栽培', 'sativus': '栽培', 'sativum': '栽培'
+}
+
+EPITHETS_JA = {
+    'alba': 'シロ', 'albus': 'シロ', 'album': 'シロ',
+    'nigra': 'クロ', 'niger': 'クロ', 'nigrum': 'クロ',
+    'rubra': 'アカ', 'ruber': 'アカ', 'rubrum': 'アカ',
+    'lutea': 'キ', 'luteus': 'キ', 'luteum': 'キ',
+    'viridis': 'アオ', 'glauca': 'シラ',
+    'sylvestris': 'モリ', 'silvestris': 'モリ',
+    'orientalis': 'トウヨウ', 'orientale': 'トウヨウ',
+    'occidentalis': 'セイヨウ', 'occidentale': 'セイヨウ',
+    'canadensis': 'カナダ', 'africana': 'アフリカ', 'africanus': 'アフリカ',
+    'americana': 'アメリカ', 'americanus': 'アメリカ',
+    'japonica': 'ニホン', 'japonicus': 'ニホン',
+    'pendula': 'シダレ', 'pendulus': 'シダレ',
+    'gigantea': 'オオ', 'giganteus': 'オオ',
+    'vulgaris': 'フツウ', 'officinalis': 'ヤクヨウ'
+}
+
+EPITHETS_ID = {
+    'alba': 'putih', 'albus': 'putih', 'album': 'putih',
+    'nigra': 'hitam', 'niger': 'hitam', 'nigrum': 'hitam',
+    'rubra': 'merah', 'ruber': 'merah', 'rubrum': 'merah',
+    'lutea': 'kuning', 'luteus': 'kuning', 'luteum': 'kuning',
+    'viridis': 'hijau',
+    'sylvestris': 'hutan', 'silvestris': 'hutan',
+    'orientalis': 'timur', 'orientale': 'timur',
+    'occidentalis': 'barat', 'occidentale': 'barat',
+    'australis': 'selatan', 'australe': 'selatan',
+    'borealis': 'utara', 'boreale': 'utara',
+    'canadensis': 'kanada', 'africana': 'afrika', 'africanus': 'afrika',
+    'americana': 'amerika', 'americanus': 'amerika',
+    'japonica': 'jepang', 'japonicus': 'jepang',
+    'pendula': 'juntai', 'gigantea': 'raksasa',
+    'vulgaris': 'biasa', 'officinalis': 'obat'
+}
+
+EPITHETS_HI = {
+    'alba': 'सफेद', 'albus': 'सफेद', 'album': 'सफेद',
+    'nigra': 'काला', 'niger': 'काला', 'nigrum': 'काला',
+    'rubra': 'लाल', 'ruber': 'लाल', 'rubrum': 'लाल',
+    'lutea': 'पीला', 'luteus': 'पीला', 'luteum': 'पीला',
+    'viridis': 'हरा',
+    'sylvestris': 'जंगली', 'silvestris': 'जंगली',
+    'orientalis': 'पूर्वी', 'orientale': 'पूर्वी',
+    'occidentalis': 'पश्चिमी', 'occidentale': 'पश्चिमी',
+    'canadensis': 'कनाडाई', 'africana': 'अफ्रीकी', 'africanus': 'अफ्रीकी',
+    'americana': 'अमेरिकी', 'americanus': 'अमेरिकी',
+    'japonica': 'जापानी', 'japonicus': 'जापानी',
+    'gigantea': 'विशाल', 'vulgaris': 'साधारण', 'officinalis': 'औषधीय'
+}
+
+EPITHETS_SW = {
+    'alba': 'mweupe', 'albus': 'mweupe', 'album': 'mweupe',
+    'nigra': 'mweusi', 'niger': 'mweusi', 'nigrum': 'mweusi',
+    'rubra': 'mwekundu', 'ruber': 'mwekundu', 'rubrum': 'mwekundu',
+    'lutea': 'manjano', 'luteus': 'manjano', 'luteum': 'manjano',
+    'viridis': 'kijani',
+    'sylvestris': 'wa mwitu', 'silvestris': 'wa mwitu',
+    'orientalis': 'wa mashariki', 'occidentalis': 'wa magharibi',
+    'canadensis': 'wa kanada', 'africana': 'wa afrika', 'africanus': 'wa afrika',
+    'americana': 'wa marekani', 'americanus': 'wa marekani',
+    'japonica': 'wa japani', 'japonicus': 'wa japani',
+    'gigantea': 'mkubwa', 'vulgaris': 'wa kawaida', 'officinalis': 'wa dawa'
+}
+
 
 def clean_str(s):
     if not s:
@@ -681,14 +1151,31 @@ def binomial(sci):
     return parts[0], parts[1].lower().rstrip(".")
 
 
-def build_language_dict(species_list, curated, genus_fallback):
+def format_composed_name(genus_word, epithet_word, style):
+    if not genus_word:
+        return ""
+    if not epithet_word:
+        return genus_word
+    if style == "prefix_space":      # TR, HI
+        return f"{epithet_word} {genus_word}".strip()
+    elif style == "prefix_hyphen":   # DE
+        return f"{epithet_word.capitalize()}-{genus_word.capitalize()}".strip()
+    elif style == "prefix_concat":   # ZH, JA
+        return f"{epithet_word}{genus_word}".strip()
+    elif style == "postfix_space":   # ES, FR, RU, ID, SW
+        return f"{genus_word} {epithet_word}".strip()
+    return genus_word
+
+
+def build_language_dict(species_list, curated, genus_fallback, epithets=None, style="postfix_space"):
     out = {}
+    epithets = epithets or {}
     for sp in species_list:
         sid = str(sp["id"])
         sci = sp["sci"].strip()
         genus, epithet = binomial(sci)
 
-        # 1. Exact sci match
+        # 1. Exact sci match in curated table
         if sci in curated:
             parts = [clean_str(p) for p in curated[sci].split("|") if p.strip()]
             if parts:
@@ -709,9 +1196,19 @@ def build_language_dict(species_list, curated, genus_fallback):
                 out[sid] = entry
                 continue
 
-        # 3. Genus fallback match
+        # 3. Genus fallback match with epithet modifier
         if genus in genus_fallback:
             base, akas = genus_fallback[genus]
+            if epithet and epithet in epithets:
+                ep_val = epithets[epithet]
+                composed = format_composed_name(base, ep_val, style)
+                entry = {"nome": clean_str(composed)}
+                # Also record base genus as synonym
+                entry["aka"] = [clean_str(base)] + [clean_str(a) for a in akas if clean_str(a) != entry["nome"]]
+                out[sid] = entry
+                continue
+
+            # Bare genus fallback
             entry = {"nome": clean_str(base)}
             if akas:
                 entry["aka"] = [clean_str(a) for a in akas if clean_str(a) != entry["nome"]]
@@ -725,30 +1222,30 @@ def main():
     species_list = json.load(open(SPECIES, encoding="utf-8"))
     print(f"Loaded {len(species_list)} species from {SPECIES}")
 
-    # All 9 non-EN/PT/TR languages in Replantio
     configs = [
-        ("es", "Spanish", CURATED_ES, GENUS_ES),
-        ("fr", "French", CURATED_FR, GENUS_FR),
-        ("de", "German", CURATED_DE, GENUS_DE),
-        ("zh", "Chinese", CURATED_ZH, GENUS_ZH),
-        ("ja", "Japanese", CURATED_JA, GENUS_JA),
-        ("ru", "Russian", CURATED_RU, GENUS_RU),
-        ("id", "Indonesian", CURATED_ID, GENUS_ID),
-        ("hi", "Hindi", CURATED_HI, GENUS_HI),
-        ("sw", "Swahili", CURATED_SW, GENUS_SW),
+        ("tr", "Turkish", CURATED_TR, GENUS_TR, EPITHETS_TR, "prefix_space"),
+        ("es", "Spanish", CURATED_ES, GENUS_ES, EPITHETS_ES, "postfix_space"),
+        ("fr", "French", CURATED_FR, GENUS_FR, EPITHETS_FR, "postfix_space"),
+        ("de", "German", CURATED_DE, GENUS_DE, EPITHETS_DE, "prefix_hyphen"),
+        ("ru", "Russian", CURATED_RU, GENUS_RU, EPITHETS_RU, "postfix_space"),
+        ("zh", "Chinese", CURATED_ZH, GENUS_ZH, EPITHETS_ZH, "prefix_concat"),
+        ("ja", "Japanese", CURATED_JA, GENUS_JA, EPITHETS_JA, "prefix_concat"),
+        ("id", "Indonesian", CURATED_ID, GENUS_ID, EPITHETS_ID, "postfix_space"),
+        ("hi", "Hindi", CURATED_HI, GENUS_HI, EPITHETS_HI, "prefix_space"),
+        ("sw", "Swahili", CURATED_SW, GENUS_SW, EPITHETS_SW, "postfix_space"),
     ]
 
     summary = {}
-    for lang, name, curated, genus_map in configs:
+    for lang, name, curated, genus_map, ep_map, style in configs:
         out_file = ROOT / "data" / f"names_{lang}.json"
-        names_dict = build_language_dict(species_list, curated, genus_map)
+        names_dict = build_language_dict(species_list, curated, genus_map, ep_map, style)
         with open(out_file, "w", encoding="utf-8") as f:
             json.dump(names_dict, f, ensure_ascii=False, indent=None, separators=(",", ":"))
         pct = len(names_dict) / len(species_list) * 100
         summary[lang] = len(names_dict)
         print(f"[{lang.upper()} - {name}] Generated {out_file.name} with {len(names_dict)} / {len(species_list)} taxa ({pct:.1f}%).")
 
-    print("\n--- Summary of all generated dictionaries ---")
+    print("\\n--- Summary of all generated dictionaries ---")
     for k, v in summary.items():
         print(f"data/names_{k}.json: {v} species")
 
