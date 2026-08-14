@@ -112,21 +112,23 @@ const invasiveHere = sp => {
 const track = (name, data) => { try { window.va?.("event", { name, data }); } catch { } };
 
 // display name: Localized vernacular when available for current language;
-// fallback to binomial (never English trade name in non-EN locales) or English trade name in EN
+// fallback to English common name, then to binomial
 const localName = sp => NAMES_LANG[sp.id]?.nome ?? null;
+const hasCommon = sp => sp.common && sp.common !== sp.sci;
+
 const dispName = sp => {
   const n = localName(sp);
   if (n) return cap(n);
-  if (LANG === "en" && sp.common && sp.common !== sp.sci) return cap(sp.common);
+  if (hasCommon(sp)) return cap(sp.common);
   return `<i>${sp.sci}</i>`;
 };
 // what a regional store search box wants: localized vernacular, else common or binomial
-const shopTerm = sp => localName(sp) ?? (sp.common && sp.common !== sp.sci ? sp.common : sp.sci);
+const shopTerm = sp => localName(sp) ?? (hasCommon(sp) ? sp.common : sp.sci);
 // plain-text display name (no markup), for the sim pill and exports
 const plainName = sp => {
   const n = localName(sp);
   if (n) return cap(n);
-  if (LANG === "en" && sp.common && sp.common !== sp.sci) return cap(sp.common);
+  if (hasCommon(sp)) return cap(sp.common);
   return sp.sci;
 };
 
