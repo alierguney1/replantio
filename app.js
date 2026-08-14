@@ -112,21 +112,21 @@ const invasiveHere = sp => {
 // product analytics: named actions only, no exact coordinates ever
 const track = (name, data) => { try { window.va?.("event", { name, data }); } catch { } };
 
-// display name: Portuguese vernacular when the UI is in PT and we have one;
-// in PT the fallback is the binomial, never an English trade name
-const ptName = sp => NAMES_PT[sp.id]?.nome ?? null;
+// display name: Local vernacular when the UI is in a supported language (PT, TR, etc.) and we have a sourced one;
+// in non-EN the fallback is always the binomial, never an English trade name
+const localName = sp => NAMES_PT[sp.id]?.nome ?? null;
 const dispName = sp => {
-  if (LANG === "pt") {
-    const n = ptName(sp);
+  if (LANG !== "en") {
+    const n = localName(sp);
     return n ? cap(n) : `<i>${sp.sci}</i>`;
   }
   return sp.common === sp.sci ? `<i>${sp.sci}</i>` : cap(sp.common);
 };
-// what a Brazilian store search box wants: the vernacular, else the binomial
-const shopTerm = sp => ptName(sp) ?? sp.sci;
+// what a regional store search box wants: Brazilian vernacular if in BR, else the binomial
+const shopTerm = sp => (current?.cc === "BR" && LANG === "pt" ? localName(sp) : null) ?? sp.sci;
 // plain-text display name (no markup), for the sim pill and exports
 const plainName = sp => {
-  if (LANG === "pt") { const n = ptName(sp); return n ? cap(n) : sp.sci; }
+  if (LANG !== "en") { const n = localName(sp); return n ? cap(n) : sp.sci; }
   return sp.common === sp.sci ? sp.sci : cap(sp.common);
 };
 
@@ -2395,5 +2395,5 @@ if (!location.hash && !shapes.length) {
   }
 }
 
-const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const cap = s => s.charAt(0).toLocaleUpperCase(LOCALE) + s.slice(1);
 window.canopy = { map, analyze, get current() { return current; } }; // test hook
