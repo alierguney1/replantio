@@ -33,7 +33,10 @@ let SPECIES = [], NATIVES = {}, NAMES_PT = {}, SOURCING = null, INVASIVES = {}, 
 const speciesReady = Promise.all([
   fetch("data/species.json").then(r => r.json()).then(j => { SPECIES = j; }),
   fetch("data/natives.json").then(r => r.json()).then(j => { NATIVES = j; }).catch(() => {}), // optional layer
-  fetch("data/names_pt.json").then(r => r.json()).then(j => { NAMES_PT = j; }).catch(() => {}), // optional layer
+  // per-language species names, loaded only for the active language
+  // (architecture from PR #3 by @alierguney1; only sourced dictionaries ship:
+  // names_pt today, others as real vernacular data lands)
+  fetch(`data/names_${LANG}.json`).then(r => r.ok ? r.json() : {}).then(j => { NAMES_PT = j; }).catch(() => {}),
   fetch("data/sourcing.json").then(r => r.json()).then(j => { SOURCING = j; }).catch(() => {}), // optional layer
   fetch("data/invasives.json").then(r => r.json()).then(j => { INVASIVES = j; }).catch(() => {}), // optional layer
   fetch("data/natives_l3.json").then(r => r.json()).then(j => { NATIVES_L3 = j; }).catch(() => {}), // optional layer
