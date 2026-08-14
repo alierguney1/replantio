@@ -823,6 +823,7 @@ function renderResults() {
     ${rows.length ? `<div class="follow">
       ${rows.some(r => r.sp.tree) ? `<button class="fu" data-fu="sim"><span class="fa">&#8629;</span>${tr("See the planting grow")}</button>` : ""}
       <button class="fu" data-fu="radar"><span class="fa">&#8629;</span>${tr("Find plantable land nearby")}</button>
+      <button class="fu" data-fb><span class="fa">&#8629;</span>${tr("Did something look wrong? Send feedback")}</button>
     </div>` : ""}
     ${disc("why", "Why these plants?", whyBlock)}
     ${disc("proj", "For projects", projectsBlock)}`}
@@ -936,6 +937,37 @@ content.addEventListener("click", e => {
     const sp = current.scored.find(x => x.sp.id === +(spEl?.dataset.id))?.sp;
     track("sourcing_click", { shop: new URL(srcLink.href).hostname.replace(/^www\./, ""), sci: sp?.sci });
     return; // native navigation proceeds (target=_blank)
+  }
+  const fb = e.target.closest("[data-fb]");
+  if (fb) {
+    const wrap = document.createElement("div");
+    wrap.className = "fb-form";
+    wrap.innerHTML = `<textarea maxlength="2000" rows="3" placeholder="${tr("What was wrong, or what was missing?")}"></textarea>
+      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="retry-row"><button class="chip" data-fb-send>${tr("send")}</button> <button class="chip" data-fb-cancel>${tr("Close")}</button></div>`;
+    fb.replaceWith(wrap);
+    wrap.querySelector("textarea").focus();
+    wrap.addEventListener("click", async ev => {
+      if (ev.target.closest("[data-fb-cancel]")) { wrap.remove(); return; }
+      if (!ev.target.closest("[data-fb-send]")) return;
+      const msg = wrap.querySelector("textarea").value.trim();
+      if (!msg) return;
+      ev.target.disabled = true;
+      let ok = false;
+      try {
+        ok = (await fetch("/api/feedback", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: msg, website: wrap.querySelector(".hp").value,
+            cc: current.cc, city: current.city, ha: current.ha, lang: LANG,
+            hash: location.hash.slice(0, 2000),
+          }),
+        })).ok;
+      } catch { }
+      wrap.innerHTML = `<div class="fb-ok">${ok ? tr("thank you 🌱") : tr("could not send; try again in a minute")}</div>`;
+      if (ok) track("feedback_sent", { cc: current.cc });
+    });
+    return;
   }
   const fu = e.target.closest("[data-fu]");
   if (fu) {

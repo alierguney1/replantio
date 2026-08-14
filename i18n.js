@@ -176,6 +176,11 @@ const PT = {
   "wetland": "brejo",
   "Needs standing water or saturated soil year-round (EcoCrop drainage)": "Precisa de água parada ou solo saturado o ano todo (drenagem EcoCrop)",
   "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "Esta é uma espécie de brejo (precisa de solo saturado ou água parada), e este ponto está num declive de {n}°.",
+  "Did something look wrong? Send feedback": "Algo pareceu errado? Manda um feedback",
+  "What was wrong, or what was missing?": "O que estava errado, ou o que faltou?",
+  "send": "enviar",
+  "thank you 🌱": "obrigado 🌱",
+  "could not send; try again in a minute": "não deu pra enviar; tenta de novo em um minuto",
 };
 
 const ES = {
@@ -340,6 +345,11 @@ const ES = {
   "wetland": "humedal",
   "Needs standing water or saturated soil year-round (EcoCrop drainage)": "Necesita agua estancada o suelo saturado todo el año (drenaje EcoCrop)",
   "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "Es una especie de humedal (necesita suelo saturado o agua estancada), y este punto está en una pendiente de {n}°.",
+  "Did something look wrong? Send feedback": "¿Algo se vio mal? Envía tu comentario",
+  "What was wrong, or what was missing?": "¿Qué estaba mal o qué faltaba?",
+  "send": "enviar",
+  "thank you 🌱": "gracias 🌱",
+  "could not send; try again in a minute": "no se pudo enviar; inténtalo de nuevo en un minuto",
 };
 
 const FR = {
@@ -504,6 +514,11 @@ const FR = {
   "wetland": "zone humide",
   "Needs standing water or saturated soil year-round (EcoCrop drainage)": "A besoin d'eau stagnante ou de sol saturé toute l'année (drainage EcoCrop)",
   "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "C'est une espèce de zone humide (sol saturé ou eau stagnante requis), et ce point se trouve sur une pente de {n}°.",
+  "Did something look wrong? Send feedback": "Quelque chose cloche ? Envoyez un retour",
+  "What was wrong, or what was missing?": "Qu'est-ce qui n'allait pas, ou qui manquait ?",
+  "send": "envoyer",
+  "thank you 🌱": "merci 🌱",
+  "could not send; try again in a minute": "envoi impossible ; réessayez dans une minute",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -740,6 +755,11 @@ const ZH = {
   "wetland": "湿地",
   "Needs standing water or saturated soil year-round (EcoCrop drainage)": "全年需要积水或饱和土壤（EcoCrop 排水属性）",
   "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "这是湿地物种（需要饱和土壤或积水），而该点位于 {n}° 的坡地上。",
+  "Did something look wrong? Send feedback": "发现问题？发送反馈",
+  "What was wrong, or what was missing?": "哪里有误，或缺少什么？",
+  "send": "发送",
+  "thank you 🌱": "谢谢 🌱",
+  "could not send; try again in a minute": "发送失败；请稍后再试",
 };
 const JA = {
   "Analyze": "分析する",
@@ -974,6 +994,11 @@ const JA = {
   "wetland": "湿地",
   "Needs standing water or saturated soil year-round (EcoCrop drainage)": "一年中、滞水または飽和した土壌が必要です（EcoCrop排水特性）",
   "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "これは湿地性の種（飽和土壌または滞水が必要）ですが、この地点は{n}°の斜面にあります。",
+  "Did something look wrong? Send feedback": "何かおかしい？フィードバックを送る",
+  "What was wrong, or what was missing?": "何が間違っていたか、何が足りなかったか教えてください",
+  "send": "送信",
+  "thank you 🌱": "ありがとう 🌱",
+  "could not send; try again in a minute": "送信できませんでした。少し待って再試行してください",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1208,6 +1233,11 @@ const RU = {
   "wetland": "водно-болотный",
   "Needs standing water or saturated soil year-round (EcoCrop drainage)": "Нужна стоячая вода или насыщенная влагой почва круглый год (дренаж EcoCrop)",
   "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "Это водно-болотный вид (нужна насыщенная почва или стоячая вода), а эта точка находится на склоне {n}°.",
+  "Did something look wrong? Send feedback": "Что-то не так? Отправьте отзыв",
+  "What was wrong, or what was missing?": "Что было не так или чего не хватало?",
+  "send": "отправить",
+  "thank you 🌱": "спасибо 🌱",
+  "could not send; try again in a minute": "не удалось отправить; попробуйте через минуту",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -1442,6 +1472,11 @@ const ID = {
   "wetland": "lahan basah",
   "Needs standing water or saturated soil year-round (EcoCrop drainage)": "Butuh air tergenang atau tanah jenuh sepanjang tahun (drainase EcoCrop)",
   "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "Ini spesies lahan basah (butuh tanah jenuh atau air tergenang), dan titik ini berada di lereng {n}°.",
+  "Did something look wrong? Send feedback": "Ada yang keliru? Kirim masukan",
+  "What was wrong, or what was missing?": "Apa yang salah, atau apa yang kurang?",
+  "send": "kirim",
+  "thank you 🌱": "terima kasih 🌱",
+  "could not send; try again in a minute": "gagal mengirim; coba lagi sebentar lagi",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -1676,6 +1711,11 @@ const HI = {
   "wetland": "आर्द्रभूमि",
   "Needs standing water or saturated soil year-round (EcoCrop drainage)": "साल भर ठहरा पानी या संतृप्त मिट्टी चाहिए (EcoCrop जल निकासी)",
   "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "यह आर्द्रभूमि प्रजाति है (संतृप्त मिट्टी या ठहरा पानी चाहिए), और यह बिंदु {n}° ढलान पर है।",
+  "Did something look wrong? Send feedback": "कुछ गलत दिखा? फ़ीडबैक भेजें",
+  "What was wrong, or what was missing?": "क्या गलत था, या क्या कमी थी?",
+  "send": "भेजें",
+  "thank you 🌱": "धन्यवाद 🌱",
+  "could not send; try again in a minute": "भेजा नहीं जा सका; एक मिनट में फिर आज़माएँ",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -1910,6 +1950,11 @@ const DE = {
   "wetland": "Feuchtgebiet",
   "Needs standing water or saturated soil year-round (EcoCrop drainage)": "Braucht ganzjährig stehendes Wasser oder gesättigten Boden (EcoCrop-Drainage)",
   "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "Dies ist eine Feuchtgebietsart (braucht gesättigten Boden oder stehendes Wasser), und dieser Punkt liegt an einem Hang mit {n}°.",
+  "Did something look wrong? Send feedback": "Sah etwas falsch aus? Feedback senden",
+  "What was wrong, or what was missing?": "Was war falsch oder hat gefehlt?",
+  "send": "senden",
+  "thank you 🌱": "danke 🌱",
+  "could not send; try again in a minute": "Senden fehlgeschlagen; versuch es gleich noch mal",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -2144,6 +2189,11 @@ const SW = {
   "wetland": "ardhioevu",
   "Needs standing water or saturated soil year-round (EcoCrop drainage)": "Inahitaji maji yaliyotuama au udongo uliolowa mwaka mzima (mifereji ya EcoCrop)",
   "This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.": "Hii ni spishi ya ardhioevu (inahitaji udongo uliolowa au maji yaliyotuama), na eneo hili liko kwenye mteremko wa {n}°.",
+  "Did something look wrong? Send feedback": "Kuna kitu si sahihi? Tuma maoni",
+  "What was wrong, or what was missing?": "Nini kilikuwa kibaya, au nini kilikosekana?",
+  "send": "tuma",
+  "thank you 🌱": "asante 🌱",
+  "could not send; try again in a minute": "imeshindikana kutuma; jaribu tena baada ya dakika",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW };

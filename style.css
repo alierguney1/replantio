@@ -293,6 +293,17 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
 /* one sentence of land advice, in the product's own voice */
 .land-note { font-size: 11px; color: var(--faint); line-height: 1.55; margin-top: var(--s4); }
 
+/* feedback mini-form */
+.fb-form { padding: 10px 0; border-bottom: 1px solid var(--line); }
+.fb-form textarea {
+  width: 100%; background: rgba(255,255,255,.045); border: 1px solid var(--line-2);
+  border-radius: 10px; color: var(--text); font: inherit; font-size: 12.5px;
+  padding: 9px 11px; resize: vertical; outline: none;
+}
+.fb-form textarea:focus { border-color: rgba(99, 201, 135, 0.45); }
+.fb-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.fb-ok { font-size: 12px; color: var(--muted); padding: 8px 0; }
+
 /* follow-ups: the loop's next action, offered as quiet rows */
 .follow { margin-top: var(--s4); border-top: 1px solid var(--line); }
 .fu {
