@@ -808,6 +808,7 @@ function renderResults() {
       <div class="loc-title">${titleHtml}</div>
       <div class="loc-geo">${current.center.lat.toFixed(4)}, ${current.center.lng.toFixed(4)}<span class="sep">&middot;</span>${fmtHa(ha)}</div>
       ${noLand ? "" : `<div class="loc-note">${headline}</div>`}
+      <button class="panel-fb" data-fb title="${tr("Did something look wrong? Send feedback")}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
       <button class="panel-del" data-del title="${tr("Delete area")}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
       <button class="panel-close" data-close title="${tr("Close")}">&times;</button>
     </div>
@@ -948,7 +949,8 @@ content.addEventListener("click", e => {
     wrap.innerHTML = `<textarea maxlength="2000" rows="3" placeholder="${tr("What was wrong, or what was missing?")}"></textarea>
       <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="retry-row"><button class="chip" data-fb-send>${tr("send")}</button> <button class="chip" data-fb-cancel>${tr("Close")}</button></div>`;
-    fb.replaceWith(wrap);
+    if (fb.classList.contains("panel-fb")) content.querySelector(".p-body")?.prepend(wrap);
+    else fb.replaceWith(wrap);
     wrap.querySelector("textarea").focus();
     wrap.addEventListener("click", async ev => {
       if (ev.target.closest("[data-fb-cancel]")) { wrap.remove(); return; }
