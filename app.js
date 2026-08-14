@@ -478,7 +478,7 @@ async function analyze(pts) {
     <div class="p-head">
       <div class="loc-title">${tr("Analyzing area")}</div>
       <div class="loc-geo">${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}<span class="sep">&middot;</span>${fmtHa(ha)}</div>
-      <button class="panel-close" data-close title="${tr("Close")}">&times;</button>
+      <button class="panel-close" data-close data-tip="${tr("Close")}">&times;</button>
     </div>
     <div class="p-body">
       <div class="loading">
@@ -518,7 +518,7 @@ async function analyze(pts) {
       <div class="p-head">
         <div class="loc-title">${tr("Analysis failed")}</div>
         <div class="loc-geo">${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}</div>
-        <button class="panel-close" data-close title="${tr("Close")}">&times;</button>
+        <button class="panel-close" data-close data-tip="${tr("Close")}">&times;</button>
       </div>
       <div class="p-body">
         <div class="error-box" style="margin-top:var(--s5)">${tr("Could not load the climate record for this point. The Open-Meteo archive may be busy or rate limited; wait a moment and retry.")}<span class="mono">${e.message}</span></div>
@@ -808,9 +808,9 @@ function renderResults() {
       <div class="loc-title">${titleHtml}</div>
       <div class="loc-geo">${current.center.lat.toFixed(4)}, ${current.center.lng.toFixed(4)}<span class="sep">&middot;</span>${fmtHa(ha)}</div>
       ${noLand ? "" : `<div class="loc-note">${headline}</div>`}
-      <button class="panel-fb" data-fb title="${tr("Did something look wrong? Send feedback")}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
-      <button class="panel-del" data-del title="${tr("Delete area")}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
-      <button class="panel-close" data-close title="${tr("Close")}">&times;</button>
+      <button class="panel-fb" data-fb data-tip="${tr("Did something look wrong? Send feedback")}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+      <button class="panel-del" data-del data-tip="${tr("Delete area")}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
+      <button class="panel-close" data-close data-tip="${tr("Close")}">&times;</button>
     </div>
     <div class="p-body">
     ${noLand ? `<div class="error-box" style="margin-top:12px">${tfmt("This area looks like open water (no soil data, elevation {e} m). Species scores here reflect climate only and are unlikely to be meaningful.", { e: fmt(site.elevation) })}</div><div class="retry-row"><button class="chip" data-force>${tr("Show scores anyway")}</button> <button class="chip" data-print>${tr("Report")}</button> <button class="chip" data-shp>${tr("SHP (SARE)")}</button> <button class="chip" data-csv>${tr("CSV")}</button></div>${whyBlock}` : `
