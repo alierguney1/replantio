@@ -74,21 +74,41 @@ Documented adaptations for perennials (`scoring.js`):
   and envelope values are calibrated for cultivation, and they contradict
   observed wild ranges for cold-climate natives. Evidence never revives a
   true climate kill: the temperature and rainfall factors still rule.
-- **Frost margin**: reanalysis grid minima run warm against radiative valley and
-  highland night frosts (an ERA5 cell can record +1 C where growers see real
-  freezes; field-reported from highland Bolivia). When the observed record low
-  sits within 4 C of a species' kill threshold, the species takes a 0.5 frost
-  penalty and the card says why, instead of silently passing.
+- **Dual-stage frost semantics**: perennials experience distinct winter dormant hardiness
+  (KTMPR tested against 10-year record low and winter minima with a 4 C frost margin)
+  and active-season shoot sensitivity (KTMP tested on growing-window months). Annual crops
+  are tested only during their growing window.
+- **Perennial annual rain & Darcy hillslope gravity drainage**: perennials live on
+  stored soil water replenished year-round. On hillsides (>2° slope), gravitational
+  lateral drainage expands the upper precipitation tolerance band (RMAX - ROPMX) proportionally,
+  preventing false waterlogging kills on slopes (FAO Soils Bulletin 52).
+- **FAO-56 reference evapotranspiration & UNEP aridity index**: Open-Meteo daily ET0
+  is integrated into annual water balance and UNEP Aridity Index (AI = P / ET0).
+  Growing season water deficit (ETc - P) is calculated with habit-derived crop coefficients (Kc)
+  to provide quantified irrigation guidance (mm/month) when natural rainfall is limiting.
+- **Topographic solar radiation on slopes**: ERA5 shortwave radiation represents a
+  flat horizontal plane (GHI/SSRD). Using the DEM slope and aspect, insolation is
+  adjusted via Duffie-Beckman (2013) and Swift (1976, USDA Forest Service) analytical
+  solar incidence geometry (cos theta daily integration) coupled with Liu & Jordan
+  (1960) isotropic sky-view diffuse (kb=0.70, kd=0.30, rho=0.20). South-facing slopes
+  reflect verified winter solar boosts (+15% to +75%), while steep north-facing slopes
+  capture topographic shade (-20% to -70%).
+- **Understory and shade-preferring species**: species whose EcoCrop optimal light
+  intensity explicitly requires shade (LIOPMN/LIOPMX: cacao, vanilla, cardamom; 112 species)
+  wear an "understory" trait chip. In unshaded high-sun open fields (rad >= 5.2 kWh/m²/day,
+  cloud < 50%), they take a soft 0.85 multiplier (Beer et al. 1998, Somarriba et al. 2012;
+  representing 15-20% open-sun seedling photo-stress) so full-sun canopy trees lead the
+  ranking, while advising nurse canopy in open fields.
 - **Photoperiod** is an extension (no published EcoCrop implementation scores it).
   Daylength comes from the Forsythe/CBM formula; months classify as short (<12 h),
   neutral (12 to 14 h) or long (>14 h) with a half-hour tolerance at the boundaries.
   A species whose photoperiod classes never occur at the site takes a 0.5 penalty.
   "Tolerates all daylengths" scores 1; an empty field shows as "no data".
 
-Ties are broken by centrality: how close the site sits to the center of each species'
-optimal range (triangular membership). Missing data never silently zeroes or passes a
-species: unknown factors show "no data" and stay out of the product, with the one
-deliberate exception of the tropical frost-tender default above.
+Ties are broken by proximity to the species' thermal optimum midpoint (Topt midpoint)
+during window search, and triangular membership centrality across factors. Missing data
+never silently zeroes or passes a species: unknown factors show "no data" and stay out of
+the product, with the one deliberate exception of the tropical frost-tender default above.
 
 Eight EcoCrop rows with corrupt envelopes (inverted ranges, e.g. Faidherbia albida
 with TMAX < TOPMX) are dropped at build time; they would be unscorable everywhere.

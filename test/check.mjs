@@ -1,7 +1,7 @@
 // Self-check for the scoring and growth engines. Run: node test/check.mjs
 import assert from "node:assert";
 import { readFileSync } from "node:fs";
-import { trap, daylength, scoreSpecies, aggregateClimate, grade } from "../scoring.js";
+import { trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors, scoreSpecies, aggregateClimate, grade, aridityClass } from "../scoring.js";
 import { CLASSES, height, dbhCm, co2eKgPerTree, crownDiameterM, crownDisplayM, standDisplay, maturityYears } from "../growth.js";
 
 const species = JSON.parse(readFileSync(new URL("../data/species.json", import.meta.url)));
@@ -14,6 +14,16 @@ assert.equal(trap(15, 0, 10, 20, 30), 1);
 assert.equal(trap(25, 0, 10, 20, 30), 0.5);
 assert.equal(trap(-1, 0, 10, 20, 30), 0);
 assert.equal(trap(30, 0, 10, 20, 30), 0);
+
+// --- UNEP Aridity Index (AI = P / ET0) classification
+assert.equal(aridityClass(0.02), "Hyper-arid");
+assert.equal(aridityClass(0.12), "Arid");
+assert.equal(aridityClass(0.32), "Semi-arid");
+assert.equal(aridityClass(0.58), "Dry sub-humid");
+assert.equal(aridityClass(0.85), "Humid");
+assert.equal(aridityClass(1.5), "Humid");
+assert.equal(aridityClass(null), null);
+assert.equal(aridityClass(Infinity), null);
 
 // --- daylength (verified anchors: equator/45N/70N, Forsythe p=0.8333)
 close(daylength(0, 172), 12.121, 0.05, "equator Jun21");
@@ -36,18 +46,32 @@ close(crownDiameterM(24, 19), 5.6, 0.4, "oak crown dia at D=24 H=19");
 assert.ok(maturityYears(oak) > 60 && maturityYears(euc) < 25, "maturity ordering");
 
 // --- climate aggregation
-const days = { time: [], temperature_2m_mean: [], temperature_2m_min: [], precipitation_sum: [] };
+const days = { time: [], temperature_2m_mean: [], temperature_2m_min: [], precipitation_sum: [], et0_fao_evapotranspiration: [] };
 for (const y of ["2020", "2021"]) for (let m = 1; m <= 12; m++) {
   days.time.push(`${y}-${String(m).padStart(2, "0")}-15`);
   days.temperature_2m_mean.push(10 + m);
   days.temperature_2m_min.push(5 + m);
   days.precipitation_sum.push(50);
+  days.et0_fao_evapotranspiration.push(40);
 }
 const agg = aggregateClimate(days);
 close(agg.tavg[0], 11, 0.01, "tavg Jan");
 close(agg.prec[0], 50, 0.01, "prec Jan (per-year mean)");
 close(agg.annualRain, 600, 0.1, "annual rain");
+close(agg.annualET0, 480, 0.1, "annual ET0");
+close(agg.waterBalance, 120, 0.1, "water balance");
+close(agg.ai, 1.25, 0.01, "aridity index AI");
+assert.equal(agg.aridity, "Humid");
 assert.equal(agg.absMin, 6);
+
+// missing ET0 array degrades gracefully without throwing
+const noET0 = { time: days.time, temperature_2m_mean: days.temperature_2m_mean, temperature_2m_min: days.temperature_2m_min, precipitation_sum: days.precipitation_sum };
+const aggNoET0 = aggregateClimate(noET0);
+assert.equal(aggNoET0.et0, null);
+assert.equal(aggNoET0.annualET0, null);
+assert.equal(aggNoET0.waterBalance, null);
+assert.equal(aggNoET0.ai, null);
+assert.equal(aggNoET0.aridity, null);
 
 // temp gaps must not swallow precipitation (audit #4)
 const gappy = structuredClone(days);
@@ -230,11 +254,129 @@ assert.equal(scoreSpecies(typha, flat).factors.drain, null, "flat ground leaves 
 assert.ok(!by("Quercus robur").wet, "oak is not wetland-flagged");
 close(scoreSpecies(qr, { ...berlin, terrain: { slope: 6 } }).score, qrBerlin.score, 0.001, "slope does not touch non-wetland species");
 
+// perennial annual rain scoring (field report, Giresun/Mediterranean 2026-08):
+// trees, shrubs and vines live on 12-month stored soil water, not cycle windows;
+// sloped terrain sheds excess precipitation without root waterlogging.
+const giresun = {
+  lat: 40.85,
+  tavg: [7.2, 7.5, 9.0, 12.5, 17.0, 21.5, 24.0, 24.2, 21.0, 16.8, 12.5, 9.0],
+  tmin: [4.5, 4.8, 6.0, 9.2, 13.8, 18.0, 20.8, 21.0, 17.5, 13.5, 9.5, 6.2],
+  prec: [127, 88, 124, 86, 120, 125, 125, 130, 134, 160, 106, 108],
+  ph: 6.2, absMin: -6.0,
+};
+const hazel = by("Corylus avellana");
+assert.ok(hazel, "hazelnut present");
+assert.equal(scoreSpecies(hazel, giresun).factors.rain, 0, "flat ground waterlogs hazelnut in Giresun (prec 1449 > rmax 1400)");
+const hazelSloped = scoreSpecies(hazel, { ...giresun, terrain: { slope: 10 } });
+assert.ok(hazelSloped.factors.rain >= 0.25, `hazelnut on Giresun hillside scores rain: ${hazelSloped.factors.rain}`);
+assert.ok(hazelSloped.score >= 0.1, `hazelnut survives waterlogging on Giresun hillside: ${hazelSloped.score}`);
+
+// tea in Rize fixture (field report, Turkish tea belt 2026-08):
+// KTMP (0 C shoot kill) must not be tested against winter dormant record lows;
+// Camellia sinensis survives winter under snow and scores well in Rize.
+const rize = {
+  lat: 40.97,
+  tavg: [6.8, 7.0, 8.5, 12.0, 16.5, 20.8, 23.2, 23.5, 20.2, 16.2, 12.0, 8.5],
+  tmin: [3.8, 4.0, 5.2, 8.5, 13.0, 17.2, 20.0, 20.2, 16.8, 12.8, 8.8, 5.2],
+  prec: [173, 115, 160, 101, 133, 177, 225, 247, 267, 270, 180, 168],
+  ph: 5.0, absMin: -4.0, terrain: { slope: 15 }
+};
+const tea = by("Camellia sinensis");
+assert.ok(tea, "tea present");
+const teaRize = scoreSpecies(tea, rize);
+assert.equal(teaRize.factors.frost, 0.5, "tea in Rize with absMin -4 C takes 0.5 caveat within FROST_MARGIN of KTMPR -5");
+assert.equal(scoreSpecies(tea, { ...rize, absMin: -6.0 }).factors.frost, 0, "tea with absMin -6 C undercutting KTMPR -5 is killed");
+assert.equal(scoreSpecies(tea, { ...rize, absMin: 0.0 }).factors.frost, 1, "tea with absMin 0 C well above KTMPR -5 passes with 1.0");
+assert.ok(teaRize.score > 0.3, `tea scores suitable in Rize heartland: ${teaRize.score}`);
+
+// --- topographic slope solar radiation (Duffie-Beckman 2013 / Swift 1976)
+assert.equal(slopeSolarFactor(45, 0, 180, 172), 1.0, "flat surface factor is 1.0");
+assert.equal(slopeSolarFactor(45, null, null, 172), 1.0, "null terrain factor is 1.0");
+// 45N in winter (Dec 21, DOY 355): 20 deg South slope gets ~75% more sun; North slope is shaded (~70% less sun)
+close(slopeSolarFactor(45, 20, 180, 355), 1.75, 0.05, "45N winter 20° south slope boost");
+close(slopeSolarFactor(45, 20, 0, 355), 0.31, 0.05, "45N winter 20° north slope shade");
+// 45N in summer (Jun 21, DOY 172): high solar zenith, both slopes get high direct sun
+close(slopeSolarFactor(45, 20, 180, 172), 0.97, 0.05, "45N summer south slope");
+close(slopeSolarFactor(45, 20, 0, 172), 0.95, 0.05, "45N summer north slope");
+
+// Monthly slope solar factors array length and bounds
+const mFactors = monthlySlopeSolarFactors(45, 20, 180);
+assert.equal(mFactors.length, 12, "12 monthly slope factors");
+assert.ok(mFactors[11] > 1.5, "winter month has elevated solar incidence on south slope");
+
+// --- shade-tolerant / understory species trait & scoring
+const cacao = by("Theobroma cacao");
+assert.ok(cacao?.shade, "cacao carries the understory/shade trait");
+const highSunSite = { ...saoPaulo, rad: 5.8, radSlope: 5.8, cloud: 25 };
+const shadedSite = { ...saoPaulo, rad: 3.5, radSlope: 3.5, cloud: 60 };
+assert.equal(scoreSpecies(cacao, highSunSite).factors.shade, 0.85, "cacao receives soft caveat in unshaded high-sun open field");
+assert.equal(scoreSpecies(cacao, shadedSite).factors.shade, 1.0, "cacao gets full credit in shaded/cloudy regime");
+assert.equal(scoreSpecies(qr, highSunSite).factors.shade, null, "canopy oak has null shade factor (not penalized)");
+
+// --- hydrological fixtures & UNEP aridity benchmarks (ERA5 2015-2024 normals)
+const konyaNormals = {
+  prec: [49.4, 30.6, 52.9, 23.1, 42.8, 31.9, 2.9, 3.0, 10.3, 11.4, 25.4, 47.2],
+  et0: [33.6, 48.7, 81.9, 125.3, 155.9, 175.4, 221.2, 199.3, 145.0, 94.4, 54.1, 32.5],
+};
+const konyaRain = konyaNormals.prec.reduce((a, b) => a + b, 0);
+const konyaET0 = konyaNormals.et0.reduce((a, b) => a + b, 0);
+const konyaAI = konyaRain / konyaET0;
+close(konyaRain, 330.9, 0.5, "Konya annual rain");
+close(konyaET0, 1367.3, 0.5, "Konya annual ET0");
+close(konyaAI, 0.24, 0.02, "Konya AI ~ 0.24");
+assert.equal(aridityClass(konyaAI), "Semi-arid", "Konya is semi-arid");
+
+const sevilleNormals = {
+  prec: [39.1, 31.3, 79.5, 51.7, 27.8, 9.7, 1.2, 2.5, 24.1, 87.2, 58.7, 59.9],
+  et0: [47.9, 64.9, 97.6, 122.5, 174.5, 197.9, 226.0, 205.7, 142.6, 96.3, 55.9, 43.4],
+};
+const sevilleAI = sevilleNormals.prec.reduce((a, b) => a + b, 0) / sevilleNormals.et0.reduce((a, b) => a + b, 0);
+close(sevilleAI, 0.32, 0.02, "Seville AI ~ 0.32");
+assert.equal(aridityClass(sevilleAI), "Semi-arid", "Seville is semi-arid");
+
+const hamburgNormals = {
+  prec: [77.3, 70.0, 56.2, 50.6, 61.4, 70.2, 86.8, 72.0, 57.5, 75.5, 67.3, 69.2],
+  et0: [13.7, 21.9, 41.4, 70.2, 102.2, 117.3, 113.0, 100.3, 67.3, 35.1, 15.7, 11.0],
+};
+const hamburgAI = hamburgNormals.prec.reduce((a, b) => a + b, 0) / hamburgNormals.et0.reduce((a, b) => a + b, 0);
+close(hamburgAI, 1.15, 0.05, "Hamburg AI ~ 1.15");
+assert.equal(aridityClass(hamburgAI), "Humid", "Hamburg is humid");
+
+const rizeNormals = {
+  prec: [168.8, 113.7, 152.6, 98.1, 123.4, 160.6, 183.1, 224.1, 252.7, 278.4, 179.8, 163.7],
+  et0: [29.8, 37.5, 53.5, 77.3, 94.8, 102.5, 104.9, 92.9, 75.0, 53.3, 39.5, 27.8],
+};
+const rizeAI = rizeNormals.prec.reduce((a, b) => a + b, 0) / rizeNormals.et0.reduce((a, b) => a + b, 0);
+close(rizeAI, 2.66, 0.05, "Rize AI ~ 2.66");
+assert.equal(aridityClass(rizeAI), "Humid", "Rize is humid");
+
+// --- growing-season water deficit and species scoring
+const sevilleSite = {
+  lat: 37.38,
+  tavg: [10.5, 12.7, 14.6, 17.3, 21.7, 25.4, 29.0, 29.1, 24.8, 20.7, 14.8, 12.1],
+  tmin: [6.5, 8.3, 9.7, 12.1, 15.6, 18.9, 21.8, 22.4, 19.2, 16.0, 10.9, 8.4],
+  prec: sevilleNormals.prec,
+  et0: sevilleNormals.et0,
+  ph: 7.2, absMin: -0.4,
+};
+const tomato = by("Solanum lycopersicum");
+assert.ok(tomato?.annual, "tomato is flagged annual");
+const tomatoSeville = scoreSpecies(tomato, sevilleSite);
+assert.ok(tomatoSeville.window.deficit > 400, `tomato in Seville has heavy deficit: ${tomatoSeville.window.deficit} mm`);
+assert.equal(tomatoSeville.factors.temp, 1, "tomato temperature in Seville is optimal");
+assert.equal(tomatoSeville.factors.rain, 0, "tomato rainfed score in Seville is 0 without irrigation");
+
+const olive = by("Olea europaea");
+const oliveSeville = scoreSpecies(olive, sevilleSite);
+assert.ok(oliveSeville.score > 0.7, `olive thrives in Mediterranean Seville: ${oliveSeville.score}`);
+
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");
 assert.equal(grade(0), "Not suitable");
 
 console.log("all checks passed");
-console.log(`  oak@Berlin ${qrBerlin.score.toFixed(2)} | euc@Berlin ${egBerlin.score.toFixed(2)} | euc@SP ${egSP.score.toFixed(2)}`);
+console.log(`  oak@Berlin ${qrBerlin.score.toFixed(2)} | euc@Berlin ${egBerlin.score.toFixed(2)} | euc@SP ${egSP.score.toFixed(2)} | olive@Seville ${oliveSeville.score.toFixed(2)}`);
+console.log(`  tomato@Seville deficit ${tomatoSeville.window.deficit} mm (temp ${tomatoSeville.factors.temp.toFixed(2)}, rainfed ${tomatoSeville.factors.rain.toFixed(2)})`);
 console.log(`  euc CO2e(10y) ${eucCo2.toFixed(0)} kg | oak CO2e(10y) ${co2eKgPerTree(oakSp, 10).toFixed(1)} kg`);
+console.log(`  AI: Konya ${konyaAI.toFixed(2)} (${aridityClass(konyaAI)}) | Seville ${sevilleAI.toFixed(2)} (${aridityClass(sevilleAI)}) | Hamburg ${hamburgAI.toFixed(2)} (${aridityClass(hamburgAI)}) | Rize ${rizeAI.toFixed(2)} (${aridityClass(rizeAI)})`);

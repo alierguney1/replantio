@@ -77,6 +77,7 @@ SOURCED_TR = {
     "Pinus pinea": "fıstık çamı",
     "Pinus ponderosa": "sarıçam (amerikan)|ağır çam",
     "Pinus radiata": "monterey çamı",
+    "Pinus roxburghii": "himalaya çamı|chir çamı",
     "Pinus strobus": "veymut çamı|akçam",
     "Pinus sylvestris": "sarıçam",
     "Pinus taeda": "loblolly çamı",
