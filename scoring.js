@@ -110,13 +110,12 @@ export function scoreSpecies(sp, site, ev = null) {
       rain = 1;
     } else {
       // Excess rain above optimal maximum:
-      // On sloped ground (slope >= 2), gravity provides drainage and sheds excess runoff.
-      // On flat/unmeasured ground, soft decay allows tolerance in humid belts without hard zero.
-      if (site.terrain?.slope != null && site.terrain.slope >= 2) {
-        rain = 1;
-      } else {
-        rain = trap(annualRain, rmin, ropmn, ropmx, Math.max(rmax, ropmx * 1.5));
-      }
+      // On flat ground (slope ~0), excessive rain pools and causes root hypoxia/rot (bounded by rmax).
+      // As terrain slope increases, gravity drainage sheds surface runoff, expanding the effective rain
+      // ceiling smoothly up to 2.5x ROPMX on steep mountain slopes, while still penalizing extreme deluges.
+      const slopeFactor = site.terrain?.slope != null ? Math.min(1.5, site.terrain.slope / 10) : 0.5;
+      const drainCeiling = Math.max(rmax, ropmx * (1 + slopeFactor));
+      rain = trap(annualRain, rmin, ropmn, ropmx, drainCeiling);
     }
 
     for (let s = 0; s < 12; s++) {
