@@ -210,6 +210,15 @@ assert.ok(scoreSpecies(sask, winnipeg, NATIVE).score >= 0.6, "saskatoon rates in
 assert.ok(scoreSpecies(sask, winnipeg).score === 0, "without native evidence the annual gate still holds");
 assert.ok(scoreSpecies(by("Erythroxylum coca"), winnipeg, NATIVE).score === 0, "evidence never revives a true climate kill");
 
+// annual crops never meet the winter (Turkish field feedback, 2026-08):
+// frost is tested on the growing window, not the year-round record low
+const corn = by("Zea mays ssp. saccharata"); // 3-month cycle fits the frost-free window
+const bean = by("Phaseolus vulgaris");
+assert.ok(corn?.annual && bean?.annual, "sweet corn and bean carry the annual flag");
+assert.equal(scoreSpecies(corn, winnipeg).factors.frost, 1, "sweet corn passes window frost in Winnipeg (absMin -38)");
+assert.equal(scoreSpecies(bean, winnipeg).factors.frost, 1, "bean passes window frost too");
+assert.ok(by("Solanum lycopersicum"), "tomato answers to its accepted name");
+
 // wetland-on-a-hill (field report, 2026-08): obligate wetland species die on real slopes
 const typha = by("Typha latifolia");
 assert.ok(typha?.wet, "cattail is flagged obligate wetland");

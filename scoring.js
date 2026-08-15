@@ -120,7 +120,10 @@ export function scoreSpecies(sp, site, ev = null) {
       }
       const t = trap(tsum / G, ...sp.temp);
       const r = trap(rtot, ...sp.rain);
-      if (Math.min(t, r) > bestScore) { bestScore = Math.min(t, r); temp = t; rain = r; best = s; }
+      const m = Math.min(t, r);
+      // ties broken by temperature so an all-zero-rain site still reports the
+      // real growing window (else annuals get frost-tested on january)
+      if (m > bestScore || (m === bestScore && t > temp)) { bestScore = m; temp = t; rain = r; best = s; }
       if (G === 12) break; // all windows identical for full-year perennials
     }
   }
@@ -142,9 +145,20 @@ export function scoreSpecies(sp, site, ev = null) {
   // observed record low sits within FROST_MARGIN of the kill threshold, the
   // species is not killed but takes a half penalty and wears a caveat.
   const FROST_MARGIN = 4;
-  let frost = kt == null ? null :
-    (Math.min(...site.tmin) < kt + 4 || (site.absMin != null && site.absMin < kt) ? 0 :
+  let frost;
+  if (kt == null) frost = null;
+  else if (sp.annual && G < 12) {
+    // An annual crop lives inside its growing window and never meets the
+    // winter: frost is the dismo per-window test on the window's own months.
+    // Year-round record lows were zeroing beans, lettuce and maize in every
+    // cold-winter climate they are grown in (caught via Turkish user feedback).
+    let wmin = Infinity;
+    for (let k = 0; k < G; k++) wmin = Math.min(wmin, site.tmin[(best + k) % 12]);
+    frost = wmin < kt + 4 ? 0 : 1;
+  } else {
+    frost = (Math.min(...site.tmin) < kt + 4 || (site.absMin != null && site.absMin < kt) ? 0 :
       (site.absMin != null && site.absMin - FROST_MARGIN <= kt ? 0.5 : 1));
+  }
   // EcoCrop hardiness fields are unreliable for wild cold-climate trees
   // (sugar maple carries KTMPR -18 and would die in Toronto): when the
   // species is native to this exact site, a frost kill demotes to a half

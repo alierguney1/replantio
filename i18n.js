@@ -181,6 +181,7 @@ const PT = {
   "send": "enviar",
   "thank you 🌱": "obrigado 🌱",
   "could not send; try again in a minute": "não deu pra enviar; tenta de novo em um minuto",
+  "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "A chuva é o fator limitante aqui. O modelo avalia cultivo de sequeiro; irrigação muda esse quadro completamente.",
 };
 
 const ES = {
@@ -350,6 +351,7 @@ const ES = {
   "send": "enviar",
   "thank you 🌱": "gracias 🌱",
   "could not send; try again in a minute": "no se pudo enviar; inténtalo de nuevo en un minuto",
+  "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "La lluvia es el factor limitante aquí. El modelo evalúa cultivo de secano; el riego cambia el panorama por completo.",
 };
 
 const FR = {
@@ -519,6 +521,7 @@ const FR = {
   "send": "envoyer",
   "thank you 🌱": "merci 🌱",
   "could not send; try again in a minute": "envoi impossible ; réessayez dans une minute",
+  "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "La pluie est le facteur limitant ici. Le modèle évalue la culture pluviale ; l'irrigation change complètement la donne.",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -760,6 +763,7 @@ const ZH = {
   "send": "发送",
   "thank you 🌱": "谢谢 🌱",
   "could not send; try again in a minute": "发送失败；请稍后再试",
+  "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "降水是此处的限制因素。模型只评估雨养种植；灌溉会完全改变结果。",
 };
 const JA = {
   "Analyze": "分析する",
@@ -999,6 +1003,7 @@ const JA = {
   "send": "送信",
   "thank you 🌱": "ありがとう 🌱",
   "could not send; try again in a minute": "送信できませんでした。少し待って再試行してください",
+  "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "ここでは降水量が制限要因です。モデルは天水栽培のみを評価します。灌漑すれば話は全く変わります。",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1238,6 +1243,7 @@ const RU = {
   "send": "отправить",
   "thank you 🌱": "спасибо 🌱",
   "could not send; try again in a minute": "не удалось отправить; попробуйте через минуту",
+  "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "Ограничивающий фактор здесь — осадки. Модель оценивает богарное земледелие; орошение полностью меняет картину.",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -1477,6 +1483,7 @@ const ID = {
   "send": "kirim",
   "thank you 🌱": "terima kasih 🌱",
   "could not send; try again in a minute": "gagal mengirim; coba lagi sebentar lagi",
+  "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "Curah hujan adalah faktor pembatas di sini. Model hanya menilai pertanian tadah hujan; irigasi mengubah gambaran sepenuhnya.",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -1716,6 +1723,7 @@ const HI = {
   "send": "भेजें",
   "thank you 🌱": "धन्यवाद 🌱",
   "could not send; try again in a minute": "भेजा नहीं जा सका; एक मिनट में फिर आज़माएँ",
+  "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "यहाँ वर्षा सीमित कारक है। मॉडल केवल वर्षा-आधारित खेती आँकता है; सिंचाई से तस्वीर पूरी बदल जाती है।",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -1955,6 +1963,7 @@ const DE = {
   "send": "senden",
   "thank you 🌱": "danke 🌱",
   "could not send; try again in a minute": "Senden fehlgeschlagen; versuch es gleich noch mal",
+  "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "Der Niederschlag ist hier der begrenzende Faktor. Das Modell bewertet Regenfeldbau; Bewässerung ändert das Bild völlig.",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -2194,6 +2203,7 @@ const SW = {
   "send": "tuma",
   "thank you 🌱": "asante 🌱",
   "could not send; try again in a minute": "imeshindikana kutuma; jaribu tena baada ya dakika",
+  "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "Mvua ndiyo kikwazo hapa. Modeli hupima kilimo cha kutegemea mvua tu; umwagiliaji hubadilisha picha kabisa.",
 };
 
 const TR = {
@@ -2434,6 +2444,7 @@ const TR = {
   "send": "gönder",
   "thank you 🌱": "teşekkürler 🌱",
   "could not send; try again in a minute": "gönderilemedi; bir dakika sonra tekrar dene",
+  "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "Burada sınırlayıcı etken yağış. Model yalnızca yağmura dayalı yetiştirmeyi değerlendirir; sulama tabloyu tamamen değiştirir.",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW, tr: TR };

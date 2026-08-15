@@ -122,7 +122,9 @@ def main():
             "ktmp": vals["KTMP"],       # killing temp, early growth
             "ktmpr": vals["KTMPR"],
             # obligate wetland: EcoCrop absolute drainage tolerates ONLY saturated soil
-            **({"wet": True} if (row.get("DRAR") or row.get("DRA") or "").strip() == "poorly (saturated >50% of year)" else {}),     # killing temp, dormant season
+            **({"wet": True} if (row.get("DRAR") or row.get("DRA") or "").strip() == "poorly (saturated >50% of year)" else {}),
+            # annual-capable: frost is tested on the growing window, not the winter
+            **({"annual": True} if "annual" in (row.get("LISPA") or "").lower() else {}),     # killing temp, dormant season
             "photo": photoperiod(r["PHOTO"]),
             "cycle": cyc,
             "altmax": vals["ALTMX"],
