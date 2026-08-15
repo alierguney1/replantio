@@ -230,6 +230,22 @@ assert.equal(scoreSpecies(typha, flat).factors.drain, null, "flat ground leaves 
 assert.ok(!by("Quercus robur").wet, "oak is not wetland-flagged");
 close(scoreSpecies(qr, { ...berlin, terrain: { slope: 6 } }).score, qrBerlin.score, 0.001, "slope does not touch non-wetland species");
 
+// perennial annual rain scoring (field report, Giresun/Mediterranean 2026-08):
+// trees, shrubs and vines live on 12-month stored soil water, not cycle windows;
+// sloped terrain sheds excess precipitation without root waterlogging.
+const giresun = {
+  lat: 40.85,
+  tavg: [7.2, 7.5, 9.0, 12.5, 17.0, 21.5, 24.0, 24.2, 21.0, 16.8, 12.5, 9.0],
+  tmin: [4.5, 4.8, 6.0, 9.2, 13.8, 18.0, 20.8, 21.0, 17.5, 13.5, 9.5, 6.2],
+  prec: [127, 88, 124, 86, 120, 125, 125, 130, 134, 160, 106, 108],
+  ph: 6.2, absMin: -6.0,
+};
+const hazel = by("Corylus avellana");
+assert.ok(hazel, "hazelnut present");
+const hazelSloped = scoreSpecies(hazel, { ...giresun, terrain: { slope: 10 } });
+assert.equal(hazelSloped.factors.rain, 1, "hazelnut on Giresun hillside sheds excess rain and scores 1.0 rain");
+assert.ok(hazelSloped.score >= 0.5, `hazelnut scores well in Giresun: ${hazelSloped.score}`);
+
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");

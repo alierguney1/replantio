@@ -85,30 +85,46 @@ export function scoreSpecies(sp, site, ev = null) {
   const [gmin, gmax] = sp.cycle ?? [null, null];
   const G = gmin == null && gmax == null ? 12 :
     Math.max(1, Math.min(12, Math.round(((gmin ?? gmax) + (gmax ?? gmin)) / 60)));
-  // A TREE declaring deep dormant hardiness (KTMPR <= -10) does not grow
-  // through its winter: its TEMPERATURE is scored on the growing season
-  // (months averaging >= 5 C, capped by its own cycle), otherwise a
-  // 12-month mean blends saskatoon's Winnipeg summers with -20 C januaries
-  // and kills it in the town it was named after. Its RAIN is the full year
-  // (temperate trees live on stored/annual water, and sugar maple's 6-month
-  // envelope would starve in Toronto on window rain alone). Herbaceous
-  // hardy crops keep the classic cycle-window scoring.
-  const dormantTree = sp.tree && (sp.ktmpr ?? 99) <= -10;
+  const isPerennial = !sp.annual || sp.tree || sp.porte === "tree" || sp.porte === "shrub" || sp.porte === "vine";
+  // A dormant/deciduous perennial does not grow through its winter: its TEMPERATURE
+  // is scored on the growing season (months averaging >= 5 C, capped by its cycle),
+  // otherwise a 12-month mean blends saskatoon's Winnipeg summers with -20 C januaries.
+  // Its RAIN is the full hydrological year (perennials survive on stored soil water
+  // replenished year-round). Herbaceous annual crops keep cycle-window scoring.
+  const isDormant = isPerennial && (sp.decid || (sp.ktmpr ?? 99) <= -10 || (sp.gclass?.startsWith("temperate") && G < 12));
   let Gt = G;
-  if (dormantTree) {
+  if (isDormant) {
     const warm = site.tavg.filter(t => t >= 5).length;
     Gt = Math.min(G, Math.max(3, warm));
     if (G === 12) Gt = Math.min(12, Math.max(3, warm));
   }
 
   let temp = 0, rain = 0, best = 0, bestScore = -1;
-  if (dormantTree) { // annual rain, warm-season temperature, decoupled
-    rain = trap(site.prec.reduce((a, b) => a + b, 0), ...sp.rain);
+  if (isPerennial) {
+    // Perennials score rain on annual precipitation
+    const annualRain = site.prec.reduce((a, b) => a + b, 0);
+    const [rmin, ropmn, ropmx, rmax] = sp.rain;
+    if (annualRain < ropmn) {
+      rain = trap(annualRain, rmin, ropmn, ropmx, rmax);
+    } else if (annualRain <= ropmx) {
+      rain = 1;
+    } else {
+      // Excess rain above optimal maximum:
+      // On sloped ground (slope >= 2), gravity provides drainage and sheds excess runoff.
+      // On flat/unmeasured ground, soft decay allows tolerance in humid belts without hard zero.
+      if (site.terrain?.slope != null && site.terrain.slope >= 2) {
+        rain = 1;
+      } else {
+        rain = trap(annualRain, rmin, ropmn, ropmx, Math.max(rmax, ropmx * 1.5));
+      }
+    }
+
     for (let s = 0; s < 12; s++) {
       let tsum = 0;
       for (let k = 0; k < Gt; k++) tsum += site.tavg[(s + k) % 12];
       const t = trap(tsum / Gt, ...sp.temp);
       if (t > bestScore) { bestScore = t; temp = t; best = s; }
+      if (Gt === 12) break;
     }
   } else {
     for (let s = 0; s < 12; s++) {
