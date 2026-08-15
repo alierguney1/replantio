@@ -1,7 +1,7 @@
 // Self-check for the scoring and growth engines. Run: node test/check.mjs
 import assert from "node:assert";
 import { readFileSync } from "node:fs";
-import { trap, daylength, scoreSpecies, aggregateClimate, grade } from "../scoring.js";
+import { trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors, scoreSpecies, aggregateClimate, grade } from "../scoring.js";
 import { CLASSES, height, dbhCm, co2eKgPerTree, crownDiameterM, crownDisplayM, standDisplay, maturityYears } from "../growth.js";
 
 const species = JSON.parse(readFileSync(new URL("../data/species.json", import.meta.url)));
@@ -219,7 +219,7 @@ assert.equal(scoreSpecies(corn, winnipeg).factors.frost, 1, "sweet corn passes w
 assert.equal(scoreSpecies(bean, winnipeg).factors.frost, 1, "bean passes window frost too");
 assert.ok(by("Solanum lycopersicum"), "tomato answers to its accepted name");
 
-// wetland-on-a-hill (field report, 2026-08): obligate wetland species die on real slopes
+// obligate wetland species die on real slopes
 const typha = by("Typha latifolia");
 assert.ok(typha?.wet, "cattail is flagged obligate wetland");
 const hill = { ...saoPaulo, terrain: { slope: 6, facing: "N" } };
@@ -229,6 +229,30 @@ assert.equal(scoreSpecies(typha, hill).factors.drain, 0, "drainage factor report
 assert.equal(scoreSpecies(typha, flat).factors.drain, null, "flat ground leaves drainage unscored (water table unknowable)");
 assert.ok(!by("Quercus robur").wet, "oak is not wetland-flagged");
 close(scoreSpecies(qr, { ...berlin, terrain: { slope: 6 } }).score, qrBerlin.score, 0.001, "slope does not touch non-wetland species");
+
+// --- topographic slope solar radiation (Duffie-Beckman 2013 / Swift 1976)
+assert.equal(slopeSolarFactor(45, 0, 180, 172), 1.0, "flat surface factor is 1.0");
+assert.equal(slopeSolarFactor(45, null, null, 172), 1.0, "null terrain factor is 1.0");
+// 45N in winter (Dec 21, DOY 355): 20 deg South slope gets ~75% more sun; North slope is shaded (~70% less sun)
+close(slopeSolarFactor(45, 20, 180, 355), 1.75, 0.05, "45N winter 20° south slope boost");
+close(slopeSolarFactor(45, 20, 0, 355), 0.31, 0.05, "45N winter 20° north slope shade");
+// 45N in summer (Jun 21, DOY 172): high solar zenith, both slopes get high direct sun
+close(slopeSolarFactor(45, 20, 180, 172), 0.97, 0.05, "45N summer south slope");
+close(slopeSolarFactor(45, 20, 0, 172), 0.95, 0.05, "45N summer north slope");
+
+// Monthly slope solar factors array length and bounds
+const mFactors = monthlySlopeSolarFactors(45, 20, 180);
+assert.equal(mFactors.length, 12, "12 monthly slope factors");
+assert.ok(mFactors[11] > 1.5, "winter month has elevated solar incidence on south slope");
+
+// --- shade-tolerant / understory species trait & scoring
+const cacao = by("Theobroma cacao");
+assert.ok(cacao?.shade, "cacao carries the understory/shade trait");
+const highSunSite = { ...saoPaulo, rad: 5.8, radSlope: 5.8, cloud: 25 };
+const shadedSite = { ...saoPaulo, rad: 3.5, radSlope: 3.5, cloud: 60 };
+assert.equal(scoreSpecies(cacao, highSunSite).factors.shade, 0.85, "cacao receives soft caveat in unshaded high-sun open field");
+assert.equal(scoreSpecies(cacao, shadedSite).factors.shade, 1.0, "cacao gets full credit in shaded/cloudy regime");
+assert.equal(scoreSpecies(qr, highSunSite).factors.shade, null, "canopy oak has null shade factor (not penalized)");
 
 // grading bands
 assert.equal(grade(0.9), "Excellent");

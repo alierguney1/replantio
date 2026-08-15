@@ -84,6 +84,19 @@ Documented adaptations for perennials (`scoring.js`):
   neutral (12 to 14 h) or long (>14 h) with a half-hour tolerance at the boundaries.
   A species whose photoperiod classes never occur at the site takes a 0.5 penalty.
   "Tolerates all daylengths" scores 1; an empty field shows as "no data".
+- **Topographic solar radiation on slopes**: ERA5 shortwave radiation represents a
+  flat horizontal plane (GHI/SSRD). Using the DEM slope and aspect, insolation is
+  adjusted via Duffie-Beckman (2013) and Swift (1976, USDA Forest Service) analytical
+  solar incidence geometry (cos theta daily integration) coupled with Liu & Jordan
+  (1960) isotropic sky-view diffuse (kb=0.70, kd=0.30, rho=0.20). South-facing slopes
+  reflect verified winter solar boosts (+15% to +75%), while steep north-facing slopes
+  capture topographic shade (-20% to -70%).
+- **Understory and shade-preferring species**: species whose EcoCrop optimal light
+  intensity explicitly requires shade (LIOPMN/LIOPMX: cacao, vanilla, cardamom; 112 species)
+  wear an "understory" trait chip. In unshaded high-sun open fields (rad >= 5.2 kWh/m²/day,
+  cloud < 50%), they take a soft 0.85 multiplier (Beer et al. 1998, Somarriba et al. 2012;
+  representing 15-20% open-sun seedling photo-stress) so full-sun canopy trees lead the
+  ranking, while advising nurse canopy in open fields.
 
 Ties are broken by centrality: how close the site sits to the center of each species'
 optimal range (triangular membership). Missing data never silently zeroes or passes a

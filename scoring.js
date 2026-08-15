@@ -31,6 +31,67 @@ export function monthlyDaylengths(lat) {
   return MID_DOY.map(d => daylength(lat, d));
 }
 
+// Topographic solar radiation ratio on inclined surfaces (Duffie & Beckman 2013, Swift 1976).
+// Computes daily integrated beam radiation ratio Rb = I_slope / I_flat, coupled with
+// Liu & Jordan (1960) isotropic sky-view diffuse (1+cos beta)/2 and ground albedo (1-cos beta)/2.
+export function slopeSolarFactor(latDeg, slopeDeg, aspectDeg, doy) {
+  if (slopeDeg == null || slopeDeg < 1.0 || aspectDeg == null || latDeg == null) return 1.0;
+  const rad = Math.PI / 180;
+  const phi = latDeg * rad;
+  const beta = slopeDeg * rad;
+  // standard solar azimuth gamma: South = 0, East = -pi/2, West = +pi/2, North = +/-pi
+  const gamma = (aspectDeg - 180) * rad;
+  const delta = 0.409 * Math.sin((2 * Math.PI / 365) * doy - 1.39);
+
+  // Horizontal sunset hour angle
+  const tanTan = -Math.tan(phi) * Math.tan(delta);
+  let ws = 0;
+  if (tanTan <= -1) ws = Math.PI; // polar day
+  else if (tanTan >= 1) ws = 0;   // polar night
+  else ws = Math.acos(tanTan);
+
+  if (ws <= 0) return 0;
+
+  const I_flat = 2 * (ws * Math.sin(phi) * Math.sin(delta) + Math.cos(phi) * Math.cos(delta) * Math.sin(ws));
+  if (I_flat <= 1e-6) return 0;
+
+  const A = Math.sin(delta) * (Math.sin(phi) * Math.cos(beta) - Math.cos(phi) * Math.sin(beta) * Math.cos(gamma));
+  const B = Math.cos(delta) * (Math.cos(phi) * Math.cos(beta) + Math.sin(phi) * Math.sin(beta) * Math.cos(gamma));
+  const C = Math.cos(delta) * Math.sin(beta) * Math.sin(gamma);
+
+  const Ramp = Math.hypot(B, C);
+  const psi = Math.atan2(C, B);
+
+  let w1 = -ws, w2 = ws;
+  if (Ramp > 1e-6) {
+    const x = -A / Ramp;
+    if (x >= 1) return 0; // never illuminated by direct beam
+    if (x > -1) {
+      const deltaW = Math.acos(x);
+      w1 = Math.max(-ws, psi - deltaW);
+      w2 = Math.min(ws, psi + deltaW);
+    }
+  }
+
+  let I_slope = 0;
+  if (w2 > w1) {
+    I_slope = A * (w2 - w1) + B * (Math.sin(w2) - Math.sin(w1)) - C * (Math.cos(w2) - Math.cos(w1));
+  }
+  I_slope = Math.max(0, I_slope);
+
+  const Rb = I_slope / I_flat;
+  const kb = 0.70, kd = 0.30, rho = 0.20;
+  const Fsky = (1 + Math.cos(beta)) / 2;
+  const Fground = (1 - Math.cos(beta)) / 2;
+
+  return Math.max(0.05, kb * Rb + kd * Fsky + rho * Fground);
+}
+
+export function monthlySlopeSolarFactors(latDeg, slopeDeg, aspectDeg) {
+  if (slopeDeg == null || slopeDeg < 1.0 || aspectDeg == null || latDeg == null) return Array(12).fill(1.0);
+  return MID_DOY.map(d => slopeSolarFactor(latDeg, slopeDeg, aspectDeg, d));
+}
+
 // Aggregate Open-Meteo daily arrays into monthly climate normals.
 export function aggregateClimate(daily) {
   const sum = Array(12).fill(0), n = Array(12).fill(0);
@@ -194,7 +255,21 @@ export function scoreSpecies(sp, site, ev = null) {
     photo = sp.photo.some(c => here.has(c)) ? 1 : 0.5;
   }
 
-  const score = Math.min(temp, rain, ph ?? 1, chill ?? 1) * (frost ?? 1) * (photo ?? 1) * (drain ?? 1) * annual;
+  // Shade-preferring / understory species: in intense direct open sun,
+  // delicate understory crops (cocoa, cardamom, vanilla, ginseng) suffer
+  // photo-inhibition and leaf scorch unless intercropped with nurse trees
+  // (Beer et al. 1998, Somarriba et al. 2012; 15-20% open-sun seedling stress).
+  let shade = null;
+  if (sp.shade) {
+    const effRad = site.radSlope ?? site.rad;
+    if (effRad != null && effRad >= 5.2 && (site.cloud == null || site.cloud < 50)) {
+      shade = 0.85; // soft penalty in unshaded high-radiation open fields
+    } else {
+      shade = 1.0;
+    }
+  }
+
+  const score = Math.min(temp, rain, ph ?? 1, chill ?? 1) * (frost ?? 1) * (photo ?? 1) * (drain ?? 1) * (shade ?? 1) * annual;
 
   // Tie-breaker: EcoCrop plateaus leave many species at the same score, so
   // also measure how close the site sits to each envelope's center
@@ -206,7 +281,7 @@ export function scoreSpecies(sp, site, ev = null) {
   if (sp.ph && site.ph != null) fits.push(tri(site.ph, ...sp.ph));
   const fit = fits.reduce((a, b) => a + b, 0) / fits.length;
 
-  return { score, fit, factors: { temp, rain, ph, frost, photo, annual, chill, drain }, window: { start: best, months: Gt } };
+  return { score, fit, factors: { temp, rain, ph, frost, photo, annual, chill, drain, shade }, window: { start: best, months: Gt } };
 }
 
 export function grade(s) {
