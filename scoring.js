@@ -132,7 +132,8 @@ export function scoreSpecies(sp, site, ev = null) {
 
   // A perennial lives through the whole year, not just its best window:
   // the annual regime must sit inside the absolute temperature envelope.
-  let annual = trap(site.tavg.reduce((a, b) => a + b, 0) / 12, ...sp.temp) > 0 ? 1 : 0;
+  // Annual crops live only during their G-month window and are exempt.
+  let annual = (sp.annual && G < 12) ? 1 : (trap(site.tavg.reduce((a, b) => a + b, 0) / 12, ...sp.temp) > 0 ? 1 : 0);
   // native right here beats the envelope: the regime is survivable by observation
   if (!annual && ev?.native) annual = 1;
 
