@@ -15,7 +15,9 @@ import glob, json, re, unicodedata, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 species = json.load(open(ROOT / "data" / "species.json"))
 names = json.load(open(ROOT / "data" / "names_pt.json"))
+names_tr = json.load(open(ROOT / "data" / "names_tr.json"))
 sourcing = json.load(open(ROOT / "data" / "sourcing.json"))
+shop_scope = {s["id"]: s.get("scope") for s in sourcing.get("shops", [])}
 
 def norm(s):
     s = unicodedata.normalize("NFD", s or "").encode("ascii", "ignore").decode().lower()
@@ -30,17 +32,19 @@ for sp in species:
     b = binom(sp["sci"])
     if b: by_binom.setdefault(b, []).append(sp["id"])
 
-# PT name -> species ids (only names that resolve to exactly one species are usable)
-by_name = {}
-for sid, e in names.items():
-    for nm in [e["nome"], *e.get("aka", [])]:
-        by_name.setdefault(norm(nm).strip(), set()).add(int(sid))
-uniq_names = sorted((n for n, ids in by_name.items() if len(ids) == 1 and len(n) >= 5),
-                    key=len, reverse=True)
+# vernacular name -> species ids (only names that resolve to exactly one species are usable)
+def name_index(d):
+    idx = {}
+    for sid, e in d.items():
+        for nm in [e["nome"], *e.get("aka", [])]:
+            idx.setdefault(norm(nm).strip(), set()).add(int(sid))
+    return idx
+by_name = name_index(names)
+by_name_tr = name_index(names_tr)
 
 products = {}
 stats = {"binomial": 0, "binomial_embedded": 0, "name": 0, "skipped": 0}
-for f in sorted(glob.glob("/tmp/shop_*.json") + glob.glob("/tmp/usshop_*.json")):
+for f in sorted(glob.glob("/tmp/shop_*.json") + glob.glob("/tmp/usshop_*.json") + glob.glob("/tmp/intl_*.json")):
     data = json.load(open(f))
     shop = data["shop"]
     for p in data.get("products", []):
@@ -67,7 +71,8 @@ for f in sorted(glob.glob("/tmp/shop_*.json") + glob.glob("/tmp/usshop_*.json"))
                         sids, how = by_binom[b], "binomial_embedded"
                         break
                 if sids: break
-        if not sids:
+        scope = shop_scope.get(shop)
+        if not sids and scope == "BR":
             # strict: the species name must BE the product's object, not a
             # substring ("Manga cv. Ananás" must not match abacaxi). Extract X
             # from "Muda(s)/Sementes (de) X" in the title, else the URL slug;
@@ -79,6 +84,19 @@ for f in sorted(glob.glob("/tmp/shop_*.json") + glob.glob("/tmp/usshop_*.json"))
                 x = re.split(JUNK, m.group(1))[0].strip()
                 if len(x) >= 5 and x in by_name and len(by_name[x]) == 1:
                     sids, how = [next(iter(by_name[x]))], "name"
+                    break
+        if not sids and scope == "TR":
+            # Turkish puts the name BEFORE the kind word: "Ihlamur Fidanı",
+            # "Domates Tohumu". Extract X before fidan*/tohum*; require X ==
+            # a name from names_tr resolving to exactly one species. norm()
+            # strips dotless ı on both sides, so "fidanı" -> "fidan".
+            for text in (title, slug):
+                m = re.search(r"^(.+?)\s+(?:fidan\w*|tohum\w*)\b", text)
+                if not m: continue
+                x = re.sub(r"\b(tuplu|asili|asisiz|bodur|yari|adet|koklu|acik|kok|luk|lu|cm|yas)\b|\d", " ", m.group(1))
+                x = re.sub(r"\s+", " ", x).strip()
+                if len(x) >= 4 and x in by_name_tr and len(by_name_tr[x]) == 1:
+                    sids, how = [next(iter(by_name_tr[x]))], "name"
                     break
         if not sids:
             stats["skipped"] += 1

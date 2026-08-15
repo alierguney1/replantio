@@ -1142,7 +1142,9 @@ function sourcingMarkup(sp) {
   const shops = (SOURCING?.shops ?? []).filter(sh => sh.scope === cc);
   const dirs = (SOURCING?.directories ?? []).filter(d => d.cc === cc);
   if (!shops.length && !dirs.length) return "";
-  const term = cc === "BR" ? shopTerm(sp) : (sp.common !== sp.sci ? cap(sp.common) : sp.sci);
+  // BR searches by vernacular, US by English common name; everywhere else the
+  // stores index botanical names, so the binomial is the term that actually hits
+  const term = cc === "BR" ? shopTerm(sp) : cc === "US" ? (sp.common !== sp.sci ? cap(sp.common) : sp.sci) : sp.sci;
   const kindWord = sp.tree || sp.porte === "shrub" ? "muda" : "sementes";
   // verified product links first: only stores that provably stock THIS species
   const kind = sp.tree || sp.porte === "shrub" ? "muda" : "semente";
