@@ -67,16 +67,24 @@ def main():
         if not e or "temp" not in r:
             continue
         n += 1
+        t_eco_abs = f"{e['temp'][0]:.0f}-{e['temp'][3]:.0f}"
+        t_eco_opt = f"{e['temp'][1]:.0f}-{e['temp'][2]:.0f}"
+        r_eco_abs = f"{e['rain'][0]:.0f}-{e['rain'][3]:.0f}"
+        r_eco_opt = f"{e['rain'][1]:.0f}-{e['rain'][2]:.0f}"
         print(f"{sci:<26} {'ecocrop':<8} "
-              f"{f'{e['temp'][0]:.0f}-{e['temp'][3]:.0f}':>14} "
-              f"{f'{e['temp'][1]:.0f}-{e['temp'][2]:.0f}':>14} "
-              f"{f'{e['rain'][0]:.0f}-{e['rain'][3]:.0f}':>14} "
-              f"{f'{e['rain'][1]:.0f}-{e['rain'][2]:.0f}':>14}")
+              f"{t_eco_abs:>14} "
+              f"{t_eco_opt:>14} "
+              f"{r_eco_abs:>14} "
+              f"{r_eco_opt:>14}")
+        t_fit_abs = f"{r['temp'][0]:.0f}-{r['temp'][3]:.0f}"
+        t_fit_opt = f"{r['temp'][1]:.0f}-{r['temp'][2]:.0f}"
+        r_fit_abs = f"{r['rain'][0]:.0f}-{r['rain'][3]:.0f}"
+        r_fit_opt = f"{r['rain'][1]:.0f}-{r['rain'][2]:.0f}"
         print(f"{'':<26} {'fitted':<8} "
-              f"{f'{r['temp'][0]:.0f}-{r['temp'][3]:.0f}':>14} "
-              f"{f'{r['temp'][1]:.0f}-{r['temp'][2]:.0f}':>14} "
-              f"{f'{r['rain'][0]:.0f}-{r['rain'][3]:.0f}':>14} "
-              f"{f'{r['rain'][1]:.0f}-{r['rain'][2]:.0f}':>14}"
+              f"{t_fit_abs:>14} "
+              f"{t_fit_opt:>14} "
+              f"{r_fit_abs:>14} "
+              f"{r_fit_opt:>14}"
               f"   n={r['n_cells']}")
         et, ft = (e["temp"][0], e["temp"][3]), (r["temp"][0], r["temp"][3])
         er, fr = (e["rain"][0], e["rain"][3]), (r["rain"][0], r["rain"][3])

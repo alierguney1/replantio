@@ -2,9 +2,9 @@
 """Build data/species.json from the FAO EcoCrop database dump.
 
 Source: https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv
-Keeps woody species (life form contains 'tree') with complete temperature,
-rainfall and soil pH envelopes. Every field kept is documented in README.md;
-add columns here if the scoring model grows.
+Keeps species with complete temperature, rainfall and soil pH envelopes.
+Every field kept is documented in README.md; add columns here if the scoring
+model grows.
 """
 import csv, json, re, sys, pathlib
 
@@ -32,6 +32,48 @@ SLOW = {"Quercus", "Fagus", "Swietenia", "Dipteryx", "Hymenaea", "Dalbergia",
         "Entandrophragma", "Tieghemella", "Aquilaria", "Buxus", "Ilex"}
 CONIFER_FAM = {"Pinaceae", "Cupressaceae", "Taxaceae", "Podocarpaceae",
                "Araucariaceae", "Taxodiaceae", "Cephalotaxaceae"}
+
+# Accepted binomial renames and orthographic standardizations from Kew WCVP
+TAXONOMIC_RENAMES = {
+    2662: "Acacia mellifera",
+    347: "Falcataria falcata",
+    354: "Aleurites moluccanus",
+    3754: "Pachira quinata",
+    3844: "Brassica rapa",
+    2231: "Carya illinoinensis",
+    2242: "Citrus aurantiifolia",
+    4635: "Citrus × microcarpa",
+    2263: "Diospyros nigra",
+    2300: "Citrus japonica",
+    6893: "Inga feuilleei",
+    2475: "Luffa aegyptiaca",
+    1379: "Solanum lycopersicum",
+    1430: "Melaleuca leucadendra",
+    7689: "Melilotus indicus",
+    7937: "Neoglaziovia variegata",
+    75061: "Attalea speciosa",
+    8230: "Panax quinquefolius",
+    1650: "Pennisetum polystachion",
+    8660: "Pinus tabuliformis",
+    1803: "Psidium cattleyanum",
+    9922: "Coleus rotundifolius",
+    10110: "Stipa Krylovii",
+    10104: "Stipa baicalensis",
+    10105: "Stipa breviflora",
+    10106: "Stipa capillata",
+    10107: "Stipa glareosa",
+    10108: "Stipa gobica",
+    10109: "Stipa grandis",
+    10370: "Tetragonia tetragonoides",
+    2095: "Trema orientale",
+}
+
+# Duplicate synonym entries merged into their accepted counterparts by Kew WCVP deduplication audit
+EXCLUDED_DUPLICATE_IDS = {
+    352, 505, 1110, 2071, 2090, 2334, 3578, 4055, 4185, 4564, 4768, 5101,
+    5265, 5727, 5861, 5893, 6075, 6252, 7239, 7542, 7682, 8110, 8355, 8638,
+    8654, 8657, 8955, 9287, 9645, 9868, 10816, 10955, 11291, 17655, 74984,
+}
 
 def num(v):
     v = (v or "").strip()
@@ -62,11 +104,49 @@ def common_names(v):
 
 def uses(cat):
     tags = [t.strip() for t in (cat or "").split(",") if t.strip()]
-    keep = {"forest/wood": "timber", "environmental": "environmental",
-            "fruits & nuts": "fruit", "materials": "materials",
-            "medicinals & aromatic": "medicinal", "ornamentals/turf": "ornamental",
-            "forage/pasture": "forage", "food & beverage": "food"}
+    keep = {
+        "forest/wood": "timber", "environmental": "environmental",
+        "cover crop": "environmental", "fruits & nuts": "fruit",
+        "materials": "materials", "medicinals & aromatic": "medicinal",
+        "ornamentals/turf": "ornamental", "forage/pasture": "forage",
+        "food & beverage": "food", "cereals & pseudocereals": "food",
+        "vegetables": "food", "pulses (grain legumes)": "food",
+        "roots/tubers": "food",
+    }
     return sorted({keep[t] for t in tags if t in keep})
+
+def infer_habit(r, sci, famname, cat_raw, phys_raw, lispa_raw):
+    """Infer life form and habit from taxonomy and morphology when EcoCrop LIFO is missing."""
+    fam = (famname or "").split(":")[-1]
+    phys = (phys_raw or "").lower()
+    cat = (cat_raw or "").lower()
+    com = (r.get("COMNAME") or "").lower()
+
+    if fam in CONIFER_FAM or sci.startswith("Pinus") or "pine" in com:
+        return "tree", "tree", True, "conifer"
+    if "gramineae" in fam.lower() or "poaceae" in fam.lower() or "cereals" in cat:
+        return "grass", "grass", False, "broadleaf"
+    if "tree" in phys or "tree" in com or sci.startswith("Quercus") or "beech" in com:
+        return "tree", "tree", True, "broadleaf"
+    if "convolvulaceae" in fam.lower() or "vine" in phys or "climbing" in phys:
+        return "herb, vine", "vine", False, "broadleaf"
+    if "shrub" in phys:
+        return "shrub", "shrub", False, "broadleaf"
+    return "herb", "herb", False, "broadleaf"
+
+def infer_uses(r, is_tree):
+    """Infer usage tags when EcoCrop CAT field is empty."""
+    use_tags = uses(r.get("CAT"))
+    if use_tags:
+        return use_tags
+    com = (r.get("COMNAME") or "").lower()
+    if any(w in com for w in ["corn", "maize", "potato", "sugarcane", "sugar cane", "sweet potato", "cassava", "rice", "wheat", "barley"]):
+        return ["food"]
+    if any(w in com for w in ["clover", "medick", "forage", "pasture"]):
+        return ["forage"]
+    if is_tree:
+        return ["materials", "timber"] if any(w in com for w in ["oil tree", "beech", "pine"]) else ["timber"]
+    return []
 
 def growth_class(sci, famname, topt_mid, ktmpr):
     genus = sci.split()[0]
@@ -82,9 +162,22 @@ def main():
     rows = list(csv.DictReader(open(SRC, encoding="cp1252", errors="replace")))
     out = []
     for r in rows:
+        code = int(r["EcoPortCode"])
+        if code in EXCLUDED_DUPLICATE_IDS:
+            continue
+
         lifo_raw = (r["LIFO"] or "").lower()
-        if not lifo_raw.strip():
+        inferred_lifo, inferred_porte, inferred_tree, inferred_wood = (
+            infer_habit(r, r["ScientificName"], r["FAMNAME"], r["CAT"], r["PHYS"], r["LISPA"])
+            if not lifo_raw.strip() else (None, None, None, None)
+        )
+
+        lifo_val = (r["LIFO"] or inferred_lifo or "").strip()
+        if not lifo_val:
             continue  # no life form at all: unusable for the habit filter
+
+        lifo_raw = lifo_val.lower()
+
         vals = {k: num(r[k]) for k in NUM}
         required = ["TOPMN", "TOPMX", "TMIN", "TMAX", "ROPMN", "ROPMX",
                     "RMIN", "RMAX"]
@@ -106,34 +199,47 @@ def main():
         names = common_names(r["COMNAME"])
         # GMIN/GMAX zeros are placeholders in the source
         cyc = [v if v else None for v in (vals["GMIN"], vals["GMAX"])]
-        gclass, wood = growth_class(r["ScientificName"], r["FAMNAME"],
-                                    (vals["TOPMN"] + vals["TOPMX"]) / 2, vals["KTMPR"])
+        sci = TAXONOMIC_RENAMES.get(code, r["ScientificName"].strip())
+        gclass, wood_class = growth_class(sci, r["FAMNAME"],
+                                          (vals["TOPMN"] + vals["TOPMX"]) / 2, vals["KTMPR"])
+        wood = inferred_wood or wood_class
+
+        porte = next((c for c in ("tree", "shrub", "vine", "grass", "herb") if c in lifo_raw), None) or inferred_porte or "herb"
+        is_tree = "tree" in lifo_raw or bool(inferred_tree)
+
+        # Annual: EcoCrop LISPA flag, or non-tree short-cycle crops (GMIN <= 90)
+        lispa_raw = (r.get("LISPA") or "").lower()
+        gmin_val = vals["GMIN"]
+        is_annual = "annual" in lispa_raw or (not is_tree and gmin_val is not None and gmin_val <= 90 and "perennial" not in lispa_raw and lifo_raw != "tree")
+
+        photo = photoperiod(r["PHOTO"])
+        use_list = infer_uses(r, is_tree)
+
         out.append({
-            "id": int(r["EcoPortCode"]),
-            "sci": r["ScientificName"].strip(),
-            "common": names[0] if names else r["ScientificName"].strip(),
+            "id": code,
+            "sci": sci,
+            "common": names[0] if names else sci,
             "aka": names[1:],
             "family": (r["FAMNAME"] or "").split(":")[-1],
-            "lifo": r["LIFO"],
-            "uses": uses(r["CAT"]),
+            "lifo": lifo_val,
+            "uses": use_list,
             "temp": [vals["TMIN"], vals["TOPMN"], vals["TOPMX"], vals["TMAX"]],
             "rain": [vals["RMIN"], vals["ROPMN"], vals["ROPMX"], vals["RMAX"]],
             "ph": ph,
             "ktmp": vals["KTMP"],       # killing temp, early growth
-            "ktmpr": vals["KTMPR"],
+            "ktmpr": vals["KTMPR"],      # killing temp, dormant season
             # obligate wetland: EcoCrop absolute drainage tolerates ONLY saturated soil
-            **({"wet": True} if (row.get("DRAR") or row.get("DRA") or "").strip() == "poorly (saturated >50% of year)" else {}),
+            **({"wet": True} if (r.get("DRAR") or r.get("DRA") or "").strip() == "poorly (saturated >50% of year)" else {}),
             # annual-capable: frost is tested on the growing window, not the winter
-            **({"annual": True} if "annual" in (row.get("LISPA") or "").lower() else {}),     # killing temp, dormant season
-            "photo": photoperiod(r["PHOTO"]),
+            **({"annual": True} if is_annual else {}),
+            "photo": photo,
             "cycle": cyc,
             "altmax": vals["ALTMX"],
             "gclass": gclass,
             "wood": wood,
             "decid": "deciduous" in (r["PHYS"] or "").lower(),
-            "tree": "tree" in lifo_raw,
-            # single habit class for filtering; priority when multiple listed
-            "porte": next((c for c in ("tree", "shrub", "vine", "grass", "herb") if c in lifo_raw), "herb"),
+            "tree": is_tree,
+            "porte": porte,
         })
     out.sort(key=lambda s: s["sci"])
     OUT.write_text(json.dumps(out, separators=(",", ":")))
@@ -141,3 +247,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
