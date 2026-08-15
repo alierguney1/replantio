@@ -131,12 +131,15 @@ export function scoreSpecies(sp, site, ev = null) {
     const annualRain = site.prec.reduce((a, b) => a + b, 0);
     rain = scorePerennialRain(annualRain, sp.rain, site.terrain?.slope);
 
+    let bestSum = -Infinity;
     const sMax = Gt === 12 ? 1 : 12;
     for (let s = 0; s < sMax; s++) {
       let tsum = 0;
       for (let k = 0; k < Gt; k++) tsum += site.tavg[(s + k) % 12];
       const t = trap(tsum / Gt, ...sp.temp);
-      if (t > bestScore) { bestScore = t; temp = t; best = s; }
+      if (t > bestScore || (t === bestScore && tsum > bestSum)) {
+        bestScore = t; temp = t; best = s; bestSum = tsum;
+      }
     }
   } else {
     for (let s = 0; s < 12; s++) {
@@ -158,7 +161,8 @@ export function scoreSpecies(sp, site, ev = null) {
 
   // A perennial lives through the whole year, not just its best window:
   // the annual regime must sit inside the absolute temperature envelope.
-  let annual = trap(site.tavg.reduce((a, b) => a + b, 0) / 12, ...sp.temp) > 0 ? 1 : 0;
+  // Annual crops live only during their G-month window and are exempt.
+  let annual = (sp.annual && G < 12) ? 1 : (trap(site.tavg.reduce((a, b) => a + b, 0) / 12, ...sp.temp) > 0 ? 1 : 0);
   // native right here beats the envelope: the regime is survivable by observation
   if (!annual && ev?.native) annual = 1;
 
