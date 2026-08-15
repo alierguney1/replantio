@@ -102,10 +102,21 @@ const regionName = () => {
 // Being native to THIS region overrides the flag; where we cannot resolve a
 // region at all, a species is never blocked in a country it is native to:
 // blocking a native in its homeland is the worse error.
+const isFoodCrop = sp => (sp.uses ?? []).includes("food") || (sp.uses ?? []).includes("fruit");
+const cultivatedInvasive = sp => {
+  if (!current?.cc || !(INVASIVES[sp.id] ?? []).includes(current.cc)) return false;
+  if (nativeRegion(sp) === true) return false;
+  if (!L3_REGIONS[current.cc] && nativeHere(sp) === true) return false;
+  return isFoodCrop(sp);
+};
 const invasiveHere = sp => {
   if (!current?.cc || !(INVASIVES[sp.id] ?? []).includes(current.cc)) return false;
   if (nativeRegion(sp) === true) return false;
   if (!L3_REGIONS[current.cc] && nativeHere(sp) === true) return false;
+  // Cultivated food and fruit crops are agricultural staples, not wild
+  // environmental weeds. Exempt them from hard exclusion so staple crops
+  // (melon, purslane, proso millet) remain discoverable and recommendable.
+  if (isFoodCrop(sp)) return false;
   return true;
 };
 
@@ -906,6 +917,7 @@ function speciesRow(s, i) {
                 : tr("Part of the native flora of this country (WCVP)")}">${tr("native")}</span>` : ""}
           <span class="nearby gbif" data-nearby="${s.sp.id}" ${s.gbif?.count > 0 ? "" : "hidden"} title="${tr("GBIF occurrence records near this area")}">&#10003; ${tr("nearby")}</span>
           <span class="nearby warn45" data-f45="${s.sp.id}" ${s.score > 0.4 && s.f45 != null && s.f45 <= 0.4 ? "" : "hidden"} title="${tr("Falls below suitable in the 2040s climate (CMIP6)")}">2045 &#9662;</span>
+          ${cultivatedInvasive(s.sp) ? `<span class="nearby otherreg" title="${tr("Cultivated food crop; naturalization or escape recorded in GRIIS checklist for this country")}">${tr("cultivated")}</span>` : ""}
           ${s.score <= 0.4 ? `<span class="nearby mgnl">${tr(grade(s.score)).toLowerCase()}</span>` : ""}
         </div>
         <div class="sp-sci">${showSci ? s.sp.sci : s.sp.family}${nativeHere(s.sp) === true && nativeRegion(s.sp) === false
