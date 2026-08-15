@@ -125,20 +125,22 @@ export function scoreSpecies(sp, site, ev = null) {
     if (G === 12) Gt = Math.min(12, Math.max(3, warm));
   }
 
-  let temp = 0, rain = 0, best = 0, bestScore = -1;
+  let temp = 0, rain = 0, best = 0, bestScore = -1, bestDist = Infinity;
+  const toptMid = (sp.temp[1] + sp.temp[2]) / 2;
   if (isPerennial) {
     // Perennials score rain on annual precipitation adjusted for hillside gravity drainage
     const annualRain = site.prec.reduce((a, b) => a + b, 0);
     rain = scorePerennialRain(annualRain, sp.rain, site.terrain?.slope);
 
-    let bestSum = -Infinity;
     const sMax = Gt === 12 ? 1 : 12;
     for (let s = 0; s < sMax; s++) {
       let tsum = 0;
       for (let k = 0; k < Gt; k++) tsum += site.tavg[(s + k) % 12];
-      const t = trap(tsum / Gt, ...sp.temp);
-      if (t > bestScore || (t === bestScore && tsum > bestSum)) {
-        bestScore = t; temp = t; best = s; bestSum = tsum;
+      const mean = tsum / Gt;
+      const t = trap(mean, ...sp.temp);
+      const dist = Math.abs(mean - toptMid);
+      if (t > bestScore || (t === bestScore && dist < bestDist)) {
+        bestScore = t; temp = t; best = s; bestDist = dist;
       }
     }
   } else {
@@ -149,12 +151,16 @@ export function scoreSpecies(sp, site, ev = null) {
         tsum += site.tavg[m];
         rtot += site.prec[m];
       }
-      const t = trap(tsum / G, ...sp.temp);
+      const mean = tsum / G;
+      const t = trap(mean, ...sp.temp);
       const r = trap(rtot, ...sp.rain);
       const m = Math.min(t, r);
-      // ties broken by temperature so an all-zero-rain site still reports the
-      // real growing window (else annuals get frost-tested on january)
-      if (m > bestScore || (m === bestScore && t > temp)) { bestScore = m; temp = t; rain = r; best = s; }
+      const dist = Math.abs(mean - toptMid);
+      // ties broken by thermal optimum midpoint so an all-zero-rain site or plateau
+      // reports the true biological growing window instead of winter or extreme heat
+      if (m > bestScore || (m === bestScore && dist < bestDist)) {
+        bestScore = m; temp = t; rain = r; best = s; bestDist = dist;
+      }
       if (G === 12) break; // all windows identical for full-year perennials
     }
   }
