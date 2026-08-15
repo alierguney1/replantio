@@ -77,14 +77,15 @@ function dayClasses(d) {
   return c;
 }
 
-// Topographic Drainage & Hillslope Aeration Constants (FAO Soils Bulletin 52 / Darcy Hillslope Flux)
-// - Flat ground (<= 2 deg / ~3.5%): water ponding causes root hypoxia/anoxia.
-// - Hillsides (2-18 deg): gravity drainage continuously draws water downward,
-//   expanding the effective soil aeration ceiling and delaying root hypoxia.
-// - Steep slopes (>= 18 deg): gravitational drainage reaches physical plateau.
-const SLOPE_FLAT_DEG = 2.0;    // FAO S1 flat boundary: zero excess drainage expansion
-const SLOPE_REF_DEG = 8.0;     // Reference slope scale (~14% gradient)
-const MAX_SLOPE_FACTOR = 2.0;  // Maximum expansion of the (RMAX - ROPMX) tolerance band
+// Topographic Hillslope Drainage (FAO Soils Bulletin 52 / Agro-hydrology)
+// - Flat terrain (<= 2 deg): waterlogging & root-zone hypoxia constrain rain tolerance to RMAX.
+// - Sloped terrain (> 2 deg): gravity-driven runoff and lateral subsurface interflow
+//   alleviate root saturation, expanding upper rainfall tolerance.
+// - Steep terrain (>= 16 deg): lateral drainage benefits plateau, preventing severe erosion
+//   and nutrient leaching from being treated as unlimited rain tolerance.
+const SLOPE_FLAT_DEG = 2.0;         // FAO S1 flat ground boundary (zero excess drainage)
+const SLOPE_MAX_DEG = 16.0;         // Gravitational drainage benefit plateau (~28% gradient)
+const MAX_SLOPE_DRAIN_FACTOR = 1.0; // Expands upper tolerance band (RMAX - ROPMX) by up to +100%
 
 /**
  * Calculates rain score for perennials on sloped terrain.
@@ -96,10 +97,10 @@ function scorePerennialRain(annualRain, [rmin, ropmn, ropmx, rmax], slope) {
     return trap(annualRain, rmin, ropmn, ropmx, rmax);
   }
   const deg = slope ?? 0;
-  const slopeFactor = deg > SLOPE_FLAT_DEG
-    ? Math.min(MAX_SLOPE_FACTOR, (deg - SLOPE_FLAT_DEG) / SLOPE_REF_DEG)
+  const slopeProgress = deg > SLOPE_FLAT_DEG
+    ? Math.min(1.0, (deg - SLOPE_FLAT_DEG) / (SLOPE_MAX_DEG - SLOPE_FLAT_DEG))
     : 0;
-  const effectiveRmax = ropmx + (rmax - ropmx) * (1 + slopeFactor);
+  const effectiveRmax = ropmx + (rmax - ropmx) * (1 + slopeProgress * MAX_SLOPE_DRAIN_FACTOR);
   return trap(annualRain, rmin, ropmn, ropmx, effectiveRmax);
 }
 
@@ -111,13 +112,13 @@ export function scoreSpecies(sp, site, ev = null) {
   const [gmin, gmax] = sp.cycle ?? [null, null];
   const G = gmin == null && gmax == null ? 12 :
     Math.max(1, Math.min(12, Math.round(((gmin ?? gmax) + (gmax ?? gmin)) / 60)));
-  const isPerennial = !sp.annual || sp.tree || sp.porte === "tree" || sp.porte === "shrub" || sp.porte === "vine";
+  const isPerennial = !sp.annual;
   // A dormant/deciduous perennial does not grow through its winter: its TEMPERATURE
   // is scored on the growing season (months averaging >= 5 C, capped by its cycle),
   // otherwise a 12-month mean blends saskatoon's Winnipeg summers with -20 C januaries.
   // Its RAIN is the full hydrological year (perennials survive on stored soil water
   // replenished year-round). Herbaceous annual crops keep cycle-window scoring.
-  const isDormant = isPerennial && (sp.decid || (sp.ktmpr ?? 99) <= -10 || (sp.gclass?.startsWith("temperate") && G < 12));
+  const isDormant = isPerennial && (sp.decid || (sp.ktmpr ?? 99) <= -10);
   let Gt = G;
   if (isDormant) {
     const warm = site.tavg.filter(t => t >= 5).length;
@@ -238,9 +239,14 @@ export function scoreSpecies(sp, site, ev = null) {
   // also measure how close the site sits to each envelope's center
   // (triangular membership peaking at the optimal-range midpoint).
   const tri = (x, a, b, c, d) => trap(x, a, (b + c) / 2, (b + c) / 2, d);
-  let tsum = 0, rtot = 0;
-  for (let k = 0; k < G; k++) { const m = (best + k) % 12; tsum += site.tavg[m]; rtot += site.prec[m]; }
-  const fits = [tri(tsum / G, ...sp.temp), tri(rtot, ...sp.rain)];
+  let tsum = 0;
+  for (let k = 0; k < Gt; k++) tsum += site.tavg[(best + k) % 12];
+  const rainVal = isPerennial ? site.prec.reduce((a, b) => a + b, 0) : (() => {
+    let r = 0;
+    for (let k = 0; k < G; k++) r += site.prec[(best + k) % 12];
+    return r;
+  })();
+  const fits = [tri(tsum / Gt, ...sp.temp), tri(rainVal, ...sp.rain)];
   if (sp.ph && site.ph != null) fits.push(tri(site.ph, ...sp.ph));
   const fit = fits.reduce((a, b) => a + b, 0) / fits.length;
 

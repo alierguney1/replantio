@@ -242,9 +242,10 @@ const giresun = {
 };
 const hazel = by("Corylus avellana");
 assert.ok(hazel, "hazelnut present");
+assert.equal(scoreSpecies(hazel, giresun).factors.rain, 0, "flat ground waterlogs hazelnut in Giresun (prec 1449 > rmax 1400)");
 const hazelSloped = scoreSpecies(hazel, { ...giresun, terrain: { slope: 10 } });
-assert.ok(hazelSloped.factors.rain >= 0.4, `hazelnut on Giresun hillside scores high rain: ${hazelSloped.factors.rain}`);
-assert.ok(hazelSloped.score >= 0.2, `hazelnut survives waterlogging in Giresun: ${hazelSloped.score}`);
+assert.ok(hazelSloped.factors.rain >= 0.25, `hazelnut on Giresun hillside scores rain: ${hazelSloped.factors.rain}`);
+assert.ok(hazelSloped.score >= 0.1, `hazelnut survives waterlogging on Giresun hillside: ${hazelSloped.score}`);
 
 // grading bands
 assert.equal(grade(0.9), "Excellent");
