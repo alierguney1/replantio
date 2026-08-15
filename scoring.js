@@ -101,14 +101,16 @@ export function scoreSpecies(sp, site, ev = null) {
     if (G === 12) Gt = Math.min(12, Math.max(3, warm));
   }
 
-  let temp = 0, rain = 0, best = 0, bestScore = -1;
+  let temp = 0, rain = 0, best = 0, bestScore = -1, bestSum = -Infinity;
   if (dormantTree) { // annual rain, warm-season temperature, decoupled
     rain = trap(site.prec.reduce((a, b) => a + b, 0), ...sp.rain);
     for (let s = 0; s < 12; s++) {
       let tsum = 0;
       for (let k = 0; k < Gt; k++) tsum += site.tavg[(s + k) % 12];
       const t = trap(tsum / Gt, ...sp.temp);
-      if (t > bestScore) { bestScore = t; temp = t; best = s; }
+      if (t > bestScore || (t === bestScore && tsum > bestSum)) {
+        bestScore = t; temp = t; best = s; bestSum = tsum;
+      }
     }
   } else {
     for (let s = 0; s < 12; s++) {
@@ -134,14 +136,19 @@ export function scoreSpecies(sp, site, ev = null) {
   // native right here beats the envelope: the regime is survivable by observation
   if (!annual && ev?.native) annual = 1;
 
-  // Frost semantics:
-  // 1. Annual crops live only during their growing window and never meet the winter.
-  // 2. Perennials are tested against dormant-season hardiness (KTMPR) for winter extremes.
-  // 3. Tropical perennials without cold data default to frost-tender (0 C).
-  // 4. Temperate perennials lacking KTMPR leave winter hardiness unscored (null);
-  //    we never test succulent shoot KTMP against winter 10-year record lows.
+  // ---------------------------------------------------------------------------
+  // Frost & Freezing Semantics (Dual-Stage Physiological Model):
+  // 1. Annual crops live only inside their growing window and never meet winter.
+  //    Tested on growing-window months against KTMP (or KTMPR).
+  // 2. Perennials experience two distinct vulnerability stages:
+  //    a) Dormant Winter Hardiness (KTMPR): Tested against 10-year record low (absMin)
+  //       and chronic winter monthly minima. Tropical perennials default to 0 C.
+  //    b) Active-Season Shoot Sensitivity (KTMP): Succulent new spring/summer growth
+  //       is tested against growing-window monthly minima.
+  // ---------------------------------------------------------------------------
   const FROST_MARGIN = 4;
   let frost = null;
+
   if (sp.annual && G < 12) {
     const kt = sp.ktmp ?? sp.ktmpr ?? (sp.gclass?.startsWith("tropical") ? 0 : null);
     if (kt != null) {
@@ -150,17 +157,28 @@ export function scoreSpecies(sp, site, ev = null) {
       frost = wmin < kt + 4 ? 0 : 1;
     }
   } else {
-    const kt = sp.ktmpr ?? (sp.gclass?.startsWith("tropical") ? 0 : null);
-    if (kt != null) {
+    // Stage 1: Dormant winter extreme tolerance (KTMPR)
+    const ktr = sp.ktmpr ?? (sp.gclass?.startsWith("tropical") ? 0 : null);
+    if (ktr != null) {
       const minMonthly = Math.min(...site.tmin);
-      if (minMonthly < kt + 4 || (site.absMin != null && site.absMin < kt - FROST_MARGIN)) {
-        // Monthly winter is chronically too cold OR 10-year record low severely undercuts hardiness: absolute kill
+      if (minMonthly < ktr + 4 || (site.absMin != null && site.absMin < ktr - FROST_MARGIN)) {
+        // Winter is chronically below hardiness OR record low is catastrophically below kill threshold:
         frost = 0;
-      } else if (site.absMin != null && site.absMin - FROST_MARGIN <= kt) {
-        // 10-year grid minimum is within margin of kill threshold: takes a half penalty with caveat
+      } else if (site.absMin != null && site.absMin <= ktr + FROST_MARGIN) {
+        // Record low approaches or slightly undercuts hardiness: caveat penalty
         frost = 0.5;
       } else {
         frost = 1;
+      }
+    }
+
+    // Stage 2: Active growing-season frost risk for succulent new growth (KTMP)
+    if (frost !== 0 && sp.ktmp != null) {
+      let wmin = Infinity;
+      for (let k = 0; k < Gt; k++) wmin = Math.min(wmin, site.tmin[(best + k) % 12]);
+      if (wmin < sp.ktmp) {
+        // Late spring or early autumn frost threatens active vegetative shoots
+        frost = Math.min(frost ?? 1, 0.5);
       }
     }
   }
