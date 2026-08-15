@@ -238,12 +238,14 @@ const rize = {
   tavg: [6.8, 7.0, 8.5, 12.0, 16.5, 20.8, 23.2, 23.5, 20.2, 16.2, 12.0, 8.5],
   tmin: [3.8, 4.0, 5.2, 8.5, 13.0, 17.2, 20.0, 20.2, 16.8, 12.8, 8.8, 5.2],
   prec: [173, 115, 160, 101, 133, 177, 225, 247, 267, 270, 180, 168],
-  ph: 5.0, absMin: -6.0, terrain: { slope: 15 }
+  ph: 5.0, absMin: -4.0, terrain: { slope: 15 }
 };
 const tea = by("Camellia sinensis");
 assert.ok(tea, "tea present");
 const teaRize = scoreSpecies(tea, rize);
-assert.ok(teaRize.factors.frost !== 0, "tea in Rize is not killed by dormant winter record low");
+assert.equal(teaRize.factors.frost, 0.5, "tea in Rize with absMin -4 C takes 0.5 caveat within FROST_MARGIN of KTMPR -5");
+assert.equal(scoreSpecies(tea, { ...rize, absMin: -6.0 }).factors.frost, 0, "tea with absMin -6 C undercutting KTMPR -5 is killed");
+assert.equal(scoreSpecies(tea, { ...rize, absMin: 0.0 }).factors.frost, 1, "tea with absMin 0 C well above KTMPR -5 passes with 1.0");
 assert.ok(teaRize.score > 0.3, `tea scores suitable in Rize heartland: ${teaRize.score}`);
 
 // grading bands

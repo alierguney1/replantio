@@ -169,11 +169,11 @@ export function scoreSpecies(sp, site, ev = null) {
     const ktr = sp.ktmpr ?? (sp.gclass?.startsWith("tropical") ? 0 : null);
     if (ktr != null) {
       const minMonthly = Math.min(...site.tmin);
-      if (minMonthly < ktr + 4 || (site.absMin != null && site.absMin < ktr - FROST_MARGIN)) {
-        // Winter is chronically below hardiness OR record low is catastrophically below kill threshold:
+      if (minMonthly < ktr + 4 || (site.absMin != null && site.absMin < ktr)) {
+        // Winter is chronically below hardiness OR record low cuts under kill threshold:
         frost = 0;
-      } else if (site.absMin != null && site.absMin <= ktr + FROST_MARGIN) {
-        // Record low approaches or slightly undercuts hardiness: caveat penalty
+      } else if (site.absMin != null && site.absMin - FROST_MARGIN <= ktr) {
+        // Record low sits within FROST_MARGIN of hardiness: radiative frost caveat penalty
         frost = 0.5;
       } else {
         frost = 1;
