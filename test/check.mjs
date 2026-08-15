@@ -296,7 +296,28 @@ const rizeAI = rizeNormals.prec.reduce((a, b) => a + b, 0) / rizeNormals.et0.red
 close(rizeAI, 2.66, 0.05, "Rize AI ~ 2.66");
 assert.equal(aridityClass(rizeAI), "Humid", "Rize is humid");
 
+// --- growing-season water deficit and species scoring
+const sevilleSite = {
+  lat: 37.38,
+  tavg: [10.5, 12.7, 14.6, 17.3, 21.7, 25.4, 29.0, 29.1, 24.8, 20.7, 14.8, 12.1],
+  tmin: [6.5, 8.3, 9.7, 12.1, 15.6, 18.9, 21.8, 22.4, 19.2, 16.0, 10.9, 8.4],
+  prec: sevilleNormals.prec,
+  et0: sevilleNormals.et0,
+  ph: 7.2, absMin: -0.4,
+};
+const tomato = by("Solanum lycopersicum");
+assert.ok(tomato?.annual, "tomato is flagged annual");
+const tomatoSeville = scoreSpecies(tomato, sevilleSite);
+assert.ok(tomatoSeville.window.deficit > 400, `tomato in Seville has heavy deficit: ${tomatoSeville.window.deficit} mm`);
+assert.equal(tomatoSeville.factors.temp, 1, "tomato temperature in Seville is optimal");
+assert.equal(tomatoSeville.factors.rain, 0, "tomato rainfed score in Seville is 0 without irrigation");
+
+const olive = by("Olea europaea");
+const oliveSeville = scoreSpecies(olive, sevilleSite);
+assert.ok(oliveSeville.score > 0.7, `olive thrives in Mediterranean Seville: ${oliveSeville.score}`);
+
 console.log("all checks passed");
-console.log(`  oak@Berlin ${qrBerlin.score.toFixed(2)} | euc@Berlin ${egBerlin.score.toFixed(2)} | euc@SP ${egSP.score.toFixed(2)}`);
+console.log(`  oak@Berlin ${qrBerlin.score.toFixed(2)} | euc@Berlin ${egBerlin.score.toFixed(2)} | euc@SP ${egSP.score.toFixed(2)} | olive@Seville ${oliveSeville.score.toFixed(2)}`);
+console.log(`  tomato@Seville deficit ${tomatoSeville.window.deficit} mm (temp ${tomatoSeville.factors.temp.toFixed(2)}, rainfed ${tomatoSeville.factors.rain.toFixed(2)})`);
 console.log(`  euc CO2e(10y) ${eucCo2.toFixed(0)} kg | oak CO2e(10y) ${co2eKgPerTree(oakSp, 10).toFixed(1)} kg`);
 console.log(`  AI: Konya ${konyaAI.toFixed(2)} (${aridityClass(konyaAI)}) | Seville ${sevilleAI.toFixed(2)} (${aridityClass(sevilleAI)}) | Hamburg ${hamburgAI.toFixed(2)} (${aridityClass(hamburgAI)}) | Rize ${rizeAI.toFixed(2)} (${aridityClass(rizeAI)})`);

@@ -194,6 +194,8 @@ const PT = {
   "Semi-arid": "Semiárido",
   "Dry sub-humid": "Subúmido seco",
   "Humid": "Úmido",
+  "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "A chuva é o fator limitante aqui (déficit hídrico no período de cultivo: ~{n} mm). O modelo avalia cultivo de sequeiro; irrigação muda esse quadro completamente.",
+  "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "A chuva natural é insuficiente durante o período de cultivo (déficit hídrico: ~{n} mm). Requer irrigação complementar para produtividade ideal.",
 };
 
 const ES = {
@@ -376,6 +378,8 @@ const ES = {
   "Semi-arid": "Semiárido",
   "Dry sub-humid": "Subhúmedo seco",
   "Humid": "Húmedo",
+  "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "La lluvia es el factor limitante aquí (déficit hídrico en la temporada de cultivo: ~{n} mm). El modelo evalúa cultivo de secano; el riego cambia el panorama por completo.",
+  "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "La lluvia natural es insuficiente durante la temporada de cultivo (déficit hídrico: ~{n} mm). Requiere riego complementario para un rendimiento óptimo.",
 };
 
 const FR = {
@@ -558,6 +562,8 @@ const FR = {
   "Semi-arid": "Semi-aride",
   "Dry sub-humid": "Subhumide sec",
   "Humid": "Humide",
+  "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "La pluie est le facteur limitant ici (déficit hydrique en saison de culture : ~{n} mm). Le modèle évalue la culture pluviale ; l'irrigation change complètement la donne.",
+  "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Les précipitations naturelles sont insuffisantes pendant la saison de culture (déficit hydrique : ~{n} mm). Une irrigation d'appoint est nécessaire pour un rendement optimal.",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -812,6 +818,8 @@ const ZH = {
   "Semi-arid": "半干旱",
   "Dry sub-humid": "半干旱半湿润",
   "Humid": "湿润",
+  "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "降水是此处的限制因素（生长期水分亏缺：约 {n} mm）。模型只评估雨养种植；灌溉会完全改变结果。",
+  "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "生长期天然降水不足（水分亏缺：约 {n} mm）。需要补充灌溉以获得最佳产量。",
 };
 const JA = {
   "Analyze": "分析する",
@@ -1064,6 +1072,8 @@ const JA = {
   "Semi-arid": "半乾燥",
   "Dry sub-humid": "乾燥亜湿潤",
   "Humid": "湿潤",
+  "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "ここでは降水量が制限要因です（生育期の水不足：約{n} mm）。モデルは天水栽培のみを評価します。灌漑すれば話は全く変わります。",
+  "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "生育期の自然降水が不足しています（水不足：約{n} mm）。最適な収量を得るには補足的な灌漑が必要です。",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1316,6 +1326,8 @@ const RU = {
   "Semi-arid": "Полуаридный",
   "Dry sub-humid": "Сухой субгумидный",
   "Humid": "Гумидный",
+  "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "Ограничивающий фактор здесь — осадки (дефицит влаги в период вегетации: ~{n} мм). Модель оценивает богарное земледелие; орошение полностью меняет картину.",
+  "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Естественных осадков в период вегетации недостаточно (дефицит влаги: ~{n} мм). Для оптимальной урожайности требуется дополнительное орошение.",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -1568,6 +1580,8 @@ const ID = {
   "Semi-arid": "Semi-arid",
   "Dry sub-humid": "Sub-humid kering",
   "Humid": "Humid",
+  "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "Curah hujan adalah faktor pembatas di sini (defisit air musim tanam: ~{n} mm). Model hanya menilai pertanian tadah hujan; irigasi mengubah gambaran sepenuhnya.",
+  "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Curah hujan alami kurang selama musim tanam (defisit air: ~{n} mm). Diperlukan irigasi tambahan untuk hasil optimal.",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -1820,6 +1834,8 @@ const HI = {
   "Semi-arid": "अर्ध-शुष्क",
   "Dry sub-humid": "शुष्क उप-आर्द्र",
   "Humid": "आर्द्र",
+  "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "यहाँ वर्षा सीमित कारक है (बढ़वार के मौसम में जल की कमी: ~{n} mm)। मॉडल केवल वर्षा-आधारित खेती आँकता है; सिंचाई से तस्वीर पूरी बदल जाती है।",
+  "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "बढ़वार के मौसम में प्राकृतिक वर्षा अपर्याप्त है (जल की कमी: ~{n} mm)। इष्टतम उपज के लिए पूरक सिंचाई आवश्यक है।",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -2072,6 +2088,8 @@ const DE = {
   "Semi-arid": "Semiarid",
   "Dry sub-humid": "Trocken subhumid",
   "Humid": "Humid",
+  "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "Der Niederschlag ist hier der begrenzende Faktor (Wasserdefizit in der Vegetationsperiode: ~{n} mm). Das Modell bewertet Regenfeldbau; Bewässerung ändert das Bild völlig.",
+  "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Der natürliche Niederschlag reicht in der Vegetationsperiode nicht aus (Wasserdefizit: ~{n} mm). Für optimalen Ertrag ist Zusatzbewässerung erforderlich.",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -2324,6 +2342,8 @@ const SW = {
   "Semi-arid": "Nusu ukame",
   "Dry sub-humid": "Kavu kiasi",
   "Humid": "Unyevu",
+  "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "Mvua ndiyo kikwazo hapa (upungufu wa maji msimu wa ukuaji: ~{n} mm). Modeli hupima kilimo cha kutegemea mvua tu; umwagiliaji hubadilisha picha kabisa.",
+  "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Mvua ya asili haitoshi wakati wa msimu wa ukuaji (upungufu wa maji: ~{n} mm). Umwagiliaji wa ziada unahitajika kwa mavuno bora.",
 };
 
 const TR = {
@@ -2577,6 +2597,8 @@ const TR = {
   "Semi-arid": "Yarı kurak",
   "Dry sub-humid": "Yarı kurak-nemli",
   "Humid": "Nemli",
+  "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "Burada sınırlayıcı etken yağış (büyüme dönemi su açığı: ~{n} mm). Model yalnızca yağmura dayalı yetiştirmeyi değerlendirir; sulama tabloyu tamamen değiştirir.",
+  "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Büyüme döneminde doğal yağış yetersiz (su açığı: ~{n} mm). Optimum verim için ek sulama gereklidir.",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW, tr: TR };

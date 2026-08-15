@@ -1198,7 +1198,15 @@ function speciesDetail(id) {
     const notes = [];
     if (s.factors.photo != null && s.factors.photo < 1) notes.push(tr("Photoperiod outside this species' range: 0.5 penalty applied."));
     if (s.factors.drain === 0) notes.push(tfmt("This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.", { n: fmt(current.site.terrain?.slope ?? 0) }));
-    if (s.factors.rain < 0.2 && s.factors.temp >= 0.5) notes.push(tr("Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely."));
+    if (s.window.deficit > 50 && s.factors.temp >= 0.4) {
+      if (s.factors.rain < 0.2) {
+        notes.push(tfmt("Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.", { n: fmt(s.window.deficit) }));
+      } else if (s.factors.rain < 0.6) {
+        notes.push(tfmt("Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.", { n: fmt(s.window.deficit) }));
+      }
+    } else if (s.factors.rain < 0.2 && s.factors.temp >= 0.5) {
+      notes.push(tr("Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely."));
+    }
     if (s.factors.frost === 0.5) {
       const kt = sp.ktmpr ?? sp.ktmp ?? 0;
       notes.push(current.site.absMin != null && current.site.absMin < kt

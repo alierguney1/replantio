@@ -125,29 +125,48 @@ export function scoreSpecies(sp, site, ev = null) {
     if (G === 12) Gt = Math.min(12, Math.max(3, warm));
   }
 
-  let temp = 0, rain = 0, best = 0, bestScore = -1;
+  let temp = 0, rain = 0, best = 0, bestScore = -1, bestDeficit = 0, bestAI = null;
   if (dormantTree) { // annual rain, warm-season temperature, decoupled
-    rain = trap(site.prec.reduce((a, b) => a + b, 0), ...sp.rain);
+    const annualP = site.prec.reduce((a, b) => a + b, 0);
+    rain = trap(annualP, ...sp.rain);
     for (let s = 0; s < 12; s++) {
       let tsum = 0;
       for (let k = 0; k < Gt; k++) tsum += site.tavg[(s + k) % 12];
       const t = trap(tsum / Gt, ...sp.temp);
       if (t > bestScore) { bestScore = t; temp = t; best = s; }
     }
+    if (site.et0) {
+      for (let k = 0; k < 12; k++) bestDeficit += Math.max(0, site.et0[k] - site.prec[k]);
+      const annualET0 = site.et0.reduce((a, b) => a + b, 0);
+      bestAI = annualET0 > 0 ? annualP / annualET0 : null;
+    }
   } else {
     for (let s = 0; s < 12; s++) {
-      let tsum = 0, rtot = 0;
+      let tsum = 0, rtot = 0, et0tot = 0, def = 0;
       for (let k = 0; k < G; k++) {
         const m = (s + k) % 12;
         tsum += site.tavg[m];
         rtot += site.prec[m];
+        if (site.et0) {
+          et0tot += site.et0[m];
+          def += Math.max(0, site.et0[m] - site.prec[m]);
+        }
       }
       const t = trap(tsum / G, ...sp.temp);
-      const r = trap(rtot, ...sp.rain);
+      let r = trap(rtot, ...sp.rain);
+      // In semi-arid/arid windows (AI < 0.50), shallow-rooted annual crops face
+      // evaporative stress on rainfed growing. Deep-rooted perennials manage on stored water.
+      const aiW = et0tot > 0 ? rtot / et0tot : null;
+      if (sp.annual && aiW != null && aiW < 0.50 && r > 0) {
+        r = r * Math.min(1, Math.max(0.1, aiW / 0.50));
+      }
       const m = Math.min(t, r);
       // ties broken by temperature so an all-zero-rain site still reports the
       // real growing window (else annuals get frost-tested on january)
-      if (m > bestScore || (m === bestScore && t > temp)) { bestScore = m; temp = t; rain = r; best = s; }
+      if (m > bestScore || (m === bestScore && t > temp)) {
+        bestScore = m; temp = t; rain = r; best = s;
+        bestDeficit = def; bestAI = aiW;
+      }
       if (G === 12) break; // all windows identical for full-year perennials
     }
   }
@@ -230,7 +249,7 @@ export function scoreSpecies(sp, site, ev = null) {
   if (sp.ph && site.ph != null) fits.push(tri(site.ph, ...sp.ph));
   const fit = fits.reduce((a, b) => a + b, 0) / fits.length;
 
-  return { score, fit, factors: { temp, rain, ph, frost, photo, annual, chill, drain }, window: { start: best, months: Gt } };
+  return { score, fit, factors: { temp, rain, ph, frost, photo, annual, chill, drain }, window: { start: best, months: Gt, deficit: Math.round(bestDeficit), ai: bestAI } };
 }
 
 export function grade(s) {
