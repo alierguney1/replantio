@@ -182,6 +182,9 @@ const PT = {
   "thank you 🌱": "obrigado 🌱",
   "could not send; try again in a minute": "não deu pra enviar; tenta de novo em um minuto",
   "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "A chuva é o fator limitante aqui. O modelo avalia cultivo de sequeiro; irrigação muda esse quadro completamente.",
+  "Search a species: bean, oak, Quercus...": "Buscar espécie: feijão, ipê, Quercus...",
+  "Nothing in the species base matches “{q}”.": "Nada na base de espécies bate com “{q}”.",
+  "recorded as invasive here; not recommended": "com registro de invasora aqui; não recomendada",
 };
 
 const ES = {
@@ -352,6 +355,9 @@ const ES = {
   "thank you 🌱": "gracias 🌱",
   "could not send; try again in a minute": "no se pudo enviar; inténtalo de nuevo en un minuto",
   "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "La lluvia es el factor limitante aquí. El modelo evalúa cultivo de secano; el riego cambia el panorama por completo.",
+  "Search a species: bean, oak, Quercus...": "Buscar especie: frijol, roble, Quercus...",
+  "Nothing in the species base matches “{q}”.": "Nada en la base de especies coincide con “{q}”.",
+  "recorded as invasive here; not recommended": "registrada como invasora aquí; no recomendada",
 };
 
 const FR = {
@@ -522,6 +528,9 @@ const FR = {
   "thank you 🌱": "merci 🌱",
   "could not send; try again in a minute": "envoi impossible ; réessayez dans une minute",
   "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "La pluie est le facteur limitant ici. Le modèle évalue la culture pluviale ; l'irrigation change complètement la donne.",
+  "Search a species: bean, oak, Quercus...": "Chercher une espèce : haricot, chêne, Quercus...",
+  "Nothing in the species base matches “{q}”.": "Rien dans la base d'espèces ne correspond à « {q} ».",
+  "recorded as invasive here; not recommended": "recensée comme envahissante ici ; non recommandée",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -764,6 +773,9 @@ const ZH = {
   "thank you 🌱": "谢谢 🌱",
   "could not send; try again in a minute": "发送失败；请稍后再试",
   "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "降水是此处的限制因素。模型只评估雨养种植；灌溉会完全改变结果。",
+  "Search a species: bean, oak, Quercus...": "搜索物种：豆、栎树、Quercus…",
+  "Nothing in the species base matches “{q}”.": "物种库中没有与“{q}”匹配的结果。",
+  "recorded as invasive here; not recommended": "在此有入侵记录；不推荐",
 };
 const JA = {
   "Analyze": "分析する",
@@ -1004,6 +1016,9 @@ const JA = {
   "thank you 🌱": "ありがとう 🌱",
   "could not send; try again in a minute": "送信できませんでした。少し待って再試行してください",
   "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "ここでは降水量が制限要因です。モデルは天水栽培のみを評価します。灌漑すれば話は全く変わります。",
+  "Search a species: bean, oak, Quercus...": "種を検索：マメ、ナラ、Quercus…",
+  "Nothing in the species base matches “{q}”.": "種データベースに「{q}」に一致するものはありません。",
+  "recorded as invasive here; not recommended": "この地域で侵略的と記録されており、推奨されません",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1244,6 +1259,9 @@ const RU = {
   "thank you 🌱": "спасибо 🌱",
   "could not send; try again in a minute": "не удалось отправить; попробуйте через минуту",
   "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "Ограничивающий фактор здесь — осадки. Модель оценивает богарное земледелие; орошение полностью меняет картину.",
+  "Search a species: bean, oak, Quercus...": "Поиск вида: фасоль, дуб, Quercus...",
+  "Nothing in the species base matches “{q}”.": "В базе видов ничего не найдено по запросу «{q}».",
+  "recorded as invasive here; not recommended": "здесь отмечен как инвазивный; не рекомендуется",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -1484,6 +1502,9 @@ const ID = {
   "thank you 🌱": "terima kasih 🌱",
   "could not send; try again in a minute": "gagal mengirim; coba lagi sebentar lagi",
   "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "Curah hujan adalah faktor pembatas di sini. Model hanya menilai pertanian tadah hujan; irigasi mengubah gambaran sepenuhnya.",
+  "Search a species: bean, oak, Quercus...": "Cari spesies: kacang, ek, Quercus...",
+  "Nothing in the species base matches “{q}”.": "Tidak ada yang cocok dengan “{q}” di basis spesies.",
+  "recorded as invasive here; not recommended": "tercatat invasif di sini; tidak direkomendasikan",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -1724,6 +1745,9 @@ const HI = {
   "thank you 🌱": "धन्यवाद 🌱",
   "could not send; try again in a minute": "भेजा नहीं जा सका; एक मिनट में फिर आज़माएँ",
   "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "यहाँ वर्षा सीमित कारक है। मॉडल केवल वर्षा-आधारित खेती आँकता है; सिंचाई से तस्वीर पूरी बदल जाती है।",
+  "Search a species: bean, oak, Quercus...": "प्रजाति खोजें: सेम, बलूत, Quercus...",
+  "Nothing in the species base matches “{q}”.": "प्रजाति आधार में “{q}” से कोई मेल नहीं।",
+  "recorded as invasive here; not recommended": "यहाँ आक्रामक दर्ज; अनुशंसित नहीं",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -1964,6 +1988,9 @@ const DE = {
   "thank you 🌱": "danke 🌱",
   "could not send; try again in a minute": "Senden fehlgeschlagen; versuch es gleich noch mal",
   "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "Der Niederschlag ist hier der begrenzende Faktor. Das Modell bewertet Regenfeldbau; Bewässerung ändert das Bild völlig.",
+  "Search a species: bean, oak, Quercus...": "Art suchen: Bohne, Eiche, Quercus...",
+  "Nothing in the species base matches “{q}”.": "Nichts in der Artenbasis passt zu „{q}“.",
+  "recorded as invasive here; not recommended": "hier als invasiv erfasst; nicht empfohlen",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -2204,6 +2231,9 @@ const SW = {
   "thank you 🌱": "asante 🌱",
   "could not send; try again in a minute": "imeshindikana kutuma; jaribu tena baada ya dakika",
   "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "Mvua ndiyo kikwazo hapa. Modeli hupima kilimo cha kutegemea mvua tu; umwagiliaji hubadilisha picha kabisa.",
+  "Search a species: bean, oak, Quercus...": "Tafuta spishi: maharagwe, mwaloni, Quercus...",
+  "Nothing in the species base matches “{q}”.": "Hakuna kinacholingana na “{q}” katika hifadhidata ya spishi.",
+  "recorded as invasive here; not recommended": "imerekodiwa kuwa vamizi hapa; haipendekezwi",
 };
 
 const TR = {
@@ -2445,6 +2475,9 @@ const TR = {
   "thank you 🌱": "teşekkürler 🌱",
   "could not send; try again in a minute": "gönderilemedi; bir dakika sonra tekrar dene",
   "Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely.": "Burada sınırlayıcı etken yağış. Model yalnızca yağmura dayalı yetiştirmeyi değerlendirir; sulama tabloyu tamamen değiştirir.",
+  "Search a species: bean, oak, Quercus...": "Tür ara: fasulye, meşe, Quercus...",
+  "Nothing in the species base matches “{q}”.": "Tür veritabanında “{q}” ile eşleşen bir şey yok.",
+  "recorded as invasive here; not recommended": "burada istilacı olarak kayıtlı; önerilmez",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW, tr: TR };

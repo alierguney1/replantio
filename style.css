@@ -281,6 +281,22 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
 }
 .sp-head:hover { background: rgba(255,255,255,.028); }
 .sp.open { background: rgba(255,255,255,.022); }
+/* species search: the question box */
+.sp-search {
+  display: flex; align-items: center; gap: 9px;
+  margin-top: var(--s5); padding: 0 2px 9px; border-bottom: 1px solid var(--line);
+  color: var(--faint);
+}
+.sp-search input {
+  flex: 1; background: none; border: 0; outline: none; color: var(--text);
+  font: inherit; font-size: 12.5px; padding: 2px 0;
+}
+.sp-search input::placeholder { color: var(--faint); }
+.sp-search input::-webkit-search-cancel-button { -webkit-appearance: none; }
+.sp-search:focus-within { color: var(--muted); border-bottom-color: rgba(99, 201, 135, 0.35); }
+.sp-head.noexpand { cursor: default; }
+.sp-get .inv { font-size: 10px; color: var(--warn); max-width: 150px; text-align: right; white-space: normal; }
+
 /* chips row: guerrilla-mode front controls, one line */
 .chips-row {
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;

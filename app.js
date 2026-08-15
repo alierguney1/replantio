@@ -717,7 +717,8 @@ function chipsMarkup() {
   const fam = ["nontree", "shrub", "herb", "grass", "vine"].includes(habit); // any non-tree selection lights the family chip
   const chip = (on, f, v, label, n) =>
     `<button class="opt${on ? " on" : ""}" data-f="${f}" data-v="${v}"${on ? ' aria-pressed="true"' : ""}${!on && n === 0 ? " disabled" : ""}>${label}${!on && n != null ? `<span class="c">${n}</span>` : ""}</button>`;
-  return `<div class="chips-row">
+  return `<div class="sp-search"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="sp-search" type="search" placeholder="${tr("Search a species: bean, oak, Quercus...")}" value="${(current.q ?? "").replace(/"/g, "&quot;")}" autocomplete="off" spellcheck="false"></div>
+  <div class="chips-row">
     ${current.cc ? chip(current.nativeOnly, "origin", current.nativeOnly ? "all" : "native", tr("native here"), current.nativeOnly ? null : critCount({ nativeOnly: true })) : ""}
     ${chip(habit === "tree", "habit", "tree", tr("trees"), habit === "tree" ? null : critCount({ habit: "tree" }))}
     ${chip(fam, "habit", "nontree", tr("shrubs and herbs"), fam ? null : critCount({ habit: "nontree" }))}
@@ -729,6 +730,33 @@ function chipsMarkup() {
 // the pristine state for this analysis: native-first, trees, no extra criteria
 const critIsDefault = () => current.filter === "all" && !current.matMax && !current.crownMin
   && (current.habit ?? "tree") === "tree" && current.nativeOnly === (!!current.cc && Object.keys(NATIVES).length > 0);
+
+// species search: "does X grow here?" is a question, so it overrides the
+// chips (but never the guardrails: invasives answer with the reason, not
+// silence) and surfaces zero-score species whose card explains the why.
+const deacc = t => (t ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+function searchMatches(q) {
+  const needle = deacc(q.trim());
+  if (!needle) return null;
+  return current.scored.filter(s => {
+    const e = NAMES_PT[s.sp.id];
+    return [e?.nome, ...(e?.aka ?? []), s.sp.common, s.sp.sci, ...(s.sp.aka ?? [])]
+      .some(n => n && deacc(n).includes(needle));
+  }).slice(0, 30);
+}
+function searchListHtml(matches) {
+  if (!matches.length) return `<div class="sp-empty">${tfmt("Nothing in the species base matches “{q}”.", { q: current.q })}</div>`;
+  return matches.map((s, i) => invasiveHere(s.sp)
+    ? `<div class="sp"><div class="sp-head noexpand">
+        <div class="sp-thumb" data-thumb="${s.sp.id}"${s.photo?.sq ? ` style="background-image:url(&quot;${s.photo.sq}&quot;)"` : ""}></div>
+        <div class="sp-names">
+          <div class="sp-common">${dispName(s.sp)}</div>
+          <div class="sp-sci">${s.sp.sci}</div>
+        </div>
+        <div class="sp-get"><span class="inv">${tr("recorded as invasive here; not recommended")}</span></div>
+      </div></div>`
+    : speciesRow(s, i)).join("");
+}
 
 function critMarkup() {
   const dims = CRIT_DIMS();
@@ -815,10 +843,10 @@ function renderResults() {
     <div class="p-body">
     ${noLand ? `<div class="error-box" style="margin-top:12px">${tfmt("This area looks like open water (no soil data, elevation {e} m). Species scores here reflect climate only and are unlikely to be meaningful.", { e: fmt(site.elevation) })}</div><div class="retry-row"><button class="chip" data-force>${tr("Show scores anyway")}</button> <button class="chip" data-print>${tr("Report")}</button> <button class="chip" data-shp>${tr("SHP (SARE)")}</button> <button class="chip" data-csv>${tr("CSV")}</button></div>${whyBlock}` : `
     ${critMarkup()}
-    <div id="sp-list">${rows.map((s, i) => speciesRow(s, i)).join("") || `<div class="sp-empty">${current.nativeOnly
+    <div id="sp-list">${current.q?.trim() ? searchListHtml(searchMatches(current.q)) : rows.map((s, i) => speciesRow(s, i)).join("") || `<div class="sp-empty">${current.nativeOnly
       ? tr("No natives from our base clear the bar here. The base (FAO EcoCrop) covers cultivated species and thinly covers wild native floras, like this region's; try 'everything', or ask a local restoration nursery.")
       : tr("Nothing clears the bar for this filter here.")}</div>`}</div>
-    ${pool.length > shown ? `<button class="chip more" data-more>${tfmt("Show {n} more", { n: Math.min(20, pool.length - shown) })}</button>` : ""}
+    ${pool.length > shown && !current.q?.trim() ? `<button class="chip more" data-more>${tfmt("Show {n} more", { n: Math.min(20, pool.length - shown) })}</button>` : ""}
     ${(() => {
       const cut = current.cc ? scored.filter(s => s.score > 0.05 && invasiveHere(s.sp)).length : 0;
       return cut ? `<div class="land-note">${tfmt("{n} species recorded as invasive in this country were excluded from these recommendations ({src}).", { n: cut, src: current.cc === "BR" ? "GRIIS · Instituto Hórus" : "GRIIS" })}</div>` : "";
@@ -893,6 +921,19 @@ function speciesRow(s, i) {
     <div class="sp-body" hidden></div>
   </div>`;
 }
+
+let qTrack;
+content.addEventListener("input", e => {
+  if (e.target.id !== "sp-search") return;
+  current.q = e.target.value;
+  if (!current.q.trim()) { renderResults(); loadRowPhotos(); return; }
+  const list = content.querySelector("#sp-list");
+  if (list) { list.innerHTML = searchListHtml(searchMatches(current.q)); loadRowPhotos(); }
+  const more = content.querySelector("[data-more]");
+  if (more) more.hidden = true;
+  clearTimeout(qTrack);
+  qTrack = setTimeout(() => track("species_search", { q: current.q.trim().slice(0, 40) }), 1500);
+});
 
 content.addEventListener("click", e => {
   const dbtn = e.target.closest("[data-disc]");
