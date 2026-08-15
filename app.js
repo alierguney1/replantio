@@ -400,7 +400,7 @@ function polyCentroid(pts) {
 // ---------- data fetchers ----------
 async function fetchClimate(c, signal) {
   const url = `https://archive-api.open-meteo.com/v1/archive?latitude=${c.lat.toFixed(4)}&longitude=${c.lng.toFixed(4)}` +
-    `&start_date=2015-01-01&end_date=2024-12-31&daily=temperature_2m_mean,temperature_2m_min,precipitation_sum,shortwave_radiation_sum,relative_humidity_2m_mean,cloud_cover_mean&timezone=auto`;
+    `&start_date=2015-01-01&end_date=2024-12-31&daily=temperature_2m_mean,temperature_2m_min,precipitation_sum,et0_fao_evapotranspiration,shortwave_radiation_sum,relative_humidity_2m_mean,cloud_cover_mean&timezone=auto`;
   const j = await (await fetch(url, { signal })).json();
   if (!j.daily?.time?.length) throw new Error(j.reason || "no climate data");
   return j;
@@ -820,6 +820,8 @@ function renderResults() {
       ${rd(tr("humidity"), site.rh != null ? `${fmt(site.rh)}%` : tr("n/a"))}
       ${rd(tr("cloud"), site.cloud != null ? `${fmt(site.cloud)}%` : tr("n/a"), tr("high humidity plus high cloud cover marks fog-prone sites"))}
       ${rd(tr("slope"), site.terrain ? `${fmt(site.terrain.slope)}°${site.terrain.facing ? ` ${tr("facing")} ` + tr(site.terrain.facing) : ""}` : tr("n/a"))}
+      ${rd(tr("water balance"), site.waterBalance != null ? `${site.waterBalance >= 0 ? "+" : ""}${fmt(site.waterBalance)} mm` : tr("n/a"), tr("net annual water balance (precipitation minus reference evapotranspiration)"))}
+      ${rd(tr("aridity"), site.aridity != null ? `${tr(site.aridity)} <span class="adm">(AI: ${fmt(site.ai, 2)})</span>` : tr("n/a"), tr("UNEP Aridity Index (P / ET₀)"))}
     </div>
     <div class="footnote" style="margin-top:10px">
       ${tr("Suitability follows the FAO EcoCrop model (trapezoidal climate envelopes, most-limiting-factor). Growth and carbon are class-level estimates")}

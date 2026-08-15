@@ -215,14 +215,14 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
    the logical reading order and no label/value pair can ever be split by a wrap. */
 .readout {
   margin: var(--s5) 0 0;
-  display: grid; grid-template-rows: repeat(4, auto);
+  display: grid; grid-template-rows: repeat(5, auto);
   grid-auto-flow: column; grid-auto-columns: 1fr; column-gap: 26px;
 }
 .readout .rd {
   display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
   font-size: 11px; color: var(--faint); padding: 4.5px 0; border-top: 1px solid var(--line);
 }
-.readout .rd:nth-child(1), .readout .rd:nth-child(5) { border-top: 0; }
+.readout .rd:nth-child(1), .readout .rd:nth-child(6) { border-top: 0; }
 .readout b {
   font-family: var(--mono); font-size: 10.5px; font-weight: 400; color: var(--text);
   font-variant-numeric: tabular-nums; white-space: nowrap;
@@ -552,8 +552,8 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
     border-radius: 18px 18px 0 0;
   }
   .p-head { padding: 14px var(--pad) 12px; }
-  .readout { grid-template-rows: repeat(8, auto); column-gap: 0; } /* single column: two columns clip at 390px */
-  .readout .rd:nth-child(5) { border-top: 1px solid var(--line); }
+  .readout { grid-template-rows: repeat(10, auto); column-gap: 0; } /* single column: two columns clip at 390px */
+  .readout .rd:nth-child(6) { border-top: 1px solid var(--line); }
 
   /* map controls and the sim pill lift above the sheet when it is open */
   .leaflet-control-zoom { display: none; }  /* pinch zoom exists */

@@ -31,15 +31,30 @@ export function monthlyDaylengths(lat) {
   return MID_DOY.map(d => daylength(lat, d));
 }
 
+// UNEP (1997) Aridity Index classification: AI = P / ET0
+export function aridityClass(ai) {
+  if (ai == null || !Number.isFinite(ai)) return null;
+  if (ai < 0.05) return "Hyper-arid";
+  if (ai < 0.20) return "Arid";
+  if (ai < 0.50) return "Semi-arid";
+  if (ai < 0.65) return "Dry sub-humid";
+  return "Humid";
+}
+
 // Aggregate Open-Meteo daily arrays into monthly climate normals.
 export function aggregateClimate(daily) {
   const sum = Array(12).fill(0), n = Array(12).fill(0);
-  const tminSum = Array(12).fill(0), precSum = Array(12).fill(0);
+  const tminSum = Array(12).fill(0), precSum = Array(12).fill(0), et0Sum = Array(12).fill(0);
   const years = Array.from({ length: 12 }, () => new Set());
+  let hasET0 = false;
   let absMin = Infinity;
   for (let i = 0; i < daily.time.length; i++) {
     const m = +daily.time[i].slice(5, 7) - 1;
     precSum[m] += daily.precipitation_sum[i] ?? 0; // precip counts even when temp has gaps
+    if (daily.et0_fao_evapotranspiration) {
+      const et = daily.et0_fao_evapotranspiration[i];
+      if (et != null) { et0Sum[m] += et; hasET0 = true; }
+    }
     years[m].add(daily.time[i].slice(0, 4));
     const t = daily.temperature_2m_mean[i];
     if (t == null) continue;
@@ -51,15 +66,24 @@ export function aggregateClimate(daily) {
   const tavg = sum.map((s, m) => s / n[m]);
   const tmin = tminSum.map((s, m) => s / n[m]);
   const prec = precSum.map((s, m) => s / years[m].size); // mean monthly total, mm
+  const et0 = hasET0 ? et0Sum.map((s, m) => s / years[m].size) : null;
+  const annualRain = prec.reduce((a, b) => a + b, 0);
+  const annualET0 = et0 ? et0.reduce((a, b) => a + b, 0) : null;
+  const waterBalance = annualET0 != null ? annualRain - annualET0 : null;
+  const ai = annualET0 != null && annualET0 > 0 ? annualRain / annualET0 : null;
   const meanOf = arr => {
     const v = (arr ?? []).filter(x => x != null);
     return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
   };
   const radMJ = meanOf(daily.shortwave_radiation_sum);
   return {
-    tavg, tmin, prec,
+    tavg, tmin, prec, et0,
     absMin: absMin === Infinity ? null : absMin,
-    annualRain: prec.reduce((a, b) => a + b, 0),
+    annualRain,
+    annualET0,
+    waterBalance,
+    ai,
+    aridity: aridityClass(ai),
     meanTemp: tavg.reduce((a, b) => a + b, 0) / 12,
     rad: radMJ == null ? null : radMJ / 3.6, // kWh/m2/day
     rh: meanOf(daily.relative_humidity_2m_mean),

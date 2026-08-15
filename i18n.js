@@ -185,6 +185,15 @@ const PT = {
   "Search a species: bean, oak, Quercus...": "Buscar espécie: feijão, ipê, Quercus...",
   "Nothing in the species base matches “{q}”.": "Nada na base de espécies bate com “{q}”.",
   "recorded as invasive here; not recommended": "com registro de invasora aqui; não recomendada",
+  "water balance": "balanço hídrico",
+  "aridity": "aridez",
+  "net annual water balance (precipitation minus reference evapotranspiration)": "balanço hídrico anual líquido (precipitação menos evapotranspiração de referência)",
+  "UNEP Aridity Index (P / ET₀)": "Índice de Aridez do PNUMA (P / ET₀)",
+  "Hyper-arid": "Hiperárido",
+  "Arid": "Árido",
+  "Semi-arid": "Semiárido",
+  "Dry sub-humid": "Subúmido seco",
+  "Humid": "Úmido",
 };
 
 const ES = {
@@ -358,6 +367,15 @@ const ES = {
   "Search a species: bean, oak, Quercus...": "Buscar especie: frijol, roble, Quercus...",
   "Nothing in the species base matches “{q}”.": "Nada en la base de especies coincide con “{q}”.",
   "recorded as invasive here; not recommended": "registrada como invasora aquí; no recomendada",
+  "water balance": "balance hídrico",
+  "aridity": "aridez",
+  "net annual water balance (precipitation minus reference evapotranspiration)": "balance hídrico anual neto (precipitación menos evapotranspiración de referencia)",
+  "UNEP Aridity Index (P / ET₀)": "Índice de Aridez del PNUMA (P / ET₀)",
+  "Hyper-arid": "Hiperárido",
+  "Arid": "Árido",
+  "Semi-arid": "Semiárido",
+  "Dry sub-humid": "Subhúmedo seco",
+  "Humid": "Húmedo",
 };
 
 const FR = {
@@ -531,6 +549,15 @@ const FR = {
   "Search a species: bean, oak, Quercus...": "Chercher une espèce : haricot, chêne, Quercus...",
   "Nothing in the species base matches “{q}”.": "Rien dans la base d'espèces ne correspond à « {q} ».",
   "recorded as invasive here; not recommended": "recensée comme envahissante ici ; non recommandée",
+  "water balance": "bilan hydrique",
+  "aridity": "aridité",
+  "net annual water balance (precipitation minus reference evapotranspiration)": "bilan hydrique annuel net (précipitations moins évapotranspiration de référence)",
+  "UNEP Aridity Index (P / ET₀)": "Indice d'aridité du PNUE (P / ET₀)",
+  "Hyper-arid": "Hyper-aride",
+  "Arid": "Aride",
+  "Semi-arid": "Semi-aride",
+  "Dry sub-humid": "Subhumide sec",
+  "Humid": "Humide",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -776,6 +803,15 @@ const ZH = {
   "Search a species: bean, oak, Quercus...": "搜索物种：豆、栎树、Quercus…",
   "Nothing in the species base matches “{q}”.": "物种库中没有与“{q}”匹配的结果。",
   "recorded as invasive here; not recommended": "在此有入侵记录；不推荐",
+  "water balance": "水分平衡",
+  "aridity": "干燥度",
+  "net annual water balance (precipitation minus reference evapotranspiration)": "年净水分平衡（降水量减去参考蒸散量）",
+  "UNEP Aridity Index (P / ET₀)": "联合国环境署干燥度指数 (P / ET₀)",
+  "Hyper-arid": "极端干旱",
+  "Arid": "干旱",
+  "Semi-arid": "半干旱",
+  "Dry sub-humid": "半干旱半湿润",
+  "Humid": "湿润",
 };
 const JA = {
   "Analyze": "分析する",
@@ -1019,6 +1055,15 @@ const JA = {
   "Search a species: bean, oak, Quercus...": "種を検索：マメ、ナラ、Quercus…",
   "Nothing in the species base matches “{q}”.": "種データベースに「{q}」に一致するものはありません。",
   "recorded as invasive here; not recommended": "この地域で侵略的と記録されており、推奨されません",
+  "water balance": "水収支",
+  "aridity": "乾燥度",
+  "net annual water balance (precipitation minus reference evapotranspiration)": "年間純水収支（降水量から基準蒸発散量を引いた値）",
+  "UNEP Aridity Index (P / ET₀)": "UNEP乾燥度指数 (P / ET₀)",
+  "Hyper-arid": "極乾燥",
+  "Arid": "乾燥",
+  "Semi-arid": "半乾燥",
+  "Dry sub-humid": "乾燥亜湿潤",
+  "Humid": "湿潤",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1262,6 +1307,15 @@ const RU = {
   "Search a species: bean, oak, Quercus...": "Поиск вида: фасоль, дуб, Quercus...",
   "Nothing in the species base matches “{q}”.": "В базе видов ничего не найдено по запросу «{q}».",
   "recorded as invasive here; not recommended": "здесь отмечен как инвазивный; не рекомендуется",
+  "water balance": "водный баланс",
+  "aridity": "аридность",
+  "net annual water balance (precipitation minus reference evapotranspiration)": "чистый годовой водный баланс (осадки минус эталонная эвапотранспирация)",
+  "UNEP Aridity Index (P / ET₀)": "Индекс аридности ЮНЕП (P / ET₀)",
+  "Hyper-arid": "Гипераридный",
+  "Arid": "Аридный",
+  "Semi-arid": "Полуаридный",
+  "Dry sub-humid": "Сухой субгумидный",
+  "Humid": "Гумидный",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -1505,6 +1559,15 @@ const ID = {
   "Search a species: bean, oak, Quercus...": "Cari spesies: kacang, ek, Quercus...",
   "Nothing in the species base matches “{q}”.": "Tidak ada yang cocok dengan “{q}” di basis spesies.",
   "recorded as invasive here; not recommended": "tercatat invasif di sini; tidak direkomendasikan",
+  "water balance": "neraca air",
+  "aridity": "ariditas",
+  "net annual water balance (precipitation minus reference evapotranspiration)": "neraca air tahunan bersih (curah hujan dikurangi evapotranspirasi acuan)",
+  "UNEP Aridity Index (P / ET₀)": "Indeks Ariditas UNEP (P / ET₀)",
+  "Hyper-arid": "Hiper-arid",
+  "Arid": "Arid",
+  "Semi-arid": "Semi-arid",
+  "Dry sub-humid": "Sub-humid kering",
+  "Humid": "Humid",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -1748,6 +1811,15 @@ const HI = {
   "Search a species: bean, oak, Quercus...": "प्रजाति खोजें: सेम, बलूत, Quercus...",
   "Nothing in the species base matches “{q}”.": "प्रजाति आधार में “{q}” से कोई मेल नहीं।",
   "recorded as invasive here; not recommended": "यहाँ आक्रामक दर्ज; अनुशंसित नहीं",
+  "water balance": "जल संतुलन",
+  "aridity": "शुष्कता",
+  "net annual water balance (precipitation minus reference evapotranspiration)": "शुद्ध वार्षिक जल संतुलन (वर्षा घटाव संदर्भ वाष्पोत्सर्जन)",
+  "UNEP Aridity Index (P / ET₀)": "UNEP शुष्कता सूचकांक (P / ET₀)",
+  "Hyper-arid": "अति-शुष्क",
+  "Arid": "शुष्क",
+  "Semi-arid": "अर्ध-शुष्क",
+  "Dry sub-humid": "शुष्क उप-आर्द्र",
+  "Humid": "आर्द्र",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -1991,6 +2063,15 @@ const DE = {
   "Search a species: bean, oak, Quercus...": "Art suchen: Bohne, Eiche, Quercus...",
   "Nothing in the species base matches “{q}”.": "Nichts in der Artenbasis passt zu „{q}“.",
   "recorded as invasive here; not recommended": "hier als invasiv erfasst; nicht empfohlen",
+  "water balance": "Wasserbilanz",
+  "aridity": "Aridität",
+  "net annual water balance (precipitation minus reference evapotranspiration)": "jährliche Nettowasserbilanz (Niederschlag abzüglich Referenz-Evapotranspiration)",
+  "UNEP Aridity Index (P / ET₀)": "UNEP-Ariditätsindex (P / ET₀)",
+  "Hyper-arid": "Hyperarid",
+  "Arid": "Arid",
+  "Semi-arid": "Semiarid",
+  "Dry sub-humid": "Trocken subhumid",
+  "Humid": "Humid",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -2234,6 +2315,15 @@ const SW = {
   "Search a species: bean, oak, Quercus...": "Tafuta spishi: maharagwe, mwaloni, Quercus...",
   "Nothing in the species base matches “{q}”.": "Hakuna kinacholingana na “{q}” katika hifadhidata ya spishi.",
   "recorded as invasive here; not recommended": "imerekodiwa kuwa vamizi hapa; haipendekezwi",
+  "water balance": "uwiano wa maji",
+  "aridity": "ukame",
+  "net annual water balance (precipitation minus reference evapotranspiration)": "uwiano halisi wa maji kwa mwaka (mvua ikipunguzwa uvukizi wa rejeleo)",
+  "UNEP Aridity Index (P / ET₀)": "Kielezo cha Ukame cha UNEP (P / ET₀)",
+  "Hyper-arid": "Ukame uliokithiri",
+  "Arid": "Ukame",
+  "Semi-arid": "Nusu ukame",
+  "Dry sub-humid": "Kavu kiasi",
+  "Humid": "Unyevu",
 };
 
 const TR = {
@@ -2478,6 +2568,15 @@ const TR = {
   "Search a species: bean, oak, Quercus...": "Tür ara: fasulye, meşe, Quercus...",
   "Nothing in the species base matches “{q}”.": "Tür veritabanında “{q}” ile eşleşen bir şey yok.",
   "recorded as invasive here; not recommended": "burada istilacı olarak kayıtlı; önerilmez",
+  "water balance": "su dengesi",
+  "aridity": "kuraklık",
+  "net annual water balance (precipitation minus reference evapotranspiration)": "yıllık net su dengesi (yağış eksi referans evapotranspirasyon)",
+  "UNEP Aridity Index (P / ET₀)": "UNEP Kuraklık İndeksi (P / ET₀)",
+  "Hyper-arid": "Aşırı kurak",
+  "Arid": "Kurak",
+  "Semi-arid": "Yarı kurak",
+  "Dry sub-humid": "Yarı kurak-nemli",
+  "Humid": "Nemli",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW, tr: TR };
