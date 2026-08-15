@@ -77,6 +77,32 @@ function dayClasses(d) {
   return c;
 }
 
+// Topographic Drainage & Hillslope Aeration Constants (FAO Soils Bulletin 52 / Darcy Hillslope Flux)
+// - Flat ground (<= 2 deg / ~3.5%): water ponding causes root hypoxia/anoxia.
+// - Hillsides (2-18 deg): gravity drainage continuously draws water downward,
+//   expanding the effective soil aeration ceiling and delaying root hypoxia.
+// - Steep slopes (>= 18 deg): gravitational drainage reaches physical plateau.
+const SLOPE_FLAT_DEG = 2.0;    // FAO S1 flat boundary: zero excess drainage expansion
+const SLOPE_REF_DEG = 8.0;     // Reference slope scale (~14% gradient)
+const MAX_SLOPE_FACTOR = 2.0;  // Maximum expansion of the (RMAX - ROPMX) tolerance band
+
+/**
+ * Calculates rain score for perennials on sloped terrain.
+ * On flat ground, excess precipitation above ROPMX saturates soil toward RMAX.
+ * On hillsides, lateral gravity drainage expands the (RMAX - ROPMX) tolerance band proportionally.
+ */
+function scorePerennialRain(annualRain, [rmin, ropmn, ropmx, rmax], slope) {
+  if (annualRain <= ropmx) {
+    return trap(annualRain, rmin, ropmn, ropmx, rmax);
+  }
+  const deg = slope ?? 0;
+  const slopeFactor = deg > SLOPE_FLAT_DEG
+    ? Math.min(MAX_SLOPE_FACTOR, (deg - SLOPE_FLAT_DEG) / SLOPE_REF_DEG)
+    : 0;
+  const effectiveRmax = ropmx + (rmax - ropmx) * (1 + slopeFactor);
+  return trap(annualRain, rmin, ropmn, ropmx, effectiveRmax);
+}
+
 // site: {tavg[12], tmin[12], prec[12], ph|null, lat}
 // ev (optional): { native: true } = the species' own mapped/regional native
 // range covers this exact site, which is evidence the regime is survivable
@@ -101,29 +127,16 @@ export function scoreSpecies(sp, site, ev = null) {
 
   let temp = 0, rain = 0, best = 0, bestScore = -1;
   if (isPerennial) {
-    // Perennials score rain on annual precipitation
+    // Perennials score rain on annual precipitation adjusted for hillside gravity drainage
     const annualRain = site.prec.reduce((a, b) => a + b, 0);
-    const [rmin, ropmn, ropmx, rmax] = sp.rain;
-    if (annualRain < ropmn) {
-      rain = trap(annualRain, rmin, ropmn, ropmx, rmax);
-    } else if (annualRain <= ropmx) {
-      rain = 1;
-    } else {
-      // Excess rain above optimal maximum:
-      // On flat ground (slope ~0), excessive rain pools and causes root hypoxia/rot (bounded by rmax).
-      // As terrain slope increases, gravity drainage sheds surface runoff, expanding the effective rain
-      // ceiling smoothly up to 2.5x ROPMX on steep mountain slopes, while still penalizing extreme deluges.
-      const slopeFactor = site.terrain?.slope != null ? Math.min(1.5, site.terrain.slope / 10) : 0.5;
-      const drainCeiling = Math.max(rmax, ropmx * (1 + slopeFactor));
-      rain = trap(annualRain, rmin, ropmn, ropmx, drainCeiling);
-    }
+    rain = scorePerennialRain(annualRain, sp.rain, site.terrain?.slope);
 
-    for (let s = 0; s < 12; s++) {
+    const sMax = Gt === 12 ? 1 : 12;
+    for (let s = 0; s < sMax; s++) {
       let tsum = 0;
       for (let k = 0; k < Gt; k++) tsum += site.tavg[(s + k) % 12];
       const t = trap(tsum / Gt, ...sp.temp);
       if (t > bestScore) { bestScore = t; temp = t; best = s; }
-      if (Gt === 12) break;
     }
   } else {
     for (let s = 0; s < 12; s++) {
