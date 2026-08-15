@@ -230,6 +230,22 @@ assert.equal(scoreSpecies(typha, flat).factors.drain, null, "flat ground leaves 
 assert.ok(!by("Quercus robur").wet, "oak is not wetland-flagged");
 close(scoreSpecies(qr, { ...berlin, terrain: { slope: 6 } }).score, qrBerlin.score, 0.001, "slope does not touch non-wetland species");
 
+// tea in Rize fixture (field report, Turkish tea belt 2026-08):
+// KTMP (0 C shoot kill) must not be tested against winter dormant record lows;
+// Camellia sinensis survives winter under snow and scores well in Rize.
+const rize = {
+  lat: 40.97,
+  tavg: [6.8, 7.0, 8.5, 12.0, 16.5, 20.8, 23.2, 23.5, 20.2, 16.2, 12.0, 8.5],
+  tmin: [3.8, 4.0, 5.2, 8.5, 13.0, 17.2, 20.0, 20.2, 16.8, 12.8, 8.8, 5.2],
+  prec: [173, 115, 160, 101, 133, 177, 225, 247, 267, 270, 180, 168],
+  ph: 5.0, absMin: -6.0, terrain: { slope: 15 }
+};
+const tea = by("Camellia sinensis");
+assert.ok(tea, "tea present");
+const teaRize = scoreSpecies(tea, rize);
+assert.ok(teaRize.factors.frost !== 0, "tea in Rize is not killed by dormant winter record low");
+assert.ok(teaRize.score > 0.3, `tea scores suitable in Rize heartland: ${teaRize.score}`);
+
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");

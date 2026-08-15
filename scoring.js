@@ -85,30 +85,48 @@ export function scoreSpecies(sp, site, ev = null) {
   const [gmin, gmax] = sp.cycle ?? [null, null];
   const G = gmin == null && gmax == null ? 12 :
     Math.max(1, Math.min(12, Math.round(((gmin ?? gmax) + (gmax ?? gmin)) / 60)));
-  // A TREE declaring deep dormant hardiness (KTMPR <= -10) does not grow
-  // through its winter: its TEMPERATURE is scored on the growing season
-  // (months averaging >= 5 C, capped by its own cycle), otherwise a
-  // 12-month mean blends saskatoon's Winnipeg summers with -20 C januaries
-  // and kills it in the town it was named after. Its RAIN is the full year
-  // (temperate trees live on stored/annual water, and sugar maple's 6-month
-  // envelope would starve in Toronto on window rain alone). Herbaceous
-  // hardy crops keep the classic cycle-window scoring.
-  const dormantTree = sp.tree && (sp.ktmpr ?? 99) <= -10;
+  const isPerennial = !sp.annual || sp.tree || sp.porte === "tree" || sp.porte === "shrub" || sp.porte === "vine";
+  // A dormant/deciduous perennial does not grow through its winter: its TEMPERATURE
+  // is scored on the growing season (months averaging >= 5 C, capped by its cycle),
+  // otherwise a 12-month mean blends saskatoon's Winnipeg summers with -20 C januaries.
+  // Its RAIN is the full hydrological year (perennials survive on stored soil water
+  // replenished year-round). Herbaceous annual crops keep cycle-window scoring.
+  const isDormant = isPerennial && (sp.decid || (sp.ktmpr ?? 99) <= -10 || (sp.gclass?.startsWith("temperate") && G < 12));
   let Gt = G;
-  if (dormantTree) {
+  if (isDormant) {
     const warm = site.tavg.filter(t => t >= 5).length;
     Gt = Math.min(G, Math.max(3, warm));
     if (G === 12) Gt = Math.min(12, Math.max(3, warm));
   }
 
-  let temp = 0, rain = 0, best = 0, bestScore = -1;
-  if (dormantTree) { // annual rain, warm-season temperature, decoupled
-    rain = trap(site.prec.reduce((a, b) => a + b, 0), ...sp.rain);
+  let temp = 0, rain = 0, best = 0, bestScore = -1, bestTsum = -Infinity;
+  if (isPerennial) {
+    // Perennials score rain on annual precipitation
+    const annualRain = site.prec.reduce((a, b) => a + b, 0);
+    const [rmin, ropmn, ropmx, rmax] = sp.rain;
+    if (annualRain < ropmn) {
+      rain = trap(annualRain, rmin, ropmn, ropmx, rmax);
+    } else if (annualRain <= ropmx) {
+      rain = 1;
+    } else {
+      // Excess rain above optimal maximum:
+      // On sloped ground (slope >= 2), gravity provides drainage and sheds excess runoff.
+      // On flat/unmeasured ground, soft decay allows tolerance in humid belts without hard zero.
+      if (site.terrain?.slope != null && site.terrain.slope >= 2) {
+        rain = 1;
+      } else {
+        rain = trap(annualRain, rmin, ropmn, ropmx, Math.max(rmax, ropmx * 1.5));
+      }
+    }
+
     for (let s = 0; s < 12; s++) {
       let tsum = 0;
       for (let k = 0; k < Gt; k++) tsum += site.tavg[(s + k) % 12];
       const t = trap(tsum / Gt, ...sp.temp);
-      if (t > bestScore) { bestScore = t; temp = t; best = s; }
+      if (t > bestScore || (t === bestScore && tsum > bestTsum)) {
+        bestScore = t; bestTsum = tsum; temp = t; best = s;
+      }
+      if (Gt === 12) break;
     }
   } else {
     for (let s = 0; s < 12; s++) {
@@ -134,31 +152,37 @@ export function scoreSpecies(sp, site, ev = null) {
   // native right here beats the envelope: the regime is survivable by observation
   if (!annual && ev?.native) annual = 1;
 
-  // Frost: dormant-season hardiness (KTMPR), else early-growth KTMP; species
-  // with no cold data at all default to frost-tender when tropical and to
-  // "unknown" (null, not scored) when temperate. Kill on the dismo monthly
-  // test OR when the observed 10-year record low undercuts the threshold.
-  const kt = sp.ktmpr ?? sp.ktmp ?? (sp.gclass?.startsWith("tropical") ? 0 : null);
-  // Reanalysis minima run warm against radiative valley/highland frost: an
-  // ERA5 grid cell can report a +1 C record low where growers see real
-  // frosts (caught by an agronomist in highland Bolivia, 2026-08). When the
-  // observed record low sits within FROST_MARGIN of the kill threshold, the
-  // species is not killed but takes a half penalty and wears a caveat.
+  // Frost semantics:
+  // 1. Annual crops live only during their growing window and never meet the winter.
+  // 2. Perennials are tested against dormant-season hardiness (KTMPR) for winter extremes.
+  // 3. Tropical perennials without cold data default to frost-tender (0 C).
+  // 4. Temperate perennials lacking KTMPR leave winter hardiness unscored (null);
+  //    we never test succulent shoot KTMP against winter 10-year record lows.
   const FROST_MARGIN = 4;
-  let frost;
-  if (kt == null) frost = null;
-  else if (sp.annual && G < 12) {
-    // An annual crop lives inside its growing window and never meets the
-    // winter: frost is the dismo per-window test on the window's own months.
-    // Year-round record lows were zeroing beans, lettuce and maize in every
-    // cold-winter climate they are grown in (caught via Turkish user feedback).
-    let wmin = Infinity;
-    for (let k = 0; k < G; k++) wmin = Math.min(wmin, site.tmin[(best + k) % 12]);
-    frost = wmin < kt + 4 ? 0 : 1;
+  let frost = null;
+  if (sp.annual && G < 12) {
+    const kt = sp.ktmp ?? sp.ktmpr ?? (sp.gclass?.startsWith("tropical") ? 0 : null);
+    if (kt != null) {
+      let wmin = Infinity;
+      for (let k = 0; k < G; k++) wmin = Math.min(wmin, site.tmin[(best + k) % 12]);
+      frost = wmin < kt + 4 ? 0 : 1;
+    }
   } else {
-    frost = (Math.min(...site.tmin) < kt + 4 || (site.absMin != null && site.absMin < kt) ? 0 :
-      (site.absMin != null && site.absMin - FROST_MARGIN <= kt ? 0.5 : 1));
+    const kt = sp.ktmpr ?? (sp.gclass?.startsWith("tropical") ? 0 : null);
+    if (kt != null) {
+      const minMonthly = Math.min(...site.tmin);
+      if (minMonthly < kt + 4 || (site.absMin != null && site.absMin < kt - FROST_MARGIN)) {
+        // Monthly winter is chronically too cold OR 10-year record low severely undercuts hardiness: absolute kill
+        frost = 0;
+      } else if (site.absMin != null && site.absMin - FROST_MARGIN <= kt) {
+        // 10-year grid minimum is within margin of kill threshold: takes a half penalty with caveat
+        frost = 0.5;
+      } else {
+        frost = 1;
+      }
+    }
   }
+
   // EcoCrop hardiness fields are unreliable for wild cold-climate trees
   // (sugar maple carries KTMPR -18 and would die in Toronto): when the
   // species is native to this exact site, a frost kill demotes to a half
