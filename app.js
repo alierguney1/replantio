@@ -29,14 +29,14 @@ L.tileLayer("https://basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
   maxZoom: 20, attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
 }).addTo(map);
 
-let SPECIES = [], NATIVES = {}, NAMES_PT = {}, SOURCING = null, INVASIVES = {}, NATIVES_L3 = {}, L3_REGIONS = {}, NATIVES_GEO = {};
+let SPECIES = [], NATIVES = {}, NAMES_LOCAL = {}, SOURCING = null, INVASIVES = {}, NATIVES_L3 = {}, L3_REGIONS = {}, NATIVES_GEO = {};
 const speciesReady = Promise.all([
   fetch("data/species.json").then(r => r.json()).then(j => { SPECIES = j; }),
   fetch("data/natives.json").then(r => r.json()).then(j => { NATIVES = j; }).catch(() => {}), // optional layer
   // per-language species names, loaded only for the active language
   // (architecture from PR #3 by @alierguney1; only sourced dictionaries ship:
-  // names_pt today, others as real vernacular data lands)
-  fetch(`data/names_${LANG}.json`).then(r => r.ok ? r.json() : {}).then(j => { NAMES_PT = j; }).catch(() => {}),
+  // names_pt, names_tr, etc.)
+  fetch(`data/names_${LANG}.json`).then(r => r.ok ? r.json() : {}).then(j => { NAMES_LOCAL = j; }).catch(() => {}),
   fetch("data/sourcing.json").then(r => r.json()).then(j => { SOURCING = j; }).catch(() => {}), // optional layer
   fetch("data/invasives.json").then(r => r.json()).then(j => { INVASIVES = j; }).catch(() => {}), // optional layer
   fetch("data/natives_l3.json").then(r => r.json()).then(j => { NATIVES_L3 = j; }).catch(() => {}), // optional layer
@@ -114,7 +114,7 @@ const track = (name, data) => { try { window.va?.("event", { name, data }); } ca
 
 // display name: Local vernacular when the UI is in a supported language (PT, TR, etc.) and we have a sourced one;
 // in non-EN the fallback is always the binomial, never an English trade name
-const localName = sp => NAMES_PT[sp.id]?.nome ?? null;
+const localName = sp => NAMES_LOCAL[sp.id]?.nome ?? null;
 const dispName = sp => {
   if (LANG !== "en") {
     const n = localName(sp);
@@ -122,8 +122,8 @@ const dispName = sp => {
   }
   return sp.common === sp.sci ? `<i>${sp.sci}</i>` : cap(sp.common);
 };
-// what a regional store search box wants: Brazilian vernacular if in BR, else the binomial
-const shopTerm = sp => (current?.cc === "BR" && LANG === "pt" ? localName(sp) : null) ?? sp.sci;
+// what a regional store search box wants: regional vernacular if in BR/TR, else the binomial
+const shopTerm = sp => ((current?.cc === "BR" && LANG === "pt") || (current?.cc === "TR" && LANG === "tr") ? localName(sp) : null) ?? sp.sci;
 // plain-text display name (no markup), for the sim pill and exports
 const plainName = sp => {
   if (LANG !== "en") { const n = localName(sp); return n ? cap(n) : sp.sci; }
@@ -742,12 +742,12 @@ const critIsDefault = () => current.filter === "all" && !current.matMax && !curr
 // species search: "does X grow here?" is a question, so it overrides the
 // chips (but never the guardrails: invasives answer with the reason, not
 // silence) and surfaces zero-score species whose card explains the why.
-const deacc = t => (t ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+const deacc = t => (t ?? "").replace(/İ/g, "i").replace(/I/g, "i").replace(/ı/g, "i").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 function searchMatches(q) {
   const needle = deacc(q.trim());
   if (!needle) return null;
   return current.scored.filter(s => {
-    const e = NAMES_PT[s.sp.id];
+    const e = NAMES_LOCAL[s.sp.id];
     return [e?.nome, ...(e?.aka ?? []), s.sp.common, s.sp.sci, ...(s.sp.aka ?? [])]
       .some(n => n && deacc(n).includes(needle));
   }).slice(0, 30);
@@ -824,7 +824,7 @@ function renderResults() {
       ${rd(tr("elevation"), `${fmt(site.elevation)} m`)}
       ${rd(tr("daylength"), `${fmt(Math.min(...dls), 1)}&ndash;${fmt(Math.max(...dls), 1)} h`)}
       ${rd(tr("record low"), site.absMin != null ? `${fmt(site.absMin)} °C` : tr("n/a"))}
-      ${rd(tr("sun"), site.terrain?.radFactor != null && Math.abs(site.terrain.radFactor - 1) >= 0.03 ? `${fmt(site.radSlope ?? site.rad, 1)} ${tr("kWh/m²·day")} <span style="font-size:10px;opacity:0.8">(${site.terrain.radFactor >= 1 ? "+" : ""}${Math.round((site.terrain.radFactor - 1) * 100)}% ${tr("on slope")})</span>` : (site.rad != null ? `${fmt(site.rad, 1)} ${tr("kWh/m²·day")}` : tr("n/a")), tr("mean daily shortwave radiation, all weather included"))}
+      ${rd(tr("sun"), site.terrain?.radFactor != null && Math.abs(site.terrain.radFactor - 1) >= 0.03 ? `${fmt(site.radSlope ?? site.rad, 1)} ${tr("kWh/m²·day")} <span class="adm">(${site.terrain.radFactor >= 1 ? "+" : ""}${Math.round((site.terrain.radFactor - 1) * 100)}% ${tr("on slope")})</span>` : (site.rad != null ? `${fmt(site.rad, 1)} ${tr("kWh/m²·day")}` : tr("n/a")), tr("mean daily shortwave radiation, all weather included"))}
       ${rd(tr("humidity"), site.rh != null ? `${fmt(site.rh)}%` : tr("n/a"))}
       ${rd(tr("cloud"), site.cloud != null ? `${fmt(site.cloud)}%` : tr("n/a"), tr("high humidity plus high cloud cover marks fog-prone sites"))}
       ${rd(tr("slope"), site.terrain ? `${fmt(site.terrain.slope)}°${site.terrain.facing ? ` ${tr("facing")} ` + tr(site.terrain.facing) : ""}` : tr("n/a"))}
@@ -1155,8 +1155,10 @@ function sourcingMarkup(sp) {
   if (!shops.length && !dirs.length) return "";
   // BR searches by vernacular, US by English common name; everywhere else the
   // stores index botanical names, so the binomial is the term that actually hits
-  const term = cc === "BR" ? shopTerm(sp) : cc === "US" ? (sp.common !== sp.sci ? cap(sp.common) : sp.sci) : sp.sci;
-  const kindWord = sp.tree || sp.porte === "shrub" ? "muda" : "sementes";
+  const term = cc === "BR" || cc === "TR" ? shopTerm(sp) : cc === "US" ? (sp.common !== sp.sci ? cap(sp.common) : sp.sci) : sp.sci;
+  const kindWord = LANG === "pt" ? (sp.tree || sp.porte === "shrub" ? "muda" : "sementes") :
+    LANG === "tr" ? (sp.tree || sp.porte === "shrub" ? "fidan" : "tohum") :
+    (sp.tree || sp.porte === "shrub" ? "seedling" : "seeds");
   // verified product links first: only stores that provably stock THIS species
   const kind = sp.tree || sp.porte === "shrub" ? "muda" : "semente";
   const prod = SOURCING.products?.[sp.id] ?? {};

@@ -370,6 +370,24 @@ const olive = by("Olea europaea");
 const oliveSeville = scoreSpecies(olive, sevilleSite);
 assert.ok(oliveSeville.score > 0.7, `olive thrives in Mediterranean Seville: ${oliveSeville.score}`);
 
+// --- search deaccentuation (multilingual accent folding & Turkish dotless-i)
+const deacc = t => (t ?? "").replace(/İ/g, "i").replace(/I/g, "i").replace(/ı/g, "i").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+assert.equal(deacc("fındık"), "findik");
+assert.equal(deacc("FINDIK"), "findik");
+assert.equal(deacc("mısır"), "misir");
+assert.equal(deacc("MISIR"), "misir");
+assert.equal(deacc("çerez"), "cerez");
+assert.equal(deacc("göknar"), "goknar");
+assert.equal(deacc("açaí"), "acai");
+assert.equal(deacc("Ipê"), "ipe");
+assert.ok(deacc("fındık").includes(deacc("findik")), "Turkish search matches across dotted/dotless keyboards");
+
+// Southern Hemisphere slope solar (July winter in Brazil/Australia: North-facing slope gets elevated sun)
+const shNorthFactor = slopeSolarFactor(-30, 20, 0, 196); // July 15, DOY 196
+const shSouthFactor = slopeSolarFactor(-30, 20, 180, 196);
+assert.ok(shNorthFactor > 1.2, `30S winter north slope gets solar boost: ${shNorthFactor.toFixed(2)}`);
+assert.ok(shSouthFactor < 0.8, `30S winter south slope takes topographic shade: ${shSouthFactor.toFixed(2)}`);
+
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");
