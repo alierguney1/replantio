@@ -820,7 +820,6 @@ function renderResults() {
       ${rd(tr("humidity"), site.rh != null ? `${fmt(site.rh)}%` : tr("n/a"))}
       ${rd(tr("cloud"), site.cloud != null ? `${fmt(site.cloud)}%` : tr("n/a"), tr("high humidity plus high cloud cover marks fog-prone sites"))}
       ${rd(tr("slope"), site.terrain ? `${fmt(site.terrain.slope)}°${site.terrain.facing ? ` ${tr("facing")} ` + tr(site.terrain.facing) : ""}` : tr("n/a"))}
-      ${rd(tr("water balance"), site.waterBalance != null ? `${site.waterBalance >= 0 ? "+" : ""}${fmt(site.waterBalance)} mm` : tr("n/a"), tr("net annual water balance (precipitation minus reference evapotranspiration)"))}
       ${rd(tr("aridity"), site.aridity != null ? `${tr(site.aridity)} <span class="adm">(AI: ${fmt(site.ai, 2)})</span>` : tr("n/a"), tr("UNEP Aridity Index (P / ET₀)"))}
     </div>
     <div class="footnote" style="margin-top:10px">
