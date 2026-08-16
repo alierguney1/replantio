@@ -553,8 +553,8 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
     border-radius: 18px 18px 0 0;
   }
   .p-head { padding: 14px var(--pad) 12px; }
-  .readout { grid-template-rows: repeat(10, auto); column-gap: 0; } /* single column: two columns clip at 390px */
-  .readout .rd:nth-child(6) { border-top: 1px solid var(--line); }
+  .readout { grid-template-rows: repeat(9, auto); column-gap: 0; } /* single column: two columns clip at 390px */
+  .readout .rd:first-child { border-top: 0; }
 
   /* map controls and the sim pill lift above the sheet when it is open */
   .leaflet-control-zoom { display: none; }  /* pinch zoom exists */
