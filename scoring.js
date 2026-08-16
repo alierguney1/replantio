@@ -94,6 +94,7 @@ export function monthlySlopeSolarFactors(latDeg, slopeDeg, aspectDeg) {
 
 // Aggregate Open-Meteo daily arrays into monthly climate normals.
 export function aggregateClimate(daily) {
+  if (!daily?.time?.length) throw new Error("incomplete climate series (no daily records)");
   const sum = Array(12).fill(0), n = Array(12).fill(0);
   const tminSum = Array(12).fill(0), precSum = Array(12).fill(0);
   const years = Array.from({ length: 12 }, () => new Set());
