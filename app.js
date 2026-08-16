@@ -1079,7 +1079,9 @@ function windowVals(s) {
     const m = (start + k) % 12;
     tsum += current.site.tavg[m]; rtot += current.site.prec[m];
   }
-  return { wt: tsum / months, wr: rtot };
+  const isPerennial = !s.sp.annual;
+  const wr = isPerennial ? (current.site.annualRain ?? current.site.prec.reduce((a, b) => a + b, 0)) : rtot;
+  return { wt: tsum / months, wr };
 }
 
 // One figure, one month axis: temperature above the spine, rain hanging below.
