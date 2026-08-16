@@ -542,13 +542,14 @@ async function analyze(pts) {
     site.radSlope = agg.rad * avgFactor;
   }
   // native-evidence for the scorer: the species' polygon (Little) or regional
-  // (WCVP L3) range covers this exact point, so the local regime is survivable
+  // (WCVP L3 / Country) range covers this exact point, so the local regime is survivable
   const evL3 = L3_REGIONS[place?.cc]?.[place?.uf] ?? null;
   const evNative = sp => {
     const enc = NATIVES_GEO[sp.id], d = NATIVES_GEO._dominio;
     if (enc && d && c.lat >= d.lat[0] && c.lat <= d.lat[1] && c.lng >= d.lng[0] && c.lng <= d.lng[1])
       return geoInRange(enc, c.lat, c.lng);
-    return !!(evL3 && NATIVES_L3[sp.id]?.includes(evL3));
+    if (evL3) return !!NATIVES_L3[sp.id]?.includes(evL3);
+    return !!(place?.cc && NATIVES[sp.id]?.includes(place.cc));
   };
   const scored = SPECIES
     .map(sp => ({ sp, ...scoreSpecies(sp, site, { native: evNative(sp) }) }))

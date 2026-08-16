@@ -57,6 +57,16 @@ SPECIES_PATCH = {
         "lifo": "tree", "porte": "tree", "tree": True, "wood": "conifer",
         "uses": ["materials", "timber"],
     },
+    2246: { # Corylus avellana (European / Pontic hazelnut)
+        # Karadeniz/Pontic hazelnut thrives on natural volcanic acid soils (pH 4.8-5.5) and dormant winter cold (-15 C)
+        "ph": [4.5, 5.5, 7.0, 8.0],
+        "ktmpr": -15,
+    },
+    599: { # Camellia sinensis (Tea - var. sinensis)
+        # Small-leaved tea variety grown in Rize/Georgia/East Asia tolerates dormant frost (-10 C under snow) and acidic soils
+        "ktmpr": -10,
+        "ph": [4.0, 4.5, 6.0, 6.8],
+    },
     6633: { # Hedysarum pallidum
         "lifo": "herb", "porte": "herb", "tree": False, "annual": False,
         "uses": ["forage"],
@@ -241,11 +251,11 @@ def main():
             "family": (r["FAMNAME"] or "").split(":")[-1],
             "lifo": lifo_val,
             "uses": use_list,
-            "temp": [vals["TMIN"], vals["TOPMN"], vals["TOPMX"], vals["TMAX"]],
-            "rain": [vals["RMIN"], vals["ROPMN"], vals["ROPMX"], vals["RMAX"]],
-            "ph": ph,
-            "ktmp": vals["KTMP"],       # killing temp, early growth
-            "ktmpr": vals["KTMPR"],      # killing temp, dormant season
+            "temp": patch.get("temp", [vals["TMIN"], vals["TOPMN"], vals["TOPMX"], vals["TMAX"]]),
+            "rain": patch.get("rain", [vals["RMIN"], vals["ROPMN"], vals["ROPMX"], vals["RMAX"]]),
+            "ph": patch.get("ph", ph),
+            "ktmp": patch.get("ktmp", vals["KTMP"]),       # killing temp, early growth
+            "ktmpr": patch.get("ktmpr", vals["KTMPR"]),      # killing temp, dormant season
             # obligate wetland: EcoCrop absolute drainage tolerates ONLY saturated soil
             **({"wet": True} if (r.get("DRAR") or r.get("DRA") or "").strip() == "poorly (saturated >50% of year)" else {}),
             # annual-capable: frost is tested on the growing window, not the winter

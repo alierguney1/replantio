@@ -283,10 +283,10 @@ const rize = {
 };
 const tea = by("Camellia sinensis");
 assert.ok(tea, "tea present");
-const teaRize = scoreSpecies(tea, rize);
-assert.equal(teaRize.factors.frost, 0.5, "tea in Rize with absMin -4 C takes 0.5 caveat within FROST_MARGIN of KTMPR -5");
-assert.equal(scoreSpecies(tea, { ...rize, absMin: -6.0 }).factors.frost, 0, "tea with absMin -6 C undercutting KTMPR -5 is killed");
-assert.equal(scoreSpecies(tea, { ...rize, absMin: 0.0 }).factors.frost, 1, "tea with absMin 0 C well above KTMPR -5 passes with 1.0");
+const teaRize = scoreSpecies(tea, { ...rize, absMin: -8.0 });
+assert.equal(teaRize.factors.frost, 0.5, "tea in Rize with absMin -8 C takes 0.5 caveat within FROST_MARGIN of KTMPR -10");
+assert.equal(scoreSpecies(tea, { ...rize, absMin: -12.0 }).factors.frost, 0, "tea with absMin -12 C undercutting KTMPR -10 is killed");
+assert.equal(scoreSpecies(tea, { ...rize, absMin: -4.0 }).factors.frost, 1, "tea with absMin -4 C well above KTMPR -10 passes with 1.0");
 assert.ok(teaRize.score > 0.3, `tea scores suitable in Rize heartland: ${teaRize.score}`);
 
 // --- topographic slope solar radiation (Duffie-Beckman 2013 / Swift 1976)
