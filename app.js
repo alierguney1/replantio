@@ -1,4 +1,4 @@
-import { aggregateClimate, scoreSpecies, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors, maxSoilDepthCm } from "./scoring.js";
+import { aggregateClimate, scoreSpecies, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors, maxSoilDepthCm, aggregateSoilProfile } from "./scoring.js";
 import { DICTS, LANGS, NAMES, LOCALES, MONTHS_ALL } from "./i18n.js";
 import { CLASSES, projection, maturityYears, co2eKgPerTree, co2eTonsPerHa, height, dbhCm, crownDiameterM, crownDisplayM, standDisplay, STEMS_PER_HA } from "./growth.js";
 
@@ -409,16 +409,20 @@ async function fetchClimate(c, signal) {
 async function fetchSoil(c, signal) {
   try {
     const url = `https://rest.isric.org/soilgrids/v2.0/properties/query?lon=${c.lng.toFixed(4)}&lat=${c.lat.toFixed(4)}` +
-      `&property=phh2o&depth=0-5cm&depth=5-15cm&value=mean`;
-    const j = await (await fetch(url, { signal })).json();
-    const layer = j.properties?.layers?.find(l => l.name === "phh2o");
-    const THICKNESS = { "0-5cm": 5, "5-15cm": 10 };
-    let vsum = 0, wsum = 0;
-    for (const d of layer?.depths ?? []) {
-      const v = d.values.mean, w = THICKNESS[d.label] ?? 0;
-      if (v != null && w) { vsum += v * w; wsum += w; }
-    }
-    return { phh2o: wsum ? (vsum / wsum) / layer.unit_measure.d_factor : null };
+      `&property=phh2o&property=clay&property=sand&property=silt&property=soc&property=bdod&property=cec&property=cfvo` +
+      `&depth=0-5cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&depth=100-200cm&value=mean`;
+    const res = await fetch(url, { signal });
+    if (!res.ok) return null;
+    const j = await res.json();
+    const layers = j.properties?.layers;
+    if (!Array.isArray(layers) || !layers.length) return null;
+    const profile = aggregateSoilProfile(layers, 100);
+    if (!profile) return null;
+    return {
+      ...profile,
+      phh2o: profile.effectivePh,
+      layers,
+    };
   } catch (e) {
     if (e.name === "AbortError") throw e;
     return null; // soil is optional: rate limit / outage degrades gracefully
@@ -533,7 +537,7 @@ async function analyze(pts) {
   if (ctl.signal.aborted) return;
 
   await speciesReady;
-  const site = { ...agg, ph: soil?.phh2o ?? null, lat: c.lat, elevation: clim.elevation, place: place?.label ?? null, terrain };
+  const site = { ...agg, ph: soil?.phh2o ?? null, soil, lat: c.lat, elevation: clim.elevation, place: place?.label ?? null, terrain };
   if (terrain && terrain.slope >= 1.5 && terrain.aspectDeg != null && agg.rad != null) {
     const monthlyFactors = monthlySlopeSolarFactors(c.lat, terrain.slope, terrain.aspectDeg);
     const avgFactor = monthlyFactors.reduce((a, b) => a + b, 0) / 12;
@@ -822,12 +826,15 @@ function renderResults() {
     <div class="readout">
       ${rd(tr("soil pH"), site.ph != null ? fmt(site.ph, 1) : tr("no data"))}
       ${rd(tr("elevation"), `${fmt(site.elevation)} m`)}
+      ${rd(tr("soil texture"), site.soil?.usdaTexture ? `${site.soil.usdaTexture} <span class="adm">(${site.soil.sandPct}% ${tr("sand")}, ${site.soil.clayPct}% ${tr("clay")})</span>` : tr("no data"), tr("USDA Soil Texture Simplex & FAO Category"))}
       ${rd(tr("daylength"), `${fmt(Math.min(...dls), 1)}&ndash;${fmt(Math.max(...dls), 1)} h`)}
+      ${rd(tr("available water"), site.soil?.awcMm != null ? `${fmt(site.soil.awcMm)} mm/m` : tr("no data"), tr("Saxton-Rawls plant available water capacity (AWC)"))}
       ${rd(tr("record low"), site.absMin != null ? `${fmt(site.absMin)} °C` : tr("n/a"))}
+      ${rd(tr("organic matter"), site.soil?.somPct != null ? `${fmt(site.soil.somPct, 1)}% <span class="adm">(SOC: ${fmt(site.soil.socGKg, 1)} g/kg)</span>` : tr("no data"), tr("Soil organic matter from SoilGrids SOC"))}
       ${rd(tr("sun"), site.terrain?.radFactor != null && Math.abs(site.terrain.radFactor - 1) >= 0.03 ? `${fmt(site.radSlope ?? site.rad, 1)} ${tr("kWh/m²·day")} <span class="adm">(${site.terrain.radFactor >= 1 ? "+" : ""}${Math.round((site.terrain.radFactor - 1) * 100)}% ${tr("on slope")})</span>` : (site.rad != null ? `${fmt(site.rad, 1)} ${tr("kWh/m²·day")}` : tr("n/a")), tr("mean daily shortwave radiation, all weather included"))}
+      ${rd(tr("bulk density"), site.soil?.bdodGCm3 != null ? `${fmt(site.soil.bdodGCm3, 2)} g/cm³` : tr("no data"), tr("Bulk density of the fine earth fraction"))}
       ${rd(tr("humidity"), site.rh != null ? `${fmt(site.rh)}%` : tr("n/a"))}
-      ${rd(tr("cloud"), site.cloud != null ? `${fmt(site.cloud)}%` : tr("n/a"), tr("high humidity plus high cloud cover marks fog-prone sites"))}
-      ${rd(tr("slope"), site.terrain ? `${fmt(site.terrain.slope)}°${site.terrain.facing ? ` ${tr("facing")} ` + tr(site.terrain.facing) : ""}` : tr("n/a"))}
+      ${rd(tr("CEC"), site.soil?.cecCmolKg != null ? `${fmt(site.soil.cecCmolKg, 1)} cmol(+)/kg` : tr("no data"), tr("Cation exchange capacity at pH 7"))}
       ${rd(tr("aridity"), site.aridity != null ? `${tr(site.aridity)} <span class="adm">(AI: ${fmt(site.ai, 2)})</span>` : tr("n/a"), tr("UNEP Aridity Index (P / ET₀)"))}
     </div>
     <div class="footnote" style="margin-top:10px">
@@ -1209,7 +1216,23 @@ function speciesDetail(id) {
     const notes = [];
     if (s.factors.photo != null && s.factors.photo < 1) notes.push(tr("Photoperiod outside this species' range: 0.5 penalty applied."));
     if (s.factors.drain === 0) notes.push(tfmt("This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.", { n: fmt(current.site.terrain?.slope ?? 0) }));
-    if (s.factors.depth === 0) notes.push(tfmt("Requires at least {req} cm soil depth (EcoCrop), but this {slope}° slope supports only ~{avail} cm equilibrium soil.", { req: fmt(sp.depmin), slope: fmt(current.site.terrain?.slope ?? 0), avail: fmt(maxSoilDepthCm(current.site.terrain?.slope ?? 0)) }));
+    if (s.factors.depth === 0) {
+      const avail = Math.min(current.site.soil?.maxDepthCm ?? 200, maxSoilDepthCm(current.site.terrain?.slope ?? 0));
+      notes.push(tfmt("Requires at least {req} cm soil depth (EcoCrop), but this site supports only ~{avail} cm soil.", { req: fmt(sp.depmin), avail: fmt(avail) }));
+    }
+    if (s.factors.texture === 0 && current.site.soil?.usdaTexture) {
+      notes.push(tfmt("Soil texture mismatch: site is {siteTex}, but this species requires {reqTex}.", {
+        siteTex: current.site.soil.usdaTexture,
+        reqTex: (sp.text_opt ?? sp.text_tol ?? []).join(", ")
+      }));
+    } else if (s.factors.texture === 0.6 && current.site.soil?.usdaTexture) {
+      notes.push(tfmt("Soil texture ({siteTex}) is secondary tolerance for this species (0.6 factor applied).", {
+        siteTex: current.site.soil.usdaTexture
+      }));
+    }
+    if (s.factors.salinity === 0.5) {
+      notes.push(tr("High soil alkalinity/salinity (pH >= 8.5): salt-sensitive species takes a 0.5 caveat penalty."));
+    }
     if (s.window.deficit > 50 && s.factors.temp >= 0.4) {
       if (s.factors.rain < 0.2) {
         notes.push(tfmt("Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.", { n: fmt(s.window.deficit) }));
@@ -2320,14 +2343,14 @@ function csvExport() {
   if (!current) return;
   const esc = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
   const head = ["scientific_name", "common_name", "family", "score", "fit", "score_2040s",
-    "temp_factor", "rain_factor", "ph_factor", "photo_factor", "frost_factor", "chill_factor",
+    "temp_factor", "rain_factor", "ph_factor", "texture_factor", "depth_factor", "salinity_factor", "photo_factor", "frost_factor", "chill_factor",
     "native_here", "growth_class", "uses"];
   // the CSV mirrors the panel exactly: active filters, the marginality cut
   // and the invasive exclusion all apply; clear the filters to export wide
   const rows = current.scored.filter(s => critMatch(s, critState())).map(s => [
     s.sp.sci, s.sp.common, s.sp.family,
     s.score.toFixed(3), s.fit.toFixed(3), s.f45 != null ? s.f45.toFixed(3) : "",
-    ...[s.factors.temp, s.factors.rain, s.factors.ph, s.factors.photo, s.factors.frost, s.factors.chill]
+    ...[s.factors.temp, s.factors.rain, s.factors.ph, s.factors.texture, s.factors.depth, s.factors.salinity, s.factors.photo, s.factors.frost, s.factors.chill]
       .map(v => v == null ? "" : (+v).toFixed(3)),
     nativeHere(s.sp) ?? "", s.sp.gclass, s.sp.uses.join("|"),
   ].map(esc).join(","));

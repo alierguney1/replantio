@@ -80,6 +80,18 @@ SPECIES_PATCH = {
     1553: { # Olea europaea (Olive)
         "sal_tol": "medium",
     },
+    2397: { # Prunus amygdalus (Almond)
+        # Rosaceae temperate deciduous nut tree: dormant winter hardiness -26 C, requires winter chilling
+        "ktmpr": -26,
+        "gclass": "temperate_medium",
+        "decid": True,
+    },
+    5624: { # Elaeagnus angustifolia (Russian olive)
+        # Central Asian / Anatolian steppe nitrogen-fixing tree: survives deep continental frost (-30 C)
+        "ktmpr": -30,
+        "gclass": "temperate_medium",
+        "decid": True,
+    },
     7651: { # Medicago intertexta (Calvary clover)
         "lifo": "herb", "porte": "herb", "tree": False, "annual": True,
         "uses": ["forage"],
