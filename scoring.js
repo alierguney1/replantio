@@ -43,6 +43,11 @@ export function slopeSolarFactor(latDeg, slopeDeg, aspectDeg, doy) {
   const gamma = (aspectDeg - 180) * rad;
   const delta = 0.409 * Math.sin((2 * Math.PI / 365) * doy - 1.39);
 
+  // A beam-shaded slope still receives the isotropic sky and ground-albedo
+  // terms; returning 0 here would claim total darkness on any north face.
+  const kb = 0.70, kd = 0.30, rho = 0.20;
+  const diffuseOnly = kd * (1 + Math.cos(beta)) / 2 + rho * (1 - Math.cos(beta)) / 2;
+
   // Horizontal sunset hour angle
   const tanTan = -Math.tan(phi) * Math.tan(delta);
   let ws = 0;
@@ -50,10 +55,10 @@ export function slopeSolarFactor(latDeg, slopeDeg, aspectDeg, doy) {
   else if (tanTan >= 1) ws = 0;   // polar night
   else ws = Math.acos(tanTan);
 
-  if (ws <= 0) return 0;
+  if (ws <= 0) return diffuseOnly;
 
   const I_flat = 2 * (ws * Math.sin(phi) * Math.sin(delta) + Math.cos(phi) * Math.cos(delta) * Math.sin(ws));
-  if (I_flat <= 1e-6) return 0;
+  if (I_flat <= 1e-6) return diffuseOnly;
 
   const A = Math.sin(delta) * (Math.sin(phi) * Math.cos(beta) - Math.cos(phi) * Math.sin(beta) * Math.cos(gamma));
   const B = Math.cos(delta) * (Math.cos(phi) * Math.cos(beta) + Math.sin(phi) * Math.sin(beta) * Math.cos(gamma));
@@ -65,7 +70,7 @@ export function slopeSolarFactor(latDeg, slopeDeg, aspectDeg, doy) {
   let w1 = -ws, w2 = ws;
   if (Ramp > 1e-6) {
     const x = -A / Ramp;
-    if (x >= 1) return 0; // never illuminated by direct beam
+    if (x >= 1) return diffuseOnly; // never illuminated by direct beam
     if (x > -1) {
       const deltaW = Math.acos(x);
       w1 = Math.max(-ws, psi - deltaW);
@@ -79,17 +84,28 @@ export function slopeSolarFactor(latDeg, slopeDeg, aspectDeg, doy) {
   }
   I_slope = Math.max(0, I_slope);
 
+  // Rb is unbounded as flat-plane insolation approaches 0 near polar night
+  // (factor 13.8 at 70N in November); the clamp keeps a display number sane
+  // even before the insolation-weighted annual mean makes such months weigh ~0.
   const Rb = I_slope / I_flat;
-  const kb = 0.70, kd = 0.30, rho = 0.20;
-  const Fsky = (1 + Math.cos(beta)) / 2;
-  const Fground = (1 - Math.cos(beta)) / 2;
-
-  return Math.max(0.05, kb * Rb + kd * Fsky + rho * Fground);
+  return Math.min(3, Math.max(0.05, kb * Rb + diffuseOnly));
 }
 
 export function monthlySlopeSolarFactors(latDeg, slopeDeg, aspectDeg) {
   if (slopeDeg == null || slopeDeg < 1.0 || aspectDeg == null || latDeg == null) return Array(12).fill(1.0);
   return MID_DOY.map(d => slopeSolarFactor(latDeg, slopeDeg, aspectDeg, d));
+}
+
+// Relative flat-plane daily insolation per month: the weight for annualizing
+// slope factors (a plain 12-month mean overweights low-energy winter months).
+export function monthlyFlatInsolation(latDeg) {
+  const rad = Math.PI / 180, phi = latDeg * rad;
+  return MID_DOY.map(doy => {
+    const delta = 0.409 * Math.sin((2 * Math.PI / 365) * doy - 1.39);
+    const tanTan = -Math.tan(phi) * Math.tan(delta);
+    const ws = tanTan <= -1 ? Math.PI : tanTan >= 1 ? 0 : Math.acos(tanTan);
+    return Math.max(0, 2 * (ws * Math.sin(phi) * Math.sin(delta) + Math.cos(phi) * Math.cos(delta) * Math.sin(ws)));
+  });
 }
 
 // Aggregate Open-Meteo daily arrays into monthly climate normals.

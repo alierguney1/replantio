@@ -1,4 +1,4 @@
-import { aggregateClimate, scoreSpecies, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors } from "./scoring.js";
+import { aggregateClimate, scoreSpecies, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors, monthlyFlatInsolation } from "./scoring.js";
 import { DICTS, LANGS, NAMES, LOCALES, MONTHS_ALL } from "./i18n.js";
 import { CLASSES, projection, maturityYears, co2eKgPerTree, co2eTonsPerHa, height, dbhCm, crownDiameterM, crownDisplayM, standDisplay, STEMS_PER_HA } from "./growth.js";
 
@@ -536,9 +536,12 @@ async function analyze(pts) {
   const site = { ...agg, ph: soil?.phh2o ?? null, lat: c.lat, elevation: clim.elevation, place: place?.label ?? null, terrain };
   if (terrain && terrain.slope >= 1.5 && terrain.aspectDeg != null && agg.rad != null) {
     const monthlyFactors = monthlySlopeSolarFactors(c.lat, terrain.slope, terrain.aspectDeg);
-    const avgFactor = monthlyFactors.reduce((a, b) => a + b, 0) / 12;
+    // annual factor weighted by each month's flat-plane insolation: a plain
+    // mean overweights low-energy winter months (and blows up near polar night)
+    const w = monthlyFlatInsolation(c.lat);
+    const wsum = w.reduce((a, b) => a + b, 0);
+    const avgFactor = wsum > 0 ? monthlyFactors.reduce((a, f, i) => a + f * w[i], 0) / wsum : 1;
     terrain.radFactor = avgFactor;
-    terrain.monthlyRadFactors = monthlyFactors;
     site.radSlope = agg.rad * avgFactor;
   }
   // native-evidence for the scorer: the species' polygon (Little) or regional

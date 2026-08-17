@@ -1,7 +1,7 @@
 // Self-check for the scoring and growth engines. Run: node test/check.mjs
 import assert from "node:assert";
 import { readFileSync } from "node:fs";
-import { trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors, scoreSpecies, aggregateClimate, grade } from "../scoring.js";
+import { trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors, monthlyFlatInsolation, scoreSpecies, aggregateClimate, grade } from "../scoring.js";
 import { CLASSES, height, dbhCm, co2eKgPerTree, crownDiameterM, crownDisplayM, standDisplay, maturityYears } from "../growth.js";
 
 const species = JSON.parse(readFileSync(new URL("../data/species.json", import.meta.url)));
@@ -219,7 +219,7 @@ assert.equal(scoreSpecies(corn, winnipeg).factors.frost, 1, "sweet corn passes w
 assert.equal(scoreSpecies(bean, winnipeg).factors.frost, 1, "bean passes window frost too");
 assert.ok(by("Solanum lycopersicum"), "tomato answers to its accepted name");
 
-// obligate wetland species die on real slopes
+// wetland-on-a-hill (field report, 2026-08): obligate wetland species die on real slopes
 const typha = by("Typha latifolia");
 assert.ok(typha?.wet, "cattail is flagged obligate wetland");
 const hill = { ...saoPaulo, terrain: { slope: 6, facing: "N" } };
@@ -282,6 +282,15 @@ close(slopeSolarFactor(45, 20, 0, 172), 0.95, 0.05, "45N summer north slope");
 const mFactors = monthlySlopeSolarFactors(45, 20, 180);
 assert.equal(mFactors.length, 12, "12 monthly slope factors");
 assert.ok(mFactors[11] > 1.5, "winter month has elevated solar incidence on south slope");
+// beam-shaded slopes keep the diffuse sky + ground terms, never 0
+close(slopeSolarFactor(50, 35, 0, 355), 0.29, 0.03, "beam-shaded 35° north slope keeps diffuse");
+// Rb blowup near polar night is clamped; weighted annual mean stays sane
+assert.ok(monthlySlopeSolarFactors(70, 10, 180).every(f => f <= 3), "polar-night Rb clamped");
+{
+  const w = monthlyFlatInsolation(70), f = monthlySlopeSolarFactors(70, 10, 180);
+  const avg = f.reduce((a, x, i) => a + x * w[i], 0) / w.reduce((a, b) => a + b, 0);
+  assert.ok(avg > 0.9 && avg < 1.3, `insolation-weighted annual factor sane at 70N: ${avg}`);
+}
 
 // grading bands
 assert.equal(grade(0.9), "Excellent");

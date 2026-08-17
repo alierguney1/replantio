@@ -88,9 +88,11 @@ Documented adaptations for perennials (`scoring.js`):
   flat horizontal plane (GHI/SSRD). Using the DEM slope and aspect, insolation is
   adjusted via Duffie-Beckman (2013) and Swift (1976, USDA Forest Service) analytical
   solar incidence geometry (cos theta daily integration) coupled with Liu & Jordan
-  (1960) isotropic sky-view diffuse (kb=0.70, kd=0.30, rho=0.20). South-facing slopes
-  reflect verified winter solar boosts (+15% to +75%), while steep north-facing slopes
-  capture topographic shade (-20% to -70%).
+  (1960) isotropic sky-view diffuse (kb=0.70, kd=0.30, rho=0.20). The annual factor
+  is weighted by each month's flat-plane insolation. The fixed clear/diffuse split is
+  an approximation applied to all-sky ERA5 data, so real boosts under cloudy winters
+  are smaller than the clear-sky geometry suggests; the readout is display-only and
+  never enters the suitability score.
 
 Ties are broken by centrality: how close the site sits to the center of each species'
 optimal range (triangular membership). Missing data never silently zeroes or passes a
