@@ -1,7 +1,11 @@
 // Self-check for the scoring and growth engines. Run: node test/check.mjs
 import assert from "node:assert";
 import { readFileSync } from "node:fs";
-import { trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors, maxSoilDepthCm, scoreSpecies, aggregateClimate, grade, aridityClass } from "../scoring.js";
+import {
+  trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors,
+  maxSoilDepthCm, scoreSpecies, aggregateClimate, grade, aridityClass,
+  usdaTextureClass, faoTextureCategory, saxtonRawlsHydrology, aggregateSoilProfile
+} from "../scoring.js";
 import { CLASSES, height, dbhCm, co2eKgPerTree, crownDiameterM, crownDisplayM, standDisplay, maturityYears } from "../growth.js";
 
 const species = JSON.parse(readFileSync(new URL("../data/species.json", import.meta.url)));
@@ -436,6 +440,103 @@ assert.ok(withDepth / species.length > 0.80, `soil depth coverage >80%: ${(withD
 assert.ok(withSal / species.length > 0.75, `salinity coverage >75%: ${(withSal / species.length * 100).toFixed(1)}%`);
 assert.ok(withDra / species.length > 0.80, `drainage coverage >80%: ${(withDra / species.length * 100).toFixed(1)}%`);
 
+// --- Phase 3: USDA Texture Simplex & FAO Category Tests (JavaScript engine)
+assert.equal(usdaTextureClass(92, 5, 3), "Sand", "USDA Sand centroid");
+assert.equal(faoTextureCategory("Sand"), "light", "Sand is light");
+assert.equal(usdaTextureClass(40, 40, 20), "Loam", "USDA Loam centroid");
+assert.equal(faoTextureCategory("Loam"), "medium", "Loam is medium");
+assert.equal(usdaTextureClass(20, 20, 60), "Clay", "USDA Clay centroid");
+assert.equal(faoTextureCategory("Clay"), "heavy", "Clay is heavy");
+assert.equal(usdaTextureClass(20, 65, 15), "Silt Loam", "USDA Silt Loam");
+assert.equal(usdaTextureClass(40, 40, 20, 25), "Organic", "SOM >= 20% is Organic");
+assert.equal(faoTextureCategory("Organic"), "organic", "Organic category is organic");
+
+// --- Phase 3: Saxton-Rawls Hydrology PTF Tests (JavaScript engine)
+const sandHydro = saxtonRawlsHydrology(90, 5, 1.0, 1.5, 0, 100);
+const loamHydro = saxtonRawlsHydrology(40, 20, 2.0, 1.3, 0, 100);
+const clayHydro = saxtonRawlsHydrology(10, 60, 2.0, 1.4, 0, 100);
+
+assert.ok(sandHydro.thetaWp > 0 && sandHydro.thetaWp < sandHydro.thetaFc, "Sand 0 < WP < FC");
+assert.ok(sandHydro.thetaFc < sandHydro.thetaSat, "Sand FC < Sat");
+assert.ok(sandHydro.ksat > loamHydro.ksat, "Sand has higher permeability Ksat than Loam");
+assert.ok(clayHydro.thetaWp > sandHydro.thetaWp, "Clay has higher wilting point than Sand");
+assert.ok(loamHydro.awcMm > sandHydro.awcMm, "Loam has higher plant available water (AWC) than Sand");
+
+// Coarse fragments reduction test (30% gravel reduces AWC by ~30%)
+const gravelHydro = saxtonRawlsHydrology(40, 20, 2.0, 1.3, 30, 100);
+close(gravelHydro.awcMm, loamHydro.awcMm * 0.70, 1.0, "30% gravel reduces AWC by 30%");
+
+// --- Phase 3: Multi-Layer SoilGrids Profile Aggregator Tests
+const mockLayers = [
+  { name: "phh2o", unit_measure: { d_factor: 10 }, depths: [
+    { label: "0-5cm", values: { mean: 60 } },
+    { label: "5-15cm", values: { mean: 70 } },
+    { label: "15-30cm", values: { mean: 80 } },
+  ]},
+  { name: "sand", unit_measure: { d_factor: 10 }, depths: [
+    { label: "0-5cm", values: { mean: 600 } },
+    { label: "5-15cm", values: { mean: 500 } },
+    { label: "15-30cm", values: { mean: 400 } },
+  ]},
+  { name: "clay", unit_measure: { d_factor: 10 }, depths: [
+    { label: "0-5cm", values: { mean: 100 } },
+    { label: "5-15cm", values: { mean: 200 } },
+    { label: "15-30cm", values: { mean: 300 } },
+  ]},
+  { name: "silt", unit_measure: { d_factor: 10 }, depths: [
+    { label: "0-5cm", values: { mean: 300 } },
+    { label: "5-15cm", values: { mean: 300 } },
+    { label: "15-30cm", values: { mean: 300 } },
+  ]},
+  { name: "soc", unit_measure: { d_factor: 10 }, depths: [
+    { label: "0-5cm", values: { mean: 200 } },
+    { label: "5-15cm", values: { mean: 150 } },
+    { label: "15-30cm", values: { mean: 100 } },
+  ]},
+];
+const aggSoil = aggregateSoilProfile(mockLayers, 30);
+assert.ok(aggSoil != null, "Soil profile aggregated successfully");
+close(aggSoil.effectivePh, 7.33, 0.05, "Aggregated effective pH is weighted average (7.33)");
+assert.ok(aggSoil.usdaTexture === "Loam" || aggSoil.usdaTexture === "Sandy Loam", `Aggregated texture is ${aggSoil.usdaTexture}`);
+assert.ok(aggSoil.awcMm > 0, `Aggregated AWC is positive: ${aggSoil.awcMm} mm`);
+
+// --- Phase 3: scoreSpecies with Integrated Soil Physics
+const testSoilSiteLoam = {
+  ...sevilleSite,
+  soil: {
+    effectivePh: 6.8,
+    usdaTexture: "Loam",
+    faoTexture: "medium",
+    maxDepthCm: 150,
+    awcMm: 120,
+  }
+};
+const testSoilSiteHeavyClay = {
+  ...sevilleSite,
+  soil: {
+    effectivePh: 8.8, // Alkaline / calcareous
+    usdaTexture: "Clay",
+    faoTexture: "heavy",
+    maxDepthCm: 30, // Shallow hardpan / barrier at 30 cm
+    awcMm: 45,
+  }
+};
+
+// Maize (prefers medium texture) on Loam site:
+const maizeLoam = scoreSpecies(maize, testSoilSiteLoam);
+assert.equal(maizeLoam.factors.texture, 1.0, "maize on medium loam gets optimal texture score 1.0");
+assert.equal(maizeLoam.factors.depth, null, "maize passes depth unconstrained on 150cm soil");
+
+// Maize on heavy clay:
+const maizeClay = scoreSpecies(maize, testSoilSiteHeavyClay);
+assert.equal(maizeClay.factors.texture, 0.6, "maize on heavy clay gets tolerance score 0.6");
+assert.equal(maizeClay.factors.salinity, 0.5, "maize on alkaline soil (pH 8.8) gets 0.5 salinity caveat");
+
+// Deep-rooted Walnut (depmin 150cm) on 30cm shallow soil fails:
+const walnutShallow = scoreSpecies(walnut, testSoilSiteHeavyClay);
+assert.equal(walnutShallow.factors.depth, 0, "walnut fails on 30cm shallow soil (depth = 0)");
+assert.equal(walnutShallow.score, 0, "walnut overall score is 0 on shallow soil");
+
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");
@@ -447,4 +548,6 @@ console.log(`  tomato@Seville deficit ${tomatoSeville.window.deficit} mm (temp $
 console.log(`  euc CO2e(10y) ${eucCo2.toFixed(0)} kg | oak CO2e(10y) ${co2eKgPerTree(oakSp, 10).toFixed(1)} kg`);
 console.log(`  AI: Konya ${konyaAI.toFixed(2)} (${aridityClass(konyaAI)}) | Seville ${sevilleAI.toFixed(2)} (${aridityClass(sevilleAI)}) | Hamburg ${hamburgAI.toFixed(2)} (${aridityClass(hamburgAI)}) | Rize ${rizeAI.toFixed(2)} (${aridityClass(rizeAI)})`);
 console.log(`  Soil Envelopes: Texture ${withText}/${species.length} (${(withText/species.length*100).toFixed(1)}%) | Depth ${withDepth} | Salinity ${withSal} | Drainage ${withDra}`);
+console.log(`  Soil Scoring Engine: Maize@Loam score ${maizeLoam.score.toFixed(2)} (tex ${maizeLoam.factors.texture}) | Maize@Clay score ${maizeClay.score.toFixed(2)} (tex ${maizeClay.factors.texture}, sal ${maizeClay.factors.salinity}) | Walnut@Shallow score ${walnutShallow.score.toFixed(2)} (depth ${walnutShallow.factors.depth})`);
+
 

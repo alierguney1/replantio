@@ -122,6 +122,191 @@ export function aridityClass(ai) {
   return ARIDITY_CLASSES.find(c => ai < c.max)?.label ?? "Humid";
 }
 
+// ---------------------------------------------------------------------------
+// USDA Soil Texture Simplex (12-class Point-in-Polygon & FAO Mapping)
+// ---------------------------------------------------------------------------
+export function usdaTextureClass(sand, silt, clay, som = 0) {
+  if (som != null && som >= 20.0) return "Organic";
+  const total = (sand ?? 0) + (silt ?? 0) + (clay ?? 0);
+  if (total <= 0) return null;
+  const s = (sand / total) * 100.0;
+  const si = (silt / total) * 100.0;
+  const c = (clay / total) * 100.0;
+
+  if (c >= 40.0) {
+    if (s <= 45.0 && si < 40.0) return "Clay";
+    if (si >= 40.0) return "Silty Clay";
+    if (s >= 45.0) return "Sandy Clay";
+    return "Clay";
+  } else if (c >= 27.0) {
+    if (s < 20.0) return "Silty Clay Loam";
+    if (s <= 45.0) return "Clay Loam";
+    return "Sandy Clay Loam";
+  } else if (c >= 20.0) {
+    if (s >= 45.0 && si < 28.0) return "Sandy Clay Loam";
+    if (s <= 52.0 && si >= 28.0 && si < 50.0) return "Loam";
+    if (si >= 50.0) return "Silt Loam";
+    if (s > 52.0) return "Sandy Loam";
+    return "Loam";
+  } else if (c >= 7.0) {
+    if (si >= 80.0 && c < 12.0) return "Silt";
+    if (si >= 50.0) return "Silt Loam";
+    if (s <= 52.0 && si >= 28.0) return "Loam";
+    if (s > 52.0 && (si + 2.0 * c >= 30.0 || (s <= 52.0 && si < 28.0))) return "Sandy Loam";
+    if (s >= 70.0 && (si + 2.0 * c < 30.0) && (si + 1.5 * c >= 15.0)) return "Loamy Sand";
+    if (s >= 85.0 && (si + 1.5 * c < 15.0)) return "Sand";
+    return "Sandy Loam";
+  } else {
+    if (si >= 80.0) return "Silt";
+    if (si >= 50.0) return "Silt Loam";
+    if (s >= 85.0 && (si + 1.5 * c < 15.0)) return "Sand";
+    if (s >= 70.0 && (si + 1.5 * c >= 15.0) && (si + 2.0 * c < 30.0)) return "Loamy Sand";
+    if (s > 52.0 && (si + 2.0 * c >= 30.0)) return "Sandy Loam";
+    if (si >= 28.0 && s <= 52.0) return "Loam";
+    return "Sandy Loam";
+  }
+}
+
+export function faoTextureCategory(usdaClass) {
+  if (!usdaClass) return null;
+  if (usdaClass === "Organic") return "organic";
+  if (["Sand", "Loamy Sand", "Sandy Loam"].includes(usdaClass)) return "light";
+  if (["Loam", "Silt Loam", "Silt", "Sandy Clay Loam", "Clay Loam", "Silty Clay Loam"].includes(usdaClass)) return "medium";
+  if (["Sandy Clay", "Silty Clay", "Clay"].includes(usdaClass)) return "heavy";
+  return "medium";
+}
+
+// ---------------------------------------------------------------------------
+// Saxton & Rawls (2006) Soil Water Retention & Hydrology PTFs
+// ---------------------------------------------------------------------------
+export function saxtonRawlsHydrology(sandPct, clayPct, somPct = 1.0, bdod = null, cfvoPct = 0, rootDepthCm = 100) {
+  if (sandPct == null || clayPct == null) return null;
+  const S = Math.max(0, Math.min(1, sandPct / 100.0));
+  const C = Math.max(0, Math.min(1, clayPct / 100.0));
+  const OM = Math.max(0, Math.min(10, somPct ?? 1.0));
+
+  const theta1500t = -0.024 * S + 0.487 * C + 0.006 * OM + 0.005 * (S * OM) - 0.013 * (C * OM) + 0.068 * (S * C) + 0.031;
+  let thetaWp = theta1500t + (0.14 * theta1500t - 0.02);
+  thetaWp = Math.max(0.01, Math.min(0.50, thetaWp));
+
+  const theta33t = -0.251 * S + 0.195 * C + 0.011 * OM + 0.006 * (S * OM) - 0.027 * (C * OM) + 0.452 * (S * C) + 0.299;
+  let thetaFc = theta33t + (1.283 * (theta33t ** 2) - 0.374 * theta33t - 0.015);
+  thetaFc = Math.max(thetaWp + 0.02, Math.min(0.60, thetaFc));
+
+  const thetaS33t = 0.278 * S + 0.034 * C + 0.022 * OM - 0.018 * (S * OM) - 0.027 * (C * OM) - 0.584 * (S * C) + 0.078;
+  const thetaS33 = thetaS33t + (0.636 * thetaS33t - 0.107);
+  let thetaSat = thetaFc + thetaS33 - 0.097 * S + 0.043;
+  thetaSat = Math.max(thetaFc + 0.03, Math.min(0.70, thetaSat));
+
+  if (bdod != null && bdod > 0.5) {
+    const porosity = 1.0 - (bdod / 2.65);
+    if (porosity > thetaFc) thetaSat = Math.max(thetaFc + 0.02, Math.min(0.70, porosity));
+  }
+
+  const lambda = Math.max(0.05, Math.min(0.80, (1.0 / (Math.log(1500.0) - Math.log(33.0))) * (Math.log(thetaFc) - Math.log(thetaWp))));
+  const ksat = Math.max(0.1, Math.min(500.0, 1930.0 * Math.pow(Math.max(0.001, thetaSat - thetaFc), 3.0 - lambda)));
+
+  const awcFraction = Math.max(0.01, thetaFc - thetaWp);
+  const gravelFraction = Math.max(0, Math.min(0.90, (cfvoPct ?? 0) / 100.0));
+  const effectiveAwcFraction = awcFraction * (1.0 - gravelFraction);
+  const awcMm = effectiveAwcFraction * (rootDepthCm * 10.0);
+
+  return {
+    thetaWp: +thetaWp.toFixed(4),
+    thetaFc: +thetaFc.toFixed(4),
+    thetaSat: +thetaSat.toFixed(4),
+    awcFraction: +effectiveAwcFraction.toFixed(4),
+    awcMm: +awcMm.toFixed(1),
+    ksat: +ksat.toFixed(2),
+  };
+}
+
+export const SOIL_STANDARD_DEPTHS = [
+  { label: "0-5cm", top: 0, bottom: 5, thick: 5 },
+  { label: "5-15cm", top: 5, bottom: 15, thick: 10 },
+  { label: "15-30cm", top: 15, bottom: 30, thick: 15 },
+  { label: "30-60cm", top: 30, bottom: 60, thick: 30 },
+  { label: "60-100cm", top: 60, bottom: 100, thick: 40 },
+  { label: "100-200cm", top: 100, bottom: 200, thick: 100 },
+];
+
+export function aggregateSoilProfile(layers, targetDepthCm = 100) {
+  if (!Array.isArray(layers) || !layers.length) return null;
+  const layerMap = {};
+  for (const l of layers) {
+    const df = l.unit_measure?.d_factor ?? 1;
+    for (const d of l.depths ?? []) {
+      const v = d.values?.mean;
+      if (v != null) {
+        layerMap[d.label] = layerMap[d.label] || {};
+        layerMap[d.label][l.name] = v / df;
+      }
+    }
+  }
+
+  let wSum = 0, phSum = 0, sandSum = 0, siltSum = 0, claySum = 0, socSum = 0, bdodSum = 0, cecSum = 0, cfvoSum = 0;
+  let hasData = false;
+
+  for (const depthDef of SOIL_STANDARD_DEPTHS) {
+    if (depthDef.top >= targetDepthCm) break;
+    const effThick = Math.min(depthDef.bottom, targetDepthCm) - depthDef.top;
+    if (effThick <= 0) continue;
+    const p = layerMap[depthDef.label];
+    if (!p) continue;
+
+    if (p.phh2o != null || p.sand != null) {
+      hasData = true;
+      const w = effThick;
+      wSum += w;
+      if (p.phh2o != null) phSum += p.phh2o * w;
+      if (p.sand != null) sandSum += p.sand * w;
+      if (p.silt != null) siltSum += p.silt * w;
+      if (p.clay != null) claySum += p.clay * w;
+      if (p.soc != null) socSum += p.soc * w;
+      if (p.bdod != null) bdodSum += p.bdod * w;
+      if (p.cec != null) cecSum += p.cec * w;
+      if (p.cfvo != null) cfvoSum += p.cfvo * w;
+    }
+  }
+
+  if (!hasData || wSum === 0) return null;
+
+  const effectivePh = phSum > 0 ? +(phSum / wSum).toFixed(2) : null;
+  const sandPct = sandSum > 0 ? +(sandSum / wSum).toFixed(1) : null;
+  const siltPct = siltSum > 0 ? +(siltSum / wSum).toFixed(1) : null;
+  const clayPct = claySum > 0 ? +(claySum / wSum).toFixed(1) : null;
+  const socGKg = socSum > 0 ? +(socSum / wSum).toFixed(2) : null;
+  const somPct = socGKg != null ? +(socGKg * 1.724 / 10.0).toFixed(2) : null;
+  const bdodGCm3 = bdodSum > 0 ? +(bdodSum / wSum).toFixed(2) : null;
+  const cecCmolKg = cecSum > 0 ? +(cecSum / wSum).toFixed(1) : null;
+  const cfvoPct = cfvoSum > 0 ? +(cfvoSum / wSum).toFixed(1) : 0.0;
+
+  const usdaTexture = (sandPct != null && siltPct != null && clayPct != null)
+    ? usdaTextureClass(sandPct, siltPct, clayPct, somPct ?? 0)
+    : null;
+  const faoTexture = faoTextureCategory(usdaTexture);
+
+  const hydrology = (sandPct != null && clayPct != null)
+    ? saxtonRawlsHydrology(sandPct, clayPct, somPct ?? 1.0, bdodGCm3, cfvoPct, targetDepthCm)
+    : null;
+
+  return {
+    effectivePh,
+    sandPct,
+    siltPct,
+    clayPct,
+    somPct,
+    socGKg,
+    bdodGCm3,
+    cecCmolKg,
+    cfvoPct,
+    usdaTexture,
+    faoTexture,
+    hydrology,
+    awcMm: hydrology?.awcMm ?? null,
+  };
+}
+
 // Aggregate Open-Meteo daily arrays into monthly climate normals.
 export function aggregateClimate(daily) {
   if (!daily?.time?.length) throw new Error("incomplete climate series (no daily records)");
@@ -331,7 +516,21 @@ export function scoreSpecies(sp, site, ev = null) {
   // penalty instead, and the card says which field we distrusted.
   if (frost === 0 && ev?.native) frost = 0.5;
 
-  const ph = sp.ph && site.ph != null ? trap(site.ph, ...sp.ph) : null;
+  const effectivePh = site.soil?.effectivePh ?? site.ph ?? null;
+  const ph = sp.ph && effectivePh != null ? trap(effectivePh, ...sp.ph) : null;
+
+  // Soil texture suitability (USDA / FAO mapping)
+  const siteTexture = site.soil?.faoTexture ?? site.soilTexture ?? null;
+  let texture = null;
+  if (siteTexture) {
+    if (sp.text_opt?.includes(siteTexture)) {
+      texture = 1.0;
+    } else if (sp.text_tol?.includes(siteTexture)) {
+      texture = 0.6;
+    } else if (sp.text_opt?.length || sp.text_tol?.length) {
+      texture = 0.0;
+    }
+  }
 
   // Obligate wetland species (EcoCrop absolute drainage = saturated only:
   // duckweed, cattail, mangroves) cannot live on drained ground. A real
@@ -341,14 +540,24 @@ export function scoreSpecies(sp, site, ev = null) {
     ? (site.terrain?.slope != null ? (site.terrain.slope >= 4 ? 0 : null) : null)
     : null;
 
-  // Soil depth gate on slopes (Pelletier et al. 2016):
+  // Soil depth gate (Pelletier et al. 2016 slope limit combined with site soil depth):
   // Hillside soil thickness is constrained by gravitational transport.
-  // When slope-limited equilibrium soil depth falls below the species'
+  // When available equilibrium soil depth falls below the species'
   // absolute minimum root depth requirement (EcoCrop DEPR: depmin), the
   // species cannot anchor or access soil water and fails (depth = 0).
-  const depth = (sp.depmin != null && site.terrain?.slope != null && site.terrain.slope >= 4)
-    ? (maxSoilDepthCm(site.terrain.slope) < sp.depmin ? 0 : null)
+  const slopeLimit = (site.terrain?.slope != null && site.terrain.slope >= 4)
+    ? maxSoilDepthCm(site.terrain.slope)
+    : 200;
+  const effectiveDepth = Math.min(slopeLimit, site.soil?.maxDepthCm ?? 200);
+  const depth = (sp.depmin != null && ((site.terrain?.slope != null && site.terrain.slope >= 4) || site.soil?.maxDepthCm != null))
+    ? (effectiveDepth < sp.depmin ? 0 : null)
     : null;
+
+  // Salinity & Sodicity proxy: high pH (alkali/calcareous >= 8.5) penalizes salt-sensitive taxa
+  let salinity = null;
+  if (effectivePh != null && effectivePh >= 8.5 && (sp.sal_tol === "low" || sp.sal_opt === "low")) {
+    salinity = 0.5;
+  }
 
   // Winter dormancy proxy: EcoCrop has no chill-hours field, so temperate
   // deciduous species (which need cold to break dormancy and fruit) are
@@ -383,7 +592,8 @@ export function scoreSpecies(sp, site, ev = null) {
     }
   }
 
-  const score = Math.min(temp, rain, ph ?? 1, chill ?? 1) * (frost ?? 1) * (photo ?? 1) * (drain ?? 1) * (shade ?? 1) * (depth ?? 1) * annual;
+  const score = Math.min(temp, rain, ph ?? 1, texture ?? 1, chill ?? 1)
+    * (frost ?? 1) * (photo ?? 1) * (drain ?? 1) * (shade ?? 1) * (depth ?? 1) * (salinity ?? 1) * annual;
 
   // Tie-breaker: EcoCrop plateaus leave many species at the same score, so
   // also measure how close the site sits to each envelope's center
@@ -397,13 +607,13 @@ export function scoreSpecies(sp, site, ev = null) {
     return r;
   })();
   const fits = [tri(tsum / Gt, ...sp.temp), tri(rainVal, ...sp.rain)];
-  if (sp.ph && site.ph != null) fits.push(tri(site.ph, ...sp.ph));
+  if (sp.ph && effectivePh != null) fits.push(tri(effectivePh, ...sp.ph));
   const fit = fits.reduce((a, b) => a + b, 0) / fits.length;
 
   // ---------------------------------------------------------------------------
   // Growing-Season Water Deficit & Irrigation Guidance (FAO-56 Dual-Crop Method)
   // Quantifies supplementary irrigation needed (mm/month) to overcome rainfed deficit:
-  // Deficit = max(0, ETc - P_window), where ETc = ET0 * Kc.
+  // Deficit = max(0, ETc - (P_window + AWC_buffer)), where ETc = ET0 * Kc.
   // ---------------------------------------------------------------------------
   let wRain = 0, wET0 = 0;
   for (let k = 0; k < Gt; k++) {
@@ -420,7 +630,8 @@ export function scoreSpecies(sp, site, ev = null) {
       sp.porte === "shrub" ? 0.85 :
       sp.cycle?.[1] > 180 ? 1.05 : 0.90;
     const cropET = wET0 * cropKc;
-    deficit = Math.max(0, Math.round(cropET - wRain));
+    const awcBuffer = (site.soil?.awcMm ?? site.awcMm) ? Math.min(site.soil?.awcMm ?? site.awcMm, cropET * 0.4) : 0;
+    deficit = Math.max(0, Math.round(cropET - (wRain + awcBuffer)));
     // Recommend irrigation if growing window deficit exceeds 30 mm (mm/month rate)
     irrigation = deficit > 30 ? Math.round(deficit / Gt) : 0;
   }
@@ -428,7 +639,7 @@ export function scoreSpecies(sp, site, ev = null) {
   return {
     score,
     fit,
-    factors: { temp, rain, ph, frost, photo, annual, chill, drain, shade, depth },
+    factors: { temp, rain, ph, texture, frost, photo, annual, chill, drain, shade, depth, salinity },
     window: { start: best, months: Gt, deficit, irrigation }
   };
 }
