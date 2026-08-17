@@ -1,7 +1,7 @@
 // Self-check for the scoring and growth engines. Run: node test/check.mjs
 import assert from "node:assert";
 import { readFileSync } from "node:fs";
-import { trap, daylength, scoreSpecies, aggregateClimate, grade } from "../scoring.js";
+import { trap, daylength, maxSoilDepthCm, scoreSpecies, aggregateClimate, grade } from "../scoring.js";
 import { CLASSES, height, dbhCm, co2eKgPerTree, crownDiameterM, crownDisplayM, standDisplay, maturityYears } from "../growth.js";
 
 const species = JSON.parse(readFileSync(new URL("../data/species.json", import.meta.url)));
@@ -267,6 +267,31 @@ assert.equal(vitexIncesu.factors.frost, 0.5, "vitex keeps the frost-margin half 
 assert.ok(vitexIncesu.score <= 0.5, `country evidence must not boost vitex past 0.5 at Incesu: ${vitexIncesu.score}`);
 assert.equal(scoreSpecies(by("Prunus armeniaca"), malatya, { countryNative: true }).factors.rain, 0,
   "rainfed scoring keeps irrigated-orchard apricot at zero rain in Malatya");
+
+// --- topographic soil depth limits on slopes (Pelletier et al. 2016)
+assert.equal(maxSoilDepthCm(0), 200, "flat ground depth is 200 cm");
+assert.equal(maxSoilDepthCm(null), 200, "null slope depth is 200 cm");
+assert.equal(maxSoilDepthCm(20), 137, "20 deg slope gives ~137 cm depth");
+assert.equal(maxSoilDepthCm(25), 97, "25 deg slope gives ~97 cm depth");
+assert.equal(maxSoilDepthCm(30), 42, "30 deg slope gives ~42 cm depth");
+assert.equal(maxSoilDepthCm(35), 10, "35 deg steep slope clamps to 10 cm rock");
+
+// obligate deep-rooted species (Walnut: depmin 150 cm) vs shallow-tolerant (Scots pine: depmin 20 cm)
+const walnut = by("Juglans regia");
+const scotsPine = by("Pinus sylvestris");
+assert.ok(walnut?.depmin === 150, "walnut requires 150 cm deep soil");
+assert.ok(scotsPine?.depmin === 20, "scots pine tolerates 20 cm shallow soil");
+
+const steepHill25 = { ...saoPaulo, terrain: { slope: 25, facing: "N" } };
+const flatGround = { ...saoPaulo, terrain: { slope: 1, facing: null } };
+
+// On 25 deg slope (max depth 97 cm < 150 cm), walnut fails soil depth:
+assert.equal(scoreSpecies(walnut, steepHill25).factors.depth, 0, "walnut fails on 25 deg slope due to shallow soil");
+assert.equal(scoreSpecies(walnut, steepHill25).score, 0, "walnut score is 0 on 25 deg slope");
+assert.equal(scoreSpecies(walnut, flatGround).factors.depth, null, "flat ground leaves soil depth unconstrained");
+
+// On 25 deg slope (max depth 97 cm >= 20 cm), scots pine passes soil depth:
+assert.equal(scoreSpecies(scotsPine, steepHill25).factors.depth, null, "scots pine passes soil depth on 25 deg slope");
 
 // grading bands
 assert.equal(grade(0.9), "Excellent");

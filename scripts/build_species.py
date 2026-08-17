@@ -68,6 +68,20 @@ def uses(cat):
             "forage/pasture": "forage", "food & beverage": "food"}
     return sorted({keep[t] for t in tags if t in keep})
 
+def soil_depth_min(depr, dep):
+    text = (depr or dep or "").strip().lower()
+    if not text or text == "na":
+        return None
+    if "deep" in text:
+        return 150
+    if "medium" in text:
+        return 50
+    if "very shallow" in text:
+        return 10
+    if "shallow" in text:
+        return 20
+    return None
+
 def growth_class(sci, famname, topt_mid, ktmpr):
     genus = sci.split()[0]
     rate = "fast" if genus in FAST else "slow" if genus in SLOW else "medium"
@@ -122,9 +136,11 @@ def main():
             "ktmp": vals["KTMP"],       # killing temp, early growth
             "ktmpr": vals["KTMPR"],
             # obligate wetland: EcoCrop absolute drainage tolerates ONLY saturated soil
-            **({"wet": True} if (row.get("DRAR") or row.get("DRA") or "").strip() == "poorly (saturated >50% of year)" else {}),
+            **({"wet": True} if (r.get("DRAR") or r.get("DRA") or "").strip() == "poorly (saturated >50% of year)" else {}),
             # annual-capable: frost is tested on the growing window, not the winter
-            **({"annual": True} if "annual" in (row.get("LISPA") or "").lower() else {}),     # killing temp, dormant season
+            **({"annual": True} if "annual" in (r.get("LISPA") or "").lower() else {}),     # killing temp, dormant season
+            # minimum required soil depth (cm): absolute DEPR fallback to DEP
+            **({"depmin": dmin} if (dmin := soil_depth_min(r.get("DEPR"), r.get("DEP"))) is not None else {}),
             "photo": photoperiod(r["PHOTO"]),
             "cycle": cyc,
             "altmax": vals["ALTMX"],
