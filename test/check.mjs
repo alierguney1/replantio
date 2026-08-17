@@ -1,7 +1,7 @@
 // Self-check for the scoring and growth engines. Run: node test/check.mjs
 import assert from "node:assert";
 import { readFileSync } from "node:fs";
-import { trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors, monthlyFlatInsolation, scoreSpecies, aggregateClimate, grade, aridityClass } from "../scoring.js";
+import { trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors, monthlyFlatInsolation, maxSoilDepthCm, scoreSpecies, aggregateClimate, grade, aridityClass } from "../scoring.js";
 import { CLASSES, height, dbhCm, co2eKgPerTree, crownDiameterM, crownDisplayM, standDisplay, maturityYears } from "../growth.js";
 
 const species = JSON.parse(readFileSync(new URL("../data/species.json", import.meta.url)));
@@ -316,6 +316,32 @@ assert.ok(monthlySlopeSolarFactors(70, 10, 180).every(f => f <= 3), "polar-night
   assert.ok(avg > 0.9 && avg < 1.3, `insolation-weighted annual factor sane at 70N: ${avg}`);
 }
 
+// --- topographic soil depth limits on slopes (slope-only depth-slope decay,
+// Roering 1999 critical slope; recalibrated from the PR's 33 deg angle of
+// repose, which killed hazelnut on the very Ordu slopes it is farmed on)
+assert.equal(maxSoilDepthCm(0), 200, "flat ground depth is 200 cm");
+assert.equal(maxSoilDepthCm(null), 200, "null slope depth is 200 cm");
+assert.equal(maxSoilDepthCm(20), 181, "20 deg slope gives ~181 cm depth");
+assert.equal(maxSoilDepthCm(30), 153, "30 deg slope gives ~153 cm depth");
+assert.equal(maxSoilDepthCm(35), 131, "35 deg slope gives ~131 cm depth");
+assert.equal(maxSoilDepthCm(50), 10, "past the critical slope regolith is skeletal");
+
+// deep-rooted (walnut: depmin 150) vs shallow-tolerant (scots pine: depmin 20)
+const walnut = by("Juglans regia");
+const scotsPine = by("Pinus sylvestris");
+assert.ok(walnut?.depmin === 150, "walnut requires 150 cm deep soil");
+assert.ok(scotsPine?.depmin === 20, "scots pine tolerates 20 cm shallow soil");
+const steepHill35 = { ...saoPaulo, terrain: { slope: 35, facing: "N" } };
+const flatGround = { ...saoPaulo, terrain: { slope: 1, facing: null } };
+assert.equal(scoreSpecies(walnut, steepHill35).factors.depth, 0.5, "walnut demoted, not killed, on a 35 deg slope");
+assert.equal(scoreSpecies(walnut, flatGround).factors.depth, null, "flat ground leaves soil depth unconstrained");
+assert.equal(scoreSpecies(scotsPine, steepHill35).factors.depth, null, "scots pine passes soil depth on 35 deg slope");
+assert.equal(scoreSpecies(walnut, { ...saoPaulo, terrain: { slope: 55 } }).factors.depth, 0, "skeletal regolith past critical slope kills");
+// regression guards: species farmed on steep ground must survive the gate
+assert.ok(scoreSpecies(hazel, { ...ordu, terrain: { slope: 35 } }, { countryNative: true }).score > 0,
+  "Ordu hazelnut survives the depth gate on the 30-45 deg slopes it is farmed on");
+assert.ok(scoreSpecies(by("Larix decidua"), { ...berlin, terrain: { slope: 30 } }).factors.depth !== 0,
+  "larch is not depth-killed on a 30 deg alpine slope");
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");

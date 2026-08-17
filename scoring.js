@@ -118,6 +118,22 @@ export function aridityClass(ai) {
   return "Humid";
 }
 
+// Maximum equilibrium soil depth (cm) supported by hillslope slope angle.
+// Slope-only heuristic (Saulnier et al. 1997-style depth-slope decay with the
+// critical-slope form of Roering et al. 1999, who fitted Sc ~ 1.2 for
+// soil-mantled forested hillslopes). Pelletier et al. (2016) predicts depth
+// from curvature, which our 3x3 DEM sample does not provide, so this is the
+// honest slope-only approximation, not that model.
+export function maxSoilDepthCm(slopeDeg) {
+  if (slopeDeg == null || slopeDeg < 1.0) return 200;
+  const rad = Math.PI / 180;
+  const beta = slopeDeg * rad;
+  const betaC = 50 * rad; // Roering 1999 critical slope for forested regolith, not the 33 deg dry angle of repose
+  const ratio = Math.tan(beta) / Math.tan(betaC);
+  if (ratio >= 1) return 10;
+  return Math.max(10, Math.round(200 * (1 - ratio * ratio)));
+}
+
 // Aggregate Open-Meteo daily arrays into monthly climate normals.
 export function aggregateClimate(daily) {
   if (!daily?.time?.length) throw new Error("incomplete climate series (no daily records)");
@@ -283,6 +299,18 @@ export function scoreSpecies(sp, site, ev = null) {
     ? (site.terrain?.slope != null ? (site.terrain.slope >= 4 ? 0 : null) : null)
     : null;
 
+  // Soil depth gate on slopes:
+  // Hillside soil thickness is constrained by gravitational transport. When
+  // slope-limited equilibrium depth falls below the species' minimum rooting
+  // requirement (EcoCrop DEPR: depmin), demote by half rather than kill:
+  // DEPR is a soil preference, and trees on steep ground root in fissured
+  // bedrock and colluvial pockets a 90 m DEM cell averages away (Black Sea
+  // hazelnut is farmed on 30-45 degree slopes; larch guards 35 degree alpine
+  // ones). Only past the critical slope, where regolith is skeletal, kill.
+  const depth = (sp.depmin != null && site.terrain?.slope != null && site.terrain.slope >= 4)
+    ? (maxSoilDepthCm(site.terrain.slope) < sp.depmin ? (site.terrain.slope >= 50 ? 0 : 0.5) : null)
+    : null;
+
   // Winter dormancy proxy: EcoCrop has no chill-hours field, so temperate
   // deciduous species (which need cold to break dormancy and fruit) are
   // penalized where the coldest month stays warm. Full credit at <= 10 C,
@@ -302,7 +330,7 @@ export function scoreSpecies(sp, site, ev = null) {
     photo = sp.photo.some(c => here.has(c)) ? 1 : 0.5;
   }
 
-  const score = Math.min(temp, rain, ph ?? 1, chill ?? 1) * (frost ?? 1) * (photo ?? 1) * (drain ?? 1) * annual;
+  const score = Math.min(temp, rain, ph ?? 1, chill ?? 1) * (frost ?? 1) * (photo ?? 1) * (drain ?? 1) * (depth ?? 1) * annual;
 
   // Tie-breaker: EcoCrop plateaus leave many species at the same score, so
   // also measure how close the site sits to each envelope's center
@@ -314,7 +342,7 @@ export function scoreSpecies(sp, site, ev = null) {
   if (sp.ph && site.ph != null) fits.push(tri(site.ph, ...sp.ph));
   const fit = fits.reduce((a, b) => a + b, 0) / fits.length;
 
-  return { score, fit, factors: { temp, rain, ph, frost, photo, annual, chill, drain }, window: { start: best, months: Gt } };
+  return { score, fit, factors: { temp, rain, ph, frost, photo, annual, chill, drain, depth }, window: { start: best, months: Gt } };
 }
 
 export function grade(s) {

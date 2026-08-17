@@ -150,6 +150,20 @@ def infer_uses(r, is_tree):
         return ["materials", "timber"] if any(w in com for w in ["oil tree", "beech", "pine"]) else ["timber"]
     return []
 
+def soil_depth_min(depr, dep):
+    text = (depr or dep or "").strip().lower()
+    if not text or text == "na":
+        return None
+    if "deep" in text:
+        return 150
+    if "medium" in text:
+        return 50
+    if "very shallow" in text:
+        return 10
+    if "shallow" in text:
+        return 20
+    return None
+
 def growth_class(sci, famname, topt_mid, ktmpr):
     genus = sci.split()[0]
     rate = "fast" if genus in FAST else "slow" if genus in SLOW else "medium"
@@ -242,6 +256,8 @@ def main():
             **({"wet": True} if (r.get("DRAR") or r.get("DRA") or "").strip() == "poorly (saturated >50% of year)" else {}),
             # annual-capable: frost is tested on the growing window, not the winter
             **({"annual": True} if is_annual else {}),
+            # minimum required soil depth (cm): absolute DEPR fallback to DEP
+            **({"depmin": dmin} if (dmin := soil_depth_min(r.get("DEPR"), r.get("DEP"))) is not None else {}),
             "photo": photo,
             "cycle": cyc,
             "altmax": vals["ALTMX"],

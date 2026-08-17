@@ -62,6 +62,16 @@ Documented adaptations for perennials (`scoring.js`):
   DEM slopes >= 4 degrees, with the reason on the card, and wear a "wetland"
   trait chip everywhere. Flat ground stays unscored: the water table is not
   visible from space, so the chip carries the requirement instead.
+- **Topographic soil depth limits on slopes**: hillslope soil thickness is
+  constrained by gravitational transport. This is a slope-only heuristic
+  (Saulnier et al. 1997-style depth-slope decay with the critical-slope form of
+  Roering et al. 1999, fitted Sc ~ 1.2 for forested regolith); Pelletier et al.
+  (2016) needs curvature our DEM sampling does not provide. When DEM slope limits
+  equilibrium depth below a species' minimum requirement (EcoCrop DEPR: `depmin`
+  150, 50, 20, 10 cm), the species takes a half penalty rather than a kill (DEPR
+  is a soil preference; steep-ground trees root in fissured bedrock and colluvial
+  pockets a 90 m cell averages away), with the reason and available depth on the
+  card. Only past the critical slope, where regolith is skeletal, does it fail.
 - **Dormant-tree scoring**: a tree declaring deep dormant hardiness (KTMPR
   <= -10 C) is scored on its growing season for temperature (months averaging
   >= 5 C, capped by its cycle) and on the full year for rainfall. Without
