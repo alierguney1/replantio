@@ -35,6 +35,18 @@ export function monthlyDaylengths(lat) {
   return MID_DOY.map(d => daylength(lat, d));
 }
 
+// Maximum equilibrium soil depth (cm) supported by hillslope slope angle,
+// based on Pelletier et al. (2016, JAMES) geomorphic mass-conservation model.
+export function maxSoilDepthCm(slopeDeg) {
+  if (slopeDeg == null || slopeDeg < 1.0) return 200;
+  const rad = Math.PI / 180;
+  const beta = slopeDeg * rad;
+  const betaC = 33 * rad; // Critical angle of repose for hillslope regolith (~33 deg)
+  const ratio = Math.tan(beta) / Math.tan(betaC);
+  if (ratio >= 1) return 10;
+  return Math.max(10, Math.round(200 * (1 - ratio * ratio)));
+}
+
 // Topographic solar radiation ratio on inclined surfaces (Duffie & Beckman 2013, Swift 1976).
 // Computes daily integrated beam radiation ratio Rb = I_slope / I_flat, coupled with
 // Liu & Jordan (1960) isotropic sky-view diffuse (1+cos beta)/2 and ground albedo (1-cos beta)/2.
@@ -329,6 +341,15 @@ export function scoreSpecies(sp, site, ev = null) {
     ? (site.terrain?.slope != null ? (site.terrain.slope >= 4 ? 0 : null) : null)
     : null;
 
+  // Soil depth gate on slopes (Pelletier et al. 2016):
+  // Hillside soil thickness is constrained by gravitational transport.
+  // When slope-limited equilibrium soil depth falls below the species'
+  // absolute minimum root depth requirement (EcoCrop DEPR: depmin), the
+  // species cannot anchor or access soil water and fails (depth = 0).
+  const depth = (sp.depmin != null && site.terrain?.slope != null && site.terrain.slope >= 4)
+    ? (maxSoilDepthCm(site.terrain.slope) < sp.depmin ? 0 : null)
+    : null;
+
   // Winter dormancy proxy: EcoCrop has no chill-hours field, so temperate
   // deciduous species (which need cold to break dormancy and fruit) are
   // penalized where the coldest month stays warm. Full credit at <= 10 C,
@@ -362,7 +383,7 @@ export function scoreSpecies(sp, site, ev = null) {
     }
   }
 
-  const score = Math.min(temp, rain, ph ?? 1, chill ?? 1) * (frost ?? 1) * (photo ?? 1) * (drain ?? 1) * (shade ?? 1) * annual;
+  const score = Math.min(temp, rain, ph ?? 1, chill ?? 1) * (frost ?? 1) * (photo ?? 1) * (drain ?? 1) * (shade ?? 1) * (depth ?? 1) * annual;
 
   // Tie-breaker: EcoCrop plateaus leave many species at the same score, so
   // also measure how close the site sits to each envelope's center
@@ -407,7 +428,7 @@ export function scoreSpecies(sp, site, ev = null) {
   return {
     score,
     fit,
-    factors: { temp, rain, ph, frost, photo, annual, chill, drain, shade },
+    factors: { temp, rain, ph, frost, photo, annual, chill, drain, shade, depth },
     window: { start: best, months: Gt, deficit, irrigation }
   };
 }

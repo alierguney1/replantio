@@ -146,7 +146,7 @@ SUBDIVISIONS = {
         "WHM-HP": "HP", "WHM-JK": "JK", "WHM-UT": "UK",
         "IND-DD": "DH", "IND-DM": "DH", "IND-DI": "DH",  # merged into one UT, 2020
         "IND-PO": "PY", "IND-KL": "PY", "IND-MH": "PY", "IND-YA": "PY",
-    , "TS": "IND",  # Telangana: post-2001 split, geocoders return TS
+        "IND-TS": "TS",  # Telangana: post-2001 split, geocoders return TS
     },
     "MX": {
         "MXC-DF": "CMX", "MXC-ME": "MEX", "MXC-MO": "MOR", "MXC-PU": "PUE",

@@ -99,6 +99,12 @@ Documented adaptations for perennials (`scoring.js`):
   cloud < 50%), they take a soft 0.85 multiplier (Beer et al. 1998, Somarriba et al. 2012;
   representing 15-20% open-sun seedling photo-stress) so full-sun canopy trees lead the
   ranking, while advising nurse canopy in open fields.
+- **Topographic soil depth limits on slopes**: physical regolith thickness on hillslopes
+  is constrained by slope-dependent gravitational transport (Pelletier et al. 2016, JAMES).
+  When DEM slope limits equilibrium soil depth below a species' absolute minimum requirement
+  (EcoCrop DEPR/DEP: 150 cm deep-rooted, 50 cm medium, 20 cm shallow, 10 cm very shallow),
+  the species cannot anchor or access soil water on steep slopes and fails (`factors.depth = 0`),
+  with the reason and available depth displayed on the card.
 - **Photoperiod** is an extension (no published EcoCrop implementation scores it).
   Daylength comes from the Forsythe/CBM formula; months classify as short (<12 h),
   neutral (12 to 14 h) or long (>14 h) with a half-hour tolerance at the boundaries.

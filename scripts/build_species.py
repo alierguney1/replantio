@@ -159,6 +159,20 @@ def uses(cat):
     }
     return sorted({keep[t] for t in tags if t in keep})
 
+def soil_depth_min(depr, dep):
+    text = (depr or dep or "").strip().lower()
+    if not text or text == "na":
+        return None
+    if "deep" in text:
+        return 150
+    if "medium" in text:
+        return 50
+    if "very shallow" in text:
+        return 10
+    if "shallow" in text:
+        return 20
+    return None
+
 def infer_habit(r, sci, famname, cat_raw, phys_raw, lispa_raw):
     """Infer life form and habit when EcoCrop LIFO is missing."""
     fam = (famname or "").split(":")[-1]
@@ -260,6 +274,8 @@ def main():
             **({"wet": True} if (r.get("DRAR") or r.get("DRA") or "").strip() == "poorly (saturated >50% of year)" else {}),
             # annual-capable: frost is tested on the growing window, not the winter
             **({"annual": True} if is_annual else {}),
+            # minimum required soil depth (cm): absolute DEPR fallback to DEP
+            **({"depmin": dmin} if (dmin := soil_depth_min(r.get("DEPR"), r.get("DEP"))) is not None else {}),
             # shade-tolerant / understory: EcoCrop optimal light intensity includes shade
             **({"shade": True} if ("shade" in (r.get("LIOPMN") or "").lower() or "shade" in (r.get("LIOPMX") or "").lower()) else {}),
             "photo": photo,
