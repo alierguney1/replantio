@@ -146,7 +146,6 @@ SUBDIVISIONS = {
         "WHM-HP": "HP", "WHM-JK": "JK", "WHM-UT": "UK",
         "IND-DD": "DH", "IND-DM": "DH", "IND-DI": "DH",  # merged into one UT, 2020
         "IND-PO": "PY", "IND-KL": "PY", "IND-MH": "PY", "IND-YA": "PY",
-    , "TS": "IND",  # Telangana: post-2001 split, geocoders return TS
     },
     "MX": {
         "MXC-DF": "CMX", "MXC-ME": "MEX", "MXC-MO": "MOR", "MXC-PU": "PUE",
@@ -199,7 +198,8 @@ SUBDIVISION_SKIP = {
 # Subdivisions that did not exist when WGSRPD ed. 2 froze in 2001, filed under the
 # level-3 region of the parent they were carved out of.
 SUBDIVISION_EXTRA = {
-    "IN": {"TG": "IND", "LA": "WHM"},  # Telangana from AP 2014, Ladakh from J&K 2019
+    # Telangana from AP 2014 (ISO says TG but geocoders return TS: keep both), Ladakh from J&K 2019
+    "IN": {"TG": "IND", "TS": "IND", "LA": "WHM"},
 }
 
 # Printed on every run: the sub-national split is the whole point of the second
