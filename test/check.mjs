@@ -1,7 +1,7 @@
 // Self-check for the scoring and growth engines. Run: node test/check.mjs
 import assert from "node:assert";
 import { readFileSync } from "node:fs";
-import { trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors, monthlyFlatInsolation, scoreSpecies, aggregateClimate, grade } from "../scoring.js";
+import { trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors, monthlyFlatInsolation, scoreSpecies, aggregateClimate, grade, aridityClass } from "../scoring.js";
 import { CLASSES, height, dbhCm, co2eKgPerTree, crownDiameterM, crownDisplayM, standDisplay, maturityYears } from "../growth.js";
 
 const species = JSON.parse(readFileSync(new URL("../data/species.json", import.meta.url)));
@@ -14,6 +14,16 @@ assert.equal(trap(15, 0, 10, 20, 30), 1);
 assert.equal(trap(25, 0, 10, 20, 30), 0.5);
 assert.equal(trap(-1, 0, 10, 20, 30), 0);
 assert.equal(trap(30, 0, 10, 20, 30), 0);
+
+// --- UNEP Aridity Index (AI = P / ET0) classification
+assert.equal(aridityClass(0.02), "Hyper-arid");
+assert.equal(aridityClass(0.12), "Arid");
+assert.equal(aridityClass(0.32), "Semi-arid");
+assert.equal(aridityClass(0.58), "Dry sub-humid");
+assert.equal(aridityClass(0.85), "Humid");
+assert.equal(aridityClass(1.5), "Humid");
+assert.equal(aridityClass(null), null);
+assert.equal(aridityClass(Infinity), null);
 
 // --- daylength (verified anchors: equator/45N/70N, Forsythe p=0.8333)
 close(daylength(0, 172), 12.121, 0.05, "equator Jun21");
@@ -36,18 +46,32 @@ close(crownDiameterM(24, 19), 5.6, 0.4, "oak crown dia at D=24 H=19");
 assert.ok(maturityYears(oak) > 60 && maturityYears(euc) < 25, "maturity ordering");
 
 // --- climate aggregation
-const days = { time: [], temperature_2m_mean: [], temperature_2m_min: [], precipitation_sum: [] };
+const days = { time: [], temperature_2m_mean: [], temperature_2m_min: [], precipitation_sum: [], et0_fao_evapotranspiration: [] };
 for (const y of ["2020", "2021"]) for (let m = 1; m <= 12; m++) {
   days.time.push(`${y}-${String(m).padStart(2, "0")}-15`);
   days.temperature_2m_mean.push(10 + m);
   days.temperature_2m_min.push(5 + m);
   days.precipitation_sum.push(50);
+  days.et0_fao_evapotranspiration.push(40);
 }
 const agg = aggregateClimate(days);
 close(agg.tavg[0], 11, 0.01, "tavg Jan");
 close(agg.prec[0], 50, 0.01, "prec Jan (per-year mean)");
 close(agg.annualRain, 600, 0.1, "annual rain");
+close(agg.annualET0, 480, 0.1, "annual ET0");
+close(agg.waterBalance, 120, 0.1, "water balance");
+close(agg.ai, 1.25, 0.01, "aridity index AI");
+assert.equal(agg.aridity, "Humid");
 assert.equal(agg.absMin, 6);
+
+// missing ET0 array degrades gracefully without throwing
+const noET0 = { time: days.time, temperature_2m_mean: days.temperature_2m_mean, temperature_2m_min: days.temperature_2m_min, precipitation_sum: days.precipitation_sum };
+const aggNoET0 = aggregateClimate(noET0);
+assert.equal(aggNoET0.et0, null);
+assert.equal(aggNoET0.annualET0, null);
+assert.equal(aggNoET0.waterBalance, null);
+assert.equal(aggNoET0.ai, null);
+assert.equal(aggNoET0.aridity, null);
 
 // temp gaps must not swallow precipitation (audit #4)
 const gappy = structuredClone(days);
@@ -297,6 +321,44 @@ assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");
 assert.equal(grade(0), "Not suitable");
 
+// --- hydrological fixtures & UNEP aridity benchmarks (ERA5 2015-2024 normals)
+const konyaNormals = {
+  prec: [49.4, 30.6, 52.9, 23.1, 42.8, 31.9, 2.9, 3.0, 10.3, 11.4, 25.4, 47.2],
+  et0: [33.6, 48.7, 81.9, 125.3, 155.9, 175.4, 221.2, 199.3, 145.0, 94.4, 54.1, 32.5],
+};
+const konyaRain = konyaNormals.prec.reduce((a, b) => a + b, 0);
+const konyaET0 = konyaNormals.et0.reduce((a, b) => a + b, 0);
+const konyaAI = konyaRain / konyaET0;
+close(konyaRain, 330.9, 0.5, "Konya annual rain");
+close(konyaET0, 1367.3, 0.5, "Konya annual ET0");
+close(konyaAI, 0.24, 0.02, "Konya AI ~ 0.24");
+assert.equal(aridityClass(konyaAI), "Semi-arid", "Konya is semi-arid");
+
+const sevilleNormals = {
+  prec: [39.1, 31.3, 79.5, 51.7, 27.8, 9.7, 1.2, 2.5, 24.1, 87.2, 58.7, 59.9],
+  et0: [47.9, 64.9, 97.6, 122.5, 174.5, 197.9, 226.0, 205.7, 142.6, 96.3, 55.9, 43.4],
+};
+const sevilleAI = sevilleNormals.prec.reduce((a, b) => a + b, 0) / sevilleNormals.et0.reduce((a, b) => a + b, 0);
+close(sevilleAI, 0.32, 0.02, "Seville AI ~ 0.32");
+assert.equal(aridityClass(sevilleAI), "Semi-arid", "Seville is semi-arid");
+
+const hamburgNormals = {
+  prec: [77.3, 70.0, 56.2, 50.6, 61.4, 70.2, 86.8, 72.0, 57.5, 75.5, 67.3, 69.2],
+  et0: [13.7, 21.9, 41.4, 70.2, 102.2, 117.3, 113.0, 100.3, 67.3, 35.1, 15.7, 11.0],
+};
+const hamburgAI = hamburgNormals.prec.reduce((a, b) => a + b, 0) / hamburgNormals.et0.reduce((a, b) => a + b, 0);
+close(hamburgAI, 1.15, 0.05, "Hamburg AI ~ 1.15");
+assert.equal(aridityClass(hamburgAI), "Humid", "Hamburg is humid");
+
+const rizeNormals = {
+  prec: [168.8, 113.7, 152.6, 98.1, 123.4, 160.6, 183.1, 224.1, 252.7, 278.4, 179.8, 163.7],
+  et0: [29.8, 37.5, 53.5, 77.3, 94.8, 102.5, 104.9, 92.9, 75.0, 53.3, 39.5, 27.8],
+};
+const rizeAI = rizeNormals.prec.reduce((a, b) => a + b, 0) / rizeNormals.et0.reduce((a, b) => a + b, 0);
+close(rizeAI, 2.66, 0.05, "Rize AI ~ 2.66");
+assert.equal(aridityClass(rizeAI), "Humid", "Rize is humid");
+
 console.log("all checks passed");
 console.log(`  oak@Berlin ${qrBerlin.score.toFixed(2)} | euc@Berlin ${egBerlin.score.toFixed(2)} | euc@SP ${egSP.score.toFixed(2)}`);
 console.log(`  euc CO2e(10y) ${eucCo2.toFixed(0)} kg | oak CO2e(10y) ${co2eKgPerTree(oakSp, 10).toFixed(1)} kg`);
+console.log(`  AI: Konya ${konyaAI.toFixed(2)} (${aridityClass(konyaAI)}) | Seville ${sevilleAI.toFixed(2)} (${aridityClass(sevilleAI)}) | Hamburg ${hamburgAI.toFixed(2)} (${aridityClass(hamburgAI)}) | Rize ${rizeAI.toFixed(2)} (${aridityClass(rizeAI)})`);
