@@ -413,6 +413,29 @@ assert.equal(scoreSpecies(walnut, flatGround).factors.depth, null, "flat ground 
 // On 25 deg slope (max depth 97 cm >= 20 cm), scots pine passes soil depth:
 assert.equal(scoreSpecies(scotsPine, steepHill25).factors.depth, null, "scots pine passes soil depth on 25 deg slope");
 
+// --- Soil envelope schema & hallmark species validation
+const rice = by("Oryza sativa");
+const maize = by("Zea mays");
+
+assert.ok(species.length >= 2000, `database has ${species.length} species`);
+assert.ok(rice?.text_tol?.includes("heavy"), "rice tolerates heavy clay soil");
+assert.ok(rice?.dra_tol?.includes("poorly"), "rice tolerates poorly drained soil");
+assert.ok(olive?.dra_opt?.includes("well"), "olive requires well-drained soil");
+assert.ok(olive?.sal_tol === "medium" || olive?.sal_tol === "high", "olive has salinity tolerance");
+assert.ok(maize?.text_opt?.includes("medium"), "maize prefers medium loamy soil");
+assert.ok(tea?.ph?.[0] <= 4.5, "tea tolerates acidic soil");
+
+// Soil coverage assertions across the database
+const withText = species.filter(s => s.text_opt?.length || s.text_tol?.length).length;
+const withDepth = species.filter(s => s.depmin != null || s.depopt != null).length;
+const withSal = species.filter(s => s.sal_opt != null || s.sal_tol != null).length;
+const withDra = species.filter(s => s.dra_opt?.length || s.dra_tol?.length).length;
+
+assert.ok(withText / species.length > 0.80, `soil texture coverage >80%: ${(withText / species.length * 100).toFixed(1)}%`);
+assert.ok(withDepth / species.length > 0.80, `soil depth coverage >80%: ${(withDepth / species.length * 100).toFixed(1)}%`);
+assert.ok(withSal / species.length > 0.75, `salinity coverage >75%: ${(withSal / species.length * 100).toFixed(1)}%`);
+assert.ok(withDra / species.length > 0.80, `drainage coverage >80%: ${(withDra / species.length * 100).toFixed(1)}%`);
+
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");
@@ -423,3 +446,5 @@ console.log(`  oak@Berlin ${qrBerlin.score.toFixed(2)} | euc@Berlin ${egBerlin.s
 console.log(`  tomato@Seville deficit ${tomatoSeville.window.deficit} mm (temp ${tomatoSeville.factors.temp.toFixed(2)}, rainfed ${tomatoSeville.factors.rain.toFixed(2)})`);
 console.log(`  euc CO2e(10y) ${eucCo2.toFixed(0)} kg | oak CO2e(10y) ${co2eKgPerTree(oakSp, 10).toFixed(1)} kg`);
 console.log(`  AI: Konya ${konyaAI.toFixed(2)} (${aridityClass(konyaAI)}) | Seville ${sevilleAI.toFixed(2)} (${aridityClass(sevilleAI)}) | Hamburg ${hamburgAI.toFixed(2)} (${aridityClass(hamburgAI)}) | Rize ${rizeAI.toFixed(2)} (${aridityClass(rizeAI)})`);
+console.log(`  Soil Envelopes: Texture ${withText}/${species.length} (${(withText/species.length*100).toFixed(1)}%) | Depth ${withDepth} | Salinity ${withSal} | Drainage ${withDra}`);
+

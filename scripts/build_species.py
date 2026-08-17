@@ -40,14 +40,20 @@ SPECIES_PATCH = {
         "lifo": "grass", "porte": "grass", "tree": False, "annual": True,
         "uses": ["environmental", "food", "forage", "materials"],
         "photo": ["short", "neutral"],
+        "text_opt": ["light", "medium"],
+        "text_tol": ["heavy", "light", "medium"],
     },
     1265: { # Ipomoea batatas (Sweet Potato)
         "lifo": "herb, vine", "porte": "vine", "tree": False, "annual": True,
         "uses": ["food"], "photo": ["short"],
+        "text_opt": ["light", "medium"],
+        "text_tol": ["heavy", "light", "medium"],
     },
     1884: { # Saccharum officinarum (Sugarcane)
         "lifo": "grass", "porte": "grass", "tree": False, "annual": False,
         "uses": ["food", "materials"], "photo": ["short", "neutral"],
+        "text_opt": ["medium", "heavy"],
+        "text_tol": ["heavy", "light", "medium"],
     },
     1781: { # Pongamia pinnata (Indian beech / Millettia pinnata)
         "lifo": "tree", "porte": "tree", "tree": True, "wood": "broadleaf",
@@ -71,10 +77,30 @@ SPECIES_PATCH = {
         "lifo": "herb", "porte": "herb", "tree": False, "annual": False,
         "uses": ["forage"],
     },
+    1553: { # Olea europaea (Olive)
+        "sal_tol": "medium",
+    },
     7651: { # Medicago intertexta (Calvary clover)
         "lifo": "herb", "porte": "herb", "tree": False, "annual": True,
         "uses": ["forage"],
     },
+}
+
+GENUS_FAMILY_FALLBACK = {
+    "Acacia": "Fabaceae", "Setaria": "Poaceae", "Axonopus": "Poaceae",
+    "Desmodium": "Fabaceae", "Samanea": "Fabaceae", "Coleus": "Lamiaceae",
+    "Bixa": "Bixaceae", "Anthocephalus": "Rubiaceae", "Feijoa": "Myrtaceae",
+    "Nasturtium": "Brassicaceae", "Centrosema": "Fabaceae", "Stylosanthes": "Fabaceae",
+    "Paspalum": "Poaceae", "Digitaria": "Poaceae", "Brachiaria": "Poaceae",
+    "Urochloa": "Poaceae", "Crotalaria": "Fabaceae", "Indigofera": "Fabaceae",
+    "Aeschynomene": "Fabaceae", "Tephrosia": "Fabaceae", "Solanum": "Solanaceae",
+    "Capsicum": "Solanaceae", "Phaseolus": "Fabaceae", "Vigna": "Fabaceae",
+    "Eucalyptus": "Myrtaceae", "Pinus": "Pinaceae", "Quercus": "Fagaceae",
+    "Citrus": "Rutaceae", "Prunus": "Rosaceae", "Malus": "Rosaceae",
+    "Pyrus": "Rosaceae", "Ficus": "Moraceae", "Morus": "Moraceae",
+    "Acanthosicyos": "Cucurbitaceae", "Abelmoschus": "Malvaceae",
+    "Hibiscus": "Malvaceae", "Olea": "Oleaceae", "Camellia": "Theaceae",
+    "Corylus": "Betulaceae", "Zea": "Poaceae", "Ipomoea": "Convolvulaceae",
 }
 
 # Accepted binomial renames and orthographic standardizations from Kew WCVP
@@ -173,6 +199,80 @@ def soil_depth_min(depr, dep):
         return 20
     return None
 
+def parse_soil_texture(v):
+    """Parses soil texture string into normalized sorted list of categories.
+    Valid categories: 'light', 'medium', 'heavy', 'organic'.
+    'wide' means broad adaptability across all mineral textures -> ['heavy', 'light', 'medium'].
+    """
+    if not v or v.strip().lower() in ("", "na"):
+        return None
+    v = v.strip().lower()
+    tags = set()
+    for part in v.split(","):
+        part = part.strip()
+        if "wide" in part:
+            tags.update(["light", "medium", "heavy"])
+        for t in ("light", "medium", "heavy", "organic"):
+            if t in part:
+                tags.add(t)
+    return sorted(tags) if tags else None
+
+def parse_soil_depth(val):
+    """Returns depth in cm: deep -> 150, medium -> 50, shallow -> 20, very shallow -> 10."""
+    text = (val or "").strip().lower()
+    if not text or text == "na":
+        return None
+    if "deep" in text:
+        return 150
+    if "medium" in text:
+        return 50
+    if "very shallow" in text:
+        return 10
+    if "shallow" in text:
+        return 20
+    return None
+
+def parse_salinity(v):
+    """Normalizes EcoCrop salinity string:
+    'low (<4 dS/m)' / 'none' -> 'low'
+    'medium (4-10 dS/m)' -> 'medium'
+    'high (>10 dS/m))' -> 'high'
+    """
+    if not v or v.strip().lower() in ("", "na"):
+        return None
+    v = v.strip().lower()
+    if "high" in v:
+        return "high"
+    if "medium" in v:
+        return "medium"
+    if "low" in v or "none" in v:
+        return "low"
+    return None
+
+def parse_fertility(v):
+    """'low', 'moderate', 'high'."""
+    if not v or v.strip().lower() in ("", "na"):
+        return None
+    v = v.strip().lower()
+    for f in ("low", "moderate", "high"):
+        if f in v:
+            return f
+    return None
+
+def parse_drainage(v):
+    """Normalizes drainage categories: 'poorly', 'well', 'excessive'."""
+    if not v or v.strip().lower() in ("", "na"):
+        return None
+    v = v.strip().lower()
+    tags = set()
+    if "poorly" in v:
+        tags.add("poorly")
+    if "well" in v:
+        tags.add("well")
+    if "excessive" in v:
+        tags.add("excessive")
+    return sorted(tags) if tags else None
+
 def infer_habit(r, sci, famname, cat_raw, phys_raw, lispa_raw):
     """Infer life form and habit when EcoCrop LIFO is missing."""
     fam = (famname or "").split(":")[-1]
@@ -257,12 +357,47 @@ def main():
         photo = patch.get("photo", photoperiod(r["PHOTO"]))
         use_list = patch.get("uses", uses(r["CAT"]))
 
+        genus = sci.split()[0]
+        fam_name = (r["FAMNAME"] or "").split(":")[-1].strip() or GENUS_FAMILY_FALLBACK.get(genus, "")
+
+        text_opt = patch.get("text_opt", parse_soil_texture(r.get("TEXT")))
+        text_tol = patch.get("text_tol", parse_soil_texture(r.get("TEXTR")))
+        if text_opt:
+            text_opt = sorted(text_opt)
+        if text_opt and text_tol:
+            text_tol = sorted(set(text_tol).union(text_opt))
+        elif text_opt and not text_tol:
+            text_tol = text_opt
+        elif text_tol:
+            text_tol = sorted(text_tol)
+
+        depopt = patch.get("depopt", parse_soil_depth(r.get("DEP")))
+        dmin = soil_depth_min(r.get("DEPR"), r.get("DEP"))
+        if dmin is not None and depopt is not None and dmin > depopt:
+            depopt = dmin
+
+        sal_opt = patch.get("sal_opt", parse_salinity(r.get("SAL")))
+        sal_tol = patch.get("sal_tol", parse_salinity(r.get("SALR")))
+        sal_order = {"low": 1, "medium": 2, "high": 3}
+        if sal_opt and sal_tol and sal_order[sal_opt] > sal_order[sal_tol]:
+            sal_tol = sal_opt
+
+        fer_opt = patch.get("fer_opt", parse_fertility(r.get("FER")))
+        fer_tol = patch.get("fer_tol", parse_fertility(r.get("FERR")))
+
+        dra_opt = patch.get("dra_opt", parse_drainage(r.get("DRA")))
+        dra_tol = patch.get("dra_tol", parse_drainage(r.get("DRAR")))
+        if dra_opt and dra_tol:
+            dra_tol = sorted(set(dra_tol).union(dra_opt))
+        elif dra_opt and not dra_tol:
+            dra_tol = dra_opt
+
         out.append({
             "id": code,
             "sci": sci,
             "common": names[0] if names else sci,
             "aka": names[1:],
-            "family": (r["FAMNAME"] or "").split(":")[-1],
+            "family": fam_name,
             "lifo": lifo_val,
             "uses": use_list,
             "temp": patch.get("temp", [vals["TMIN"], vals["TOPMN"], vals["TOPMX"], vals["TMAX"]]),
@@ -275,7 +410,16 @@ def main():
             # annual-capable: frost is tested on the growing window, not the winter
             **({"annual": True} if is_annual else {}),
             # minimum required soil depth (cm): absolute DEPR fallback to DEP
-            **({"depmin": dmin} if (dmin := soil_depth_min(r.get("DEPR"), r.get("DEP"))) is not None else {}),
+            **({"depmin": dmin} if dmin is not None else {}),
+            **({"depopt": depopt} if depopt is not None else {}),
+            **({"text_opt": text_opt} if text_opt else {}),
+            **({"text_tol": text_tol} if text_tol else {}),
+            **({"sal_opt": sal_opt} if sal_opt else {}),
+            **({"sal_tol": sal_tol} if sal_tol else {}),
+            **({"fer_opt": fer_opt} if fer_opt else {}),
+            **({"fer_tol": fer_tol} if fer_tol else {}),
+            **({"dra_opt": dra_opt} if dra_opt else {}),
+            **({"dra_tol": dra_tol} if dra_tol else {}),
             # shade-tolerant / understory: EcoCrop optimal light intensity includes shade
             **({"shade": True} if ("shade" in (r.get("LIOPMN") or "").lower() or "shade" in (r.get("LIOPMX") or "").lower()) else {}),
             "photo": photo,
