@@ -84,6 +84,13 @@ Documented adaptations for perennials (`scoring.js`):
   neutral (12 to 14 h) or long (>14 h) with a half-hour tolerance at the boundaries.
   A species whose photoperiod classes never occur at the site takes a 0.5 penalty.
   "Tolerates all daylengths" scores 1; an empty field shows as "no data".
+- **Topographic solar radiation on slopes**: ERA5 shortwave radiation represents a
+  flat horizontal plane (GHI/SSRD). Using the DEM slope and aspect, insolation is
+  adjusted via Duffie-Beckman (2013) and Swift (1976, USDA Forest Service) analytical
+  solar incidence geometry (cos theta daily integration) coupled with Liu & Jordan
+  (1960) isotropic sky-view diffuse (kb=0.70, kd=0.30, rho=0.20). South-facing slopes
+  reflect verified winter solar boosts (+15% to +75%), while steep north-facing slopes
+  capture topographic shade (-20% to -70%).
 
 Ties are broken by centrality: how close the site sits to the center of each species'
 optimal range (triangular membership). Missing data never silently zeroes or passes a

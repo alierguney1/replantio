@@ -1,4 +1,4 @@
-import { aggregateClimate, scoreSpecies, grade, gradeColor, monthlyDaylengths } from "./scoring.js";
+import { aggregateClimate, scoreSpecies, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors } from "./scoring.js";
 import { DICTS, LANGS, NAMES, LOCALES, MONTHS_ALL } from "./i18n.js";
 import { CLASSES, projection, maturityYears, co2eKgPerTree, co2eTonsPerHa, height, dbhCm, crownDiameterM, crownDisplayM, standDisplay, STEMS_PER_HA } from "./growth.js";
 
@@ -449,7 +449,7 @@ async function fetchTerrain(c, signal) {
     const slope = Math.atan(Math.hypot(gx, gy)) * 180 / Math.PI;
     const az = (Math.atan2(-gx, -gy) * 180 / Math.PI + 360) % 360; // downslope compass bearing
     const facing = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][Math.round(az / 45) % 8];
-    return { slope, facing: slope < 1.5 ? null : facing };
+    return { slope, facing: slope < 1.5 ? null : facing, aspectDeg: Math.round(az) };
   } catch { return null; }
 }
 
@@ -534,6 +534,13 @@ async function analyze(pts) {
 
   await speciesReady;
   const site = { ...agg, ph: soil?.phh2o ?? null, lat: c.lat, elevation: clim.elevation, place: place?.label ?? null, terrain };
+  if (terrain && terrain.slope >= 1.5 && terrain.aspectDeg != null && agg.rad != null) {
+    const monthlyFactors = monthlySlopeSolarFactors(c.lat, terrain.slope, terrain.aspectDeg);
+    const avgFactor = monthlyFactors.reduce((a, b) => a + b, 0) / 12;
+    terrain.radFactor = avgFactor;
+    terrain.monthlyRadFactors = monthlyFactors;
+    site.radSlope = agg.rad * avgFactor;
+  }
   // native-evidence for the scorer: the species' polygon (Little) or regional
   // (WCVP L3) range covers this exact point, so the local regime is survivable
   const evL3 = L3_REGIONS[place?.cc]?.[place?.uf] ?? null;
@@ -820,7 +827,7 @@ function renderResults() {
       ${rd(tr("elevation"), `${fmt(site.elevation)} m`)}
       ${rd(tr("daylength"), `${fmt(Math.min(...dls), 1)}&ndash;${fmt(Math.max(...dls), 1)} h`)}
       ${rd(tr("record low"), site.absMin != null ? `${fmt(site.absMin)} °C` : tr("n/a"))}
-      ${rd(tr("sun"), site.rad != null ? `${fmt(site.rad, 1)} ${tr("kWh/m²·day")}` : tr("n/a"), tr("mean daily shortwave radiation, all weather included"))}
+      ${rd(tr("sun"), site.terrain?.radFactor != null && Math.abs(site.terrain.radFactor - 1) >= 0.03 ? `${fmt(site.radSlope ?? site.rad, 1)} ${tr("kWh/m²·day")} <span style="font-size:10px;opacity:0.8">(${site.terrain.radFactor >= 1 ? "+" : ""}${Math.round((site.terrain.radFactor - 1) * 100)}% ${tr("on slope")})</span>` : (site.rad != null ? `${fmt(site.rad, 1)} ${tr("kWh/m²·day")}` : tr("n/a")), tr("mean daily shortwave radiation, all weather included"))}
       ${rd(tr("humidity"), site.rh != null ? `${fmt(site.rh)}%` : tr("n/a"))}
       ${rd(tr("cloud"), site.cloud != null ? `${fmt(site.cloud)}%` : tr("n/a"), tr("high humidity plus high cloud cover marks fog-prone sites"))}
       ${rd(tr("slope"), site.terrain ? `${fmt(site.terrain.slope)}°${site.terrain.facing ? ` ${tr("facing")} ` + tr(site.terrain.facing) : ""}` : tr("n/a"))}
