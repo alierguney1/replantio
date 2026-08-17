@@ -245,15 +245,6 @@ const mFactors = monthlySlopeSolarFactors(45, 20, 180);
 assert.equal(mFactors.length, 12, "12 monthly slope factors");
 assert.ok(mFactors[11] > 1.5, "winter month has elevated solar incidence on south slope");
 
-// --- shade-tolerant / understory species trait & scoring
-const cacao = by("Theobroma cacao");
-assert.ok(cacao?.shade, "cacao carries the understory/shade trait");
-const highSunSite = { ...saoPaulo, rad: 5.8, radSlope: 5.8, cloud: 25 };
-const shadedSite = { ...saoPaulo, rad: 3.5, radSlope: 3.5, cloud: 60 };
-assert.equal(scoreSpecies(cacao, highSunSite).factors.shade, 0.85, "cacao receives soft caveat in unshaded high-sun open field");
-assert.equal(scoreSpecies(cacao, shadedSite).factors.shade, 1.0, "cacao gets full credit in shaded/cloudy regime");
-assert.equal(scoreSpecies(qr, highSunSite).factors.shade, null, "canopy oak has null shade factor (not penalized)");
-
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");

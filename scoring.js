@@ -256,21 +256,7 @@ export function scoreSpecies(sp, site, ev = null) {
     photo = sp.photo.some(c => here.has(c)) ? 1 : 0.5;
   }
 
-  // Shade-preferring / understory species: in intense direct open sun,
-  // delicate understory crops (cocoa, cardamom, vanilla, ginseng) suffer
-  // photo-inhibition and leaf scorch unless intercropped with nurse trees
-  // (Beer et al. 1998, Somarriba et al. 2012; 15-20% open-sun seedling stress).
-  let shade = null;
-  if (sp.shade) {
-    const effRad = site.radSlope ?? site.rad;
-    if (effRad != null && effRad >= 5.2 && (site.cloud == null || site.cloud < 50)) {
-      shade = 0.85; // soft penalty in unshaded high-radiation open fields
-    } else {
-      shade = 1.0;
-    }
-  }
-
-  const score = Math.min(temp, rain, ph ?? 1, chill ?? 1) * (frost ?? 1) * (photo ?? 1) * (drain ?? 1) * (shade ?? 1) * annual;
+  const score = Math.min(temp, rain, ph ?? 1, chill ?? 1) * (frost ?? 1) * (photo ?? 1) * (drain ?? 1) * annual;
 
   // Tie-breaker: EcoCrop plateaus leave many species at the same score, so
   // also measure how close the site sits to each envelope's center
@@ -282,7 +268,7 @@ export function scoreSpecies(sp, site, ev = null) {
   if (sp.ph && site.ph != null) fits.push(tri(site.ph, ...sp.ph));
   const fit = fits.reduce((a, b) => a + b, 0) / fits.length;
 
-  return { score, fit, factors: { temp, rain, ph, frost, photo, annual, chill, drain, shade }, window: { start: best, months: Gt } };
+  return { score, fit, factors: { temp, rain, ph, frost, photo, annual, chill, drain }, window: { start: best, months: Gt } };
 }
 
 export function grade(s) {

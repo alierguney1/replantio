@@ -125,8 +125,6 @@ def main():
             **({"wet": True} if (r.get("DRAR") or r.get("DRA") or "").strip() == "poorly (saturated >50% of year)" else {}),
             # annual-capable: frost is tested on the growing window, not the winter
             **({"annual": True} if "annual" in (r.get("LISPA") or "").lower() else {}),     # killing temp, dormant season
-            # shade-tolerant / understory: EcoCrop optimal light intensity includes shade
-            **({"shade": True} if ("shade" in (r.get("LIOPMN") or "").lower() or "shade" in (r.get("LIOPMX") or "").lower()) else {}),
             "photo": photoperiod(r["PHOTO"]),
             "cycle": cyc,
             "altmax": vals["ALTMX"],
