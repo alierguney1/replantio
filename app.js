@@ -543,8 +543,12 @@ async function analyze(pts) {
       return geoInRange(enc, c.lat, c.lng);
     return !!(evL3 && NATIVES_L3[sp.id]?.includes(evL3));
   };
+  // countries with no regional table at all fall back to country-level
+  // nativity for the frost demote (same philosophy as invasiveHere: never
+  // punish a native in its homeland on missing data)
+  const evCountry = sp => !L3_REGIONS[place?.cc] && !!place?.cc && (NATIVES[sp.id] ?? []).includes(place.cc);
   const scored = SPECIES
-    .map(sp => ({ sp, ...scoreSpecies(sp, site, { native: evNative(sp) }) }))
+    .map(sp => ({ sp, ...scoreSpecies(sp, site, { native: evNative(sp), countryNative: evCountry(sp) }) }))
     .sort((a, b) => (b.score - a.score) || (b.fit - a.fit));
   step("ls-score");
 
@@ -1200,7 +1204,9 @@ function speciesDetail(id) {
     if (s.factors.frost === 0.5) {
       const kt = sp.ktmpr ?? sp.ktmp ?? 0;
       notes.push(current.site.absMin != null && current.site.absMin < kt
-        ? tr("EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.")
+        ? (nativeRegion(sp) === true
+          ? tr("EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.")
+          : tr("EcoCrop lists a killing temperature above this site's record low, but the species is native to this country. Penalized half instead of excluded; the hardiness field is the suspect."))
         : tr("The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty."));
     }
     if (s.factors.chill != null && s.factors.chill < 1) notes.push(tr("Needs winter dormancy; the coldest month here is too warm for it."));
@@ -1840,7 +1846,8 @@ async function futureOutlook(ctl) {
     const agg = aggregateClimate(j.daily);
     const fsite = { ...agg, ph: current.site.ph, lat: c.lat };
     for (const s of current.scored) {
-      s.f45 = scoreSpecies(s.sp, fsite, { native: nativeRegion(s.sp) === true }).score;
+      s.f45 = scoreSpecies(s.sp, fsite, { native: nativeRegion(s.sp) === true,
+        countryNative: !L3_REGIONS[current.cc] && nativeHere(s.sp) === true }).score;
       updateF45(s);
     }
   } catch { /* the projection is an enhancement; fail silent */ }

@@ -230,6 +230,44 @@ assert.equal(scoreSpecies(typha, flat).factors.drain, null, "flat ground leaves 
 assert.ok(!by("Quercus robur").wet, "oak is not wetland-flagged");
 close(scoreSpecies(qr, { ...berlin, terrain: { slope: 6 } }).score, qrBerlin.score, 0.001, "slope does not touch non-wetland species");
 
+// country-native frost demote (Turkish field feedback, 2026-08): countries
+// without a regional table had NO native evidence at all, so EcoCrop's junk
+// KTMPR (-10) excluded hazelnut across Ordu, the world's hazelnut capital
+const ordu = {
+  lat: 40.9786,
+  tavg: [6.9, 8, 9.2, 12.7, 16.3, 21.1, 23.3, 24.2, 21.3, 16.9, 12.8, 9.2],
+  tmin: [3.6, 4.4, 5.6, 8.6, 12.6, 17.8, 20.1, 21.3, 18.1, 13.8, 9.4, 6.1],
+  prec: [116, 76, 109, 62, 82, 84, 93, 88, 99, 133, 98, 100],
+  ph: null, absMin: -10.2,
+};
+const malatya = { // apricot capital; 416 mm of rain, orchards run on irrigation
+  lat: 38.4498,
+  tavg: [1.7, 4.5, 8.8, 14.9, 19.8, 26.2, 29.5, 30, 25.3, 18.1, 10, 4],
+  tmin: [-1.4, 0.8, 4.1, 9.4, 14, 19.8, 22.8, 23.5, 19.5, 13.4, 6.4, 1.2],
+  prec: [72, 42, 80, 38, 47, 7, 0, 2, 4, 21, 48, 54],
+  ph: null, absMin: -12.5,
+};
+const incesu = { // -20.6 C record low; a local rightly doubts Vitex here
+  lat: 38.5954,
+  tavg: [0, 2, 5.4, 11.1, 15.1, 19.5, 22.8, 23.7, 19.8, 13.9, 7.5, 2.9],
+  tmin: [-3.9, -2.4, 0.5, 5.3, 9.5, 13.7, 15.8, 16.8, 13.7, 8.6, 2.9, -0.8],
+  prec: [63, 42, 77, 48, 64, 41, 4, 7, 14, 21, 31, 48],
+  ph: null, absMin: -20.6,
+};
+const hazel = by("Corylus avellana");
+assert.ok(hazel, "hazelnut present");
+assert.equal(scoreSpecies(hazel, ordu).score, 0, "without evidence the record low still kills hazelnut");
+const hazelOrdu = scoreSpecies(hazel, ordu, { countryNative: true });
+assert.equal(hazelOrdu.factors.frost, 0.5, "country-native evidence demotes the kill to half");
+assert.ok(hazelOrdu.score >= 0.4, `hazelnut rates in Ordu with country evidence: ${hazelOrdu.score}`);
+assert.equal(scoreSpecies(by("Aronia alnifolia"), winnipeg, { countryNative: true }).score, 0,
+  "country-level evidence never waives the annual regime gate");
+const vitexIncesu = scoreSpecies(by("Vitex agnus-castus"), incesu, { countryNative: true });
+assert.equal(vitexIncesu.factors.frost, 0.5, "vitex keeps the frost-margin half penalty at -20.6 C");
+assert.ok(vitexIncesu.score <= 0.5, `country evidence must not boost vitex past 0.5 at Incesu: ${vitexIncesu.score}`);
+assert.equal(scoreSpecies(by("Prunus armeniaca"), malatya, { countryNative: true }).factors.rain, 0,
+  "rainfed scoring keeps irrigated-orchard apricot at zero rain in Malatya");
+
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");

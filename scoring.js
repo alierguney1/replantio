@@ -163,7 +163,13 @@ export function scoreSpecies(sp, site, ev = null) {
   // (sugar maple carries KTMPR -18 and would die in Toronto): when the
   // species is native to this exact site, a frost kill demotes to a half
   // penalty instead, and the card says which field we distrusted.
-  if (frost === 0 && ev?.native) frost = 0.5;
+  // ev.countryNative is the coarser fallback for countries with no regional
+  // table at all (hazelnut carries KTMPR -10 and was excluded across Ordu,
+  // the hazelnut capital, caught via Turkish feedback 2026-08). It demotes
+  // frost only; the annual gate above still requires exact-range evidence,
+  // because country-level nativity in a country spanning subtropical coast
+  // and -20 C steppe proves too little about any one point.
+  if (frost === 0 && (ev?.native || ev?.countryNative)) frost = 0.5;
 
   const ph = sp.ph && site.ph != null ? trap(site.ph, ...sp.ph) : null;
 
