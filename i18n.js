@@ -1,6 +1,31 @@
 // Replantio translations. Keys are the English strings used in app.js.
 // Every language dict must cover the same keys; scripts/check_i18n.mjs verifies parity.
 const PT = {
+  "soil depth": "profundidade do solo",
+  "Effective root-accessible soil depth on slope (Pelletier 2016)": "Profundidade efetiva do solo acessível às raízes em declive (Pelletier 2016)",
+
+  "slope / aspect": "declive / face",
+  "flat": "plano",
+  "Copernicus 90m DEM terrain slope & aspect": "Declive e face do terreno do DEM Copernicus 90m",
+  "N": "N",
+  "NE": "NE",
+  "SE": "SE",
+  "S": "S",
+
+  "Sand": "areia",
+  "Loamy Sand": "areia franca",
+  "Sandy Loam": "franco-arenoso",
+  "Loam": "franco",
+  "Silt Loam": "franco-siltoso",
+  "Silt": "silte",
+  "Sandy Clay Loam": "franco-argilo-arenoso",
+  "Clay Loam": "franco-argiloso",
+  "Silty Clay Loam": "franco-argilo-siltoso",
+  "Sandy Clay": "argilo-arenoso",
+  "Silty Clay": "argilo-siltoso",
+  "Clay": "argila",
+  "Organic": "orgânico",
+
   "soil texture": "textura do solo",
   "available water": "água disponível",
   "organic matter": "matéria orgânica",
@@ -219,6 +244,31 @@ const PT = {
 };
 
 const ES = {
+  "soil depth": "profundidad del suelo",
+  "Effective root-accessible soil depth on slope (Pelletier 2016)": "Profundidad efectiva del suelo accesible para raíces en pendiente (Pelletier 2016)",
+
+  "slope / aspect": "pendiente / orientación",
+  "flat": "plano",
+  "Copernicus 90m DEM terrain slope & aspect": "Pendiente y orientación del terreno DEM Copernicus 90m",
+  "N": "N",
+  "NE": "NE",
+  "SE": "SE",
+  "S": "S",
+
+  "Sand": "arena",
+  "Loamy Sand": "arena franca",
+  "Sandy Loam": "franco arenoso",
+  "Loam": "franco",
+  "Silt Loam": "franco limoso",
+  "Silt": "limo",
+  "Sandy Clay Loam": "franco arcillo-arenoso",
+  "Clay Loam": "franco arcilloso",
+  "Silty Clay Loam": "franco arcillo-limoso",
+  "Sandy Clay": "arcillo-arenoso",
+  "Silty Clay": "arcillo-limoso",
+  "Clay": "arcilla",
+  "Organic": "orgánico",
+
   "soil texture": "textura del suelo",
   "available water": "agua disponible",
   "organic matter": "materia orgánica",
@@ -423,6 +473,31 @@ const ES = {
 };
 
 const FR = {
+  "soil depth": "profondeur du sol",
+  "Effective root-accessible soil depth on slope (Pelletier 2016)": "Profondeur effective du sol accessible aux racines sur pente (Pelletier 2016)",
+
+  "slope / aspect": "pente / exposition",
+  "flat": "plat",
+  "Copernicus 90m DEM terrain slope & aspect": "Pente et exposition du terrain MNT Copernicus 90m",
+  "N": "N",
+  "NE": "NE",
+  "SE": "SE",
+  "S": "S",
+
+  "Sand": "sable",
+  "Loamy Sand": "sable limoneux",
+  "Sandy Loam": "limon sableux",
+  "Loam": "limon",
+  "Silt Loam": "limon très fin",
+  "Silt": "silt",
+  "Sandy Clay Loam": "limon argilo-sableux",
+  "Clay Loam": "limon argileux",
+  "Silty Clay Loam": "limon argilo-fin",
+  "Sandy Clay": "argile sableuse",
+  "Silty Clay": "argile limoneuse",
+  "Clay": "argile",
+  "Organic": "organique",
+
   "soil texture": "texture du sol",
   "available water": "eau disponible",
   "organic matter": "matière organique",
@@ -628,6 +703,31 @@ const FR = {
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
 const ZH = {
+  "soil depth": "土壤深度",
+  "Effective root-accessible soil depth on slope (Pelletier 2016)": "坡地根系有效可达土壤深度 (Pelletier 2016)",
+
+  "slope / aspect": "坡度 / 坡向",
+  "flat": "平坦",
+  "Copernicus 90m DEM terrain slope & aspect": "Copernicus 90m 数字高程地形坡度与坡向",
+  "N": "北",
+  "NE": "东北",
+  "SE": "东南",
+  "S": "南",
+
+  "Sand": "砂土",
+  "Loamy Sand": "壤质砂土",
+  "Sandy Loam": "砂质壤土",
+  "Loam": "壤土",
+  "Silt Loam": "粉砂质壤土",
+  "Silt": "粉砂土",
+  "Sandy Clay Loam": "砂质黏壤土",
+  "Clay Loam": "黏壤土",
+  "Silty Clay Loam": "粉砂质黏壤土",
+  "Sandy Clay": "砂质黏土",
+  "Silty Clay": "粉砂质黏土",
+  "Clay": "黏土",
+  "Organic": "有机土",
+
   "soil texture": "土壤质地",
   "available water": "有效水分",
   "organic matter": "有机质",
@@ -905,6 +1005,31 @@ const ZH = {
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "生长期天然降水不足（水分亏缺：约 {n} mm）。需要补充灌溉以获得最佳产量。",
 };
 const JA = {
+  "soil depth": "有効土層深",
+  "Effective root-accessible soil depth on slope (Pelletier 2016)": "斜面における根群有効土層深 (Pelletier 2016)",
+
+  "slope / aspect": "傾斜 / 向き",
+  "flat": "平坦",
+  "Copernicus 90m DEM terrain slope & aspect": "Copernicus 90m DEM 地形傾斜および斜面方位",
+  "N": "北",
+  "NE": "北東",
+  "SE": "南東",
+  "S": "南",
+
+  "Sand": "砂土",
+  "Loamy Sand": "壌質砂土",
+  "Sandy Loam": "砂壌土",
+  "Loam": "壌土",
+  "Silt Loam": "シルト壌土",
+  "Silt": "シルト",
+  "Sandy Clay Loam": "砂質植壌土",
+  "Clay Loam": "植壌土",
+  "Silty Clay Loam": "微砂質植壌土",
+  "Sandy Clay": "砂質植土",
+  "Silty Clay": "微砂質植土",
+  "Clay": "植土",
+  "Organic": "有機質土",
+
   "soil texture": "土壌組織",
   "available water": "有効水分量",
   "organic matter": "有機物",
@@ -1182,6 +1307,31 @@ const JA = {
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "生育期の自然降水が不足しています（水不足：約{n} mm）。最適な収量を得るには補足的な灌漑が必要です。",
 };
 const RU = {
+  "soil depth": "глубина почвы",
+  "Effective root-accessible soil depth on slope (Pelletier 2016)": "Эффективная глубина почвы, доступная для корней на склоне (Pelletier 2016)",
+
+  "slope / aspect": "уклон / экспозиция",
+  "flat": "равнина",
+  "Copernicus 90m DEM terrain slope & aspect": "Уклон и экспозиция рельефа Copernicus 90m DEM",
+  "N": "С",
+  "NE": "СВ",
+  "SE": "ЮВ",
+  "S": "Ю",
+
+  "Sand": "песок",
+  "Loamy Sand": "супесь",
+  "Sandy Loam": "легкий суглинок",
+  "Loam": "суглинок",
+  "Silt Loam": "пылеватый суглинок",
+  "Silt": "ил/алеврит",
+  "Sandy Clay Loam": "песчано-глинистый суглинок",
+  "Clay Loam": "тяжелый суглинок",
+  "Silty Clay Loam": "пылевато-глинистый суглинок",
+  "Sandy Clay": "песчаная глина",
+  "Silty Clay": "пылеватая глина",
+  "Clay": "глина",
+  "Organic": "органическая",
+
   "soil texture": "гранулометрический состав",
   "available water": "доступная влага",
   "organic matter": "органическое вещество",
@@ -1456,6 +1606,31 @@ const RU = {
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Естественных осадков в период вегетации недостаточно (дефицит влаги: ~{n} мм). Для оптимальной урожайности требуется дополнительное орошение.",
 };
 const ID = {
+  "soil depth": "kedalaman tanah",
+  "Effective root-accessible soil depth on slope (Pelletier 2016)": "Kedalaman tanah efektif yang dapat dijangkau akar pada lereng (Pelletier 2016)",
+
+  "slope / aspect": "kemiringan / arah lereng",
+  "flat": "datar",
+  "Copernicus 90m DEM terrain slope & aspect": "Kemiringan dan arah lereng DEM Copernicus 90m",
+  "N": "U",
+  "NE": "TL",
+  "SE": "TG",
+  "S": "S",
+
+  "Sand": "pasir",
+  "Loamy Sand": "pasir berlempung",
+  "Sandy Loam": "lempung berpasir",
+  "Loam": "lempung",
+  "Silt Loam": "lempung berdebu",
+  "Silt": "debu",
+  "Sandy Clay Loam": "lempung liat berpasir",
+  "Clay Loam": "lempung berliat",
+  "Silty Clay Loam": "lempung liat berdebu",
+  "Sandy Clay": "liat berpasir",
+  "Silty Clay": "liat berdebu",
+  "Clay": "liat",
+  "Organic": "organik",
+
   "soil texture": "tekstur tanah",
   "available water": "air tersedia",
   "organic matter": "bahan organik",
@@ -1730,6 +1905,31 @@ const ID = {
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Curah hujan alami kurang selama musim tanam (defisit air: ~{n} mm). Diperlukan irigasi tambahan untuk hasil optimal.",
 };
 const HI = {
+  "soil depth": "मिट्टी की गहराई",
+  "Effective root-accessible soil depth on slope (Pelletier 2016)": "ढलान पर जड़ों के लिए सुलभ प्रभावी मिट्टी की गहराई (Pelletier 2016)",
+
+  "slope / aspect": "ढलान / दिशा",
+  "flat": "समतल",
+  "Copernicus 90m DEM terrain slope & aspect": "कोपरनिकस 90 मी डीईएम भूभाग ढलान और पहलू",
+  "N": "उ.",
+  "NE": "उ.पू.",
+  "SE": "द.पू.",
+  "S": "द.",
+
+  "Sand": "रेत",
+  "Loamy Sand": "दोमट रेत",
+  "Sandy Loam": "रेतीली दोमट",
+  "Loam": "दोमट",
+  "Silt Loam": "गाद दोमट",
+  "Silt": "गाद",
+  "Sandy Clay Loam": "रेतीली चिकनी दोमट",
+  "Clay Loam": "चिकनी दोमट",
+  "Silty Clay Loam": "गाद चिकनी दोमट",
+  "Sandy Clay": "रेतीली चिकनी मिट्टी",
+  "Silty Clay": "गाद चिकनी मिट्टी",
+  "Clay": "चिकनी मिट्टी",
+  "Organic": "जैविक",
+
   "soil texture": "मिट्टी की बनावट",
   "available water": "उपलब्ध पानी",
   "organic matter": "जैविक पदार्थ",
@@ -2004,6 +2204,31 @@ const HI = {
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "बढ़वार के मौसम में प्राकृतिक वर्षा अपर्याप्त है (जल की कमी: ~{n} mm)। इष्टतम उपज के लिए पूरक सिंचाई आवश्यक है।",
 };
 const DE = {
+  "soil depth": "Bodendiefe",
+  "Effective root-accessible soil depth on slope (Pelletier 2016)": "Effektive wurzelgängige Bodentiefe am Hang (Pelletier 2016)",
+
+  "slope / aspect": "Neigung / Ausrichtung",
+  "flat": "flach",
+  "Copernicus 90m DEM terrain slope & aspect": "Hangneigung und Ausrichtung aus Copernicus 90m DEM",
+  "N": "N",
+  "NE": "NO",
+  "SE": "SO",
+  "S": "S",
+
+  "Sand": "Sand",
+  "Loamy Sand": "lehmiger Sand",
+  "Sandy Loam": "sandiger Lehm",
+  "Loam": "Lehm",
+  "Silt Loam": "schluffiger Lehm",
+  "Silt": "Schluff",
+  "Sandy Clay Loam": "sandig-toniger Lehm",
+  "Clay Loam": "toniger Lehm",
+  "Silty Clay Loam": "schluffig-toniger Lehm",
+  "Sandy Clay": "sandiger Ton",
+  "Silty Clay": "schluffiger Ton",
+  "Clay": "Ton",
+  "Organic": "organisch",
+
   "soil texture": "Bodenart",
   "available water": "nutzbare Feldkapazität",
   "organic matter": "organische Substanz",
@@ -2278,6 +2503,31 @@ const DE = {
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Der natürliche Niederschlag reicht in der Vegetationsperiode nicht aus (Wasserdefizit: ~{n} mm). Für optimalen Ertrag ist Zusatzbewässerung erforderlich.",
 };
 const SW = {
+  "soil depth": "kina cha udongo",
+  "Effective root-accessible soil depth on slope (Pelletier 2016)": "Kina cha udongo kinachofikiwa na mizizi kwenye mteremko (Pelletier 2016)",
+
+  "slope / aspect": "mteremko / uelekeo",
+  "flat": "bapa",
+  "Copernicus 90m DEM terrain slope & aspect": "Mteremko na uelekeo wa ardhi wa Copernicus 90m DEM",
+  "N": "Kask",
+  "NE": "KaskMash",
+  "SE": "KusMash",
+  "S": "Kus",
+
+  "Sand": "mchanga",
+  "Loamy Sand": "mchanga wa tifutifu",
+  "Sandy Loam": "tifutifu ya mchanga",
+  "Loam": "tifutifu",
+  "Silt Loam": "tifutifu ya silte",
+  "Silt": "silte",
+  "Sandy Clay Loam": "tifutifu ya mfinyanzi na mchanga",
+  "Clay Loam": "tifutifu ya mfinyanzi",
+  "Silty Clay Loam": "tifutifu ya mfinyanzi na silte",
+  "Sandy Clay": "mfinyanzi wa mchanga",
+  "Silty Clay": "mfinyanzi wa silte",
+  "Clay": "udongo wa mfinyanzi",
+  "Organic": "viumbe hai",
+
   "soil texture": "muundo wa udongo",
   "available water": "maji yanayopatikana",
   "organic matter": "mboji ya kikaboni",
@@ -2553,6 +2803,31 @@ const SW = {
 };
 
 const TR = {
+  "soil depth": "toprak derinliği",
+  "Effective root-accessible soil depth on slope (Pelletier 2016)": "Yamaçta köklerin erişebildiği efektif toprak derinliği (Pelletier 2016)",
+
+  "slope / aspect": "eğim / bakı",
+  "flat": "düz",
+  "Copernicus 90m DEM terrain slope & aspect": "Copernicus 90m DEM arazi eğim ve bakı analizi",
+  "N": "K",
+  "NE": "KD",
+  "SE": "GD",
+  "S": "G",
+
+  "Sand": "kum",
+  "Loamy Sand": "balçıklı kum",
+  "Sandy Loam": "kumlu tın",
+  "Loam": "tın",
+  "Silt Loam": "siltli tın",
+  "Silt": "silt",
+  "Sandy Clay Loam": "kumlu killi tın",
+  "Clay Loam": "killi tın",
+  "Silty Clay Loam": "siltli killi tın",
+  "Sandy Clay": "kumlu kil",
+  "Silty Clay": "siltli kil",
+  "Clay": "kil",
+  "Organic": "organik",
+
   "soil texture": "toprak bünyesi",
   "available water": "yarayışlı su",
   "organic matter": "organik madde",

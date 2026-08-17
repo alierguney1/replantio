@@ -407,10 +407,19 @@ async function fetchClimate(c, signal) {
 }
 
 async function fetchSoil(c, signal) {
+  const cacheKey = `soil_${c.lat.toFixed(3)}_${c.lng.toFixed(3)}`;
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      const data = JSON.parse(cached);
+      if (data && data.usdaTexture) return data;
+    }
+  } catch {}
+
   try {
     const url = `https://rest.isric.org/soilgrids/v2.0/properties/query?lon=${c.lng.toFixed(4)}&lat=${c.lat.toFixed(4)}` +
       `&property=phh2o&property=clay&property=sand&property=silt&property=soc&property=bdod&property=cec&property=cfvo` +
-      `&depth=0-5cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&depth=100-200cm&value=mean`;
+      `&depth=0-5cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&value=mean`;
     const res = await fetch(url, { signal });
     if (!res.ok) return null;
     const j = await res.json();
@@ -418,11 +427,15 @@ async function fetchSoil(c, signal) {
     if (!Array.isArray(layers) || !layers.length) return null;
     const profile = aggregateSoilProfile(layers, 100);
     if (!profile) return null;
-    return {
+    const result = {
       ...profile,
       phh2o: profile.effectivePh,
       layers,
     };
+    try {
+      localStorage.setItem(cacheKey, JSON.stringify(result));
+    } catch {}
+    return result;
   } catch (e) {
     if (e.name === "AbortError") throw e;
     return null; // soil is optional: rate limit / outage degrades gracefully
@@ -533,7 +546,7 @@ async function analyze(pts) {
   }
   // optional layers must never block results: SoilGrids (beta) sometimes hangs
   const orNull = (p, ms) => Promise.race([p.catch(() => null), new Promise(r => setTimeout(() => r(null), ms))]);
-  const [soil, place, terrain] = await Promise.all([orNull(soilP, 15000), orNull(placeP, 8000), orNull(terrainP, 8000)]);
+  const [soil, place, terrain] = await Promise.all([orNull(soilP, 30000), orNull(placeP, 8000), orNull(terrainP, 8000)]);
   if (ctl.signal.aborted) return;
 
   await speciesReady;
@@ -820,21 +833,46 @@ function renderResults() {
     ? tfmt(current.nativeOnly ? "{n} native plants would grow well here" : "{n} plants would grow well here", { n: `<b>${fmt(goodPool)}</b>` })
     : tfmt("{s} of {n} species rate suitable or better", { s: `<b>${fmt(suitable)}</b>`, n: `<b>${fmt(SPECIES.length)}</b>` });
 
+  const texLabel = site.soil?.usdaTexture ? tr(site.soil.usdaTexture) : null;
+  const texTooltip = site.soil?.usdaTexture
+    ? `${texLabel} (${site.soil.sandPct}% ${tr("sand")}, ${site.soil.clayPct}% ${tr("clay")}) &middot; ${tr("USDA Soil Texture Simplex & FAO Category")}`
+    : tr("USDA Soil Texture Simplex & FAO Category");
+
+  const somTooltip = site.soil?.socGKg != null
+    ? `${fmt(site.soil.somPct, 1)}% SOM &middot; SOC: ${fmt(site.soil.socGKg, 1)} g/kg &middot; ${tr("Soil organic matter from SoilGrids SOC")}`
+    : tr("Soil organic matter from SoilGrids SOC");
+
+  const sunTooltip = tr("mean daily shortwave radiation, all weather included");
+  const sunValue = site.terrain?.radFactor != null && Math.abs(site.terrain.radFactor - 1) >= 0.03
+    ? `${fmt(site.radSlope ?? site.rad, 1)} kWh/m² <span class="adm">(${site.terrain.radFactor >= 1 ? "+" : ""}${Math.round((site.terrain.radFactor - 1) * 100)}%)</span>`
+    : (site.rad != null ? `${fmt(site.rad, 1)} kWh/m²` : tr("n/a"));
+
+  const slopeFacing = site.terrain?.slope != null
+    ? (site.terrain.slope < 1.5
+        ? `${fmt(site.terrain.slope, 1)}° <span class="adm">(${tr("flat")})</span>`
+        : `${fmt(site.terrain.slope, 1)}° ${tr(site.terrain.facing ?? "")} <span class="adm">(${site.terrain.aspectDeg ?? 0}°)</span>`)
+    : tr("n/a");
+  const slopeTooltip = site.terrain?.aspectDeg != null
+    ? `${fmt(site.terrain.slope, 1)}° ${tr("slope")} &middot; ${site.terrain.aspectDeg}° ${site.terrain.facing ? tr(site.terrain.facing) : ""} &middot; ${tr("Copernicus 90m DEM terrain slope & aspect")}`
+    : tr("Copernicus 90m DEM terrain slope & aspect");
+
   const whyBlock = `
     <div class="section-h">${tr("Site climate &middot; ERA5 2015&ndash;2024")}</div>
     <div class="site-fig">${climateSvg(site)}</div>
     <div class="readout">
       ${rd(tr("soil pH"), site.ph != null ? fmt(site.ph, 1) : tr("no data"))}
-      ${rd(tr("elevation"), `${fmt(site.elevation)} m`)}
-      ${rd(tr("soil texture"), site.soil?.usdaTexture ? `${site.soil.usdaTexture} <span class="adm">(${site.soil.sandPct}% ${tr("sand")}, ${site.soil.clayPct}% ${tr("clay")})</span>` : tr("no data"), tr("USDA Soil Texture Simplex & FAO Category"))}
-      ${rd(tr("daylength"), `${fmt(Math.min(...dls), 1)}&ndash;${fmt(Math.max(...dls), 1)} h`)}
+      ${rd(tr("soil texture"), texLabel ?? tr("no data"), texTooltip)}
       ${rd(tr("available water"), site.soil?.awcMm != null ? `${fmt(site.soil.awcMm)} mm/m` : tr("no data"), tr("Saxton-Rawls plant available water capacity (AWC)"))}
-      ${rd(tr("record low"), site.absMin != null ? `${fmt(site.absMin)} °C` : tr("n/a"))}
-      ${rd(tr("organic matter"), site.soil?.somPct != null ? `${fmt(site.soil.somPct, 1)}% <span class="adm">(SOC: ${fmt(site.soil.socGKg, 1)} g/kg)</span>` : tr("no data"), tr("Soil organic matter from SoilGrids SOC"))}
-      ${rd(tr("sun"), site.terrain?.radFactor != null && Math.abs(site.terrain.radFactor - 1) >= 0.03 ? `${fmt(site.radSlope ?? site.rad, 1)} ${tr("kWh/m²·day")} <span class="adm">(${site.terrain.radFactor >= 1 ? "+" : ""}${Math.round((site.terrain.radFactor - 1) * 100)}% ${tr("on slope")})</span>` : (site.rad != null ? `${fmt(site.rad, 1)} ${tr("kWh/m²·day")}` : tr("n/a")), tr("mean daily shortwave radiation, all weather included"))}
+      ${rd(tr("organic matter"), site.soil?.somPct != null ? `${fmt(site.soil.somPct, 1)}%` : tr("no data"), somTooltip)}
       ${rd(tr("bulk density"), site.soil?.bdodGCm3 != null ? `${fmt(site.soil.bdodGCm3, 2)} g/cm³` : tr("no data"), tr("Bulk density of the fine earth fraction"))}
+      ${rd(tr("CEC"), site.soil?.cecCmolKg != null ? `${fmt(site.soil.cecCmolKg, 1)} cmol/kg` : tr("no data"), tr("Cation exchange capacity at pH 7"))}
+      ${rd(tr("soil depth"), site.soil ? `${Math.min(site.soil.maxDepthCm ?? 100, maxSoilDepthCm(site.terrain?.slope ?? 0))} cm` : tr("no data"), tr("Effective root-accessible soil depth on slope (Pelletier 2016)"))}
+      ${rd(tr("elevation"), `${fmt(site.elevation)} m`)}
+      ${rd(tr("slope / aspect"), slopeFacing, slopeTooltip)}
+      ${rd(tr("sun"), sunValue, sunTooltip)}
+      ${rd(tr("daylength"), `${fmt(Math.min(...dls), 1)}&ndash;${fmt(Math.max(...dls), 1)} h`)}
+      ${rd(tr("record low"), site.absMin != null ? `${fmt(site.absMin)} °C` : tr("n/a"))}
       ${rd(tr("humidity"), site.rh != null ? `${fmt(site.rh)}%` : tr("n/a"))}
-      ${rd(tr("CEC"), site.soil?.cecCmolKg != null ? `${fmt(site.soil.cecCmolKg, 1)} cmol(+)/kg` : tr("no data"), tr("Cation exchange capacity at pH 7"))}
       ${rd(tr("aridity"), site.aridity != null ? `${tr(site.aridity)} <span class="adm">(AI: ${fmt(site.ai, 2)})</span>` : tr("n/a"), tr("UNEP Aridity Index (P / ET₀)"))}
     </div>
     <div class="footnote" style="margin-top:10px">
