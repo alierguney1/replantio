@@ -342,6 +342,38 @@ assert.ok(scoreSpecies(hazel, { ...ordu, terrain: { slope: 35 } }, { countryNati
   "Ordu hazelnut survives the depth gate on the 30-45 deg slopes it is farmed on");
 assert.ok(scoreSpecies(by("Larix decidua"), { ...berlin, terrain: { slope: 30 } }).factors.depth !== 0,
   "larch is not depth-killed on a 30 deg alpine slope");
+// flagship crops in their home regions (Turkish issue #5, 2026-08): the wet
+// side of an EcoCrop rain envelope proxies disease/drainage, not survival,
+// and Kew-recorded naturalization is establishment evidence for non-natives
+const giresun = { // world hazelnut capital: 1437 mm/yr, 37 mm over the envelope ceiling
+  lat: 40.85,
+  tavg: [5.2, 6.1, 7.4, 11.1, 14.6, 19, 20.9, 21.8, 19, 14.7, 10.9, 7.4],
+  tmin: [1.8, 2.4, 3.6, 6.9, 10.7, 15.8, 18, 19.1, 15.9, 11.6, 7.4, 4.3],
+  prec: [127, 89, 124, 86, 121, 125, 125, 130, 134, 161, 107, 108],
+  ph: null, absMin: -11.6,
+};
+const rize = { // Turkey's tea heartland: tea survives -9.7 C winters under snow
+  lat: 40.975,
+  tavg: [5.7, 6.6, 8.1, 11.8, 15.4, 19.9, 21.7, 22.6, 20.1, 15.9, 11.7, 8.1],
+  tmin: [2.6, 3.2, 4.6, 7.8, 11.9, 17.2, 19.3, 20.6, 17.4, 13.1, 8.4, 5.1],
+  prec: [173, 117, 159, 101, 133, 178, 226, 249, 267, 271, 181, 168],
+  ph: null, absMin: -9.7,
+};
+const hazelGiresun = scoreSpecies(hazel, giresun, { countryNative: true });
+assert.equal(hazelGiresun.factors.rain, 0.5, "37 mm over the rain ceiling demotes, not kills");
+assert.ok(hazelGiresun.score >= 0.2, `hazelnut rates in Giresun: ${hazelGiresun.score}`);
+const pist = by("Pistacia vera");
+assert.equal(scoreSpecies(pist, saoPaulo).factors.rain, 0, "30% over the ceiling still kills (wet margin is 15%)");
+const tea = by("Camellia sinensis");
+const naturalized = JSON.parse(readFileSync(new URL("../data/naturalized.json", import.meta.url)));
+assert.ok(naturalized[String(tea.id)].includes("TR"), "Kew records tea naturalized in Turkey");
+assert.equal(scoreSpecies(tea, rize).score, 0, "without evidence EcoCrop hardiness kills tea in Rize");
+const teaRize = scoreSpecies(tea, rize, { countryNaturalized: true });
+assert.equal(teaRize.factors.frost, 0.5, "naturalization evidence demotes the frost kill");
+assert.ok(teaRize.score > 0.25, `tea rates in Rize with naturalization evidence: ${teaRize.score}`);
+assert.equal(scoreSpecies(by("Erythroxylum coca"), winnipeg, { countryNaturalized: true }).score, 0,
+  "naturalization evidence never revives a true climate kill");
+
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");

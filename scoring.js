@@ -246,6 +246,20 @@ export function scoreSpecies(sp, site, ev = null) {
     }
   }
 
+  // Excess-rain kills are the least credible edge of an EcoCrop envelope:
+  // the wet side proxies disease and drainage rather than physiology, and
+  // reanalysis precipitation carries bias (hazelnut died in Giresun, the
+  // world's hazelnut capital, on 37 mm over the ceiling; Turkish issue #5).
+  // Within WET_MARGIN above RMAX the kill demotes to half. Drought-side
+  // kills stay untouched: running out of water is physically real.
+  const WET_MARGIN = 1.15;
+  if (rain === 0) {
+    let rtot = 0;
+    if (dormantTree || G === 12) rtot = site.prec.reduce((a, b) => a + b, 0);
+    else for (let k = 0; k < G; k++) rtot += site.prec[(best + k) % 12];
+    if (rtot > sp.rain[3] && rtot <= sp.rain[3] * WET_MARGIN) rain = 0.5;
+  }
+
   // A perennial lives through the whole year, not just its best window:
   // the annual regime must sit inside the absolute temperature envelope.
   let annual = trap(site.tavg.reduce((a, b) => a + b, 0) / 12, ...sp.temp) > 0 ? 1 : 0;
@@ -287,7 +301,11 @@ export function scoreSpecies(sp, site, ev = null) {
   // frost only; the annual gate above still requires exact-range evidence,
   // because country-level nativity in a country spanning subtropical coast
   // and -20 C steppe proves too little about any one point.
-  if (frost === 0 && (ev?.native || ev?.countryNative)) frost = 0.5;
+  // ev.countryNaturalized (Kew WCVP introduced ranges) is the same survival
+  // evidence for non-natives: tea is naturalized in Turkey and survives Rize
+  // winters that its EcoCrop KTMPR (-5) claims kill it (Turkish issue #5).
+  // It never touches the invasive block; naturalized is often the invader.
+  if (frost === 0 && (ev?.native || ev?.countryNative || ev?.countryNaturalized)) frost = 0.5;
 
   const ph = sp.ph && site.ph != null ? trap(site.ph, ...sp.ph) : null;
 

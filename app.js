@@ -29,10 +29,11 @@ L.tileLayer("https://basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
   maxZoom: 20, attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
 }).addTo(map);
 
-let SPECIES = [], NATIVES = {}, NAMES_PT = {}, SOURCING = null, INVASIVES = {}, NATIVES_L3 = {}, L3_REGIONS = {}, NATIVES_GEO = {};
+let SPECIES = [], NATIVES = {}, NATURALIZED = {}, NAMES_PT = {}, SOURCING = null, INVASIVES = {}, NATIVES_L3 = {}, L3_REGIONS = {}, NATIVES_GEO = {};
 const speciesReady = Promise.all([
   fetch("data/species.json").then(r => r.json()).then(j => { SPECIES = j; }),
   fetch("data/natives.json").then(r => r.json()).then(j => { NATIVES = j; }).catch(() => {}), // optional layer
+  fetch("data/naturalized.json").then(r => r.json()).then(j => { NATURALIZED = j; }).catch(() => {}), // optional layer
   // per-language species names, loaded only for the active language
   // (architecture from PR #3 by @alierguney1; only sourced dictionaries ship:
   // names_pt today, others as real vernacular data lands)
@@ -557,8 +558,11 @@ async function analyze(pts) {
   // nativity for the frost demote (same philosophy as invasiveHere: never
   // punish a native in its homeland on missing data)
   const evCountry = sp => !L3_REGIONS[place?.cc] && !!place?.cc && (NATIVES[sp.id] ?? []).includes(place.cc);
+  // Kew-recorded naturalization is the same establishment evidence for
+  // non-natives (tea in Turkey); frost demote only, never the invasive block
+  const evNaturalized = sp => !L3_REGIONS[place?.cc] && !!place?.cc && (NATURALIZED[sp.id] ?? []).includes(place.cc);
   const scored = SPECIES
-    .map(sp => ({ sp, ...scoreSpecies(sp, site, { native: evNative(sp), countryNative: evCountry(sp) }) }))
+    .map(sp => ({ sp, ...scoreSpecies(sp, site, { native: evNative(sp), countryNative: evCountry(sp), countryNaturalized: evNaturalized(sp) }) }))
     .sort((a, b) => (b.score - a.score) || (b.fit - a.fit));
   step("ls-score");
 
@@ -1213,12 +1217,19 @@ function speciesDetail(id) {
     if (s.factors.drain === 0) notes.push(tfmt("This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.", { n: fmt(current.site.terrain?.slope ?? 0) }));
     if (s.factors.depth != null && s.factors.depth < 1) notes.push(tfmt("Requires at least {req} cm soil depth (EcoCrop), but this {slope}° slope supports only ~{avail} cm equilibrium soil.", { req: fmt(sp.depmin), slope: fmt(current.site.terrain?.slope ?? 0), avail: fmt(maxSoilDepthCm(current.site.terrain?.slope ?? 0)) }));
     if (s.factors.rain < 0.2 && s.factors.temp >= 0.5) notes.push(tr("Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely."));
+    // wet-margin demote: rain 0.5 with the scored total above the ceiling can
+    // only come from the margin (the trapezoid is 0 past RMAX)
+    const rTot = (sp.tree && (sp.ktmpr ?? 99) <= -10) || s.window.months === 12 ? current.site.annualRain : wr;
+    if (s.factors.rain === 0.5 && rTot > sp.rain[3])
+      notes.push(tr("Annual rain here sits just above this species' EcoCrop ceiling. Excess-rain limits proxy disease and drainage rather than survival, so it takes a half penalty instead of exclusion."));
     if (s.factors.frost === 0.5) {
       const kt = sp.ktmpr ?? sp.ktmp ?? 0;
       notes.push(current.site.absMin != null && current.site.absMin < kt
         ? (nativeRegion(sp) === true
           ? tr("EcoCrop lists a killing temperature above this site's record low, but the species is native right here per its mapped range. Penalized half instead of excluded; the hardiness field is the suspect.")
-          : tr("EcoCrop lists a killing temperature above this site's record low, but the species is native to this country. Penalized half instead of excluded; the hardiness field is the suspect."))
+          : nativeHere(sp) === true
+            ? tr("EcoCrop lists a killing temperature above this site's record low, but the species is native to this country. Penalized half instead of excluded; the hardiness field is the suspect.")
+            : tr("EcoCrop lists a killing temperature above this site's record low, but Kew records the species as naturalized in this country. Penalized half instead of excluded; the hardiness field is the suspect."))
         : tr("The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty."));
     }
     if (s.factors.chill != null && s.factors.chill < 1) notes.push(tr("Needs winter dormancy; the coldest month here is too warm for it."));
@@ -1859,7 +1870,8 @@ async function futureOutlook(ctl) {
     const fsite = { ...agg, ph: current.site.ph, lat: c.lat };
     for (const s of current.scored) {
       s.f45 = scoreSpecies(s.sp, fsite, { native: nativeRegion(s.sp) === true,
-        countryNative: !L3_REGIONS[current.cc] && nativeHere(s.sp) === true }).score;
+        countryNative: !L3_REGIONS[current.cc] && nativeHere(s.sp) === true,
+        countryNaturalized: !L3_REGIONS[current.cc] && !!current.cc && (NATURALIZED[s.sp.id] ?? []).includes(current.cc) }).score;
       updateF45(s);
     }
   } catch { /* the projection is an enhancement; fail silent */ }

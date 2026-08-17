@@ -44,6 +44,7 @@ SPECIES = ROOT / "data" / "species.json"
 WCVP_ZIP = ROOT / "data" / "wcvp.zip"
 LEVEL4 = ROOT / "data" / "wgsrpd_level4.dbf"
 OUT = ROOT / "data" / "natives.json"
+OUT_NATURALIZED = ROOT / "data" / "naturalized.json"
 OUT_L3 = ROOT / "data" / "natives_l3.json"
 OUT_REGIONS = ROOT / "data" / "l3_regions.json"
 
@@ -390,13 +391,17 @@ def match(key, index, epithets):
 
 
 def native_areas(zf, ids):
-    """plant_name_id -> TDWG level-3 codes where the taxon is native."""
+    """plant_name_id -> (native, introduced) TDWG level-3 code sets. Introduced
+    ranges become naturalized.json: establishment evidence for the frost demote
+    (tea survives Rize winters its EcoCrop hardiness claims kill it), never an
+    override of the invasive block."""
     areas = collections.defaultdict(set)
+    intro = collections.defaultdict(set)
     for rec in wcvp_rows(zf, "wcvp_distribution.csv"):
-        if (rec["plant_name_id"] in ids and rec["introduced"] == "0"
+        if (rec["plant_name_id"] in ids
                 and rec["extinct"] == "0" and rec["location_doubtful"] == "0"):
-            areas[rec["plant_name_id"]].add(rec["area_code_l3"])
-    return areas
+            (areas if rec["introduced"] == "0" else intro)[rec["plant_name_id"]].add(rec["area_code_l3"])
+    return areas, intro
 
 
 def by_genus(index):
@@ -492,14 +497,16 @@ def main():
         print(f"  homonyms (>1 accepted species share a binomial, lowest id used): "
               f"{', '.join(f'{g} {e}' for g, e in sorted(homonyms))}")
 
-    areas = native_areas(zf, set(resolved.values()))
-    natives, fine_natives, no_dist, unmatched = {}, {}, [], []
+    areas, intro = native_areas(zf, set(resolved.values()))
+    natives, naturalized, fine_natives, no_dist, unmatched = {}, {}, {}, [], []
     for sp in species:
         pid = resolved.get(keys[sp["id"]]) if keys[sp["id"]] else None
         if pid is None:
             unmatched.append(sp["sci"])
             continue
         codes = sorted({c for l3 in areas.get(pid, ()) for c in iso.get(l3, ())})
+        if nz := sorted({c for l3 in intro.get(pid, ()) for c in iso.get(l3, ())}):
+            naturalized[str(sp["id"])] = nz  # non-empty only: absence means "not recorded"
         # [] = matched in WCVP but no native range recorded (cultigens like
         # Citrus); absent = no WCVP match at all (unknown). The UI shows them
         # differently.
@@ -511,8 +518,10 @@ def main():
         if detail := sorted(areas.get(pid, frozenset()) & fine):
             fine_natives[str(sp["id"])] = detail
 
-    for path, obj in ((OUT, natives), (OUT_L3, fine_natives), (OUT_REGIONS, regions)):
+    for path, obj in ((OUT, natives), (OUT_NATURALIZED, naturalized), (OUT_L3, fine_natives), (OUT_REGIONS, regions)):
         path.write_text(json.dumps(obj, separators=(",", ":"), sort_keys=True))
+    print(f"wrote {OUT_NATURALIZED.relative_to(ROOT)}: {len(naturalized)}/{len(species)} species, "
+          f"{OUT_NATURALIZED.stat().st_size / 1024:.0f} KB")
 
     total = len(species)
     print(f"\nwrote {OUT.relative_to(ROOT)}: {len(natives)}/{total} species "
