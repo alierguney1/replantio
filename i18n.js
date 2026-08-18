@@ -242,12 +242,13 @@ const PT = {
   "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "A chuva é o fator limitante aqui (déficit hídrico no período de cultivo: ~{n} mm). O modelo avalia cultivo de sequeiro; irrigação muda esse quadro completamente.",
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "A chuva natural é insuficiente durante o período de cultivo (déficit hídrico: ~{n} mm). Requer irrigação complementar para produtividade ideal.",
 
-  "28km Regional Soil Grid (Precomputed)": "Grade de solo regional de 28 km (Pré-calculada)",
-  "Refine with 250m SoilGrids": "Refinar com SoilGrids 250m",
-  "250m Point Query (SoilGrids 2.0)": "Consulta pontual de 250m (SoilGrids 2.0)",
-  "Query live 250m SoilGrids point data for exact coordinate": "Consultar dados pontuais de 250m do SoilGrids para a coordenada exata",
-  "Querying 250m SoilGrids...": "Consultando SoilGrids 250m...",
-  "250m unavailable (urban/water mask or timeout)": "250m indisponível (máscara urbana/água ou tempo esgotado)",
+
+  "Site climate & soil": "Clima e solo do local",
+  "Query live parcel soil": "Consultar solo do lote",
+  "Query live soil profile for this exact parcel (SoilGrids)": "Consulta o perfil detalhado do solo em tempo real para este lote (SoilGrids)",
+  "Querying live soil profile...": "Consultando perfil do solo...",
+  "Live parcel soil active": "Solo do lote ativo",
+  "Live point data unavailable (urban area or timeout)": "Dados pontuais indisponíveis (área urbana ou tempo limite)",
 };
 
 const ES = {
@@ -478,12 +479,13 @@ const ES = {
   "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "La lluvia es el factor limitante aquí (déficit hídrico en la temporada de cultivo: ~{n} mm). El modelo evalúa cultivo de secano; el riego cambia el panorama por completo.",
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "La lluvia natural es insuficiente durante la temporada de cultivo (déficit hídrico: ~{n} mm). Requiere riego complementario para un rendimiento óptimo.",
 
-  "28km Regional Soil Grid (Precomputed)": "Cuadrícula de suelo regional de 28 km (Precalculada)",
-  "Refine with 250m SoilGrids": "Refinar con SoilGrids 250m",
-  "250m Point Query (SoilGrids 2.0)": "Consulta puntual de 250m (SoilGrids 2.0)",
-  "Query live 250m SoilGrids point data for exact coordinate": "Consultar datos puntuales de 250m de SoilGrids para la coordenada exacta",
-  "Querying 250m SoilGrids...": "Consultando SoilGrids 250m...",
-  "250m unavailable (urban/water mask or timeout)": "250m no disponible (máscara urbana/agua o tiempo de espera agotado)",
+
+  "Site climate & soil": "Clima y suelo del sitio",
+  "Query live parcel soil": "Consultar suelo de la parcela",
+  "Query live soil profile for this exact parcel (SoilGrids)": "Consulta el perfil detallado del suelo en vivo para esta parcela (SoilGrids)",
+  "Querying live soil profile...": "Consultando perfil del suelo...",
+  "Live parcel soil active": "Suelo de parcela activo",
+  "Live point data unavailable (urban area or timeout)": "Datos puntuales no disponibles (área urbana o tiempo agotado)",
 };
 
 const FR = {
@@ -714,12 +716,13 @@ const FR = {
   "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "La pluie est le facteur limitant ici (déficit hydrique en saison de culture : ~{n} mm). Le modèle évalue la culture pluviale ; l'irrigation change complètement la donne.",
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Les précipitations naturelles sont insuffisantes pendant la saison de culture (déficit hydrique : ~{n} mm). Une irrigation d'appoint est nécessaire pour un rendement optimal.",
 
-  "28km Regional Soil Grid (Precomputed)": "Grille de sol régionale de 28 km (Précalculée)",
-  "Refine with 250m SoilGrids": "Affiner avec SoilGrids 250m",
-  "250m Point Query (SoilGrids 2.0)": "Requête ponctuelle de 250m (SoilGrids 2.0)",
-  "Query live 250m SoilGrids point data for exact coordinate": "Interroger les données ponctuelles SoilGrids 250m pour les coordonnées exactes",
-  "Querying 250m SoilGrids...": "Interrogation de SoilGrids 250m...",
-  "250m unavailable (urban/water mask or timeout)": "250m indisponible (masque urbain/eau ou délai dépassé)",
+
+  "Site climate & soil": "Climat et sol du site",
+  "Query live parcel soil": "Interroger le sol de la parcelle",
+  "Query live soil profile for this exact parcel (SoilGrids)": "Interroge le profil détaillé du sol en direct pour cette parcelle (SoilGrids)",
+  "Querying live soil profile...": "Interrogation du profil du sol...",
+  "Live parcel soil active": "Sol de la parcelle actif",
+  "Live point data unavailable (urban area or timeout)": "Données ponctuelles indisponibles (zone urbaine ou délai dépassé)",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -1025,12 +1028,13 @@ const ZH = {
   "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "降水是此处的限制因素（生长期水分亏缺：约 {n} mm）。模型只评估雨养种植；灌溉会完全改变结果。",
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "生长期天然降水不足（水分亏缺：约 {n} mm）。需要补充灌溉以获得最佳产量。",
 
-  "28km Regional Soil Grid (Precomputed)": "28公里区域土壤网格（预计算）",
-  "Refine with 250m SoilGrids": "使用250米SoilGrids细化",
-  "250m Point Query (SoilGrids 2.0)": "250米定点查询（SoilGrids 2.0）",
-  "Query live 250m SoilGrids point data for exact coordinate": "查询精确坐标的实时250米SoilGrids数据",
-  "Querying 250m SoilGrids...": "正在查询250米SoilGrids...",
-  "250m unavailable (urban/water mask or timeout)": "250米不可用（城市/水体掩膜或超时）",
+
+  "Site climate & soil": "地块气候与土壤",
+  "Query live parcel soil": "查询地块实时土壤",
+  "Query live soil profile for this exact parcel (SoilGrids)": "查询该地块精确坐标的高精度土壤剖面（SoilGrids）",
+  "Querying live soil profile...": "正在获取土壤剖面...",
+  "Live parcel soil active": "实时地块土壤已激活",
+  "Live point data unavailable (urban area or timeout)": "定点数据不可用（城镇区域或超时）",
 };
 const JA = {
   "soil depth": "有効土層深",
@@ -1334,12 +1338,13 @@ const JA = {
   "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "ここでは降水量が制限要因です（生育期の水不足：約{n} mm）。モデルは天水栽培のみを評価します。灌漑すれば話は全く変わります。",
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "生育期の自然降水が不足しています（水不足：約{n} mm）。最適な収量を得るには補足的な灌漑が必要です。",
 
-  "28km Regional Soil Grid (Precomputed)": "28km地域土壌グリッド（事前計算済み）",
-  "Refine with 250m SoilGrids": "250m SoilGridsで詳細化",
-  "250m Point Query (SoilGrids 2.0)": "250mポイントクエリ（SoilGrids 2.0）",
-  "Query live 250m SoilGrids point data for exact coordinate": "正確な座標のリアルタイム250m SoilGridsデータを取得",
-  "Querying 250m SoilGrids...": "250m SoilGridsを取得中...",
-  "250m unavailable (urban/water mask or timeout)": "250mデータ利用不可（都市/水域マスクまたはタイムアウト）",
+
+  "Site climate & soil": "現地の気候と土壌",
+  "Query live parcel soil": "区画の土壌データを取得",
+  "Query live soil profile for this exact parcel (SoilGrids)": "この区画の詳細な土壌プロファイルをリアルタイム取得（SoilGrids）",
+  "Querying live soil profile...": "土壌プロファイルを取得中...",
+  "Live parcel soil active": "区画土壌データ適用中",
+  "Live point data unavailable (urban area or timeout)": "ポイントデータ利用不可（市街地またはタイムアウト）",
 };
 const RU = {
   "soil depth": "глубина почвы",
@@ -1640,12 +1645,13 @@ const RU = {
   "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "Ограничивающий фактор здесь — осадки (дефицит влаги в период вегетации: ~{n} мм). Модель оценивает богарное земледелие; орошение полностью меняет картину.",
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Естественных осадков в период вегетации недостаточно (дефицит влаги: ~{n} мм). Для оптимальной урожайности требуется дополнительное орошение.",
 
-  "28km Regional Soil Grid (Precomputed)": "Региональная почвенная сетка 28 км (предварительно рассчитанная)",
-  "Refine with 250m SoilGrids": "Уточнить с помощью SoilGrids 250м",
-  "250m Point Query (SoilGrids 2.0)": "Точечный запрос 250м (SoilGrids 2.0)",
-  "Query live 250m SoilGrids point data for exact coordinate": "Запросить данные SoilGrids 250м для точных координат",
-  "Querying 250m SoilGrids...": "Запрос SoilGrids 250м...",
-  "250m unavailable (urban/water mask or timeout)": "250м недоступно (городская/водная маска или таймаут)",
+
+  "Site climate & soil": "Климат и почва участка",
+  "Query live parcel soil": "Запросить почву участка",
+  "Query live soil profile for this exact parcel (SoilGrids)": "Запрашивает подробный профиль почвы для этого участка (SoilGrids)",
+  "Querying live soil profile...": "Запрос профиля почвы...",
+  "Live parcel soil active": "Почва участка активна",
+  "Live point data unavailable (urban area or timeout)": "Точечные данные недоступны (городская зона или таймаут)",
 };
 const ID = {
   "soil depth": "kedalaman tanah",
@@ -1946,12 +1952,13 @@ const ID = {
   "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "Curah hujan adalah faktor pembatas di sini (defisit air musim tanam: ~{n} mm). Model hanya menilai pertanian tadah hujan; irigasi mengubah gambaran sepenuhnya.",
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Curah hujan alami kurang selama musim tanam (defisit air: ~{n} mm). Diperlukan irigasi tambahan untuk hasil optimal.",
 
-  "28km Regional Soil Grid (Precomputed)": "Kisi tanah regional 28 km (Pra-hitung)",
-  "Refine with 250m SoilGrids": "Perbaiki dengan SoilGrids 250m",
-  "250m Point Query (SoilGrids 2.0)": "Kueri titik 250m (SoilGrids 2.0)",
-  "Query live 250m SoilGrids point data for exact coordinate": "Kueri data titik SoilGrids 250m langsung untuk koordinat tepat",
-  "Querying 250m SoilGrids...": "Memuat SoilGrids 250m...",
-  "250m unavailable (urban/water mask or timeout)": "250m tidak tersedia (masker perkotaan/air atau batas waktu habis)",
+
+  "Site climate & soil": "Iklim dan tanah lokasi",
+  "Query live parcel soil": "Kueri tanah petak langsung",
+  "Query live soil profile for this exact parcel (SoilGrids)": "Kueri profil tanah terperinci secara langsung untuk petak ini (SoilGrids)",
+  "Querying live soil profile...": "Mengambil profil tanah...",
+  "Live parcel soil active": "Profil tanah petak aktif",
+  "Live point data unavailable (urban area or timeout)": "Data titik tidak tersedia (area perkotaan atau waktu habis)",
 };
 const HI = {
   "soil depth": "मिट्टी की गहराई",
@@ -2252,12 +2259,13 @@ const HI = {
   "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "यहाँ वर्षा सीमित कारक है (बढ़वार के मौसम में जल की कमी: ~{n} mm)। मॉडल केवल वर्षा-आधारित खेती आँकता है; सिंचाई से तस्वीर पूरी बदल जाती है।",
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "बढ़वार के मौसम में प्राकृतिक वर्षा अपर्याप्त है (जल की कमी: ~{n} mm)। इष्टतम उपज के लिए पूरक सिंचाई आवश्यक है।",
 
-  "28km Regional Soil Grid (Precomputed)": "28 किमी क्षेत्रीय मिट्टी ग्रिड (पूर्व-गणना)",
-  "Refine with 250m SoilGrids": "250 मीटर SoilGrids से परिष्कृत करें",
-  "250m Point Query (SoilGrids 2.0)": "250 मीटर बिंदु क्वेरी (SoilGrids 2.0)",
-  "Query live 250m SoilGrids point data for exact coordinate": "सटीक निर्देशांक के लिए लाइव 250 मीटर SoilGrids डेटा क्वेरी करें",
-  "Querying 250m SoilGrids...": "250 मीटर SoilGrids क्वेरी हो रही है...",
-  "250m unavailable (urban/water mask or timeout)": "250 मीटर अनुपलब्ध (शहरी/जल मास्क या समय समाप्त)",
+
+  "Site climate & soil": "स्थल जलवायु और मिट्टी",
+  "Query live parcel soil": "लाइव पार्सल मिट्टी क्वेरी करें",
+  "Query live soil profile for this exact parcel (SoilGrids)": "इस सटीक पार्सल के लिए विस्तृत मिट्टी प्रोफ़ाइल क्वेरी करता है (SoilGrids)",
+  "Querying live soil profile...": "मिट्टी प्रोफ़ाइल क्वेरी हो रही है...",
+  "Live parcel soil active": "पार्सल मिट्टी प्रोफ़ाइल सक्रिय",
+  "Live point data unavailable (urban area or timeout)": "बिंदु डेटा अनुपलब्ध (शहरी क्षेत्र या समय समाप्त)",
 };
 const DE = {
   "soil depth": "Bodendiefe",
@@ -2558,12 +2566,13 @@ const DE = {
   "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "Der Niederschlag ist hier der begrenzende Faktor (Wasserdefizit in der Vegetationsperiode: ~{n} mm). Das Modell bewertet Regenfeldbau; Bewässerung ändert das Bild völlig.",
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Der natürliche Niederschlag reicht in der Vegetationsperiode nicht aus (Wasserdefizit: ~{n} mm). Für optimalen Ertrag ist Zusatzbewässerung erforderlich.",
 
-  "28km Regional Soil Grid (Precomputed)": "Regionales 28-km-Bodenraster (Vorberechnet)",
-  "Refine with 250m SoilGrids": "Mit 250m SoilGrids verfeinern",
-  "250m Point Query (SoilGrids 2.0)": "250m-Punktabfrage (SoilGrids 2.0)",
-  "Query live 250m SoilGrids point data for exact coordinate": "Live-250m-SoilGrids-Punktdaten für genaue Koordinaten abfragen",
-  "Querying 250m SoilGrids...": "250m SoilGrids wird abgefragt...",
-  "250m unavailable (urban/water mask or timeout)": "250m nicht verfügbar (Stadt-/Wassermaske oder Zeitüberschreitung)",
+
+  "Site climate & soil": "Klima und Boden des Standorts",
+  "Query live parcel soil": "Parzellenboden live abfragen",
+  "Query live soil profile for this exact parcel (SoilGrids)": "Fragt das detaillierte Bodenprofil für diese Parzelle live ab (SoilGrids)",
+  "Querying live soil profile...": "Bodenprofil wird abgefragt...",
+  "Live parcel soil active": "Parzellenboden aktiv",
+  "Live point data unavailable (urban area or timeout)": "Punktdaten nicht verfügbar (Siedlungsgebiet oder Zeitüberschreitung)",
 };
 const SW = {
   "soil depth": "kina cha udongo",
@@ -2864,12 +2873,13 @@ const SW = {
   "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "Mvua ndiyo kikwazo hapa (upungufu wa maji msimu wa ukuaji: ~{n} mm). Modeli hupima kilimo cha kutegemea mvua tu; umwagiliaji hubadilisha picha kabisa.",
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Mvua ya asili haitoshi wakati wa msimu wa ukuaji (upungufu wa maji: ~{n} mm). Umwagiliaji wa ziada unahitajika kwa mavuno bora.",
 
-  "28km Regional Soil Grid (Precomputed)": "Gridi ya udongo ya eneo ya km 28 (Iliyokokotolewa mapema)",
-  "Refine with 250m SoilGrids": "Boresha na SoilGrids ya 250m",
-  "250m Point Query (SoilGrids 2.0)": "Uchunguzi wa nukta ya 250m (SoilGrids 2.0)",
-  "Query live 250m SoilGrids point data for exact coordinate": "Uliza data ya moja kwa moja ya SoilGrids 250m kwa kuratibu kamili",
-  "Querying 250m SoilGrids...": "Inachunguza SoilGrids 250m...",
-  "250m unavailable (urban/water mask or timeout)": "250m haipatikani (kizuizi cha mji/maji au muda kuisha)",
+
+  "Site climate & soil": "Hali ya hewa na udongo wa eneo",
+  "Query live parcel soil": "Uliza udongo wa kiwanja moja kwa moja",
+  "Query live soil profile for this exact parcel (SoilGrids)": "Inachunguza wasifu wa kina wa udongo kwa kiwanja hiki (SoilGrids)",
+  "Querying live soil profile...": "Inatafuta wasifu wa udongo...",
+  "Live parcel soil active": "Udongo wa kiwanja umetumika",
+  "Live point data unavailable (urban area or timeout)": "Data ya nukta haipatikani (eneo la mjini au muda kuisha)",
 };
 
 const TR = {
@@ -3171,12 +3181,13 @@ const TR = {
   "Rainfall is the limiting factor here (growing season water deficit: ~{n} mm). The model scores rainfed growing only; irrigation changes this picture entirely.": "Burada sınırlayıcı etken yağış (büyüme dönemi su açığı: ~{n} mm). Model yalnızca yağmura dayalı yetiştirmeyi değerlendirir; sulama tabloyu tamamen değiştirir.",
   "Natural rainfall is deficient during the growing season (water deficit: ~{n} mm). Supplemental irrigation is required for optimal yield.": "Büyüme döneminde doğal yağış yetersiz (su açığı: ~{n} mm). Optimum verim için ek sulama gereklidir.",
 
-  "28km Regional Soil Grid (Precomputed)": "28 km Bölgesel Toprak Ağı (Önceden Hesaplanmış)",
-  "Refine with 250m SoilGrids": "250m Detaylı Veri ile Güncelle",
-  "250m Point Query (SoilGrids 2.0)": "250m Noktasal Veri (SoilGrids 2.0)",
-  "Query live 250m SoilGrids point data for exact coordinate": "Tam koordinat için canlı 250m SoilGrids verisini sorgula",
-  "Querying 250m SoilGrids...": "250m SoilGrids sorgulanıyor...",
-  "250m unavailable (urban/water mask or timeout)": "250m veri bulunamadı (şehir/su maskesi veya zaman aşımı)",
+
+  "Site climate & soil": "Arazi iklimi ve toprağı",
+  "Query live parcel soil": "Canlı parsel toprağını sorgula",
+  "Query live soil profile for this exact parcel (SoilGrids)": "Bu parsel için canlı ve detaylı toprak profilini sorgular (SoilGrids)",
+  "Querying live soil profile...": "Canlı toprak profili alınıyor...",
+  "Live parcel soil active": "Canlı parsel toprağı aktif",
+  "Live point data unavailable (urban area or timeout)": "Noktasal veri bulunamadı (yerleşim alanı veya zaman aşımı)",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW, tr: TR };

@@ -864,20 +864,17 @@ function renderResults() {
     ? `${fmt(site.terrain.slope, 1)}° ${tr("slope")} &middot; ${site.terrain.aspectDeg}° ${site.terrain.facing ? tr(site.terrain.facing) : ""} &middot; ${tr("Copernicus 90m DEM terrain slope & aspect")}`
     : tr("Copernicus 90m DEM terrain slope & aspect");
 
-  const is250m = site.soil?.source === "isric_250m";
-  const soilResBadge = is250m
-    ? `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:6px;margin-bottom:8px">
-         <span style="font-size:11px;color:var(--c-brand);font-weight:600">✓ ${tr("250m Point Query (SoilGrids 2.0)")}</span>
-       </div>`
-    : `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:6px;margin-bottom:8px">
-         <span style="font-size:11px;color:var(--t-dim)">${tr("28km Regional Soil Grid (Precomputed)")}</span>
-         <button class="chip chip-sm" data-refine-soil style="font-size:11px;padding:2px 8px;cursor:pointer" data-tip="${tr("Query live 250m SoilGrids point data for exact coordinate")}">🔬 ${tr("Refine with 250m SoilGrids")}</button>
-       </div>`;
+  const isPointSoil = site.soil?.source === "isric_250m";
+  const soilAction = isPointSoil
+    ? `<span style="font-size:11px;color:var(--c-brand);font-weight:600">✓ ${tr("Live parcel soil active")}</span>`
+    : `<button class="chip chip-sm" data-refine-soil style="font-size:11px;padding:2px 8px;cursor:pointer" data-tip="${tr("Query live soil profile for this exact parcel (SoilGrids)")}">🔬 ${tr("Query live parcel soil")}</button>`;
 
   const whyBlock = `
-    <div class="section-h">${tr("Site climate &middot; ERA5 2015&ndash;2024")}</div>
+    <div class="section-h" style="display:flex;justify-content:space-between;align-items:center">
+      <span>${tr("Site climate & soil")}</span>
+      ${soilAction}
+    </div>
     <div class="site-fig">${climateSvg(site)}</div>
-    ${soilResBadge}
     <div class="readout">
       ${rd(tr("soil pH"), site.ph != null ? fmt(site.ph, 1) : tr("no data"))}
       ${rd(tr("soil texture"), texLabel ?? tr("no data"), texTooltip)}
@@ -1140,7 +1137,7 @@ async function refineSoilWithLive250m(btn) {
   if (!current?.center || btn.disabled) return;
   const originalHtml = btn.innerHTML;
   btn.disabled = true;
-  btn.innerHTML = `⏳ ${tr("Querying 250m SoilGrids...")}`;
+  btn.innerHTML = `⏳ ${tr("Querying live soil profile...")}`;
   try {
     const liveSoil = await fetchLiveSoil250m(current.center);
     if (liveSoil && liveSoil.effectivePh != null) {
@@ -1149,7 +1146,7 @@ async function refineSoilWithLive250m(btn) {
       rescoreCurrent();
       return;
     } else {
-      btn.innerHTML = `⚠️ ${tr("250m unavailable (urban/water mask or timeout)")}`;
+      btn.innerHTML = `⚠️ ${tr("Live point data unavailable (urban area or timeout)")}`;
       setTimeout(() => {
         if (btn) {
           btn.disabled = false;
@@ -1158,7 +1155,7 @@ async function refineSoilWithLive250m(btn) {
       }, 3500);
     }
   } catch {
-    btn.innerHTML = `⚠️ ${tr("Query failed")}`;
+    btn.innerHTML = `⚠️ ${tr("Live point data unavailable (urban area or timeout)")}`;
     setTimeout(() => {
       if (btn) {
         btn.disabled = false;
