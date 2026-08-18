@@ -244,11 +244,13 @@ const PT = {
 
 
   "Site climate & soil": "Clima e solo do local",
-  "Query live parcel soil": "Consultar solo do lote",
-  "Query live soil profile for this exact parcel (SoilGrids)": "Consulta o perfil detalhado do solo em tempo real para este lote (SoilGrids)",
-  "Querying live soil profile...": "Consultando perfil do solo...",
-  "Live parcel soil active": "Solo do lote ativo",
-  "Live point data unavailable (urban area or timeout)": "Dados pontuais indisponíveis (área urbana ou tempo limite)",
+
+  "Site climate & soil": "Clima e solo do local",
+  "Enhance soil accuracy": "Aumentar precisão do solo",
+  "Fetches high-precision soil details for this exact point to improve accuracy": "Obtém detalhes do solo em alta precisão para este ponto exato para aumentar a precisão",
+  "Loading detailed soil data...": "Carregando dados detalhados do solo...",
+  "High-precision soil active": "Solo de alta precisão ativo",
+  "Detailed soil data unavailable (urban area or timeout)": "Dados detalhados indisponíveis (área urbana ou tempo esgotado)",
 };
 
 const ES = {
@@ -481,11 +483,13 @@ const ES = {
 
 
   "Site climate & soil": "Clima y suelo del sitio",
-  "Query live parcel soil": "Consultar suelo de la parcela",
-  "Query live soil profile for this exact parcel (SoilGrids)": "Consulta el perfil detallado del suelo en vivo para esta parcela (SoilGrids)",
-  "Querying live soil profile...": "Consultando perfil del suelo...",
-  "Live parcel soil active": "Suelo de parcela activo",
-  "Live point data unavailable (urban area or timeout)": "Datos puntuales no disponibles (área urbana o tiempo agotado)",
+
+  "Site climate & soil": "Clima y suelo del sitio",
+  "Enhance soil accuracy": "Mejorar precisión del suelo",
+  "Fetches high-precision soil details for this exact point to improve accuracy": "Obtiene detalles del suelo de alta precisión para este punto exacto para mejorar la precisión",
+  "Loading detailed soil data...": "Cargando datos detallados del suelo...",
+  "High-precision soil active": "Suelo de alta precisión activo",
+  "Detailed soil data unavailable (urban area or timeout)": "Datos detallados no disponibles (área urbana o tiempo agotado)",
 };
 
 const FR = {
@@ -718,11 +722,13 @@ const FR = {
 
 
   "Site climate & soil": "Climat et sol du site",
-  "Query live parcel soil": "Interroger le sol de la parcelle",
-  "Query live soil profile for this exact parcel (SoilGrids)": "Interroge le profil détaillé du sol en direct pour cette parcelle (SoilGrids)",
-  "Querying live soil profile...": "Interrogation du profil du sol...",
-  "Live parcel soil active": "Sol de la parcelle actif",
-  "Live point data unavailable (urban area or timeout)": "Données ponctuelles indisponibles (zone urbaine ou délai dépassé)",
+
+  "Site climate & soil": "Climat et sol du site",
+  "Enhance soil accuracy": "Améliorer la précision du sol",
+  "Fetches high-precision soil details for this exact point to improve accuracy": "Récupère des détails de sol de haute précision pour ce point afin d'améliorer la précision",
+  "Loading detailed soil data...": "Chargement des données détaillées du sol...",
+  "High-precision soil active": "Sol de haute précision actif",
+  "Detailed soil data unavailable (urban area or timeout)": "Données détaillées indisponibles (zone urbaine ou délai dépassé)",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -1030,11 +1036,13 @@ const ZH = {
 
 
   "Site climate & soil": "地块气候与土壤",
-  "Query live parcel soil": "查询地块实时土壤",
-  "Query live soil profile for this exact parcel (SoilGrids)": "查询该地块精确坐标的高精度土壤剖面（SoilGrids）",
-  "Querying live soil profile...": "正在获取土壤剖面...",
-  "Live parcel soil active": "实时地块土壤已激活",
-  "Live point data unavailable (urban area or timeout)": "定点数据不可用（城镇区域或超时）",
+
+  "Site climate & soil": "地块气候与土壤",
+  "Enhance soil accuracy": "提升土壤精准度",
+  "Fetches high-precision soil details for this exact point to improve accuracy": "获取该地块的高精度土壤详情以提升推荐准确度",
+  "Loading detailed soil data...": "正在加载详细土壤数据...",
+  "High-precision soil active": "高精度土壤已激活",
+  "Detailed soil data unavailable (urban area or timeout)": "高精度数据不可用（城镇区域或超时）",
 };
 const JA = {
   "soil depth": "有効土層深",
@@ -1340,11 +1348,13 @@ const JA = {
 
 
   "Site climate & soil": "現地の気候と土壌",
-  "Query live parcel soil": "区画の土壌データを取得",
-  "Query live soil profile for this exact parcel (SoilGrids)": "この区画の詳細な土壌プロファイルをリアルタイム取得（SoilGrids）",
-  "Querying live soil profile...": "土壌プロファイルを取得中...",
-  "Live parcel soil active": "区画土壌データ適用中",
-  "Live point data unavailable (urban area or timeout)": "ポイントデータ利用不可（市街地またはタイムアウト）",
+
+  "Site climate & soil": "現地の気候と土壌",
+  "Enhance soil accuracy": "土壌データの精度を向上",
+  "Fetches high-precision soil details for this exact point to improve accuracy": "推奨精度を向上させるため、この地点の高精度な土壌詳細データを取得します",
+  "Loading detailed soil data...": "詳細土壌データを読み込み中...",
+  "High-precision soil active": "高精度土壌データ適用中",
+  "Detailed soil data unavailable (urban area or timeout)": "詳細データ利用不可（市街地またはタイムアウト）",
 };
 const RU = {
   "soil depth": "глубина почвы",
@@ -1647,11 +1657,13 @@ const RU = {
 
 
   "Site climate & soil": "Климат и почва участка",
-  "Query live parcel soil": "Запросить почву участка",
-  "Query live soil profile for this exact parcel (SoilGrids)": "Запрашивает подробный профиль почвы для этого участка (SoilGrids)",
-  "Querying live soil profile...": "Запрос профиля почвы...",
-  "Live parcel soil active": "Почва участка активна",
-  "Live point data unavailable (urban area or timeout)": "Точечные данные недоступны (городская зона или таймаут)",
+
+  "Site climate & soil": "Климат и почва участка",
+  "Enhance soil accuracy": "Повысить точность почвы",
+  "Fetches high-precision soil details for this exact point to improve accuracy": "Получает высокоточные данные о почве для этой точки для повышения точности рекомендаций",
+  "Loading detailed soil data...": "Загрузка детальных данных почвы...",
+  "High-precision soil active": "Высокоточная почва активна",
+  "Detailed soil data unavailable (urban area or timeout)": "Детальные данные недоступны (городская зона или таймаут)",
 };
 const ID = {
   "soil depth": "kedalaman tanah",
@@ -1954,11 +1966,13 @@ const ID = {
 
 
   "Site climate & soil": "Iklim dan tanah lokasi",
-  "Query live parcel soil": "Kueri tanah petak langsung",
-  "Query live soil profile for this exact parcel (SoilGrids)": "Kueri profil tanah terperinci secara langsung untuk petak ini (SoilGrids)",
-  "Querying live soil profile...": "Mengambil profil tanah...",
-  "Live parcel soil active": "Profil tanah petak aktif",
-  "Live point data unavailable (urban area or timeout)": "Data titik tidak tersedia (area perkotaan atau waktu habis)",
+
+  "Site climate & soil": "Iklim dan tanah lokasi",
+  "Enhance soil accuracy": "Tingkatkan akurasi tanah",
+  "Fetches high-precision soil details for this exact point to improve accuracy": "Mengambil detail tanah presisi tinggi untuk titik ini guna meningkatkan akurasi",
+  "Loading detailed soil data...": "Memuat data tanah terperinci...",
+  "High-precision soil active": "Tanah presisi tinggi aktif",
+  "Detailed soil data unavailable (urban area or timeout)": "Data terperinci tidak tersedia (area perkotaan atau waktu habis)",
 };
 const HI = {
   "soil depth": "मिट्टी की गहराई",
@@ -2261,11 +2275,13 @@ const HI = {
 
 
   "Site climate & soil": "स्थल जलवायु और मिट्टी",
-  "Query live parcel soil": "लाइव पार्सल मिट्टी क्वेरी करें",
-  "Query live soil profile for this exact parcel (SoilGrids)": "इस सटीक पार्सल के लिए विस्तृत मिट्टी प्रोफ़ाइल क्वेरी करता है (SoilGrids)",
-  "Querying live soil profile...": "मिट्टी प्रोफ़ाइल क्वेरी हो रही है...",
-  "Live parcel soil active": "पार्सल मिट्टी प्रोफ़ाइल सक्रिय",
-  "Live point data unavailable (urban area or timeout)": "बिंदु डेटा अनुपलब्ध (शहरी क्षेत्र या समय समाप्त)",
+
+  "Site climate & soil": "स्थल जलवायु और मिट्टी",
+  "Enhance soil accuracy": "मिट्टी की सटीकता बढ़ाएं",
+  "Fetches high-precision soil details for this exact point to improve accuracy": "सटीकता में सुधार के लिए इस सटीक बिंदु के लिए उच्च-सटीकता मिट्टी विवरण प्राप्त करता है",
+  "Loading detailed soil data...": "विस्तृत मिट्टी डेटा लोड हो रहा है...",
+  "High-precision soil active": "उच्च-सटीकता मिट्टी सक्रिय",
+  "Detailed soil data unavailable (urban area or timeout)": "विस्तृत डेटा अनुपलब्ध (शहरी क्षेत्र या समय समाप्त)",
 };
 const DE = {
   "soil depth": "Bodendiefe",
@@ -2568,11 +2584,13 @@ const DE = {
 
 
   "Site climate & soil": "Klima und Boden des Standorts",
-  "Query live parcel soil": "Parzellenboden live abfragen",
-  "Query live soil profile for this exact parcel (SoilGrids)": "Fragt das detaillierte Bodenprofil für diese Parzelle live ab (SoilGrids)",
-  "Querying live soil profile...": "Bodenprofil wird abgefragt...",
-  "Live parcel soil active": "Parzellenboden aktiv",
-  "Live point data unavailable (urban area or timeout)": "Punktdaten nicht verfügbar (Siedlungsgebiet oder Zeitüberschreitung)",
+
+  "Site climate & soil": "Klima und Boden des Standorts",
+  "Enhance soil accuracy": "Bodengenauigkeit verbessern",
+  "Fetches high-precision soil details for this exact point to improve accuracy": "Ruft hochpräzise Bodendetails für diesen Punkt ab, um die Genauigkeit zu verbessern",
+  "Loading detailed soil data...": "Detaillierte Bodendaten werden geladen...",
+  "High-precision soil active": "Hochpräziser Boden aktiv",
+  "Detailed soil data unavailable (urban area or timeout)": "Detaillierte Daten nicht verfügbar (Siedlungsgebiet oder Zeitüberschreitung)",
 };
 const SW = {
   "soil depth": "kina cha udongo",
@@ -2875,11 +2893,13 @@ const SW = {
 
 
   "Site climate & soil": "Hali ya hewa na udongo wa eneo",
-  "Query live parcel soil": "Uliza udongo wa kiwanja moja kwa moja",
-  "Query live soil profile for this exact parcel (SoilGrids)": "Inachunguza wasifu wa kina wa udongo kwa kiwanja hiki (SoilGrids)",
-  "Querying live soil profile...": "Inatafuta wasifu wa udongo...",
-  "Live parcel soil active": "Udongo wa kiwanja umetumika",
-  "Live point data unavailable (urban area or timeout)": "Data ya nukta haipatikani (eneo la mjini au muda kuisha)",
+
+  "Site climate & soil": "Hali ya hewa na udongo wa eneo",
+  "Enhance soil accuracy": "Boresha usahihi wa udongo",
+  "Fetches high-precision soil details for this exact point to improve accuracy": "Inachukua maelezo ya kina ya udongo kwa eneo hili ili kuboresha usahihi",
+  "Loading detailed soil data...": "Inapakia data ya kina ya udongo...",
+  "High-precision soil active": "Udongo wa usahihi wa juu umetumika",
+  "Detailed soil data unavailable (urban area or timeout)": "Data ya kina haipatikani (eneo la mjini au muda kuisha)",
 };
 
 const TR = {
@@ -3183,11 +3203,13 @@ const TR = {
 
 
   "Site climate & soil": "Arazi iklimi ve toprağı",
-  "Query live parcel soil": "Canlı parsel toprağını sorgula",
-  "Query live soil profile for this exact parcel (SoilGrids)": "Bu parsel için canlı ve detaylı toprak profilini sorgular (SoilGrids)",
-  "Querying live soil profile...": "Canlı toprak profili alınıyor...",
-  "Live parcel soil active": "Canlı parsel toprağı aktif",
-  "Live point data unavailable (urban area or timeout)": "Noktasal veri bulunamadı (yerleşim alanı veya zaman aşımı)",
+
+  "Site climate & soil": "Arazi iklimi ve toprağı",
+  "Enhance soil accuracy": "Toprak analizini detaylandır",
+  "Fetches high-precision soil details for this exact point to improve accuracy": "Öneri isabetini artırmak için bu noktanın yüksek hassasiyetli toprak verisini çeker",
+  "Loading detailed soil data...": "Detaylı toprak verisi alınıyor...",
+  "High-precision soil active": "Yüksek hassasiyetli toprak aktif",
+  "Detailed soil data unavailable (urban area or timeout)": "Detaylı veri bulunamadı (yerleşim alanı veya zaman aşımı)",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW, tr: TR };

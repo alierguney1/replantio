@@ -866,8 +866,8 @@ function renderResults() {
 
   const isPointSoil = site.soil?.source === "isric_250m";
   const soilAction = isPointSoil
-    ? `<span style="font-size:11px;color:var(--c-brand);font-weight:600">✓ ${tr("Live parcel soil active")}</span>`
-    : `<button class="chip chip-sm" data-refine-soil style="font-size:11px;padding:2px 8px;cursor:pointer" data-tip="${tr("Query live soil profile for this exact parcel (SoilGrids)")}">🔬 ${tr("Query live parcel soil")}</button>`;
+    ? `<span style="font-size:11px;color:var(--c-brand);font-weight:600">✓ ${tr("High-precision soil active")}</span>`
+    : `<button class="chip chip-sm" data-refine-soil style="font-size:11px;padding:2px 8px;cursor:pointer" data-tip="${tr("Fetches high-precision soil details for this exact point to improve accuracy")}">🔬 ${tr("Enhance soil accuracy")}</button>`;
 
   const whyBlock = `
     <div class="section-h" style="display:flex;justify-content:space-between;align-items:center">
@@ -1137,7 +1137,7 @@ async function refineSoilWithLive250m(btn) {
   if (!current?.center || btn.disabled) return;
   const originalHtml = btn.innerHTML;
   btn.disabled = true;
-  btn.innerHTML = `⏳ ${tr("Querying live soil profile...")}`;
+  btn.innerHTML = `⏳ ${tr("Loading detailed soil data...")}`;
   try {
     const liveSoil = await fetchLiveSoil250m(current.center);
     if (liveSoil && liveSoil.effectivePh != null) {
@@ -1146,7 +1146,7 @@ async function refineSoilWithLive250m(btn) {
       rescoreCurrent();
       return;
     } else {
-      btn.innerHTML = `⚠️ ${tr("Live point data unavailable (urban area or timeout)")}`;
+      btn.innerHTML = `⚠️ ${tr("Detailed soil data unavailable (urban area or timeout)")}`;
       setTimeout(() => {
         if (btn) {
           btn.disabled = false;
@@ -1155,7 +1155,7 @@ async function refineSoilWithLive250m(btn) {
       }, 3500);
     }
   } catch {
-    btn.innerHTML = `⚠️ ${tr("Live point data unavailable (urban area or timeout)")}`;
+    btn.innerHTML = `⚠️ ${tr("Detailed soil data unavailable (urban area or timeout)")}`;
     setTimeout(() => {
       if (btn) {
         btn.disabled = false;
