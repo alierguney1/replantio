@@ -335,9 +335,9 @@ export function lookupSoil(lat, lon, grid = soilGridData) {
   const aKey = `${(+lat).toFixed(2)},${(+lon).toFixed(2)}`;
   let vals = grid.anchors?.[aKey];
 
-  // 2. Quantize to grid resolution (e.g. 0.5-degree grid cells)
+  // 2. Quantize to grid resolution (e.g. 0.25-degree grid cells)
   if (!vals && grid.cells) {
-    const step = grid._meta?.resolution_deg ?? 0.5;
+    const step = grid._meta?.resolution_deg ?? 0.25;
     const qLat = (Math.round(lat / step) * step).toFixed(2);
     const qLon = (Math.round(lon / step) * step).toFixed(2);
     vals = grid.cells[`${qLat},${qLon}`];
@@ -378,6 +378,7 @@ export function lookupSoil(lat, lon, grid = soilGridData) {
     usdaTexture,
     faoTexture,
     hydrology,
+    source: "grid_28km",
   };
 }
 

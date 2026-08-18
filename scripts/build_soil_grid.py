@@ -176,7 +176,7 @@ def find_soil_properties(lat: float, lon: float) -> Dict[str, Any]:
         return {"ph": 6.4, "sand": 40.0, "silt": 40.0, "clay": 20.0, "som": 2.0, "bdod": 1.34, "cec": 18.0, "cfvo": 3.0, "depth": 120}
 
 
-def build_soil_grid_dataset(step_deg: float = 0.5) -> Dict[str, Any]:
+def build_soil_grid_dataset(step_deg: float = 0.25) -> Dict[str, Any]:
     """Builds a global precomputed soil dataset at regular spatial resolution."""
     grid_cells: Dict[str, List[Any]] = {}
     archetype_lookup: List[Dict[str, Any]] = []
@@ -275,7 +275,7 @@ def build_soil_grid_dataset(step_deg: float = 0.5) -> Dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build Replantio Static Global Soil Grid.")
-    parser.add_argument("--step", type=float, default=0.5, help="Grid step in degrees (default: 0.5)")
+    parser.add_argument("--step", type=float, default=0.25, help="Grid step in degrees (default: 0.25)")
     parser.add_argument("--out", type=pathlib.Path, default=OUT_JSON, help="Output JSON path")
     args = parser.parse_args()
 

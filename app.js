@@ -423,6 +423,33 @@ async function fetchSoil(c, signal) {
   return lookupSoil(c.lat, c.lng, SOIL_GRID);
 }
 
+async function fetchLiveSoil250m(c) {
+  const ctl = new AbortController();
+  const timeoutId = setTimeout(() => ctl.abort(), 12000);
+  try {
+    const url = `https://rest.isric.org/soilgrids/v2.0/properties/query?lon=${c.lng.toFixed(4)}&lat=${c.lat.toFixed(4)}` +
+      `&property=phh2o&property=clay&property=sand&property=silt&property=soc&property=bdod&property=cec&property=cfvo` +
+      `&depth=0-5cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&value=mean`;
+    const res = await fetch(url, { signal: ctl.signal });
+    clearTimeout(timeoutId);
+    if (!res.ok) return null;
+    const j = await res.json();
+    const layers = j.properties?.layers;
+    if (!Array.isArray(layers) || !layers.length) return null;
+    const profile = aggregateSoilProfile(layers, 100);
+    if (!profile || profile.effectivePh == null) return null;
+    return {
+      ...profile,
+      phh2o: profile.effectivePh,
+      layers,
+      source: "isric_250m",
+    };
+  } catch {
+    clearTimeout(timeoutId);
+    return null;
+  }
+}
+
 async function fetchPlace(c, signal) {
   try {
     const j = await (await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${c.lat}&longitude=${c.lng}&localityLanguage=${LANG}`, { signal })).json();
@@ -837,9 +864,20 @@ function renderResults() {
     ? `${fmt(site.terrain.slope, 1)}° ${tr("slope")} &middot; ${site.terrain.aspectDeg}° ${site.terrain.facing ? tr(site.terrain.facing) : ""} &middot; ${tr("Copernicus 90m DEM terrain slope & aspect")}`
     : tr("Copernicus 90m DEM terrain slope & aspect");
 
+  const is250m = site.soil?.source === "isric_250m";
+  const soilResBadge = is250m
+    ? `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:6px;margin-bottom:8px">
+         <span style="font-size:11px;color:var(--c-brand);font-weight:600">✓ ${tr("250m Point Query (SoilGrids 2.0)")}</span>
+       </div>`
+    : `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:6px;margin-bottom:8px">
+         <span style="font-size:11px;color:var(--t-dim)">${tr("28km Regional Soil Grid (Precomputed)")}</span>
+         <button class="chip chip-sm" data-refine-soil style="font-size:11px;padding:2px 8px;cursor:pointer" data-tip="${tr("Query live 250m SoilGrids point data for exact coordinate")}">🔬 ${tr("Refine with 250m SoilGrids")}</button>
+       </div>`;
+
   const whyBlock = `
     <div class="section-h">${tr("Site climate &middot; ERA5 2015&ndash;2024")}</div>
     <div class="site-fig">${climateSvg(site)}</div>
+    ${soilResBadge}
     <div class="readout">
       ${rd(tr("soil pH"), site.ph != null ? fmt(site.ph, 1) : tr("no data"))}
       ${rd(tr("soil texture"), texLabel ?? tr("no data"), texTooltip)}
@@ -1066,6 +1104,8 @@ content.addEventListener("click", e => {
   if (e.target.closest("[data-csv]")) { track("export", { kind: "csv" }); csvExport(); return; }
   if (e.target.closest("[data-more]")) { current.shown += 20; renderResults(); loadRowPhotos(); return; }
   if (e.target.closest("[data-force]")) { current.force = true; renderResults(); loadRowPhotos(); return; }
+  const refineBtn = e.target.closest("[data-refine-soil]");
+  if (refineBtn) { refineSoilWithLive250m(refineBtn); return; }
 
   const head = e.target.closest("[data-toggle]");
   if (head) {
@@ -1078,6 +1118,55 @@ content.addEventListener("click", e => {
     else stopSim();
   }
 });
+
+function rescoreCurrent() {
+  if (!current) return;
+  const evL3 = L3_REGIONS[current.cc]?.[current.uf] ?? null;
+  const evNative = sp => {
+    const enc = NATIVES_GEO[sp.id], d = NATIVES_GEO._dominio;
+    if (enc && d && current.center.lat >= d.lat[0] && current.center.lat <= d.lat[1] && current.center.lng >= d.lng[0] && current.center.lng <= d.lng[1])
+      return geoInRange(enc, current.center.lat, current.center.lng);
+    if (evL3) return !!NATIVES_L3[sp.id]?.includes(evL3);
+    return !!(current.cc && NATIVES[sp.id]?.includes(current.cc));
+  };
+  current.scored = SPECIES
+    .map(sp => ({ sp, ...scoreSpecies(sp, current.site, { native: evNative(sp) }) }))
+    .sort((a, b) => (b.score - a.score) || (b.fit - a.fit));
+  renderResults();
+  loadRowPhotos();
+}
+
+async function refineSoilWithLive250m(btn) {
+  if (!current?.center || btn.disabled) return;
+  const originalHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `⏳ ${tr("Querying 250m SoilGrids...")}`;
+  try {
+    const liveSoil = await fetchLiveSoil250m(current.center);
+    if (liveSoil && liveSoil.effectivePh != null) {
+      current.site.soil = liveSoil;
+      current.site.ph = liveSoil.effectivePh;
+      rescoreCurrent();
+      return;
+    } else {
+      btn.innerHTML = `⚠️ ${tr("250m unavailable (urban/water mask or timeout)")}`;
+      setTimeout(() => {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalHtml;
+        }
+      }, 3500);
+    }
+  } catch {
+    btn.innerHTML = `⚠️ ${tr("Query failed")}`;
+    setTimeout(() => {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }, 3500);
+  }
+}
 
 // species envelope vs this site: dim track = tolerated, bright = optimal,
 // tick = where the site sits
