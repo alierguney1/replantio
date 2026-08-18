@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import {
   trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors,
   maxSoilDepthCm, scoreSpecies, aggregateClimate, grade, aridityClass,
-  usdaTextureClass, faoTextureCategory, saxtonRawlsHydrology, aggregateSoilProfile
+  usdaTextureClass, faoTextureCategory, saxtonRawlsHydrology, aggregateSoilProfile, lookupSoil, setSoilGrid
 } from "../scoring.js";
 import { CLASSES, height, dbhCm, co2eKgPerTree, crownDiameterM, crownDisplayM, standDisplay, maturityYears } from "../growth.js";
 
@@ -536,6 +536,23 @@ assert.equal(maizeClay.factors.salinity, 0.5, "maize on alkaline soil (pH 8.8) g
 const walnutShallow = scoreSpecies(walnut, testSoilSiteHeavyClay);
 assert.equal(walnutShallow.factors.depth, 0, "walnut fails on 30cm shallow soil (depth = 0)");
 assert.equal(walnutShallow.score, 0, "walnut overall score is 0 on shallow soil");
+
+// --- Static Global Soil Grid Lookup Tests
+const soilGridData = JSON.parse(readFileSync(new URL("../data/soil_grid.json", import.meta.url)));
+const konyaSoil = lookupSoil(37.87, 32.49, soilGridData);
+assert.ok(konyaSoil != null, "Konya soil lookup succeeds");
+assert.equal(konyaSoil.effectivePh, 7.8, "Konya soil pH is 7.8");
+assert.equal(konyaSoil.usdaTexture, "Clay Loam", "Konya USDA texture is Clay Loam");
+assert.ok(konyaSoil.awcMm > 100, `Konya AWC is ${konyaSoil.awcMm} mm`);
+
+const rizeSoil = lookupSoil(41.02, 40.52, soilGridData);
+assert.ok(rizeSoil != null, "Rize soil lookup succeeds");
+assert.equal(rizeSoil.effectivePh, 4.8, "Rize soil pH is acidic 4.8");
+assert.ok(rizeSoil.awcMm > 100, `Rize AWC is ${rizeSoil.awcMm} mm`);
+
+const berlinSoil = lookupSoil(52.50, 13.40, soilGridData);
+assert.ok(berlinSoil != null, "Berlin soil lookup succeeds");
+assert.equal(berlinSoil.usdaTexture, "Sandy Loam", "Berlin USDA texture is Sandy Loam");
 
 // grading bands
 assert.equal(grade(0.9), "Excellent");

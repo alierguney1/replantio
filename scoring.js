@@ -307,6 +307,80 @@ export function aggregateSoilProfile(layers, targetDepthCm = 100) {
   };
 }
 
+// ---------------------------------------------------------------------------
+// Static Global Soil Grid & Lookup Engine (Zero-dependency, offline)
+// ---------------------------------------------------------------------------
+let soilGridData = null;
+let soilGridPromise = null;
+
+export async function initSoilGrid(url = "data/soil_grid.json") {
+  if (soilGridData) return soilGridData;
+  if (!soilGridPromise) {
+    soilGridPromise = fetch(url)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { soilGridData = d; return d; })
+      .catch(() => null);
+  }
+  return soilGridPromise;
+}
+
+export function setSoilGrid(data) {
+  soilGridData = data;
+}
+
+export function lookupSoil(lat, lon, grid = soilGridData) {
+  if (!grid || lat == null || lon == null) return null;
+
+  // 1. Check exact canonical anchor coordinates first
+  const aKey = `${(+lat).toFixed(2)},${(+lon).toFixed(2)}`;
+  let vals = grid.anchors?.[aKey];
+
+  // 2. Quantize to grid resolution (e.g. 0.5-degree grid cells)
+  if (!vals && grid.cells) {
+    const step = grid._meta?.resolution_deg ?? 0.5;
+    const qLat = (Math.round(lat / step) * step).toFixed(2);
+    const qLon = (Math.round(lon / step) * step).toFixed(2);
+    vals = grid.cells[`${qLat},${qLon}`];
+  }
+
+  if (!vals || vals.length < 10) return null;
+
+  // Schema: [ph_x10, sand, silt, clay, som_x10, bdod_x100, cec, cfvo, depth_cm, awc_mm]
+  const effectivePh = +(vals[0] / 10).toFixed(1);
+  const sandPct = vals[1];
+  const siltPct = vals[2];
+  const clayPct = vals[3];
+  const somPct = +(vals[4] / 10).toFixed(1);
+  const socGKg = +(somPct * 10 / 1.724).toFixed(1);
+  const bdodGCm3 = +(vals[5] / 100).toFixed(2);
+  const cecCmolKg = vals[6];
+  const cfvoPct = vals[7];
+  const maxDepthCm = vals[8];
+  const awcMm = vals[9];
+
+  const usdaTexture = usdaTextureClass(sandPct, siltPct, clayPct, somPct);
+  const faoTexture = faoTextureCategory(usdaTexture);
+  const hydrology = saxtonRawlsHydrology(sandPct, clayPct, somPct, bdodGCm3, cfvoPct, maxDepthCm);
+
+  return {
+    effectivePh,
+    phh2o: effectivePh,
+    sandPct,
+    siltPct,
+    clayPct,
+    somPct,
+    socGKg,
+    bdodGCm3,
+    cecCmolKg,
+    cfvoPct,
+    maxDepthCm,
+    awcMm: hydrology?.awcMm ?? awcMm,
+    usdaTexture,
+    faoTexture,
+    hydrology,
+  };
+}
+
 // Aggregate Open-Meteo daily arrays into monthly climate normals.
 export function aggregateClimate(daily) {
   if (!daily?.time?.length) throw new Error("incomplete climate series (no daily records)");

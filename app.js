@@ -1,4 +1,4 @@
-import { aggregateClimate, scoreSpecies, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors, maxSoilDepthCm, aggregateSoilProfile } from "./scoring.js";
+import { aggregateClimate, scoreSpecies, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors, maxSoilDepthCm, aggregateSoilProfile, lookupSoil, setSoilGrid } from "./scoring.js";
 import { DICTS, LANGS, NAMES, LOCALES, MONTHS_ALL } from "./i18n.js";
 import { CLASSES, projection, maturityYears, co2eKgPerTree, co2eTonsPerHa, height, dbhCm, crownDiameterM, crownDisplayM, standDisplay, STEMS_PER_HA } from "./growth.js";
 
@@ -29,10 +29,11 @@ L.tileLayer("https://basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
   maxZoom: 20, attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
 }).addTo(map);
 
-let SPECIES = [], NATIVES = {}, NAMES_LOCAL = {}, SOURCING = null, INVASIVES = {}, NATIVES_L3 = {}, L3_REGIONS = {}, NATIVES_GEO = {};
+let SPECIES = [], NATIVES = {}, NAMES_LOCAL = {}, SOURCING = null, INVASIVES = {}, NATIVES_L3 = {}, L3_REGIONS = {}, NATIVES_GEO = {}, SOIL_GRID = null;
 const speciesReady = Promise.all([
   fetch("data/species.json").then(r => r.json()).then(j => { SPECIES = j; }),
   fetch("data/natives.json").then(r => r.json()).then(j => { NATIVES = j; }).catch(() => {}), // optional layer
+  fetch("data/soil_grid.json").then(r => r.ok ? r.json() : null).then(j => { SOIL_GRID = j; if (j) setSoilGrid(j); }).catch(() => {}), // precomputed global soil grid
   // per-language species names, loaded only for the active language
   // (architecture from PR #3 by @alierguney1; only sourced dictionaries ship:
   // names_pt, names_tr, etc.)
@@ -407,39 +408,19 @@ async function fetchClimate(c, signal) {
 }
 
 async function fetchSoil(c, signal) {
-  const cacheKey = `soil_${c.lat.toFixed(3)}_${c.lng.toFixed(3)}`;
-  try {
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) {
-      const data = JSON.parse(cached);
-      if (data && data.usdaTexture) return data;
-    }
-  } catch {}
-
-  try {
-    const url = `https://rest.isric.org/soilgrids/v2.0/properties/query?lon=${c.lng.toFixed(4)}&lat=${c.lat.toFixed(4)}` +
-      `&property=phh2o&property=clay&property=sand&property=silt&property=soc&property=bdod&property=cec&property=cfvo` +
-      `&depth=0-5cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&value=mean`;
-    const res = await fetch(url, { signal });
-    if (!res.ok) return null;
-    const j = await res.json();
-    const layers = j.properties?.layers;
-    if (!Array.isArray(layers) || !layers.length) return null;
-    const profile = aggregateSoilProfile(layers, 100);
-    if (!profile) return null;
-    const result = {
-      ...profile,
-      phh2o: profile.effectivePh,
-      layers,
-    };
+  if (!SOIL_GRID) {
     try {
-      localStorage.setItem(cacheKey, JSON.stringify(result));
-    } catch {}
-    return result;
-  } catch (e) {
-    if (e.name === "AbortError") throw e;
-    return null; // soil is optional: rate limit / outage degrades gracefully
+      const res = await fetch("data/soil_grid.json", { signal });
+      if (res.ok) {
+        SOIL_GRID = await res.json();
+        setSoilGrid(SOIL_GRID);
+      }
+    } catch (e) {
+      if (e.name === "AbortError") throw e;
+    }
   }
+  if (!SOIL_GRID) return null;
+  return lookupSoil(c.lat, c.lng, SOIL_GRID);
 }
 
 async function fetchPlace(c, signal) {
@@ -544,9 +525,9 @@ async function analyze(pts) {
     $("#retry").onclick = () => analyze(pts);
     return;
   }
-  // optional layers must never block results: SoilGrids (beta) sometimes hangs
+  // optional layers must never block results
   const orNull = (p, ms) => Promise.race([p.catch(() => null), new Promise(r => setTimeout(() => r(null), ms))]);
-  const [soil, place, terrain] = await Promise.all([orNull(soilP, 30000), orNull(placeP, 8000), orNull(terrainP, 8000)]);
+  const [soil, place, terrain] = await Promise.all([orNull(soilP, 2000), orNull(placeP, 8000), orNull(terrainP, 8000)]);
   if (ctl.signal.aborted) return;
 
   await speciesReady;

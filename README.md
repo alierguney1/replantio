@@ -154,13 +154,22 @@ Class-level, not species-level: each species carries a growth class
 (a 10-year eucalyptus at ~28 m and ~530 kg CO2e, a 10-year oak at ~4.6 m and ~22 kg,
 daylength at four latitudes, and fixture climates for Berlin and Sao Paulo).
 
+- **Multi-layer soil pedology & Saxton-Rawls hydrology**: global soil properties are
+  precomputed into a static, zero-latency global soil grid (`data/soil_grid.json`, 183k cells, 0.5° resolution)
+  derived from ISRIC SoilGrids 2.0 and FAO HWSD v2. Point lookups return instant topsoil/subsoil
+  pH, USDA 12-class soil texture simplex classification (Sand, Sandy Loam, Clay Loam, etc.),
+  FAO broad texture category, Soil Organic Matter (SOM), fine-earth bulk density, and Cation
+  Exchange Capacity (CEC). Plant Available Water Capacity (AWC mm/m) is computed via Saxton &
+  Rawls (2006, SSSA Journal) pedotransfer functions. Alkaline/saline soils (pH >= 8.5) apply a
+  0.5 caveat penalty on salt-sensitive taxa.
+
 ## Data sources
 
 | Layer | Source | Access | License/terms |
 |---|---|---|---|
 | Species envelopes | FAO EcoCrop (2,568 species), OpenCLIM mirror | vendored at build time | attribute FAO |
 | Climate | Open-Meteo ERA5 archive | live, CORS, keyless | CC-BY 4.0, <10k calls/day |
-| Soil | SoilGrids 2.0, ISRIC | live, CORS, keyless | CC-BY 4.0, 5 req/min |
+| Soil | SoilGrids 2.0 (ISRIC) / FAO HWSD v2 | precomputed at build time (`data/soil_grid.json`) | CC-BY 4.0 |
 | Occurrence | GBIF v1 API | live, CORS, keyless | attribute GBIF |
 | Native ranges | Kew WCVP v16 (TDWG L3 to ISO countries) | vendored at build time | CC BY 3.0 |
 | Imagery | Esri World Imagery | tiles, keyless | attribution required |

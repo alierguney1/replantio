@@ -425,10 +425,71 @@ class SoilClient:
 
         return None
 
+    def get_profile_from_grid(self, lat: float, lon: float, target_depth_cm: int = 100) -> Optional[SoilProfile]:
+        """Looks up soil profile from precomputed static data/soil_grid.json."""
+        grid_path = ROOT / "data" / "soil_grid.json"
+        if not grid_path.exists():
+            return None
+        try:
+            with open(grid_path, "r", encoding="utf-8") as f:
+                grid = json.load(f)
+
+            a_key = f"{lat:.2f},{lon:.2f}"
+            vals = grid.get("anchors", {}).get(a_key)
+            if not vals:
+                step = grid.get("_meta", {}).get("resolution_deg", 0.5)
+                q_lat = f"{round(lat / step) * step:.2f}"
+                q_lon = f"{round(lon / step) * step:.2f}"
+                vals = grid.get("cells", {}).get(f"{q_lat},{q_lon}")
+
+            if not vals or len(vals) < 10:
+                return None
+
+            eff_ph = round(vals[0] / 10.0, 1)
+            eff_sand = float(vals[1])
+            eff_silt = float(vals[2])
+            eff_clay = float(vals[3])
+            eff_som = round(vals[4] / 10.0, 1)
+            eff_soc = round(eff_som * 10.0 / 1.724, 1)
+            eff_bdod = round(vals[5] / 100.0, 2)
+            eff_cec = float(vals[6])
+            eff_cfvo = float(vals[7])
+            max_depth = int(vals[8])
+
+            usda_tex = USDASoilTexture.classify(eff_sand, eff_silt, eff_clay, eff_som)
+            fao_tex = USDASoilTexture.to_fao_category(usda_tex)
+            hydrology = SaxtonRawlsHydrology.calculate(eff_sand, eff_clay, eff_som, eff_bdod, eff_cfvo, min(target_depth_cm, max_depth))
+
+            return SoilProfile(
+                lat=lat,
+                lon=lon,
+                is_valid=True,
+                depth_integrated_cm=target_depth_cm,
+                effective_ph=eff_ph,
+                sand_pct=eff_sand,
+                silt_pct=eff_silt,
+                clay_pct=eff_clay,
+                som_pct=eff_som,
+                soc_g_kg=eff_soc,
+                bdod_g_cm3=eff_bdod,
+                cec_cmol_kg=eff_cec,
+                cfvo_pct=eff_cfvo,
+                usda_texture=usda_tex,
+                fao_texture_class=fao_tex,
+                hydrology=hydrology,
+                horizons={},
+            )
+        except Exception:
+            return None
+
     def get_profile(self, lat: float, lon: float, target_depth_cm: int = 100) -> SoilProfile:
         """Retrieves and computes full depth-integrated SoilProfile for coordinates."""
         raw_data = self.fetch_raw(lat, lon)
         if not raw_data or "properties" not in raw_data:
+            # Fall back to offline static soil grid
+            static_p = self.get_profile_from_grid(lat, lon, target_depth_cm)
+            if static_p:
+                return static_p
             return SoilProfile(
                 lat=lat, lon=lon, is_valid=False, depth_integrated_cm=target_depth_cm,
                 effective_ph=None, sand_pct=None, silt_pct=None, clay_pct=None,

@@ -311,6 +311,18 @@ class TestBatchAndCacheEndToEnd(unittest.TestCase):
             self.assertEqual(rows[0]["ph_eff"], "7.0")
             self.assertIsNotNone(rows[0]["awc_mm"])
 
+    def test_03_static_grid_lookup(self):
+        """Verifies zero-network offline lookup from data/soil_grid.json."""
+        client = SoilClient(enable_cache=False)
+        profile = client.get_profile_from_grid(37.87, 32.49) # Konya
+        self.assertIsNotNone(profile)
+        self.assertTrue(profile.is_valid)
+        self.assertEqual(profile.effective_ph, 7.8)
+        self.assertEqual(profile.usda_texture, "Clay Loam")
+        self.assertEqual(profile.fao_texture_class, "medium")
+        self.assertGreater(profile.hydrology.awc_mm, 100)
+
 
 if __name__ == "__main__":
     unittest.main()
+
