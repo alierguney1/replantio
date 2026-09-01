@@ -341,6 +341,11 @@ def main():
 
         shade = ("shade" in (r.get("LIOPMN") or "").lower() or "shade" in (r.get("LIOPMX") or "").lower())
 
+        is_nfix = (r["FAMNAME"] or "").split(":")[-1] in {"Fabaceae", "Leguminosae"} or sci.split()[0] in {
+            "Alnus", "Elaeagnus", "Hippophae", "Casuarina", "Myrica", "Ceanothus",
+            "Coriaria", "Dryas", "Shepherdia", "Comptonia", "Morella", "Allocasuarina"
+        }
+
         out.append({
             "id": code,
             "sci": sci,
@@ -354,6 +359,8 @@ def main():
             "ph": ph,
             "ktmp": vals["KTMP"],       # killing temp, early growth
             "ktmpr": vals["KTMPR"],      # killing temp, dormant season
+            # biological nitrogen-fixing species (Fabaceae + actinorhizal Frankia symbionts)
+            **({"nfix": True} if is_nfix else {}),
             # obligate wetland: EcoCrop absolute drainage tolerates ONLY saturated soil
             **({"wet": True} if (r.get("DRAR") or r.get("DRA") or "").strip() == "poorly (saturated >50% of year)" else {}),
             # annual-capable: frost is tested on the growing window, not the winter

@@ -210,6 +210,8 @@ const PT = {
   "Semi-arid": "Semiárido",
   "Dry sub-humid": "Subúmido seco",
   "Humid": "Úmido",
+  "N-fixer": "fixadora de N",
+  "Biological nitrogen fixer: enriches degraded soils with atmospheric nitrogen": "Fixadora biológica de nitrogênio: enriquece solos degradados com nitrogênio atmosférico",
 };
 
 const ES = {
@@ -408,6 +410,8 @@ const ES = {
   "Semi-arid": "Semiárido",
   "Dry sub-humid": "Subhúmedo seco",
   "Humid": "Húmedo",
+  "N-fixer": "fijadora de N",
+  "Biological nitrogen fixer: enriches degraded soils with atmospheric nitrogen": "Fijadora biológica de nitrógeno: enriquece suelos degradados con nitrógeno atmosférico",
 };
 
 const FR = {
@@ -606,6 +610,8 @@ const FR = {
   "Semi-arid": "Semi-aride",
   "Dry sub-humid": "Subhumide sec",
   "Humid": "Humide",
+  "N-fixer": "fixateur d'azote",
+  "Biological nitrogen fixer: enriches degraded soils with atmospheric nitrogen": "Fixateur biologique d'azote : enrichit les sols dégradés avec l'azote atmosphérique",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -876,6 +882,8 @@ const ZH = {
   "Semi-arid": "半干旱",
   "Dry sub-humid": "半干旱半湿润",
   "Humid": "湿润",
+  "N-fixer": "固氮植物",
+  "Biological nitrogen fixer: enriches degraded soils with atmospheric nitrogen": "生物固氮植物：利用大气中的氮丰富退化土壤",
 };
 const JA = {
   "Analyze": "分析する",
@@ -1144,6 +1152,8 @@ const JA = {
   "Semi-arid": "半乾燥",
   "Dry sub-humid": "乾燥亜湿潤",
   "Humid": "湿潤",
+  "N-fixer": "窒素固定植物",
+  "Biological nitrogen fixer: enriches degraded soils with atmospheric nitrogen": "生物学的窒素固定植物：大気中の窒素を取り込み荒廃した土壌を肥沃化",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1412,6 +1422,8 @@ const RU = {
   "Semi-arid": "Полуаридный",
   "Dry sub-humid": "Сухой субгумидный",
   "Humid": "Гумидный",
+  "N-fixer": "азотфиксатор",
+  "Biological nitrogen fixer: enriches degraded soils with atmospheric nitrogen": "Биологический азотфиксатор: обогащает деградированные почвы атмосферным азотом",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -1680,6 +1692,8 @@ const ID = {
   "Semi-arid": "Semi-arid",
   "Dry sub-humid": "Sub-humid kering",
   "Humid": "Humid",
+  "N-fixer": "pengikat nitrogen",
+  "Biological nitrogen fixer: enriches degraded soils with atmospheric nitrogen": "Pengikat nitrogen biologis: memperkaya tanah terdegradasi dengan nitrogen atmosfer",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -1948,6 +1962,8 @@ const HI = {
   "Semi-arid": "अर्ध-शुष्क",
   "Dry sub-humid": "शुष्क उप-आर्द्र",
   "Humid": "आर्द्र",
+  "N-fixer": "नाइट्रोजन स्थिरीकरण",
+  "Biological nitrogen fixer: enriches degraded soils with atmospheric nitrogen": "जैविक नाइट्रोजन स्थिरीकरण: वायुमंडलीय नाइट्रोजन के साथ मिट्टी को समृद्ध करता है",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -2216,6 +2232,8 @@ const DE = {
   "Semi-arid": "Semiarid",
   "Dry sub-humid": "Trocken subhumid",
   "Humid": "Humid",
+  "N-fixer": "Stickstofffixierer",
+  "Biological nitrogen fixer: enriches degraded soils with atmospheric nitrogen": "Biologischer Stickstofffixierer: reichert degradierte Böden mit Luftstickstoff an",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -2484,6 +2502,8 @@ const SW = {
   "Semi-arid": "Nusu ukame",
   "Dry sub-humid": "Kavu kiasi",
   "Humid": "Unyevu",
+  "N-fixer": "mbolea ya nitrojeni",
+  "Biological nitrogen fixer: enriches degraded soils with atmospheric nitrogen": "Kirekebishaji cha nitrojeni kibiolojia: hurutubisha udongo ulioharibika",
 };
 
 const TR = {
@@ -2753,6 +2773,8 @@ const TR = {
   "Semi-arid": "Yarı kurak",
   "Dry sub-humid": "Yarı kurak-nemli",
   "Humid": "Nemli",
+  "N-fixer": "azot bağlayıcı",
+  "Biological nitrogen fixer: enriches degraded soils with atmospheric nitrogen": "Biyolojik azot bağlayıcı: havadaki azotu toprağa bağlayarak zenginleştirir",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW, tr: TR };

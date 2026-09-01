@@ -578,6 +578,15 @@ assert.equal(normalizeSearch("İNCİR"), "incir");
 assert.equal(normalizeSearch("İSTANBUL"), "istanbul");
 assert.equal(normalizeSearch("IPE"), "ipe");
 
+// --- Biological Nitrogen Fixation (N-fixer) layer
+const alnus = by("Alnus rubra");
+assert.ok(alnus && alnus.nfix === true, "Alnus rubra is an actinorhizal nitrogen fixer");
+const acacia = by("Acacia tortilis");
+assert.ok(acacia && acacia.nfix === true, "Acacia tortilis is a legume nitrogen fixer");
+const elaeagnus = by("Elaeagnus angustifolia");
+assert.ok(elaeagnus && elaeagnus.nfix === true, "Elaeagnus angustifolia is a nitrogen fixer");
+assert.equal(qr.nfix, undefined, "Quercus robur is not a nitrogen fixer");
+
 console.log("all checks passed");
 console.log(`  oak@Berlin ${qrBerlin.score.toFixed(2)} | euc@Berlin ${egBerlin.score.toFixed(2)} | euc@SP ${egSP.score.toFixed(2)}`);
 console.log(`  euc CO2e(10y) ${eucCo2.toFixed(0)} kg | oak CO2e(10y) ${co2eKgPerTree(oakSp, 10).toFixed(1)} kg`);
