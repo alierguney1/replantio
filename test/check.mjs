@@ -1,7 +1,7 @@
 // Self-check for the scoring and growth engines. Run: node test/check.mjs
 import assert from "node:assert";
 import { readFileSync } from "node:fs";
-import { trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors, monthlyFlatInsolation, maxSoilDepthCm, scorePerennialRain, SLOPE_FLAT_DEG, SLOPE_MAX_DEG, MAX_SLOPE_DRAIN_FACTOR, scoreSpecies, aggregateClimate, grade, aridityClass, koppenGeigerClass, KOPPEN_DESCRIPTIONS, usdaTextureClass, faoTextureCategory, saxtonRawlsHydrology, aggregateSoilProfile, normalizeSearch } from "../scoring.js";
+import { trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors, monthlyFlatInsolation, maxSoilDepthCm, scorePerennialRain, SLOPE_FLAT_DEG, SLOPE_MAX_DEG, MAX_SLOPE_DRAIN_FACTOR, scoreSpecies, aggregateClimate, grade, aridityClass, koppenGeigerClass, KOPPEN_DESCRIPTIONS, usdaTextureClass, faoTextureCategory, saxtonRawlsHydrology, aggregateSoilProfile, normalizeSearch, establishmentStrategy } from "../scoring.js";
 import { CLASSES, height, dbhCm, co2eKgPerTree, crownDiameterM, crownDisplayM, standDisplay, maturityYears } from "../growth.js";
 
 const species = JSON.parse(readFileSync(new URL("../data/species.json", import.meta.url)));
@@ -603,6 +603,49 @@ assert.equal(koppenGeigerClass(null, null), null);
   assert.equal(koppenGeigerClass(bothDry.tavg, bothDry.prec), "Cwa", "both-dry tie-break goes to w when summer is wetter");
 }
 assert.equal(koppenGeigerClass([1, 2], [3, 4]), null);
+
+// --- establishment strategy (direct seeding vs seedling planting) tests
+// 1. Grass/herb species -> direct seeding
+const grassStrat = establishmentStrategy({ porte: "grass" });
+assert.equal(grassStrat.method, "direct_seeding");
+assert.equal(grassStrat.directViable, true);
+assert.equal(grassStrat.seedlingViable, false);
+
+const herbStrat = establishmentStrategy({ porte: "herb", annual: true });
+assert.equal(herbStrat.method, "direct_seeding");
+assert.equal(herbStrat.directViable, true);
+
+// 2. Vine -> both direct and cuttings
+const vineStrat = establishmentStrategy({ porte: "vine" });
+assert.equal(vineStrat.method, "both");
+assert.equal(vineStrat.directViable, true);
+assert.equal(vineStrat.seedlingViable, true);
+
+// 3. Tree: Fast-growing legume (Fabaceae / pioneer) on humid site (Hamburg AI=1.15) -> both viable (Muvuca)
+const legumeSp = { porte: "tree", tree: true, family: "Fabaceae", gclass: "tropical_fast" };
+const humidLegumeStrat = establishmentStrategy(legumeSp, { ai: 1.15, annualRain: 1200 });
+assert.equal(humidLegumeStrat.method, "both");
+assert.equal(humidLegumeStrat.directViable, true);
+assert.equal(humidLegumeStrat.seedlingViable, true);
+
+// 4. Tree: Same fast-growing legume on semi-arid site (Konya AI=0.24) -> seedling essential (arid gate blocks direct seeding)
+const aridLegumeStrat = establishmentStrategy(legumeSp, { ai: 0.24, annualRain: 320 });
+assert.equal(aridLegumeStrat.method, "seedling");
+assert.equal(aridLegumeStrat.directViable, false);
+assert.equal(aridLegumeStrat.seedlingViable, true);
+assert.equal(aridLegumeStrat.labelKey, "Nursery seedlings (essential on arid sites)");
+
+// 5. Tree: Same semi-arid site but with irrigation override -> direct seeding viable restored
+const irrLegumeStrat = establishmentStrategy(legumeSp, { ai: 0.24, annualRain: 320, irrigated: true });
+assert.equal(irrLegumeStrat.method, "both");
+assert.equal(irrLegumeStrat.directViable, true);
+
+// 6. Tree: Climax / slow hardwood (Oak / Fagaceae) -> nursery seedling standard
+const oakStrat = establishmentStrategy({ porte: "tree", tree: true, family: "Fagaceae", gclass: "temperate_slow" }, { ai: 1.15 });
+assert.equal(oakStrat.method, "seedling");
+assert.equal(oakStrat.directViable, false);
+assert.equal(oakStrat.seedlingViable, true);
+assert.equal(oakStrat.labelKey, "Nursery seedlings (standard)");
 
 console.log("all checks passed");
 console.log(`  oak@Berlin ${qrBerlin.score.toFixed(2)} | euc@Berlin ${egBerlin.score.toFixed(2)} | euc@SP ${egSP.score.toFixed(2)}`);

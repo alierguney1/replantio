@@ -872,3 +872,139 @@ export function gradeColor(s) {
   if (s > 0.2) return "#d79a63";
   return "#d4756f";
 }
+
+/**
+ * Scientific establishment strategy model for restoration and reforestation.
+ * Evaluates propagation & establishment mode based on life form, ecological guild,
+ * and site aridity / moisture constraints (UNEP Aridity Index).
+ *
+ * @param {Object} sp - species envelope from species.json
+ * @param {Object} [site] - environmental context (site.ai, site.annualRain, site.irrigated)
+ * @returns {{
+ *   method: "direct_seeding" | "seedling" | "both",
+ *   directViable: boolean,
+ *   seedlingViable: boolean,
+ *   labelKey: string,
+ *   noteKey: string
+ * }}
+ */
+export function establishmentStrategy(sp, site = null) {
+  if (!sp) return null;
+  const isHerbOrGrass = sp.porte === "herb" || sp.porte === "grass" || sp.annual === true;
+  const isVine = sp.porte === "vine";
+  const isTreeOrShrub = sp.tree || sp.porte === "tree" || sp.porte === "shrub";
+
+  // Aridity gate: UNEP AI < 0.50 marks semi-arid, arid or hyper-arid sites
+  const isArid = site?.ai != null && site.ai < 0.50 && !site?.irrigated;
+
+  if (isHerbOrGrass) {
+    return {
+      method: "direct_seeding",
+      directViable: true,
+      seedlingViable: false,
+      labelKey: "Direct seeding",
+      noteKey: "Herbaceous species and grasses establish naturally and cost-effectively from direct seed sowing.",
+      storage: sp.storage ?? null,
+      seedWeightG: sp.sw_1000g != null ? sp.sw_1000g / 1000 : null,
+    };
+  }
+
+  if (isVine) {
+    return {
+      method: "both",
+      directViable: true,
+      seedlingViable: true,
+      labelKey: "Direct seeding or cuttings",
+      noteKey: "Established by direct seed sowing or vegetative stem cuttings.",
+      storage: sp.storage ?? null,
+      seedWeightG: sp.sw_1000g != null ? sp.sw_1000g / 1000 : null,
+    };
+  }
+
+  if (isTreeOrShrub) {
+    // 1. Environmental gate: severe moisture deficit blocks direct broadcast of woody species
+    if (isArid) {
+      return {
+        method: "seedling",
+        directViable: false,
+        seedlingViable: true,
+        labelKey: "Nursery seedlings (essential on arid sites)",
+        noteKey: "High moisture deficit and surface desiccation make direct seeding high-risk here; nursery seedlings with developed root systems are essential.",
+        storage: sp.storage ?? null,
+        seedWeightG: sp.sw_1000g != null ? sp.sw_1000g / 1000 : null,
+      };
+    }
+
+    // 2. Kew SID Physiological Hard-Kill: Recalcitrant seeds lose viability rapidly when dried
+    if (sp.storage === "recalcitrant") {
+      return {
+        method: "seedling",
+        directViable: false,
+        seedlingViable: true,
+        labelKey: "Nursery seedlings (recalcitrant seed)",
+        noteKey: "Desiccation-sensitive seed (recalcitrant, Kew SID). Loses viability quickly if sown on open ground; containerized nursery seedlings are essential.",
+        storage: "recalcitrant",
+        seedWeightG: sp.sw_1000g != null ? sp.sw_1000g / 1000 : null,
+      };
+    }
+
+    // 3. Kew SID Trait: Micro-seeded species (< 2 g per 1000 seeds = < 0.002 g/seed) have
+    // negligible cotyledon reserves and cannot overcome weed competition without nursery propagation
+    if (sp.sw_1000g != null && sp.sw_1000g < 2.0) {
+      return {
+        method: "seedling",
+        directViable: false,
+        seedlingViable: true,
+        labelKey: "Nursery seedlings (micro-seed)",
+        noteKey: "Micro-seeded species (<2 g per 1,000 seeds, Kew SID). Low cotyledon reserves make direct broadcast vulnerable to weed competition and drying; nursery seedlings are standard.",
+        storage: sp.storage ?? null,
+        seedWeightG: sp.sw_1000g / 1000,
+      };
+    }
+
+    // 4. Large-seeded orthodox pioneer legumes & fast broadleaf environmental pioneers
+    const isPioneerLegume =
+      sp.family === "Fabaceae" ||
+      sp.family === "Leguminosae" ||
+      (sp.wood !== "conifer" && sp.gclass && sp.gclass.endsWith("fast") && (sp.uses && sp.uses.includes("environmental")));
+
+    const isDirectSeedingCandidate =
+      isPioneerLegume &&
+      (sp.storage === "orthodox" || sp.storage == null) &&
+      (sp.sw_1000g == null || sp.sw_1000g >= 10.0);
+
+    if (isDirectSeedingCandidate) {
+      return {
+        method: "both",
+        directViable: true,
+        seedlingViable: true,
+        labelKey: "Nursery seedlings · Direct seeding viable",
+        noteKey: "Standard establishment uses containerized seedlings. Also viable for direct seeding mix (Muvuca) under adequate rainfall, provided seeds receive proper pre-treatment (scarification) and weed competition is controlled.",
+        storage: sp.storage ?? null,
+        seedWeightG: sp.sw_1000g != null ? sp.sw_1000g / 1000 : null,
+      };
+    }
+
+    // 5. Standard for other hardwoods, conifers, climax species
+    return {
+      method: "seedling",
+      directViable: false,
+      seedlingViable: true,
+      labelKey: "Nursery seedlings (standard)",
+      noteKey: "Nursery-raised seedlings (tubetes or bare-root) ensure early survival against weed competition and surface desiccation.",
+      storage: sp.storage ?? null,
+      seedWeightG: sp.sw_1000g != null ? sp.sw_1000g / 1000 : null,
+    };
+  }
+
+  return {
+    method: "seedling",
+    directViable: false,
+    seedlingViable: true,
+    labelKey: "Nursery seedlings",
+    noteKey: "Standard nursery seedling planting.",
+    storage: sp.storage ?? null,
+    seedWeightG: sp.sw_1000g != null ? sp.sw_1000g / 1000 : null,
+  };
+}
+

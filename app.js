@@ -1,4 +1,4 @@
-import { aggregateClimate, scoreSpecies, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors, monthlyFlatInsolation, maxSoilDepthCm, aggregateSoilProfile, normalizeSearch, koppenGeigerClass, KOPPEN_DESCRIPTIONS } from "./scoring.js";
+import { aggregateClimate, scoreSpecies, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors, monthlyFlatInsolation, maxSoilDepthCm, aggregateSoilProfile, normalizeSearch, koppenGeigerClass, KOPPEN_DESCRIPTIONS, establishmentStrategy } from "./scoring.js";
 import { DICTS, LANGS, NAMES, LOCALES, MONTHS_ALL } from "./i18n.js";
 import { CLASSES, projection, maturityYears, co2eKgPerTree, co2eTonsPerHa, height, dbhCm, crownDiameterM, crownDisplayM, standDisplay, STEMS_PER_HA } from "./growth.js";
 
@@ -577,12 +577,16 @@ async function analyze(pts) {
   // kept on current so user site adjustments (irrigation, measured pH) can
   // re-run pure scoring without refetching anything
   const rescore = () => SPECIES
-    .map(sp => ({ sp, ...scoreSpecies(sp, site, { native: evNative(sp), countryNative: evCountry(sp), countryNaturalized: evNaturalized(sp) }) }))
+    .map(sp => ({
+      sp,
+      strat: establishmentStrategy(sp, site),
+      ...scoreSpecies(sp, site, { native: evNative(sp), countryNative: evCountry(sp), countryNaturalized: evNaturalized(sp) })
+    }))
     .sort((a, b) => (b.score - a.score) || (b.fit - a.fit));
   const scored = rescore();
   step("ls-score");
 
-  current = { site, scored, rescore, pts, center: c, ha, filter: "all", habit: "tree", shown: 12,
+  current = { site, scored, rescore, pts, center: c, ha, filter: "all", habit: "tree", prop: "all", shown: 12,
     cc: place?.cc ?? null, state: place?.state ?? "", city: place?.city ?? "", uf: place?.uf ?? "",
     // native-first by default wherever we know the country AND the ranges loaded
     nativeOnly: !!place?.cc && Object.keys(NATIVES).length > 0, critOpen: false };
@@ -712,9 +716,10 @@ const critMatch = (s, c) => s.score > 0.05
   && (c.use === "all" || s.sp.uses.includes(c.use))
   && (!c.nativeOnly || (nativeHere(s.sp) === true && nativeRegion(s.sp) !== false))
   && (!c.matMax || (s.sp.tree && matCls(s.sp.gclass) <= c.matMax))
-  && (!c.crownMin || (s.sp.tree && crownCls(s.sp.gclass) >= c.crownMin));
+  && (!c.crownMin || (s.sp.tree && crownCls(s.sp.gclass) >= c.crownMin))
+  && (!c.prop || c.prop === "all" || (c.prop === "direct" ? s.strat?.directViable : s.strat?.seedlingViable));
 
-const critState = () => ({ use: current.filter, nativeOnly: current.nativeOnly, matMax: current.matMax, crownMin: current.crownMin, habit: current.habit ?? "tree" });
+const critState = () => ({ use: current.filter, nativeOnly: current.nativeOnly, matMax: current.matMax, crownMin: current.crownMin, habit: current.habit ?? "tree", prop: current.prop ?? "all" });
 const critCount = over => current.scored.reduce((n, s) => n + (critMatch(s, { ...critState(), ...over }) ? 1 : 0), 0);
 
 const CRIT_DIMS = () => [
@@ -727,6 +732,11 @@ const CRIT_DIMS = () => [
     key: "habit", label: "Habit", cur: current.habit ?? "tree",
     opts: [["tree", tr("trees")], ["nontree", tr("shrubs and herbs")], ["shrub", tr("shrubs")], ["herb", tr("herbs")], ["grass", tr("grasses")], ["vine", tr("vines")], ["all", tr("all habits")]],
     over: v => ({ habit: v }),
+  },
+  {
+    key: "prop", label: "Establishment", cur: current.prop ?? "all",
+    opts: [["all", tr("all methods")], ["direct", tr("direct seeding")], ["seedling", tr("seedling planting")]],
+    over: v => ({ prop: v }),
   },
   {
     key: "use", label: "Use", cur: current.filter,
@@ -763,7 +773,8 @@ function chipsMarkup() {
 
 // the pristine state for this analysis: native-first, trees, no extra criteria
 const critIsDefault = () => current.filter === "all" && !current.matMax && !current.crownMin
-  && (current.habit ?? "tree") === "tree" && current.nativeOnly === (!!current.cc && Object.keys(NATIVES).length > 0);
+  && (current.habit ?? "tree") === "tree" && (current.prop ?? "all") === "all"
+  && current.nativeOnly === (!!current.cc && Object.keys(NATIVES).length > 0);
 
 // species search: "does X grow here?" is a question, so it overrides the
 // chips (but never the guardrails: invasives answer with the reason, not
@@ -1016,7 +1027,7 @@ content.addEventListener("click", e => {
   }
   if (e.target.closest("[data-crit-clear]")) {
     // reset to the analysis defaults, which include native-first
-    current.filter = "all"; current.matMax = null; current.crownMin = null; current.habit = "tree";
+    current.filter = "all"; current.matMax = null; current.crownMin = null; current.habit = "tree"; current.prop = "all";
     current.nativeOnly = !!current.cc && Object.keys(NATIVES).length > 0;
     current.shown = 12; renderResults(); loadRowPhotos(); return;
   }
@@ -1031,6 +1042,7 @@ content.addEventListener("click", e => {
     track("filter", { f: opt.dataset.f, v });
     if (opt.dataset.f === "habit") { current.habit = v; current.matMax = null; current.crownMin = null; }
     if (opt.dataset.f === "origin") current.nativeOnly = v === "native";
+    if (opt.dataset.f === "prop") current.prop = v;
     if (opt.dataset.f === "use") current.filter = v;
     if (opt.dataset.f === "mat") current.matMax = v ? +v : null;
     if (opt.dataset.f === "crown") current.crownMin = v ? +v : null;
@@ -1276,6 +1288,7 @@ function speciesDetail(id) {
         : tr("The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty."));
     }
     if (s.factors.chill != null && s.factors.chill < 1) notes.push(tr("Needs winter dormancy; the coldest month here is too warm for it."));
+    if (s.strat?.noteKey) notes.push(tr(s.strat.noteKey));
     return `<div class="factors">
       ${rangeStrip(tr("Temperature"), " °C", sp.temp, wt, 1)}
       ${rangeStrip(tr("Rainfall"), " mm", sp.rain, wr, 0)}
@@ -1293,6 +1306,7 @@ function speciesDetail(id) {
     </div>` : ""}
 
     <div class="stats">
+      ${s.strat ? `<div class="stat"><span class="sk">${tr("Establishment")}</span><span class="sv">${tr(s.strat.labelKey)}</span></div>` : ""}
       ${sp.tree ? `<div class="stat"><span class="sk">${tr("Trunk &oslash; 20 yr")}</span><span class="sv">${d20.toFixed(0)} cm</span></div>
       <div class="stat"><span class="sk">${tr("Canopy, 20 yr")}</span><span class="sv">${crown20.toFixed(1)} m &middot; ${fmt(Math.PI / 4 * crown20 * crown20)} m&sup2;</span></div>
       <div class="stat"><span class="sk">${tr("CO&#8322;e/tree, 20 yr")}</span><span class="sv">${fmt(co2Tree20)} kg</span></div>
@@ -2373,7 +2387,7 @@ function csvExport() {
   const esc = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
   const head = ["scientific_name", "common_name", "family", "score", "fit", "score_2040s",
     "temp_factor", "rain_factor", "ph_factor", "photo_factor", "frost_factor", "chill_factor",
-    "native_here", "growth_class", "uses"];
+    "native_here", "growth_class", "establishment_method", "uses"];
   // the CSV mirrors the panel exactly: active filters, the marginality cut
   // and the invasive exclusion all apply; clear the filters to export wide
   const rows = current.scored.filter(s => critMatch(s, critState())).map(s => [
@@ -2381,11 +2395,11 @@ function csvExport() {
     s.score.toFixed(3), s.fit.toFixed(3), s.f45 != null ? s.f45.toFixed(3) : "",
     ...[s.factors.temp, s.factors.rain, s.factors.ph, s.factors.photo, s.factors.frost, s.factors.chill]
       .map(v => v == null ? "" : (+v).toFixed(3)),
-    nativeHere(s.sp) ?? "", s.sp.gclass, s.sp.uses.join("|"),
+    nativeHere(s.sp) ?? "", s.sp.gclass, s.strat?.method ?? "", s.sp.uses.join("|"),
   ].map(esc).join(","));
   const c = critState();
   const meta = `# Replantio ${new Date().toISOString().slice(0, 10)} · ${current.center.lat.toFixed(4)},${current.center.lng.toFixed(4)} · ${current.ha.toFixed(1)} ha\n`
-    + `# filters: origin=${c.nativeOnly ? "native" : "all"} habit=${c.habit} use=${c.use}${c.matMax ? ` maturity<=${c.matMax}y` : ""}${c.crownMin ? ` crown>=${c.crownMin}m` : ""} · score>0.05 · invasives excluded (GRIIS${current.cc === "BR" ? " + Instituto Horus" : ""}) · ${rows.length} species\n`;
+    + `# filters: origin=${c.nativeOnly ? "native" : "all"} habit=${c.habit} establishment=${c.prop} use=${c.use}${c.matMax ? ` maturity<=${c.matMax}y` : ""}${c.crownMin ? ` crown>=${c.crownMin}m` : ""} · score>0.05 · invasives excluded (GRIIS${current.cc === "BR" ? " + Instituto Horus" : ""}) · ${rows.length} species\n`;
   downloadBlob(`replantio-especies-${current.center.lat.toFixed(3)}_${current.center.lng.toFixed(3)}.csv`,
     new Blob([meta + head.join(",") + "\n" + rows.join("\n")], { type: "text/csv;charset=utf-8" }));
 }

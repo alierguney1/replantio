@@ -1,0 +1,8019 @@
+{
+ "10000": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 27.17,
+  "sw_g": 0.02717
+ },
+ "10010": {
+  "source": "Kew SID",
+  "sw_1000g": 1.19,
+  "sw_g": 0.00119
+ },
+ "10015": {
+  "source": "Kew SID",
+  "sw_1000g": 320.43,
+  "sw_g": 0.32043
+ },
+ "10017": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.27,
+  "sw_g": 0.00027
+ },
+ "1002": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 1563.0,
+  "sw_g": 1.563
+ },
+ "10062": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 333.3,
+  "sw_g": 0.3333
+ },
+ "1007": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 515.95,
+  "sw_g": 0.51595
+ },
+ "10081": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 188.68,
+  "sw_g": 0.18868
+ },
+ "10082": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 166.7,
+  "sw_g": 0.1667
+ },
+ "10083": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 44.84,
+  "sw_g": 0.04484
+ },
+ "10086": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.91,
+  "sw_g": 0.00591
+ },
+ "10088": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 8.9,
+  "sw_g": 0.0089
+ },
+ "10089": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.19,
+  "sw_g": 0.00119
+ },
+ "10092": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.18,
+  "sw_g": 0.00518
+ },
+ "10106": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.95,
+  "sw_g": 0.00995
+ },
+ "10110": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.54,
+  "sw_g": 0.00354
+ },
+ "1012": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 455.0,
+  "sw_g": 0.455
+ },
+ "10126": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 556.0,
+  "sw_g": 0.556
+ },
+ "10130": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 530.84,
+  "sw_g": 0.53084
+ },
+ "10135": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 592.0,
+  "sw_g": 0.592
+ },
+ "10143": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.47,
+  "sw_g": 0.00247
+ },
+ "10144": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.45,
+  "sw_g": 0.00245
+ },
+ "10145": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.63,
+  "sw_g": 0.00263
+ },
+ "10146": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.68,
+  "sw_g": 0.00268
+ },
+ "10147": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.68,
+  "sw_g": 0.00268
+ },
+ "10148": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.82,
+  "sw_g": 0.00282
+ },
+ "10149": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "10150": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "1017": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "10186": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.4,
+  "sw_g": 0.0004
+ },
+ "10187": {
+  "source": "Kew SID",
+  "sw_1000g": 2.01,
+  "sw_g": 0.00201
+ },
+ "1019": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.14,
+  "sw_g": 0.00014
+ },
+ "10207": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 2222.0,
+  "sw_g": 2.222
+ },
+ "1021": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.41,
+  "sw_g": 0.00141
+ },
+ "1022": {
+  "source": "Kew SID",
+  "sw_1000g": 14.29,
+  "sw_g": 0.01429
+ },
+ "10223": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 2222.0,
+  "sw_g": 2.222
+ },
+ "1023": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.53,
+  "sw_g": 0.00253
+ },
+ "1024": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.4,
+  "sw_g": 0.0004
+ },
+ "1026": {
+  "source": "Kew SID",
+  "sw_1000g": 0.12,
+  "sw_g": 0.00012
+ },
+ "10274": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 1.59,
+  "sw_g": 0.00159
+ },
+ "10291": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.54,
+  "sw_g": 0.00054
+ },
+ "10292": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.17,
+  "sw_g": 0.00417
+ },
+ "1030": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 833.3,
+  "sw_g": 0.8333
+ },
+ "10307": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 17500.0,
+  "sw_g": 17.5
+ },
+ "10319": {
+  "source": "Kew SID",
+  "sw_1000g": 10.16,
+  "sw_g": 0.01016
+ },
+ "10321": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1785.0,
+  "sw_g": 1.785
+ },
+ "10322": {
+  "source": "Kew SID",
+  "sw_1000g": 33333.0,
+  "sw_g": 33.333
+ },
+ "10327": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1950.32,
+  "sw_g": 1.95032
+ },
+ "1033": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 4761.9,
+  "sw_g": 4.7619
+ },
+ "10335": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 137.36,
+  "sw_g": 0.13736
+ },
+ "10345": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 36.9,
+  "sw_g": 0.0369
+ },
+ "10348": {
+  "source": "Kew SID",
+  "sw_1000g": 38.4,
+  "sw_g": 0.0384
+ },
+ "10355": {
+  "source": "Kew SID",
+  "sw_1000g": 28.0,
+  "sw_g": 0.028
+ },
+ "10356": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2000.0,
+  "sw_g": 2.0
+ },
+ "10357": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 60.69,
+  "sw_g": 0.06069
+ },
+ "10370": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.12,
+  "sw_g": 0.00212
+ },
+ "10373": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 171.64,
+  "sw_g": 0.17164
+ },
+ "10394": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "10432": {
+  "source": "Kew SID",
+  "sw_1000g": 0.15,
+  "sw_g": 0.00015
+ },
+ "10436": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "10446": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 31.3,
+  "sw_g": 0.0313
+ },
+ "10458": {
+  "source": "Kew SID",
+  "sw_1000g": 3.95,
+  "sw_g": 0.00395
+ },
+ "10489": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 256.41,
+  "sw_g": 0.25641
+ },
+ "10522": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.2,
+  "sw_g": 0.0032
+ },
+ "10524": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.38,
+  "sw_g": 0.00138
+ },
+ "10525": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.28,
+  "sw_g": 0.00028
+ },
+ "10527": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.31,
+  "sw_g": 0.00031
+ },
+ "10529": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.38,
+  "sw_g": 0.00038
+ },
+ "10530": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.16,
+  "sw_g": 0.00116
+ },
+ "10532": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.07,
+  "sw_g": 0.00307
+ },
+ "10533": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.7,
+  "sw_g": 0.0007
+ },
+ "10534": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.4,
+  "sw_g": 0.0034
+ },
+ "10536": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.83,
+  "sw_g": 0.00183
+ },
+ "10538": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.5,
+  "sw_g": 0.0005
+ },
+ "10539": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.95,
+  "sw_g": 0.00395
+ },
+ "10540": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.72,
+  "sw_g": 0.00072
+ },
+ "10541": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "10544": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.9,
+  "sw_g": 0.0069
+ },
+ "10545": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.59,
+  "sw_g": 0.00059
+ },
+ "10547": {
+  "source": "Kew SID",
+  "sw_1000g": 1.18,
+  "sw_g": 0.00118
+ },
+ "10548": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.29,
+  "sw_g": 0.00129
+ },
+ "10554": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.9,
+  "sw_g": 0.0109
+ },
+ "10562": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 310.0,
+  "sw_g": 0.31
+ },
+ "10564": {
+  "source": "Kew SID",
+  "sw_1000g": 66.7,
+  "sw_g": 0.0667
+ },
+ "10568": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.17,
+  "sw_g": 0.00417
+ },
+ "1059": {
+  "source": "Kew SID",
+  "sw_1000g": 113.6,
+  "sw_g": 0.1136
+ },
+ "1075": {
+  "source": "Kew SID",
+  "sw_1000g": 98.04,
+  "sw_g": 0.09804
+ },
+ "10825": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 28.73,
+  "sw_g": 0.02873
+ },
+ "10830": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 670.0,
+  "sw_g": 0.67
+ },
+ "10831": {
+  "source": "Kew SID",
+  "sw_1000g": 8.21,
+  "sw_g": 0.00822
+ },
+ "10834": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 148.6,
+  "sw_g": 0.1486
+ },
+ "10835": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 148.6,
+  "sw_g": 0.1486
+ },
+ "10836": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 18.68,
+  "sw_g": 0.01868
+ },
+ "10862": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 8280.0,
+  "sw_g": 8.28
+ },
+ "10870": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.18,
+  "sw_g": 0.00918
+ },
+ "10874": {
+  "source": "Kew SID",
+  "sw_1000g": 1052.6,
+  "sw_g": 1.0526
+ },
+ "10880": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 400.0,
+  "sw_g": 0.4
+ },
+ "10895": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 33.3,
+  "sw_g": 0.0333
+ },
+ "10914": {
+  "source": "Kew SID",
+  "sw_1000g": 5780.0,
+  "sw_g": 5.78
+ },
+ "10920": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.36,
+  "sw_g": 0.00136
+ },
+ "10924": {
+  "source": "Kew SID",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "10953": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 294.12,
+  "sw_g": 0.29412
+ },
+ "10954": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 83333.0,
+  "sw_g": 83.333
+ },
+ "1096": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.56,
+  "sw_g": 0.00356
+ },
+ "10981": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 235.2,
+  "sw_g": 0.2352
+ },
+ "10994": {
+  "source": "Kew SID",
+  "storage": "intermediate"
+ },
+ "11001": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 727.84,
+  "sw_g": 0.72784
+ },
+ "11015": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "11018": {
+  "source": "Kew SID",
+  "sw_1000g": 0.69,
+  "sw_g": 0.00069
+ },
+ "11029": {
+  "source": "Kew SID",
+  "sw_1000g": 883.9,
+  "sw_g": 0.8839
+ },
+ "1104": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 17.4,
+  "sw_g": 0.0174
+ },
+ "11067": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.0,
+  "sw_g": 0.009
+ },
+ "1107": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.03,
+  "sw_g": 0.00303
+ },
+ "1122": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 784.0,
+  "sw_g": 0.784
+ },
+ "1125": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 7142.8,
+  "sw_g": 7.1428
+ },
+ "1146": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 102.0,
+  "sw_g": 0.102
+ },
+ "1150": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 163.7,
+  "sw_g": 0.1637
+ },
+ "1152": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 833.3,
+  "sw_g": 0.8333
+ },
+ "1158": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "1160": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 87.59,
+  "sw_g": 0.08759
+ },
+ "11641": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 227.27,
+  "sw_g": 0.22727
+ },
+ "11652": {
+  "source": "Kew SID",
+  "sw_1000g": 1.67,
+  "sw_g": 0.00167
+ },
+ "11655": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 481.93,
+  "sw_g": 0.48193
+ },
+ "11698": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 100.0,
+  "sw_g": 0.1
+ },
+ "1170": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 14.17,
+  "sw_g": 0.01417
+ },
+ "11711": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 510.5,
+  "sw_g": 0.5105
+ },
+ "11752": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 36.8,
+  "sw_g": 0.0368
+ },
+ "11776": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 75.0,
+  "sw_g": 0.075
+ },
+ "11819": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "11848": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "1191": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 7.0,
+  "sw_g": 0.007
+ },
+ "1193": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.58,
+  "sw_g": 0.00558
+ },
+ "1205": {
+  "source": "Kew SID",
+  "sw_1000g": 20930.0,
+  "sw_g": 20.93
+ },
+ "1210": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.89,
+  "sw_g": 0.00189
+ },
+ "1212": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 4260.0,
+  "sw_g": 4.26
+ },
+ "1213": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 24.8,
+  "sw_g": 0.0248
+ },
+ "1216": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 28.5,
+  "sw_g": 0.0285
+ },
+ "12170": {
+  "source": "Kew SID",
+  "sw_1000g": 0.07,
+  "sw_g": 7e-05
+ },
+ "12184": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 112.47,
+  "sw_g": 0.11247
+ },
+ "1220": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 15.2,
+  "sw_g": 0.0152
+ },
+ "12200": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.47,
+  "sw_g": 0.00047
+ },
+ "1221": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 16.46,
+  "sw_g": 0.01646
+ },
+ "12245": {
+  "source": "Kew SID",
+  "sw_1000g": 2.79,
+  "sw_g": 0.00279
+ },
+ "1232": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 42.3,
+  "sw_g": 0.0423
+ },
+ "12347": {
+  "source": "Kew SID",
+  "sw_1000g": 4.14,
+  "sw_g": 0.00414
+ },
+ "12393": {
+  "source": "Kew SID",
+  "sw_1000g": 1.12,
+  "sw_g": 0.00112
+ },
+ "12484": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.6,
+  "sw_g": 0.0036
+ },
+ "12493": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.3,
+  "sw_g": 0.0063
+ },
+ "1256": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.48,
+  "sw_g": 0.00148
+ },
+ "1260": {
+  "source": "Kew SID",
+  "sw_1000g": 539.0,
+  "sw_g": 0.539
+ },
+ "126290": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.6,
+  "sw_g": 0.0116
+ },
+ "1263": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1525.75,
+  "sw_g": 1.52575
+ },
+ "1264": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 43.5,
+  "sw_g": 0.0435
+ },
+ "1265": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "12709": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.65,
+  "sw_g": 0.00065
+ },
+ "127115": {
+  "source": "Kew SID",
+  "sw_1000g": 0.56,
+  "sw_g": 0.00056
+ },
+ "127526": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "1283": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.72,
+  "sw_g": 0.00072
+ },
+ "12852": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 25.5,
+  "sw_g": 0.0255
+ },
+ "1297": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 578.2,
+  "sw_g": 0.5782
+ },
+ "1311": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 255.3,
+  "sw_g": 0.2553
+ },
+ "1313": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.05,
+  "sw_g": 0.00105
+ },
+ "1315": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 137.18,
+  "sw_g": 0.13718
+ },
+ "1317": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.6,
+  "sw_g": 0.0116
+ },
+ "1333": {
+  "source": "Kew SID",
+  "sw_1000g": 568.16,
+  "sw_g": 0.56816
+ },
+ "1334": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.15,
+  "sw_g": 0.00115
+ },
+ "1342": {
+  "source": "Kew SID",
+  "sw_1000g": 1.54,
+  "sw_g": 0.00154
+ },
+ "1344": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 48.2,
+  "sw_g": 0.0482
+ },
+ "1357": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "1362": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.81,
+  "sw_g": 0.00181
+ },
+ "1363": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.53,
+  "sw_g": 0.00253
+ },
+ "1367": {
+  "source": "Kew SID",
+  "sw_1000g": 0.29,
+  "sw_g": 0.00029
+ },
+ "13690": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "1373": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 92.0,
+  "sw_g": 0.092
+ },
+ "1379": {
+  "source": "Kew SID",
+  "sw_1000g": 1.58,
+  "sw_g": 0.00158
+ },
+ "1392": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 40.53,
+  "sw_g": 0.04053
+ },
+ "1396": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 14.0,
+  "sw_g": 0.014
+ },
+ "1397": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 7.23,
+  "sw_g": 0.00723
+ },
+ "1398": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 21.74,
+  "sw_g": 0.02174
+ },
+ "1399": {
+  "source": "Kew SID",
+  "sw_1000g": 30.6,
+  "sw_g": 0.0306
+ },
+ "14047": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 118.1,
+  "sw_g": 0.1181
+ },
+ "14054": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.23,
+  "sw_g": 0.00423
+ },
+ "1406": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 22.93,
+  "sw_g": 0.02293
+ },
+ "14060": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 833.33,
+  "sw_g": 0.83333
+ },
+ "1407": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 12.42,
+  "sw_g": 0.01242
+ },
+ "1410": {
+  "source": "Kew SID",
+  "sw_1000g": 24.36,
+  "sw_g": 0.02436
+ },
+ "1414": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "1416": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 18181.8,
+  "sw_g": 18.1818
+ },
+ "14194": {
+  "source": "Kew SID",
+  "sw_1000g": 0.94,
+  "sw_g": 0.00094
+ },
+ "1420": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 114.0,
+  "sw_g": 0.114
+ },
+ "1428": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.64,
+  "sw_g": 0.00164
+ },
+ "1430": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.59,
+  "sw_g": 0.00059
+ },
+ "1431": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.31,
+  "sw_g": 0.00031
+ },
+ "1433": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.39,
+  "sw_g": 0.00139
+ },
+ "1436": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "1437": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.15,
+  "sw_g": 0.00015
+ },
+ "1448": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.13,
+  "sw_g": 0.00013
+ },
+ "1478": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.4,
+  "sw_g": 0.0054
+ },
+ "148275": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.43,
+  "sw_g": 0.00243
+ },
+ "148305": {
+  "source": "Kew SID",
+  "sw_1000g": 0.4,
+  "sw_g": 0.0004
+ },
+ "149006": {
+  "source": "Kew SID",
+  "sw_1000g": 167.0,
+  "sw_g": 0.167
+ },
+ "1491": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.35,
+  "sw_g": 0.00235
+ },
+ "1500": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.04,
+  "sw_g": 4e-05
+ },
+ "1514": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 8426.0,
+  "sw_g": 8.426
+ },
+ "1522": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.2,
+  "sw_g": 0.0002
+ },
+ "1524": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "1528": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 2173.9,
+  "sw_g": 2.1739
+ },
+ "15319": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.01,
+  "sw_g": 1e-05
+ },
+ "1534": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.08,
+  "sw_g": 8e-05
+ },
+ "1543": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "1553": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "15627": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.2,
+  "sw_g": 0.0052
+ },
+ "15753": {
+  "source": "Kew SID",
+  "sw_1000g": 0.5,
+  "sw_g": 0.0005
+ },
+ "1582": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 200.0,
+  "sw_g": 0.2
+ },
+ "15820": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 189.95,
+  "sw_g": 0.18995
+ },
+ "15851": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.23,
+  "sw_g": 0.00023
+ },
+ "1602": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.7,
+  "sw_g": 0.0007
+ },
+ "1603": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.6,
+  "sw_g": 0.0006
+ },
+ "1605": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.88,
+  "sw_g": 0.00088
+ },
+ "16100": {
+  "source": "Kew SID",
+  "sw_1000g": 0.08,
+  "sw_g": 8e-05
+ },
+ "1617": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 92.0,
+  "sw_g": 0.092
+ },
+ "16203": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 759.78,
+  "sw_g": 0.75978
+ },
+ "1623": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.4,
+  "sw_g": 0.0014
+ },
+ "16275": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 3030.0,
+  "sw_g": 3.03
+ },
+ "16277": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 4535.92,
+  "sw_g": 4.53592
+ },
+ "1628": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.6,
+  "sw_g": 0.0016
+ },
+ "1630": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.13,
+  "sw_g": 0.00213
+ },
+ "1633": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 16.0,
+  "sw_g": 0.016
+ },
+ "1634": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 16.0,
+  "sw_g": 0.016
+ },
+ "1637": {
+  "source": "Kew SID",
+  "storage": "intermediate"
+ },
+ "1638": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 29.0,
+  "sw_g": 0.029
+ },
+ "1639": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 60.09,
+  "sw_g": 0.06009
+ },
+ "1642": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.5,
+  "sw_g": 0.0025
+ },
+ "1649": {
+  "source": "Kew SID",
+  "sw_1000g": 2.18,
+  "sw_g": 0.00218
+ },
+ "1650": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "1651": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.32,
+  "sw_g": 0.00032
+ },
+ "1659": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 20670.0,
+  "sw_g": 20.67
+ },
+ "16595": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.03,
+  "sw_g": 3e-05
+ },
+ "1661": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.84,
+  "sw_g": 0.00184
+ },
+ "1665": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1050.0,
+  "sw_g": 1.05
+ },
+ "1666": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 366.8,
+  "sw_g": 0.3668
+ },
+ "1668": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 305.4,
+  "sw_g": 0.3054
+ },
+ "1673": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1333.0,
+  "sw_g": 1.333
+ },
+ "1686": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.84,
+  "sw_g": 0.00084
+ },
+ "1689": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "17012": {
+  "source": "Kew SID",
+  "sw_1000g": 19.71,
+  "sw_g": 0.01971
+ },
+ "17162": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 87.22,
+  "sw_g": 0.08722
+ },
+ "1721": {
+  "source": "Kew SID",
+  "sw_1000g": 74.85,
+  "sw_g": 0.07485
+ },
+ "17278": {
+  "source": "Kew SID",
+  "sw_1000g": 834.0,
+  "sw_g": 0.834
+ },
+ "17633": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1538.0,
+  "sw_g": 1.538
+ },
+ "17644": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 20670.0,
+  "sw_g": 20.67
+ },
+ "17645": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 20670.0,
+  "sw_g": 20.67
+ },
+ "17646": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 20670.0,
+  "sw_g": 20.67
+ },
+ "17650": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 43.5,
+  "sw_g": 0.0435
+ },
+ "17652": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.26,
+  "sw_g": 0.00426
+ },
+ "17653": {
+  "source": "Kew SID",
+  "sw_1000g": 17.07,
+  "sw_g": 0.01707
+ },
+ "17657": {
+  "source": "Kew SID",
+  "sw_1000g": 28571.0,
+  "sw_g": 28.571
+ },
+ "17796": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.78,
+  "sw_g": 0.00978
+ },
+ "17797": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.61,
+  "sw_g": 0.00061
+ },
+ "17807": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 14.8,
+  "sw_g": 0.0148
+ },
+ "1784": {
+  "source": "Kew SID",
+  "sw_1000g": 0.13,
+  "sw_g": 0.00013
+ },
+ "1793": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 41.08,
+  "sw_g": 0.04108
+ },
+ "1796": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2941.1,
+  "sw_g": 2.9411
+ },
+ "1804": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 8.0,
+  "sw_g": 0.008
+ },
+ "1807": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 375.0,
+  "sw_g": 0.375
+ },
+ "1817": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 472.59,
+  "sw_g": 0.47259
+ },
+ "18201": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.77,
+  "sw_g": 0.00077
+ },
+ "1824": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 12.5,
+  "sw_g": 0.0125
+ },
+ "1829": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 16.72,
+  "sw_g": 0.01672
+ },
+ "1832": {
+  "source": "Kew SID",
+  "sw_1000g": 21.47,
+  "sw_g": 0.02147
+ },
+ "18352": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.98,
+  "sw_g": 0.00198
+ },
+ "1839": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.0,
+  "sw_g": 0.01
+ },
+ "1848": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 10100.0,
+  "sw_g": 10.1
+ },
+ "18480": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.31,
+  "sw_g": 0.00131
+ },
+ "1849": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "1851": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 35370.0,
+  "sw_g": 35.37
+ },
+ "1866": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 230.07,
+  "sw_g": 0.23007
+ },
+ "1877": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.65,
+  "sw_g": 0.00165
+ },
+ "1884": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.4,
+  "sw_g": 0.0004
+ },
+ "1887": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 7.44,
+  "sw_g": 0.00744
+ },
+ "1894": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 167.5,
+  "sw_g": 0.1675
+ },
+ "1929": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 14.47,
+  "sw_g": 0.01447
+ },
+ "1930": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "1937": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.3,
+  "sw_g": 0.0023
+ },
+ "1938": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 62.32,
+  "sw_g": 0.06232
+ },
+ "1947": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "1948": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "1965": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.58,
+  "sw_g": 0.00358
+ },
+ "1966": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.77,
+  "sw_g": 0.00077
+ },
+ "1968": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.4,
+  "sw_g": 0.0014
+ },
+ "196860": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 40.36,
+  "sw_g": 0.04036
+ },
+ "1970": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.09,
+  "sw_g": 0.00109
+ },
+ "1971": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.7,
+  "sw_g": 0.0007
+ },
+ "197937": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 22.06,
+  "sw_g": 0.02206
+ },
+ "198033": {
+  "source": "Kew SID",
+  "sw_1000g": 6.54,
+  "sw_g": 0.00654
+ },
+ "1982": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 14.73,
+  "sw_g": 0.01473
+ },
+ "1983": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.18,
+  "sw_g": 0.00418
+ },
+ "198891": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.16,
+  "sw_g": 0.00116
+ },
+ "1991": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 5.0,
+  "sw_g": 0.005
+ },
+ "1997": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.2,
+  "sw_g": 0.0062
+ },
+ "2000": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "200000": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "2002": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1580.0,
+  "sw_g": 1.58
+ },
+ "2012": {
+  "source": "Kew SID",
+  "sw_1000g": 1.77,
+  "sw_g": 0.00177
+ },
+ "2018": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.79,
+  "sw_g": 0.00279
+ },
+ "2020": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.25,
+  "sw_g": 0.00125
+ },
+ "2022": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 454.5,
+  "sw_g": 0.4545
+ },
+ "2023": {
+  "source": "Kew SID",
+  "sw_1000g": 500.0,
+  "sw_g": 0.5
+ },
+ "202719": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 409.94,
+  "sw_g": 0.40994
+ },
+ "2041": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 31.6,
+  "sw_g": 0.0316
+ },
+ "2047": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 675.16,
+  "sw_g": 0.67516
+ },
+ "2052": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 7.01,
+  "sw_g": 0.00701
+ },
+ "2054": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 671.95,
+  "sw_g": 0.67195
+ },
+ "2056": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 20.4,
+  "sw_g": 0.0204
+ },
+ "2059": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 46.94,
+  "sw_g": 0.04694
+ },
+ "2060": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.0,
+  "sw_g": 0.005
+ },
+ "2062": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2503.76,
+  "sw_g": 2.50376
+ },
+ "2067": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 106.3,
+  "sw_g": 0.1063
+ },
+ "2073": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.8,
+  "sw_g": 0.0028
+ },
+ "2075": {
+  "source": "Kew SID",
+  "sw_1000g": 153.9,
+  "sw_g": 0.1539
+ },
+ "2088": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.11,
+  "sw_g": 0.00511
+ },
+ "209331": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.47,
+  "sw_g": 0.00647
+ },
+ "2095": {
+  "source": "Kew SID",
+  "sw_1000g": 3.94,
+  "sw_g": 0.00394
+ },
+ "2100": {
+  "source": "Kew SID",
+  "sw_1000g": 75.32,
+  "sw_g": 0.07532
+ },
+ "2104": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.41,
+  "sw_g": 0.00141
+ },
+ "2105": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.56,
+  "sw_g": 0.00056
+ },
+ "2107": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.17,
+  "sw_g": 0.00117
+ },
+ "2108": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.69,
+  "sw_g": 0.00069
+ },
+ "2114": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 36.8,
+  "sw_g": 0.0368
+ },
+ "2149": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 100.0,
+  "sw_g": 0.1
+ },
+ "2150": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 33.6,
+  "sw_g": 0.0336
+ },
+ "2152": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 52.21,
+  "sw_g": 0.05221
+ },
+ "2153": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 148.6,
+  "sw_g": 0.1486
+ },
+ "2160": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 43.0,
+  "sw_g": 0.043
+ },
+ "2175": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 235.2,
+  "sw_g": 0.2352
+ },
+ "218100": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 250.0,
+  "sw_g": 0.25
+ },
+ "2187": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.54,
+  "sw_g": 0.00054
+ },
+ "2188": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.22,
+  "sw_g": 0.00022
+ },
+ "2189": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "2190": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.54,
+  "sw_g": 0.00054
+ },
+ "2192": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.03,
+  "sw_g": 0.00203
+ },
+ "2194": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 351.04,
+  "sw_g": 0.35104
+ },
+ "2197": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 897.0,
+  "sw_g": 0.897
+ },
+ "2198": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 20.43,
+  "sw_g": 0.02043
+ },
+ "2199": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 666.5,
+  "sw_g": 0.6665
+ },
+ "220867": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.62,
+  "sw_g": 0.00262
+ },
+ "2214": {
+  "source": "Kew SID",
+  "sw_1000g": 2940.0,
+  "sw_g": 2.94
+ },
+ "2220": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.75,
+  "sw_g": 0.00375
+ },
+ "2227": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1365.0,
+  "sw_g": 1.365
+ },
+ "2228": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "2231": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4545.5,
+  "sw_g": 4.5455
+ },
+ "2234": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 4050.0,
+  "sw_g": 4.05
+ },
+ "2235": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 26219.4,
+  "sw_g": 26.2194
+ },
+ "2246": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 1033.8,
+  "sw_g": 1.0338
+ },
+ "2263": {
+  "source": "Kew SID",
+  "sw_1000g": 1154.47,
+  "sw_g": 1.15447
+ },
+ "2285": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 32.76,
+  "sw_g": 0.03276
+ },
+ "2296": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 21.24,
+  "sw_g": 0.02124
+ },
+ "2301": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.32,
+  "sw_g": 0.00032
+ },
+ "2302": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "230348": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "2307": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 1680.0,
+  "sw_g": 1.68
+ },
+ "2315": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11800.0,
+  "sw_g": 11.8
+ },
+ "2318": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "232965": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 27.2,
+  "sw_g": 0.0272
+ },
+ "2335": {
+  "source": "Kew SID",
+  "sw_1000g": 21.95,
+  "sw_g": 0.02195
+ },
+ "2340": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.89,
+  "sw_g": 0.00089
+ },
+ "2348": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 243.55,
+  "sw_g": 0.24355
+ },
+ "2349": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.47,
+  "sw_g": 0.00547
+ },
+ "2350": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 667.0,
+  "sw_g": 0.667
+ },
+ "235883": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 130.0,
+  "sw_g": 0.13
+ },
+ "2359": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "236039": {
+  "source": "Kew SID",
+  "sw_1000g": 2535.9,
+  "sw_g": 2.5359
+ },
+ "2363": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "2368": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.05,
+  "sw_g": 5e-05
+ },
+ "2369": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.11,
+  "sw_g": 0.00011
+ },
+ "2381": {
+  "source": "Kew SID",
+  "storage": "intermediate"
+ },
+ "2386": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1176.0,
+  "sw_g": 1.176
+ },
+ "238663": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 235.2,
+  "sw_g": 0.2352
+ },
+ "2394": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 1350.0,
+  "sw_g": 1.35
+ },
+ "2397": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2506.03,
+  "sw_g": 2.50603
+ },
+ "2398": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1270.1,
+  "sw_g": 1.2701
+ },
+ "2412": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 8.6,
+  "sw_g": 0.0086
+ },
+ "2428": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 705.0,
+  "sw_g": 0.705
+ },
+ "2433": {
+  "source": "Kew SID",
+  "sw_1000g": 0.17,
+  "sw_g": 0.00017
+ },
+ "243766": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1667.0,
+  "sw_g": 1.667
+ },
+ "2441": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.6,
+  "sw_g": 0.0006
+ },
+ "2442": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.3,
+  "sw_g": 0.0103
+ },
+ "2452": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "2454": {
+  "source": "Kew SID",
+  "sw_1000g": 17.0,
+  "sw_g": 0.017
+ },
+ "2465": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 351.04,
+  "sw_g": 0.35104
+ },
+ "2469": {
+  "source": "Kew SID",
+  "sw_1000g": 1172.0,
+  "sw_g": 1.172
+ },
+ "2474": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 15.7,
+  "sw_g": 0.0157
+ },
+ "2475": {
+  "source": "Kew SID",
+  "sw_1000g": 90.04,
+  "sw_g": 0.09004
+ },
+ "2479": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 304.4,
+  "sw_g": 0.3044
+ },
+ "248814": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 26.29,
+  "sw_g": 0.02629
+ },
+ "248816": {
+  "source": "Kew SID",
+  "sw_1000g": 0.86,
+  "sw_g": 0.00086
+ },
+ "248817": {
+  "source": "Kew SID",
+  "sw_1000g": 4.8,
+  "sw_g": 0.0048
+ },
+ "248818": {
+  "source": "Kew SID",
+  "sw_1000g": 1.39,
+  "sw_g": 0.00139
+ },
+ "248819": {
+  "source": "Kew SID",
+  "sw_1000g": 6.25,
+  "sw_g": 0.00625
+ },
+ "248820": {
+  "source": "Kew SID",
+  "sw_1000g": 4.34,
+  "sw_g": 0.00434
+ },
+ "2494": {
+  "source": "Kew SID",
+  "sw_1000g": 1.31,
+  "sw_g": 0.00131
+ },
+ "2499": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 24960.0,
+  "sw_g": 24.96
+ },
+ "2507": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 25.21,
+  "sw_g": 0.02521
+ },
+ "2509": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "2514": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 33.0,
+  "sw_g": 0.033
+ },
+ "2516": {
+  "source": "Kew SID",
+  "sw_1000g": 103.4,
+  "sw_g": 0.1034
+ },
+ "2519": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 159.5,
+  "sw_g": 0.1595
+ },
+ "2526": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.2,
+  "sw_g": 0.0022
+ },
+ "2541": {
+  "source": "Kew SID",
+  "sw_1000g": 5.7,
+  "sw_g": 0.0057
+ },
+ "2551": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.9,
+  "sw_g": 0.0069
+ },
+ "2553": {
+  "source": "Kew SID",
+  "sw_1000g": 32.26,
+  "sw_g": 0.03226
+ },
+ "2558": {
+  "source": "Kew SID",
+  "sw_1000g": 18.33,
+  "sw_g": 0.01833
+ },
+ "2569": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.13,
+  "sw_g": 0.00913
+ },
+ "2570": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 16.5,
+  "sw_g": 0.0165
+ },
+ "2575": {
+  "source": "Kew SID",
+  "sw_1000g": 9.0,
+  "sw_g": 0.009
+ },
+ "2576": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 26.5,
+  "sw_g": 0.0265
+ },
+ "2578": {
+  "source": "Kew SID",
+  "sw_1000g": 37.78,
+  "sw_g": 0.03778
+ },
+ "2579": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.82,
+  "sw_g": 0.01182
+ },
+ "2582": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 156.0,
+  "sw_g": 0.156
+ },
+ "2583": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 16.76,
+  "sw_g": 0.01676
+ },
+ "2588": {
+  "source": "Kew SID",
+  "sw_1000g": 19.2,
+  "sw_g": 0.0192
+ },
+ "2589": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 7.85,
+  "sw_g": 0.00785
+ },
+ "2590": {
+  "source": "Kew SID",
+  "sw_1000g": 5.31,
+  "sw_g": 0.00531
+ },
+ "2592": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 39.82,
+  "sw_g": 0.03982
+ },
+ "2593": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 44.41,
+  "sw_g": 0.04441
+ },
+ "2595": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 12.0,
+  "sw_g": 0.012
+ },
+ "2599": {
+  "source": "Kew SID",
+  "sw_1000g": 76.92,
+  "sw_g": 0.07692
+ },
+ "2600": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.5,
+  "sw_g": 0.0115
+ },
+ "2601": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 27.95,
+  "sw_g": 0.02795
+ },
+ "2604": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 28.5,
+  "sw_g": 0.0285
+ },
+ "2605": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 13.8,
+  "sw_g": 0.0138
+ },
+ "2608": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 21.08,
+  "sw_g": 0.02108
+ },
+ "2609": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 25.62,
+  "sw_g": 0.02562
+ },
+ "2614": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 384.62,
+  "sw_g": 0.38462
+ },
+ "2617": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 44.4,
+  "sw_g": 0.0444
+ },
+ "2619": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 34.0,
+  "sw_g": 0.034
+ },
+ "2624": {
+  "source": "Kew SID",
+  "sw_1000g": 24.0,
+  "sw_g": 0.024
+ },
+ "2627": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 55.27,
+  "sw_g": 0.05527
+ },
+ "2633": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 7.79,
+  "sw_g": 0.00779
+ },
+ "2635": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 97.2,
+  "sw_g": 0.0972
+ },
+ "2637": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 26.37,
+  "sw_g": 0.02637
+ },
+ "2638": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 26.37,
+  "sw_g": 0.02637
+ },
+ "2639": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 19.18,
+  "sw_g": 0.01918
+ },
+ "2642": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "2643": {
+  "source": "Kew SID",
+  "sw_1000g": 12.64,
+  "sw_g": 0.01264
+ },
+ "2645": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.09,
+  "sw_g": 0.01009
+ },
+ "2646": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 24.0,
+  "sw_g": 0.024
+ },
+ "2647": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 27.27,
+  "sw_g": 0.02727
+ },
+ "2652": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 22.34,
+  "sw_g": 0.02234
+ },
+ "2656": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 12.96,
+  "sw_g": 0.01296
+ },
+ "2658": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 12.77,
+  "sw_g": 0.01277
+ },
+ "2660": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 13.52,
+  "sw_g": 0.01352
+ },
+ "2661": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 14.64,
+  "sw_g": 0.01464
+ },
+ "2662": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 60.5,
+  "sw_g": 0.0605
+ },
+ "2663": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 34.13,
+  "sw_g": 0.03413
+ },
+ "2664": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 32.51,
+  "sw_g": 0.03251
+ },
+ "2665": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 27.72,
+  "sw_g": 0.02772
+ },
+ "2674": {
+  "source": "Kew SID",
+  "sw_1000g": 33.0,
+  "sw_g": 0.033
+ },
+ "2676": {
+  "source": "Kew SID",
+  "sw_1000g": 34.72,
+  "sw_g": 0.03472
+ },
+ "2678": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 21.79,
+  "sw_g": 0.02179
+ },
+ "2680": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.84,
+  "sw_g": 0.01184
+ },
+ "2681": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 32.5,
+  "sw_g": 0.0325
+ },
+ "2683": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 17.02,
+  "sw_g": 0.01702
+ },
+ "2684": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 32.76,
+  "sw_g": 0.03276
+ },
+ "2685": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 17.84,
+  "sw_g": 0.01784
+ },
+ "2692": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 219.49,
+  "sw_g": 0.21949
+ },
+ "2694": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 45.7,
+  "sw_g": 0.0457
+ },
+ "2695": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 14.72,
+  "sw_g": 0.01472
+ },
+ "2697": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 69.0,
+  "sw_g": 0.069
+ },
+ "2698": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 49.0,
+  "sw_g": 0.049
+ },
+ "2699": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 13.0,
+  "sw_g": 0.013
+ },
+ "2701": {
+  "source": "Kew SID",
+  "sw_1000g": 26.0,
+  "sw_g": 0.026
+ },
+ "2702": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 80.0,
+  "sw_g": 0.08
+ },
+ "2705": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 77.19,
+  "sw_g": 0.07719
+ },
+ "2708": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 16.62,
+  "sw_g": 0.01662
+ },
+ "2712": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 62.11,
+  "sw_g": 0.06211
+ },
+ "2714": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 80.91,
+  "sw_g": 0.08091
+ },
+ "2715": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 61.42,
+  "sw_g": 0.06142
+ },
+ "2717": {
+  "source": "Kew SID",
+  "sw_1000g": 50.5,
+  "sw_g": 0.0505
+ },
+ "2718": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 46.5,
+  "sw_g": 0.0465
+ },
+ "2735": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 113.17,
+  "sw_g": 0.11317
+ },
+ "2737": {
+  "source": "Kew SID",
+  "sw_1000g": 205.6,
+  "sw_g": 0.2056
+ },
+ "2741": {
+  "source": "Kew SID",
+  "sw_1000g": 1.74,
+  "sw_g": 0.00174
+ },
+ "2743": {
+  "source": "Kew SID",
+  "sw_1000g": 183.0,
+  "sw_g": 0.183
+ },
+ "2756": {
+  "source": "Kew SID",
+  "sw_1000g": 29.17,
+  "sw_g": 0.02917
+ },
+ "2770": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 150.0,
+  "sw_g": 0.15
+ },
+ "2780": {
+  "source": "Kew SID",
+  "sw_1000g": 31.9,
+  "sw_g": 0.0319
+ },
+ "2803": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.79,
+  "sw_g": 0.00179
+ },
+ "2807": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 439.18,
+  "sw_g": 0.43918
+ },
+ "2808": {
+  "source": "Kew SID",
+  "sw_1000g": 954.64,
+  "sw_g": 0.95464
+ },
+ "2809": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 512.92,
+  "sw_g": 0.51292
+ },
+ "2829": {
+  "source": "Kew SID",
+  "sw_1000g": 10.83,
+  "sw_g": 0.01083
+ },
+ "2830": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 510.0,
+  "sw_g": 0.51
+ },
+ "28399": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.72,
+  "sw_g": 0.00672
+ },
+ "2844": {
+  "source": "Kew SID",
+  "sw_1000g": 131.58,
+  "sw_g": 0.13158
+ },
+ "2851": {
+  "source": "Kew SID",
+  "sw_1000g": 2.7,
+  "sw_g": 0.0027
+ },
+ "2852": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 7.57,
+  "sw_g": 0.00757
+ },
+ "2857": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 24731.0,
+  "sw_g": 24.731
+ },
+ "2877": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2718.6,
+  "sw_g": 2.7186
+ },
+ "2881": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3137.44,
+  "sw_g": 3.13744
+ },
+ "2886": {
+  "source": "Kew SID",
+  "sw_1000g": 135.14,
+  "sw_g": 0.13514
+ },
+ "289": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 53.0,
+  "sw_g": 0.053
+ },
+ "2897": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.5,
+  "sw_g": 0.0055
+ },
+ "290": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 16.65,
+  "sw_g": 0.01665
+ },
+ "291": {
+  "source": "Kew SID",
+  "sw_1000g": 15.17,
+  "sw_g": 0.01517
+ },
+ "2919": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.84,
+  "sw_g": 0.00184
+ },
+ "2920": {
+  "source": "Kew SID",
+  "sw_1000g": 3.7,
+  "sw_g": 0.0037
+ },
+ "2921": {
+  "source": "Kew SID",
+  "sw_1000g": 2.17,
+  "sw_g": 0.00217
+ },
+ "2922": {
+  "source": "Kew SID",
+  "sw_1000g": 5.26,
+  "sw_g": 0.00526
+ },
+ "2925": {
+  "source": "Kew SID",
+  "sw_1000g": 2.2,
+  "sw_g": 0.0022
+ },
+ "2926": {
+  "source": "Kew SID",
+  "sw_1000g": 2.9,
+  "sw_g": 0.0029
+ },
+ "2928": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.2,
+  "sw_g": 0.0032
+ },
+ "2929": {
+  "source": "Kew SID",
+  "sw_1000g": 4.8,
+  "sw_g": 0.0048
+ },
+ "2931": {
+  "source": "Kew SID",
+  "sw_1000g": 3.3,
+  "sw_g": 0.0033
+ },
+ "2934": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.06,
+  "sw_g": 6e-05
+ },
+ "2937": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.09,
+  "sw_g": 9e-05
+ },
+ "2941": {
+  "source": "Kew SID",
+  "sw_1000g": 0.07,
+  "sw_g": 7e-05
+ },
+ "2943": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 33.33,
+  "sw_g": 0.03333
+ },
+ "2944": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 105.3,
+  "sw_g": 0.1053
+ },
+ "2945": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 555.56,
+  "sw_g": 0.55556
+ },
+ "295": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 20.17,
+  "sw_g": 0.02017
+ },
+ "2957": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 81.56,
+  "sw_g": 0.08156
+ },
+ "2958": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 62.2,
+  "sw_g": 0.0622
+ },
+ "2959": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 31.6,
+  "sw_g": 0.0316
+ },
+ "2964": {
+  "source": "Kew SID",
+  "sw_1000g": 46.0,
+  "sw_g": 0.046
+ },
+ "2966": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 71.4,
+  "sw_g": 0.0714
+ },
+ "297": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 72.6,
+  "sw_g": 0.0726
+ },
+ "298": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 8.94,
+  "sw_g": 0.00894
+ },
+ "3020": {
+  "source": "Kew SID",
+  "sw_1000g": 0.43,
+  "sw_g": 0.00043
+ },
+ "3023": {
+  "source": "Kew SID",
+  "sw_1000g": 1.9,
+  "sw_g": 0.0019
+ },
+ "3024": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.47,
+  "sw_g": 0.00247
+ },
+ "3025": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.68,
+  "sw_g": 0.00068
+ },
+ "3031": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.13,
+  "sw_g": 0.00113
+ },
+ "3036": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.89,
+  "sw_g": 0.00189
+ },
+ "30442": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.43,
+  "sw_g": 0.00343
+ },
+ "3045": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.2,
+  "sw_g": 0.0002
+ },
+ "3046": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.85,
+  "sw_g": 0.00085
+ },
+ "305322": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 702.25,
+  "sw_g": 0.70225
+ },
+ "305324": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 50.0,
+  "sw_g": 0.05
+ },
+ "305325": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "3067": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "3069": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.52,
+  "sw_g": 0.00152
+ },
+ "3070": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.7,
+  "sw_g": 0.0017
+ },
+ "30805": {
+  "source": "Kew SID",
+  "sw_1000g": 525.0,
+  "sw_g": 0.525
+ },
+ "3086": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.4,
+  "sw_g": 0.0004
+ },
+ "3090": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.42,
+  "sw_g": 0.00042
+ },
+ "3132": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 33.42,
+  "sw_g": 0.03342
+ },
+ "31703": {
+  "source": "Kew SID",
+  "sw_1000g": 263.26,
+  "sw_g": 0.26326
+ },
+ "318": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 278.0,
+  "sw_g": 0.278
+ },
+ "3202": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.56,
+  "sw_g": 0.00256
+ },
+ "3204": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.36,
+  "sw_g": 0.00636
+ },
+ "3218": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.89,
+  "sw_g": 0.00389
+ },
+ "3221": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 17.86,
+  "sw_g": 0.01786
+ },
+ "3222": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 17.07,
+  "sw_g": 0.01707
+ },
+ "3241": {
+  "source": "Kew SID",
+  "sw_1000g": 410.84,
+  "sw_g": 0.41084
+ },
+ "3245": {
+  "source": "Kew SID",
+  "sw_1000g": 25.84,
+  "sw_g": 0.02584
+ },
+ "3246": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "3248": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.52,
+  "sw_g": 0.01052
+ },
+ "3256": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.37,
+  "sw_g": 0.00137
+ },
+ "326": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.58,
+  "sw_g": 0.00358
+ },
+ "3265": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.7,
+  "sw_g": 0.0017
+ },
+ "3270": {
+  "source": "Kew SID",
+  "sw_1000g": 3.52,
+  "sw_g": 0.00352
+ },
+ "3289": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.31,
+  "sw_g": 0.00031
+ },
+ "329": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 21.0,
+  "sw_g": 0.021
+ },
+ "331": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 230.0,
+  "sw_g": 0.23
+ },
+ "33121": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 19.23,
+  "sw_g": 0.01923
+ },
+ "3318": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 9071.85,
+  "sw_g": 9.07185
+ },
+ "3320": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 14285.0,
+  "sw_g": 14.285
+ },
+ "3321": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 540.0,
+  "sw_g": 0.54
+ },
+ "333": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 41.0,
+  "sw_g": 0.041
+ },
+ "3348": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 4146.98,
+  "sw_g": 4.14698
+ },
+ "3369": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.87,
+  "sw_g": 0.00087
+ },
+ "3373": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.08,
+  "sw_g": 0.00108
+ },
+ "3384": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "3385": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.07,
+  "sw_g": 0.00107
+ },
+ "3387": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.02,
+  "sw_g": 0.00302
+ },
+ "339": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 7.44,
+  "sw_g": 0.00744
+ },
+ "3391": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "3392": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.04,
+  "sw_g": 4e-05
+ },
+ "3402": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.08,
+  "sw_g": 8e-05
+ },
+ "3423": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 5898.0,
+  "sw_g": 5.898
+ },
+ "3428": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 588.24,
+  "sw_g": 0.58824
+ },
+ "3437": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 378.7,
+  "sw_g": 0.3787
+ },
+ "3466": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.71,
+  "sw_g": 0.00671
+ },
+ "34722": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.26,
+  "sw_g": 0.00226
+ },
+ "3478": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "349": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 115.0,
+  "sw_g": 0.115
+ },
+ "350": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 41.53,
+  "sw_g": 0.04153
+ },
+ "3500": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.4,
+  "sw_g": 0.0034
+ },
+ "3510": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.82,
+  "sw_g": 0.00682
+ },
+ "3511": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.69,
+  "sw_g": 0.00369
+ },
+ "3512": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.17,
+  "sw_g": 0.00117
+ },
+ "3513": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.2,
+  "sw_g": 0.0022
+ },
+ "3522": {
+  "source": "Kew SID",
+  "sw_1000g": 10100.0,
+  "sw_g": 10.1
+ },
+ "3529": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 83.21,
+  "sw_g": 0.08321
+ },
+ "353": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1136.0,
+  "sw_g": 1.136
+ },
+ "3530": {
+  "source": "Kew SID",
+  "sw_1000g": 1.78,
+  "sw_g": 0.00178
+ },
+ "354": {
+  "source": "Kew SID",
+  "sw_1000g": 1868.76,
+  "sw_g": 1.86876
+ },
+ "3540": {
+  "source": "Kew SID",
+  "sw_1000g": 9.22,
+  "sw_g": 0.00922
+ },
+ "3542": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.29,
+  "sw_g": 0.00529
+ },
+ "3544": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.03,
+  "sw_g": 0.00503
+ },
+ "3545": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "3546": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.77,
+  "sw_g": 0.00077
+ },
+ "355": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "3550": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.58,
+  "sw_g": 0.00058
+ },
+ "355150": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2000.0,
+  "sw_g": 2.0
+ },
+ "355151": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 4.51,
+  "sw_g": 0.00451
+ },
+ "355152": {
+  "source": "Kew SID",
+  "storage": "intermediate"
+ },
+ "355153": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 18.25,
+  "sw_g": 0.01825
+ },
+ "355154": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 436.0,
+  "sw_g": 0.436
+ },
+ "355155": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 227.4,
+  "sw_g": 0.2274
+ },
+ "3552": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 12.05,
+  "sw_g": 0.01205
+ },
+ "3557": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.49,
+  "sw_g": 0.00149
+ },
+ "3560": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 1000.0,
+  "sw_g": 1.0
+ },
+ "3564": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 98.0,
+  "sw_g": 0.098
+ },
+ "3568": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 34.5,
+  "sw_g": 0.0345
+ },
+ "3572": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 19.38,
+  "sw_g": 0.01938
+ },
+ "3575": {
+  "source": "Kew SID",
+  "sw_1000g": 10120.0,
+  "sw_g": 10.12
+ },
+ "3576": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 3400.0,
+  "sw_g": 3.4
+ },
+ "3581": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 229.0,
+  "sw_g": 0.229
+ },
+ "3582": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 263.2,
+  "sw_g": 0.2632
+ },
+ "3591": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 260.0,
+  "sw_g": 0.26
+ },
+ "3608": {
+  "source": "Kew SID",
+  "sw_1000g": 1524.44,
+  "sw_g": 1.52444
+ },
+ "3613": {
+  "source": "Kew SID",
+  "sw_1000g": 15.9,
+  "sw_g": 0.0159
+ },
+ "3623": {
+  "source": "Kew SID",
+  "sw_1000g": 11.4,
+  "sw_g": 0.0114
+ },
+ "3624": {
+  "source": "Kew SID",
+  "sw_1000g": 37.9,
+  "sw_g": 0.0379
+ },
+ "3627": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 13.55,
+  "sw_g": 0.01355
+ },
+ "363": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.42,
+  "sw_g": 0.00242
+ },
+ "3632": {
+  "source": "Kew SID",
+  "sw_1000g": 11.49,
+  "sw_g": 0.01149
+ },
+ "3635": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "364": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.56,
+  "sw_g": 0.00356
+ },
+ "365": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "3655": {
+  "source": "Kew SID",
+  "sw_1000g": 2270.0,
+  "sw_g": 2.27
+ },
+ "3666": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 129.87,
+  "sw_g": 0.12987
+ },
+ "3669": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 83.3,
+  "sw_g": 0.0833
+ },
+ "3673": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.79,
+  "sw_g": 0.00079
+ },
+ "3674": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.72,
+  "sw_g": 0.00072
+ },
+ "367714": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.99,
+  "sw_g": 0.00099
+ },
+ "3697": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 100.0,
+  "sw_g": 0.1
+ },
+ "3699": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 6500.0,
+  "sw_g": 6.5
+ },
+ "370377": {
+  "source": "Kew SID",
+  "sw_1000g": 3.1,
+  "sw_g": 0.0031
+ },
+ "3712": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 15.7,
+  "sw_g": 0.0157
+ },
+ "3713": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 15.7,
+  "sw_g": 0.0157
+ },
+ "3722": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.56,
+  "sw_g": 0.00056
+ },
+ "372221": {
+  "source": "Kew SID",
+  "sw_1000g": 1.62,
+  "sw_g": 0.00162
+ },
+ "372222": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 7.5,
+  "sw_g": 0.0075
+ },
+ "372226": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 18.12,
+  "sw_g": 0.01812
+ },
+ "372231": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.6,
+  "sw_g": 0.0046
+ },
+ "372235": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "372247": {
+  "source": "Kew SID",
+  "sw_1000g": 4.45,
+  "sw_g": 0.00445
+ },
+ "372248": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.6,
+  "sw_g": 0.0006
+ },
+ "372259": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.79,
+  "sw_g": 0.00279
+ },
+ "372260": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.79,
+  "sw_g": 0.00279
+ },
+ "372261": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "372263": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "372338": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.55,
+  "sw_g": 0.00055
+ },
+ "372339": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.34,
+  "sw_g": 0.00134
+ },
+ "3754": {
+  "source": "Kew SID",
+  "sw_1000g": 40.0,
+  "sw_g": 0.04
+ },
+ "3756": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 31.3,
+  "sw_g": 0.0313
+ },
+ "3758": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "3761": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 17.5,
+  "sw_g": 0.0175
+ },
+ "3765": {
+  "source": "Kew SID",
+  "sw_1000g": 20000.0,
+  "sw_g": 20.0
+ },
+ "3783": {
+  "source": "Kew SID",
+  "sw_1000g": 68.03,
+  "sw_g": 0.06803
+ },
+ "3786": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.32,
+  "sw_g": 0.00032
+ },
+ "3789": {
+  "source": "Kew SID",
+  "sw_1000g": 0.7,
+  "sw_g": 0.0007
+ },
+ "379": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "3796": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.29,
+  "sw_g": 0.00229
+ },
+ "3798": {
+  "source": "Kew SID",
+  "sw_1000g": 0.49,
+  "sw_g": 0.00049
+ },
+ "38122": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.36,
+  "sw_g": 0.00036
+ },
+ "38133": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.6,
+  "sw_g": 0.0046
+ },
+ "3814": {
+  "source": "Kew SID",
+  "sw_1000g": 3.0,
+  "sw_g": 0.003
+ },
+ "3820": {
+  "source": "Kew SID",
+  "sw_1000g": 200.28,
+  "sw_g": 0.20028
+ },
+ "38279": {
+  "source": "Kew SID",
+  "sw_1000g": 6.13,
+  "sw_g": 0.00613
+ },
+ "38291": {
+  "source": "Kew SID",
+  "sw_1000g": 8.3,
+  "sw_g": 0.0083
+ },
+ "3837": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 500.0,
+  "sw_g": 0.5
+ },
+ "3844": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "3848": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.89,
+  "sw_g": 0.00289
+ },
+ "3861": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.39,
+  "sw_g": 0.00339
+ },
+ "3867": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.75,
+  "sw_g": 0.00375
+ },
+ "3877": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "3878": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "3881": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "3896": {
+  "source": "Kew SID",
+  "sw_1000g": 56.15,
+  "sw_g": 0.05615
+ },
+ "390": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.46,
+  "sw_g": 0.00046
+ },
+ "3912": {
+  "source": "Kew SID",
+  "sw_1000g": 8.79,
+  "sw_g": 0.00879
+ },
+ "3917": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.9,
+  "sw_g": 0.0029
+ },
+ "3922": {
+  "source": "Kew SID",
+  "sw_1000g": 7.96,
+  "sw_g": 0.00796
+ },
+ "3930": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 7.96,
+  "sw_g": 0.00796
+ },
+ "3931": {
+  "source": "Kew SID",
+  "sw_1000g": 10.1,
+  "sw_g": 0.0101
+ },
+ "3961": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.09,
+  "sw_g": 0.00909
+ },
+ "3962": {
+  "source": "Kew SID",
+  "sw_1000g": 24.16,
+  "sw_g": 0.02416
+ },
+ "3982": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 110.0,
+  "sw_g": 0.11
+ },
+ "3986": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 909.09,
+  "sw_g": 0.90909
+ },
+ "3988": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.18,
+  "sw_g": 0.00018
+ },
+ "4004": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 54.0,
+  "sw_g": 0.054
+ },
+ "4006": {
+  "source": "Kew SID",
+  "sw_1000g": 280.9,
+  "sw_g": 0.2809
+ },
+ "401": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4673.0,
+  "sw_g": 4.673
+ },
+ "402": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "4040": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.0,
+  "sw_g": 0.003
+ },
+ "4042": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 59.0,
+  "sw_g": 0.059
+ },
+ "4053": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.8,
+  "sw_g": 0.0118
+ },
+ "4054": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.62,
+  "sw_g": 0.00662
+ },
+ "4056": {
+  "source": "Kew SID",
+  "sw_1000g": 4.77,
+  "sw_g": 0.00477
+ },
+ "4057": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.21,
+  "sw_g": 0.01021
+ },
+ "4058": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.21,
+  "sw_g": 0.01021
+ },
+ "4059": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.21,
+  "sw_g": 0.01021
+ },
+ "4074": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 2427.42,
+  "sw_g": 2.42742
+ },
+ "4075": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6200.0,
+  "sw_g": 6.2
+ },
+ "4079": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.02,
+  "sw_g": 0.00902
+ },
+ "4089": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 1500.0,
+  "sw_g": 1.5
+ },
+ "4090": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 1500.0,
+  "sw_g": 1.5
+ },
+ "4094": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.03,
+  "sw_g": 3e-05
+ },
+ "411": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 470.0,
+  "sw_g": 0.47
+ },
+ "4111": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "412": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 239.2,
+  "sw_g": 0.2392
+ },
+ "4127": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 8.4,
+  "sw_g": 0.0084
+ },
+ "414": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 250.0,
+  "sw_g": 0.25
+ },
+ "4145": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 58.5,
+  "sw_g": 0.0585
+ },
+ "4159": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.22,
+  "sw_g": 0.00922
+ },
+ "4161": {
+  "source": "Kew SID",
+  "sw_1000g": 188.69,
+  "sw_g": 0.18869
+ },
+ "4186": {
+  "source": "Kew SID",
+  "sw_1000g": 49.9,
+  "sw_g": 0.0499
+ },
+ "4187": {
+  "source": "Kew SID",
+  "sw_1000g": 38.44,
+  "sw_g": 0.03844
+ },
+ "4189": {
+  "source": "Kew SID",
+  "sw_1000g": 35.97,
+  "sw_g": 0.03597
+ },
+ "4198": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 16710.0,
+  "sw_g": 16.71
+ },
+ "4214": {
+  "source": "Kew SID",
+  "sw_1000g": 770.0,
+  "sw_g": 0.77
+ },
+ "4229": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 13.76,
+  "sw_g": 0.01376
+ },
+ "4233": {
+  "source": "Kew SID",
+  "sw_1000g": 7.0,
+  "sw_g": 0.007
+ },
+ "4238": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 42.33,
+  "sw_g": 0.04233
+ },
+ "4256": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.25,
+  "sw_g": 0.00225
+ },
+ "42642": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 86.11,
+  "sw_g": 0.08611
+ },
+ "42696": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 100.36,
+  "sw_g": 0.10036
+ },
+ "42707": {
+  "source": "Kew SID",
+  "sw_1000g": 886.89,
+  "sw_g": 0.88689
+ },
+ "4271": {
+  "source": "Kew SID",
+  "sw_1000g": 50270.0,
+  "sw_g": 50.27
+ },
+ "42760": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 39.22,
+  "sw_g": 0.03922
+ },
+ "4278": {
+  "source": "Kew SID",
+  "sw_1000g": 3333.3,
+  "sw_g": 3.3333
+ },
+ "4283": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 181.8,
+  "sw_g": 0.1818
+ },
+ "431": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.31,
+  "sw_g": 0.00031
+ },
+ "4312": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 30239.49,
+  "sw_g": 30.23949
+ },
+ "4313": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 3472.0,
+  "sw_g": 3.472
+ },
+ "4314": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 7435.94,
+  "sw_g": 7.43594
+ },
+ "4315": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "432": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.31,
+  "sw_g": 0.00031
+ },
+ "4336": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.26,
+  "sw_g": 0.00426
+ },
+ "4337": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.59,
+  "sw_g": 0.00159
+ },
+ "4341": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.16,
+  "sw_g": 0.00116
+ },
+ "4343": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.62,
+  "sw_g": 0.00062
+ },
+ "4344": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "4346": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.86,
+  "sw_g": 0.00086
+ },
+ "4347": {
+  "source": "Kew SID",
+  "sw_1000g": 1.29,
+  "sw_g": 0.00129
+ },
+ "4348": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.33,
+  "sw_g": 0.00333
+ },
+ "4352": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.72,
+  "sw_g": 0.00172
+ },
+ "4363": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 122.5,
+  "sw_g": 0.1225
+ },
+ "4387": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.41,
+  "sw_g": 0.00241
+ },
+ "4393": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.9,
+  "sw_g": 0.0009
+ },
+ "4395": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.97,
+  "sw_g": 0.00097
+ },
+ "43996": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.04,
+  "sw_g": 0.01104
+ },
+ "44088": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 57.19,
+  "sw_g": 0.05719
+ },
+ "4410": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "44104": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 153.85,
+  "sw_g": 0.15385
+ },
+ "4411": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.64,
+  "sw_g": 0.01064
+ },
+ "4413": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 15.13,
+  "sw_g": 0.01513
+ },
+ "4426": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 180.88,
+  "sw_g": 0.18088
+ },
+ "443": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 300.0,
+  "sw_g": 0.3
+ },
+ "4434": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 2740.0,
+  "sw_g": 2.74
+ },
+ "4435": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 4650.0,
+  "sw_g": 4.65
+ },
+ "4466": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 150.0,
+  "sw_g": 0.15
+ },
+ "4469": {
+  "source": "Kew SID",
+  "sw_1000g": 817.32,
+  "sw_g": 0.81732
+ },
+ "4481": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.61,
+  "sw_g": 0.00061
+ },
+ "4483": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.34,
+  "sw_g": 0.00034
+ },
+ "44868": {
+  "source": "Kew SID",
+  "sw_1000g": 1586.76,
+  "sw_g": 1.58676
+ },
+ "449": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 20800.0,
+  "sw_g": 20.8
+ },
+ "4509": {
+  "source": "Kew SID",
+  "sw_1000g": 8.56,
+  "sw_g": 0.00856
+ },
+ "4510": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "4516": {
+  "source": "Kew SID",
+  "sw_1000g": 25.0,
+  "sw_g": 0.025
+ },
+ "45195": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 253.0,
+  "sw_g": 0.253
+ },
+ "4524": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.7,
+  "sw_g": 0.0017
+ },
+ "4538": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "4563": {
+  "source": "Kew SID",
+  "sw_1000g": 0.3,
+  "sw_g": 0.0003
+ },
+ "4565": {
+  "source": "Kew SID",
+  "sw_1000g": 0.43,
+  "sw_g": 0.00043
+ },
+ "4568": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 390.0,
+  "sw_g": 0.39
+ },
+ "45894": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3664.0,
+  "sw_g": 3.664
+ },
+ "459": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 8520.0,
+  "sw_g": 8.52
+ },
+ "4618": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 37.44,
+  "sw_g": 0.03744
+ },
+ "46753": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 220.0,
+  "sw_g": 0.22
+ },
+ "468": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 22.1,
+  "sw_g": 0.0221
+ },
+ "47139": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 139.43,
+  "sw_g": 0.13943
+ },
+ "478": {
+  "source": "Kew SID",
+  "sw_1000g": 13.05,
+  "sw_g": 0.01305
+ },
+ "481": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 33.5,
+  "sw_g": 0.0335
+ },
+ "4816": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "4817": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.22,
+  "sw_g": 0.00222
+ },
+ "482": {
+  "source": "Kew SID",
+  "storage": "intermediate"
+ },
+ "483": {
+  "source": "Kew SID",
+  "storage": "intermediate"
+ },
+ "4849": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.96,
+  "sw_g": 0.00196
+ },
+ "485": {
+  "source": "Kew SID",
+  "sw_1000g": 0.46,
+  "sw_g": 0.00046
+ },
+ "4854": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "4855": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 200.0,
+  "sw_g": 0.2
+ },
+ "4873": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.77,
+  "sw_g": 0.00677
+ },
+ "48742": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 15.7,
+  "sw_g": 0.0157
+ },
+ "48747": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 14.73,
+  "sw_g": 0.01473
+ },
+ "4884": {
+  "source": "Kew SID",
+  "sw_1000g": 3.3,
+  "sw_g": 0.0033
+ },
+ "4893": {
+  "source": "Kew SID",
+  "sw_1000g": 1948.32,
+  "sw_g": 1.94832
+ },
+ "4912": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 340.0,
+  "sw_g": 0.34
+ },
+ "4914": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 350.0,
+  "sw_g": 0.35
+ },
+ "49181": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 211.7,
+  "sw_g": 0.2117
+ },
+ "4922": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.8,
+  "sw_g": 0.0058
+ },
+ "4923": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 29.0,
+  "sw_g": 0.029
+ },
+ "4926": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 93.99,
+  "sw_g": 0.09399
+ },
+ "4975": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.94,
+  "sw_g": 0.00294
+ },
+ "4982": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 17.0,
+  "sw_g": 0.017
+ },
+ "4996": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.5,
+  "sw_g": 0.0045
+ },
+ "5008": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.63,
+  "sw_g": 0.01063
+ },
+ "5032": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 113.0,
+  "sw_g": 0.113
+ },
+ "5033": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 36.2,
+  "sw_g": 0.0362
+ },
+ "504": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 40.0,
+  "sw_g": 0.04
+ },
+ "5043": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.7,
+  "sw_g": 0.0037
+ },
+ "5044": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.5,
+  "sw_g": 0.0065
+ },
+ "5046": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 8.23,
+  "sw_g": 0.00823
+ },
+ "5048": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "5049": {
+  "source": "Kew SID",
+  "sw_1000g": 4.65,
+  "sw_g": 0.00465
+ },
+ "5053": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.6,
+  "sw_g": 0.0046
+ },
+ "508": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 241.64,
+  "sw_g": 0.24164
+ },
+ "5117": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 32.47,
+  "sw_g": 0.03247
+ },
+ "513": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "5138": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 25.0,
+  "sw_g": 0.025
+ },
+ "514": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 15.7,
+  "sw_g": 0.0157
+ },
+ "5158": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.18,
+  "sw_g": 0.00018
+ },
+ "517": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.72,
+  "sw_g": 0.00172
+ },
+ "5175": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 23.6,
+  "sw_g": 0.0236
+ },
+ "5184": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.8,
+  "sw_g": 0.0008
+ },
+ "5185": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.8,
+  "sw_g": 0.0008
+ },
+ "5186": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.39,
+  "sw_g": 0.00039
+ },
+ "5190": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 57.1,
+  "sw_g": 0.0571
+ },
+ "5192": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 50.75,
+  "sw_g": 0.05075
+ },
+ "520": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 25.0,
+  "sw_g": 0.025
+ },
+ "5238": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 33.95,
+  "sw_g": 0.03395
+ },
+ "5244": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.76,
+  "sw_g": 0.00976
+ },
+ "5258": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.73,
+  "sw_g": 0.00473
+ },
+ "5260": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.83,
+  "sw_g": 0.00183
+ },
+ "5264": {
+  "source": "Kew SID",
+  "sw_1000g": 1.5,
+  "sw_g": 0.0015
+ },
+ "5267": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.12,
+  "sw_g": 0.00212
+ },
+ "5275": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 130.16,
+  "sw_g": 0.13016
+ },
+ "5296": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.05,
+  "sw_g": 0.00105
+ },
+ "530": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.53,
+  "sw_g": 0.00053
+ },
+ "5302": {
+  "source": "Kew SID",
+  "sw_1000g": 32.72,
+  "sw_g": 0.03272
+ },
+ "5320": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.36,
+  "sw_g": 0.00036
+ },
+ "5322": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "5329": {
+  "source": "Kew SID",
+  "sw_1000g": 0.5,
+  "sw_g": 0.0005
+ },
+ "5333": {
+  "source": "Kew SID",
+  "sw_1000g": 0.18,
+  "sw_g": 0.00018
+ },
+ "5343": {
+  "source": "Kew SID",
+  "sw_1000g": 21.86,
+  "sw_g": 0.02186
+ },
+ "5349": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 600.0,
+  "sw_g": 0.6
+ },
+ "5350": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 600.0,
+  "sw_g": 0.6
+ },
+ "536": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "5369": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "537": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.83,
+  "sw_g": 0.00483
+ },
+ "5374": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "538": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "5382": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 43.37,
+  "sw_g": 0.04337
+ },
+ "5387": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "539": {
+  "source": "Kew SID",
+  "sw_1000g": 2.78,
+  "sw_g": 0.00278
+ },
+ "5408": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "545": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 129.39,
+  "sw_g": 0.12939
+ },
+ "5464": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "5465": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 909.1,
+  "sw_g": 0.9091
+ },
+ "5466": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 330.8,
+  "sw_g": 0.3308
+ },
+ "547": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.19,
+  "sw_g": 0.00219
+ },
+ "5474": {
+  "source": "Kew SID",
+  "sw_1000g": 377.99,
+  "sw_g": 0.37799
+ },
+ "548": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.62,
+  "sw_g": 0.00263
+ },
+ "549": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.39,
+  "sw_g": 0.00339
+ },
+ "5498": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 3175.0,
+  "sw_g": 3.175
+ },
+ "5499": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 1320.0,
+  "sw_g": 1.32
+ },
+ "550": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.6,
+  "sw_g": 0.0006
+ },
+ "5500": {
+  "source": "Kew SID",
+  "sw_1000g": 1270.0,
+  "sw_g": 1.27
+ },
+ "5501": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "5502": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "5503": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 5750.0,
+  "sw_g": 5.75
+ },
+ "5505": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 6960.0,
+  "sw_g": 6.96
+ },
+ "551": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.56,
+  "sw_g": 0.00356
+ },
+ "5521": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "5523": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "553": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.75,
+  "sw_g": 0.00375
+ },
+ "5531": {
+  "source": "Kew SID",
+  "sw_1000g": 12.74,
+  "sw_g": 0.01274
+ },
+ "5534": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 33.55,
+  "sw_g": 0.03355
+ },
+ "5536": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "554": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.75,
+  "sw_g": 0.00375
+ },
+ "555": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.75,
+  "sw_g": 0.00375
+ },
+ "556": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.75,
+  "sw_g": 0.00375
+ },
+ "5571": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.32,
+  "sw_g": 0.00232
+ },
+ "5588": {
+  "source": "Kew SID",
+  "sw_1000g": 171.95,
+  "sw_g": 0.17195
+ },
+ "5597": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "5600": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.3,
+  "sw_g": 0.0013
+ },
+ "5602": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "5620": {
+  "source": "Kew SID",
+  "sw_1000g": 1.5,
+  "sw_g": 0.0015
+ },
+ "5622": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "5624": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 114.29,
+  "sw_g": 0.11429
+ },
+ "5632": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 2507.0,
+  "sw_g": 2.507
+ },
+ "565": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 2.1,
+  "sw_g": 0.0021
+ },
+ "5655": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.45,
+  "sw_g": 0.00045
+ },
+ "5657": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.71,
+  "sw_g": 0.00171
+ },
+ "5661": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.93,
+  "sw_g": 0.00493
+ },
+ "5663": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "5665": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.25,
+  "sw_g": 0.00425
+ },
+ "5691": {
+  "source": "Kew SID",
+  "sw_1000g": 28000.0,
+  "sw_g": 28.0
+ },
+ "5700": {
+  "source": "Kew SID",
+  "sw_1000g": 2318.36,
+  "sw_g": 2.31836
+ },
+ "5701": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 242.36,
+  "sw_g": 0.24236
+ },
+ "5706": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 703.72,
+  "sw_g": 0.70372
+ },
+ "5728": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.08,
+  "sw_g": 8e-05
+ },
+ "5731": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.24,
+  "sw_g": 0.00024
+ },
+ "5738": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.07,
+  "sw_g": 7e-05
+ },
+ "5743": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.08,
+  "sw_g": 8e-05
+ },
+ "5745": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.64,
+  "sw_g": 0.00064
+ },
+ "5746": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.37,
+  "sw_g": 0.00037
+ },
+ "5748": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.06,
+  "sw_g": 6e-05
+ },
+ "5749": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.28,
+  "sw_g": 0.00028
+ },
+ "5753": {
+  "source": "Kew SID",
+  "sw_1000g": 1.11,
+  "sw_g": 0.00111
+ },
+ "576": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 83.35,
+  "sw_g": 0.08335
+ },
+ "5794": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "5803": {
+  "source": "Kew SID",
+  "sw_1000g": 126.99,
+  "sw_g": 0.12699
+ },
+ "5809": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 183.0,
+  "sw_g": 0.183
+ },
+ "5810": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 476.19,
+  "sw_g": 0.47619
+ },
+ "5831": {
+  "source": "Kew SID",
+  "sw_1000g": 6.59,
+  "sw_g": 0.00659
+ },
+ "5832": {
+  "source": "Kew SID",
+  "sw_1000g": 0.62,
+  "sw_g": 0.00062
+ },
+ "5833": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.03,
+  "sw_g": 0.00103
+ },
+ "5834": {
+  "source": "Kew SID",
+  "sw_1000g": 0.93,
+  "sw_g": 0.00093
+ },
+ "5835": {
+  "source": "Kew SID",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "5836": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.09,
+  "sw_g": 0.00109
+ },
+ "5837": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.93,
+  "sw_g": 0.00293
+ },
+ "5838": {
+  "source": "Kew SID",
+  "sw_1000g": 3.5,
+  "sw_g": 0.0035
+ },
+ "5839": {
+  "source": "Kew SID",
+  "sw_1000g": 2.61,
+  "sw_g": 0.00261
+ },
+ "5841": {
+  "source": "Kew SID",
+  "sw_1000g": 50.28,
+  "sw_g": 0.05028
+ },
+ "5842": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.67,
+  "sw_g": 0.00667
+ },
+ "5843": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.28,
+  "sw_g": 0.00628
+ },
+ "5844": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.6,
+  "sw_g": 0.0006
+ },
+ "5846": {
+  "source": "Kew SID",
+  "sw_1000g": 11.9,
+  "sw_g": 0.0119
+ },
+ "5847": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.6,
+  "sw_g": 0.0056
+ },
+ "5848": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.58,
+  "sw_g": 0.00058
+ },
+ "5849": {
+  "source": "Kew SID",
+  "sw_1000g": 3.3,
+  "sw_g": 0.0033
+ },
+ "5850": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.93,
+  "sw_g": 0.00093
+ },
+ "5851": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.6,
+  "sw_g": 0.0016
+ },
+ "5852": {
+  "source": "Kew SID",
+  "sw_1000g": 0.73,
+  "sw_g": 0.00073
+ },
+ "5853": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.4,
+  "sw_g": 0.0044
+ },
+ "5854": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.55,
+  "sw_g": 0.00055
+ },
+ "5855": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.98,
+  "sw_g": 0.00298
+ },
+ "5856": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.64,
+  "sw_g": 0.01064
+ },
+ "5857": {
+  "source": "Kew SID",
+  "sw_1000g": 8.56,
+  "sw_g": 0.00856
+ },
+ "5860": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.23,
+  "sw_g": 0.00423
+ },
+ "5862": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.23,
+  "sw_g": 0.00423
+ },
+ "5863": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.23,
+  "sw_g": 0.00423
+ },
+ "5864": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 8.67,
+  "sw_g": 0.00867
+ },
+ "5865": {
+  "source": "Kew SID",
+  "sw_1000g": 14.71,
+  "sw_g": 0.01471
+ },
+ "5867": {
+  "source": "Kew SID",
+  "sw_1000g": 16.39,
+  "sw_g": 0.01639
+ },
+ "5868": {
+  "source": "Kew SID",
+  "sw_1000g": 14.0,
+  "sw_g": 0.014
+ },
+ "5871": {
+  "source": "Kew SID",
+  "sw_1000g": 10.7,
+  "sw_g": 0.0107
+ },
+ "5872": {
+  "source": "Kew SID",
+  "sw_1000g": 0.39,
+  "sw_g": 0.00039
+ },
+ "5873": {
+  "source": "Kew SID",
+  "sw_1000g": 16.94,
+  "sw_g": 0.01694
+ },
+ "5874": {
+  "source": "Kew SID",
+  "sw_1000g": 4.2,
+  "sw_g": 0.0042
+ },
+ "5875": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.65,
+  "sw_g": 0.00565
+ },
+ "5876": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.4,
+  "sw_g": 0.0014
+ },
+ "5879": {
+  "source": "Kew SID",
+  "sw_1000g": 0.52,
+  "sw_g": 0.00052
+ },
+ "588": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 3674.71,
+  "sw_g": 3.67471
+ },
+ "5880": {
+  "source": "Kew SID",
+  "sw_1000g": 6.89,
+  "sw_g": 0.00689
+ },
+ "5881": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.24,
+  "sw_g": 0.00024
+ },
+ "5884": {
+  "source": "Kew SID",
+  "sw_1000g": 11.3,
+  "sw_g": 0.0113
+ },
+ "5885": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.7,
+  "sw_g": 0.0007
+ },
+ "5886": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.85,
+  "sw_g": 0.00085
+ },
+ "5887": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.77,
+  "sw_g": 0.00077
+ },
+ "5888": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.99,
+  "sw_g": 0.00099
+ },
+ "5890": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.84,
+  "sw_g": 0.00284
+ },
+ "5891": {
+  "source": "Kew SID",
+  "sw_1000g": 10.35,
+  "sw_g": 0.01035
+ },
+ "5892": {
+  "source": "Kew SID",
+  "sw_1000g": 12.9,
+  "sw_g": 0.0129
+ },
+ "5894": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.68,
+  "sw_g": 0.00268
+ },
+ "5896": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.19,
+  "sw_g": 0.01119
+ },
+ "5897": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.68,
+  "sw_g": 0.00668
+ },
+ "5898": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.36,
+  "sw_g": 0.01136
+ },
+ "5899": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 14.7,
+  "sw_g": 0.0147
+ },
+ "5901": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.49,
+  "sw_g": 0.01149
+ },
+ "5902": {
+  "source": "Kew SID",
+  "sw_1000g": 1.38,
+  "sw_g": 0.00138
+ },
+ "5904": {
+  "source": "Kew SID",
+  "sw_1000g": 0.49,
+  "sw_g": 0.00049
+ },
+ "5905": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.68,
+  "sw_g": 0.00568
+ },
+ "5906": {
+  "source": "Kew SID",
+  "sw_1000g": 1.63,
+  "sw_g": 0.00163
+ },
+ "5907": {
+  "source": "Kew SID",
+  "sw_1000g": 2.53,
+  "sw_g": 0.00253
+ },
+ "5908": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 17.86,
+  "sw_g": 0.01786
+ },
+ "5909": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.15,
+  "sw_g": 0.00315
+ },
+ "5910": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.14,
+  "sw_g": 0.01114
+ },
+ "5911": {
+  "source": "Kew SID",
+  "sw_1000g": 0.25,
+  "sw_g": 0.00025
+ },
+ "5912": {
+  "source": "Kew SID",
+  "sw_1000g": 13.88,
+  "sw_g": 0.01388
+ },
+ "5913": {
+  "source": "Kew SID",
+  "sw_1000g": 0.19,
+  "sw_g": 0.00019
+ },
+ "5915": {
+  "source": "Kew SID",
+  "sw_1000g": 0.31,
+  "sw_g": 0.00031
+ },
+ "5917": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.36,
+  "sw_g": 0.01136
+ },
+ "5918": {
+  "source": "Kew SID",
+  "sw_1000g": 9.17,
+  "sw_g": 0.00917
+ },
+ "5919": {
+  "source": "Kew SID",
+  "sw_1000g": 1.7,
+  "sw_g": 0.0017
+ },
+ "5920": {
+  "source": "Kew SID",
+  "sw_1000g": 0.45,
+  "sw_g": 0.00045
+ },
+ "5921": {
+  "source": "Kew SID",
+  "sw_1000g": 0.45,
+  "sw_g": 0.00045
+ },
+ "5922": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.38,
+  "sw_g": 0.00238
+ },
+ "5923": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.64,
+  "sw_g": 0.00064
+ },
+ "5924": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.5,
+  "sw_g": 0.0015
+ },
+ "5925": {
+  "source": "Kew SID",
+  "sw_1000g": 1.66,
+  "sw_g": 0.00166
+ },
+ "5926": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.47,
+  "sw_g": 0.00347
+ },
+ "5929": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "5930": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.52,
+  "sw_g": 0.00352
+ },
+ "5931": {
+  "source": "Kew SID",
+  "sw_1000g": 3.7,
+  "sw_g": 0.0037
+ },
+ "5932": {
+  "source": "Kew SID",
+  "sw_1000g": 0.61,
+  "sw_g": 0.00061
+ },
+ "5934": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.16,
+  "sw_g": 0.00116
+ },
+ "5936": {
+  "source": "Kew SID",
+  "sw_1000g": 6.58,
+  "sw_g": 0.00658
+ },
+ "5937": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 40.0,
+  "sw_g": 0.04
+ },
+ "5938": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.38,
+  "sw_g": 0.00238
+ },
+ "5939": {
+  "source": "Kew SID",
+  "sw_1000g": 3.1,
+  "sw_g": 0.0031
+ },
+ "594": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.41,
+  "sw_g": 0.00441
+ },
+ "5941": {
+  "source": "Kew SID",
+  "sw_1000g": 120.0,
+  "sw_g": 0.12
+ },
+ "5942": {
+  "source": "Kew SID",
+  "sw_1000g": 6.02,
+  "sw_g": 0.00602
+ },
+ "5943": {
+  "source": "Kew SID",
+  "sw_1000g": 6.02,
+  "sw_g": 0.00602
+ },
+ "5945": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.1,
+  "sw_g": 0.0021
+ },
+ "5946": {
+  "source": "Kew SID",
+  "sw_1000g": 0.82,
+  "sw_g": 0.00082
+ },
+ "5947": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.15,
+  "sw_g": 0.00315
+ },
+ "5954": {
+  "source": "Kew SID",
+  "sw_1000g": 1.18,
+  "sw_g": 0.00118
+ },
+ "596": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 14.51,
+  "sw_g": 0.01451
+ },
+ "5967": {
+  "source": "Kew SID",
+  "sw_1000g": 0.06,
+  "sw_g": 6e-05
+ },
+ "599": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 1500.0,
+  "sw_g": 1.5
+ },
+ "5995": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "6001": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 370.17,
+  "sw_g": 0.37017
+ },
+ "601": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 27.0,
+  "sw_g": 0.027
+ },
+ "603": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 70.8,
+  "sw_g": 0.0708
+ },
+ "6052": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "6054": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "6076": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 20.4,
+  "sw_g": 0.0204
+ },
+ "6077": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.18,
+  "sw_g": 0.00018
+ },
+ "6078": {
+  "source": "Kew SID",
+  "sw_1000g": 222.22,
+  "sw_g": 0.22222
+ },
+ "6080": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 211.7,
+  "sw_g": 0.2117
+ },
+ "609": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 996.0,
+  "sw_g": 0.996
+ },
+ "6105": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.61,
+  "sw_g": 0.00061
+ },
+ "6109": {
+  "source": "Kew SID",
+  "sw_1000g": 1.08,
+  "sw_g": 0.00108
+ },
+ "6110": {
+  "source": "Kew SID",
+  "sw_1000g": 1.08,
+  "sw_g": 0.00108
+ },
+ "6113": {
+  "source": "Kew SID",
+  "sw_1000g": 710.0,
+  "sw_g": 0.71
+ },
+ "6114": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.47,
+  "sw_g": 0.00047
+ },
+ "6119": {
+  "source": "Kew SID",
+  "sw_1000g": 6.11,
+  "sw_g": 0.00611
+ },
+ "6123": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1190.5,
+  "sw_g": 1.1905
+ },
+ "6149": {
+  "source": "Kew SID",
+  "sw_1000g": 0.4,
+  "sw_g": 0.0004
+ },
+ "6163": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.33,
+  "sw_g": 0.00233
+ },
+ "618": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.41,
+  "sw_g": 0.00641
+ },
+ "6199": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.54,
+  "sw_g": 0.00054
+ },
+ "621": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.2,
+  "sw_g": 0.0052
+ },
+ "6237": {
+  "source": "Kew SID",
+  "sw_1000g": 130.0,
+  "sw_g": 0.13
+ },
+ "6238": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 98.16,
+  "sw_g": 0.09816
+ },
+ "6239": {
+  "source": "Kew SID",
+  "sw_1000g": 96.0,
+  "sw_g": 0.096
+ },
+ "6256": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.62,
+  "sw_g": 0.00062
+ },
+ "6262": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.46,
+  "sw_g": 0.00046
+ },
+ "6266": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 17.9,
+  "sw_g": 0.0179
+ },
+ "6271": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 60.52,
+  "sw_g": 0.06052
+ },
+ "630": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 17.2,
+  "sw_g": 0.0172
+ },
+ "633": {
+  "source": "Kew SID",
+  "sw_1000g": 3124.0,
+  "sw_g": 3.124
+ },
+ "635": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 188.18,
+  "sw_g": 0.18818
+ },
+ "6353": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 1472.0,
+  "sw_g": 1.472
+ },
+ "6384": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 185.2,
+  "sw_g": 0.1852
+ },
+ "639": {
+  "source": "Kew SID",
+  "sw_1000g": 16.0,
+  "sw_g": 0.016
+ },
+ "6394": {
+  "source": "Kew SID",
+  "sw_1000g": 0.46,
+  "sw_g": 0.00046
+ },
+ "6397": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 88.9,
+  "sw_g": 0.0889
+ },
+ "6401": {
+  "source": "Kew SID",
+  "sw_1000g": 1.44,
+  "sw_g": 0.00144
+ },
+ "6438": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 166.7,
+  "sw_g": 0.1667
+ },
+ "644": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 568.18,
+  "sw_g": 0.56818
+ },
+ "6456": {
+  "source": "Kew SID",
+  "sw_1000g": 14286.0,
+  "sw_g": 14.286
+ },
+ "6458": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.65,
+  "sw_g": 0.00165
+ },
+ "646": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.0,
+  "sw_g": 0.003
+ },
+ "6467": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 7.47,
+  "sw_g": 0.00747
+ },
+ "6468": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 8.04,
+  "sw_g": 0.00804
+ },
+ "648": {
+  "source": "Kew SID",
+  "sw_1000g": 8.55,
+  "sw_g": 0.00855
+ },
+ "652": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.5,
+  "sw_g": 0.0015
+ },
+ "6520": {
+  "source": "Kew SID",
+  "sw_1000g": 49.9,
+  "sw_g": 0.0499
+ },
+ "6523": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 112.3,
+  "sw_g": 0.1123
+ },
+ "6558": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 235.13,
+  "sw_g": 0.23513
+ },
+ "6559": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 120.69,
+  "sw_g": 0.12069
+ },
+ "656": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 16.0,
+  "sw_g": 0.016
+ },
+ "6562": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.86,
+  "sw_g": 0.00486
+ },
+ "6567": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.97,
+  "sw_g": 0.00297
+ },
+ "6569": {
+  "source": "Kew SID",
+  "sw_1000g": 0.88,
+  "sw_g": 0.00088
+ },
+ "658": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 57.18,
+  "sw_g": 0.05718
+ },
+ "6597": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4202.0,
+  "sw_g": 4.202
+ },
+ "660": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.71,
+  "sw_g": 0.00071
+ },
+ "6613": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.6,
+  "sw_g": 0.0026
+ },
+ "6621": {
+  "source": "Kew SID",
+  "sw_1000g": 6250.0,
+  "sw_g": 6.25
+ },
+ "6623": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 79.18,
+  "sw_g": 0.07918
+ },
+ "6631": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.83,
+  "sw_g": 0.00483
+ },
+ "6634": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 13.6,
+  "sw_g": 0.0136
+ },
+ "666": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.99,
+  "sw_g": 0.00099
+ },
+ "6707": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 28.5,
+  "sw_g": 0.0285
+ },
+ "6708": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 28.5,
+  "sw_g": 0.0285
+ },
+ "671": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 26.74,
+  "sw_g": 0.02674
+ },
+ "6720": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.79,
+  "sw_g": 0.00179
+ },
+ "6724": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.7,
+  "sw_g": 0.0017
+ },
+ "6749": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 250.0,
+  "sw_g": 0.25
+ },
+ "6751": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "6752": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 909.1,
+  "sw_g": 0.9091
+ },
+ "6753": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.36,
+  "sw_g": 0.00236
+ },
+ "6754": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 8.45,
+  "sw_g": 0.00845
+ },
+ "6779": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.02,
+  "sw_g": 0.00302
+ },
+ "6784": {
+  "source": "Kew SID",
+  "sw_1000g": 1574.8,
+  "sw_g": 1.5748
+ },
+ "6809": {},
+ "681": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.33,
+  "sw_g": 0.00033
+ },
+ "6825": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.98,
+  "sw_g": 0.00098
+ },
+ "6826": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.02,
+  "sw_g": 0.00102
+ },
+ "683": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.25,
+  "sw_g": 0.00025
+ },
+ "6837": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 33000.0,
+  "sw_g": 33.0
+ },
+ "685": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.38,
+  "sw_g": 0.00038
+ },
+ "6852": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.9,
+  "sw_g": 0.0009
+ },
+ "6882": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.17,
+  "sw_g": 0.00317
+ },
+ "6889": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.64,
+  "sw_g": 0.00264
+ },
+ "689": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 210.0,
+  "sw_g": 0.21
+ },
+ "6896": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "694": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.2,
+  "sw_g": 0.0012
+ },
+ "6958": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "6969": {
+  "source": "Kew SID",
+  "sw_1000g": 2.32,
+  "sw_g": 0.00232
+ },
+ "6982": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.7,
+  "sw_g": 0.0047
+ },
+ "6983": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.89,
+  "sw_g": 0.01089
+ },
+ "699": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 114.55,
+  "sw_g": 0.11455
+ },
+ "7000": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "7010": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10079.83,
+  "sw_g": 10.07983
+ },
+ "7013": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11111.0,
+  "sw_g": 11.111
+ },
+ "7014": {
+  "source": "Kew SID",
+  "sw_1000g": 6494.0,
+  "sw_g": 6.494
+ },
+ "702": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 261.12,
+  "sw_g": 0.26112
+ },
+ "7032": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 21.0,
+  "sw_g": 0.021
+ },
+ "7058": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 209.0,
+  "sw_g": 0.209
+ },
+ "7067": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.17,
+  "sw_g": 0.00017
+ },
+ "7081": {
+  "source": "Kew SID",
+  "sw_1000g": 0.85,
+  "sw_g": 0.00085
+ },
+ "7092": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 152.0,
+  "sw_g": 0.152
+ },
+ "7094": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 37.0,
+  "sw_g": 0.037
+ },
+ "7095": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.06,
+  "sw_g": 0.00406
+ },
+ "7098": {
+  "source": "Kew SID",
+  "sw_1000g": 280.0,
+  "sw_g": 0.28
+ },
+ "7103": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.8,
+  "sw_g": 0.0018
+ },
+ "7130": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 132.0,
+  "sw_g": 0.132
+ },
+ "7149": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.88,
+  "sw_g": 0.00588
+ },
+ "7156": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 70.06,
+  "sw_g": 0.07006
+ },
+ "7157": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 25.34,
+  "sw_g": 0.02534
+ },
+ "7162": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 80.61,
+  "sw_g": 0.08061
+ },
+ "7164": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 158.03,
+  "sw_g": 0.15803
+ },
+ "7172": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.95,
+  "sw_g": 0.00095
+ },
+ "7174": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.32,
+  "sw_g": 0.00032
+ },
+ "7177": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.1,
+  "sw_g": 0.0011
+ },
+ "7200": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.88,
+  "sw_g": 0.00088
+ },
+ "7208": {
+  "source": "Kew SID",
+  "sw_1000g": 1248.06,
+  "sw_g": 1.24806
+ },
+ "7209": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 27.73,
+  "sw_g": 0.02773
+ },
+ "7227": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.25,
+  "sw_g": 0.00225
+ },
+ "7254": {
+  "source": "Kew SID",
+  "sw_1000g": 1.9,
+  "sw_g": 0.0019
+ },
+ "7255": {
+  "source": "Kew SID",
+  "sw_1000g": 2.7,
+  "sw_g": 0.0027
+ },
+ "7258": {
+  "source": "Kew SID",
+  "sw_1000g": 0.52,
+  "sw_g": 0.00052
+ },
+ "7260": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 28.3,
+  "sw_g": 0.0283
+ },
+ "7277": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "7317": {
+  "source": "Kew SID",
+  "sw_1000g": 5.1,
+  "sw_g": 0.0051
+ },
+ "7336": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.21,
+  "sw_g": 0.00621
+ },
+ "7343": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.34,
+  "sw_g": 0.00534
+ },
+ "7389": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.4,
+  "sw_g": 0.0024
+ },
+ "7407": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.05,
+  "sw_g": 5e-05
+ },
+ "7410": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.2,
+  "sw_g": 0.0012
+ },
+ "7411": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.27,
+  "sw_g": 0.00227
+ },
+ "7412": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.5,
+  "sw_g": 0.0005
+ },
+ "7413": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.41,
+  "sw_g": 0.00041
+ },
+ "7416": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.19,
+  "sw_g": 0.00119
+ },
+ "7418": {
+  "source": "Kew SID",
+  "sw_1000g": 1.0,
+  "sw_g": 0.001
+ },
+ "7419": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.21,
+  "sw_g": 0.00121
+ },
+ "7429": {
+  "source": "Kew SID",
+  "sw_1000g": 184.52,
+  "sw_g": 0.18452
+ },
+ "7431": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 275.6,
+  "sw_g": 0.2756
+ },
+ "7432": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 142.8,
+  "sw_g": 0.1428
+ },
+ "7434": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 116.5,
+  "sw_g": 0.1165
+ },
+ "7435": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "7437": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 498.59,
+  "sw_g": 0.49859
+ },
+ "7444": {
+  "source": "Kew SID",
+  "sw_1000g": 2.65,
+  "sw_g": 0.00265
+ },
+ "74953": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.49,
+  "sw_g": 0.00049
+ },
+ "74962": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.2,
+  "sw_g": 0.0022
+ },
+ "7533": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1242.0,
+  "sw_g": 1.242
+ },
+ "7548": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 28.1,
+  "sw_g": 0.0281
+ },
+ "7557": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "75752": {
+  "source": "Kew SID",
+  "sw_1000g": 21.33,
+  "sw_g": 0.02133
+ },
+ "75756": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 15.4,
+  "sw_g": 0.0154
+ },
+ "7605": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 126.74,
+  "sw_g": 0.12674
+ },
+ "7618": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.89,
+  "sw_g": 0.00089
+ },
+ "7637": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.05,
+  "sw_g": 5e-05
+ },
+ "7639": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 24160.0,
+  "sw_g": 24.16
+ },
+ "7647": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.1,
+  "sw_g": 0.0021
+ },
+ "7650": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.19,
+  "sw_g": 0.00119
+ },
+ "7651": {
+  "source": "Kew SID",
+  "sw_1000g": 12.15,
+  "sw_g": 0.01215
+ },
+ "7652": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.57,
+  "sw_g": 0.00157
+ },
+ "7653": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.38,
+  "sw_g": 0.00238
+ },
+ "7654": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.6,
+  "sw_g": 0.0016
+ },
+ "7655": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.1,
+  "sw_g": 0.0011
+ },
+ "7656": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.64,
+  "sw_g": 0.00364
+ },
+ "7657": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.82,
+  "sw_g": 0.00282
+ },
+ "7658": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.57,
+  "sw_g": 0.00357
+ },
+ "7659": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.48,
+  "sw_g": 0.00548
+ },
+ "7660": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 18.42,
+  "sw_g": 0.01842
+ },
+ "7661": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "7663": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 7.57,
+  "sw_g": 0.00757
+ },
+ "7668": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.08,
+  "sw_g": 8e-05
+ },
+ "7669": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.05,
+  "sw_g": 5e-05
+ },
+ "7670": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.03,
+  "sw_g": 3e-05
+ },
+ "7671": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.22,
+  "sw_g": 0.00022
+ },
+ "7672": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.35,
+  "sw_g": 0.00035
+ },
+ "7674": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.09,
+  "sw_g": 9e-05
+ },
+ "7675": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.26,
+  "sw_g": 0.00026
+ },
+ "7681": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 348.0,
+  "sw_g": 0.348
+ },
+ "7689": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.87,
+  "sw_g": 0.00187
+ },
+ "7691": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.1,
+  "sw_g": 0.0021
+ },
+ "7707": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.09,
+  "sw_g": 9e-05
+ },
+ "7736": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2500.0,
+  "sw_g": 2.5
+ },
+ "7745": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 72.82,
+  "sw_g": 0.07282
+ },
+ "7746": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 99.6,
+  "sw_g": 0.0996
+ },
+ "7766": {
+  "source": "Kew SID",
+  "sw_1000g": 0.09,
+  "sw_g": 9e-05
+ },
+ "7769": {
+  "source": "Kew SID",
+  "sw_1000g": 343.8,
+  "sw_g": 0.3438
+ },
+ "777": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.58,
+  "sw_g": 0.01158
+ },
+ "7770": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 18.21,
+  "sw_g": 0.01821
+ },
+ "77795": {
+  "source": "Kew SID",
+  "sw_1000g": 29.67,
+  "sw_g": 0.02967
+ },
+ "7795": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 54.99,
+  "sw_g": 0.05499
+ },
+ "77954": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.52,
+  "sw_g": 0.00152
+ },
+ "78092": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.0,
+  "sw_g": 0.002
+ },
+ "7829": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.45,
+  "sw_g": 0.00145
+ },
+ "7832": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 667.0,
+  "sw_g": 0.667
+ },
+ "784": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 12.5,
+  "sw_g": 0.0125
+ },
+ "7846": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "7848": {
+  "source": "Kew SID",
+  "sw_1000g": 39.17,
+  "sw_g": 0.03917
+ },
+ "7849": {
+  "source": "Kew SID",
+  "sw_1000g": 39.17,
+  "sw_g": 0.03917
+ },
+ "78565": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "7858": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.8,
+  "sw_g": 0.0008
+ },
+ "7874": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "7895": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 478.0,
+  "sw_g": 0.478
+ },
+ "7896": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 478.0,
+  "sw_g": 0.478
+ },
+ "7898": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 18.0,
+  "sw_g": 0.018
+ },
+ "7900": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.52,
+  "sw_g": 0.00452
+ },
+ "7929": {
+  "source": "Kew SID",
+  "sw_1000g": 0.39,
+  "sw_g": 0.00039
+ },
+ "7936": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.68,
+  "sw_g": 0.00068
+ },
+ "7944": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.58,
+  "sw_g": 0.00058
+ },
+ "7978": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "7987": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.26,
+  "sw_g": 0.00226
+ },
+ "7994": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.16,
+  "sw_g": 0.00216
+ },
+ "8002": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 22.48,
+  "sw_g": 0.02248
+ },
+ "801": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 29.6,
+  "sw_g": 0.0296
+ },
+ "8028": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.55,
+  "sw_g": 0.00655
+ },
+ "803": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.87,
+  "sw_g": 0.00987
+ },
+ "8037": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "8039": {
+  "source": "Kew SID",
+  "sw_1000g": 0.15,
+  "sw_g": 0.00015
+ },
+ "8059": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 273.97,
+  "sw_g": 0.27397
+ },
+ "8079": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 19.6,
+  "sw_g": 0.0196
+ },
+ "810": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.01,
+  "sw_g": 0.00101
+ },
+ "8120": {
+  "source": "Kew SID",
+  "sw_1000g": 0.09,
+  "sw_g": 9e-05
+ },
+ "8129": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.62,
+  "sw_g": 0.00362
+ },
+ "8138": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 26.83,
+  "sw_g": 0.02683
+ },
+ "8146": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "8148": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.6,
+  "sw_g": 0.0006
+ },
+ "817": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 12.2,
+  "sw_g": 0.0122
+ },
+ "819": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 212.0,
+  "sw_g": 0.212
+ },
+ "820": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 88.0,
+  "sw_g": 0.088
+ },
+ "821": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 144.0,
+  "sw_g": 0.144
+ },
+ "8220": {
+  "source": "Kew SID",
+  "sw_1000g": 1300.0,
+  "sw_g": 1.3
+ },
+ "8230": {
+  "source": "Kew SID",
+  "sw_1000g": 27.75,
+  "sw_g": 0.02775
+ },
+ "8267": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.6,
+  "sw_g": 0.0006
+ },
+ "8278": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.88,
+  "sw_g": 0.00088
+ },
+ "8280": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.3,
+  "sw_g": 0.0043
+ },
+ "8281": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.01,
+  "sw_g": 0.00401
+ },
+ "8283": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.76,
+  "sw_g": 0.00076
+ },
+ "8288": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 2.01,
+  "sw_g": 0.00201
+ },
+ "8289": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.27,
+  "sw_g": 0.00127
+ },
+ "8292": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.22,
+  "sw_g": 0.00022
+ },
+ "8296": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.28,
+  "sw_g": 0.00028
+ },
+ "830": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 35.1,
+  "sw_g": 0.0351
+ },
+ "8309": {
+  "source": "Kew SID",
+  "sw_1000g": 2857.0,
+  "sw_g": 2.857
+ },
+ "8323": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 278.55,
+  "sw_g": 0.27855
+ },
+ "8328": {
+  "source": "Kew SID",
+  "sw_1000g": 540.0,
+  "sw_g": 0.54
+ },
+ "8336": {
+  "source": "Kew SID",
+  "sw_1000g": 0.4,
+  "sw_g": 0.0004
+ },
+ "8348": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "8354": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.62,
+  "sw_g": 0.00362
+ },
+ "83541": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.0,
+  "sw_g": 0.01
+ },
+ "8357": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.73,
+  "sw_g": 0.00073
+ },
+ "8360": {
+  "source": "Kew SID",
+  "sw_1000g": 1.0,
+  "sw_g": 0.001
+ },
+ "8368": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 16.0,
+  "sw_g": 0.016
+ },
+ "8390": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.16,
+  "sw_g": 0.00016
+ },
+ "8410": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 46.51,
+  "sw_g": 0.04651
+ },
+ "8418": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.3,
+  "sw_g": 0.0103
+ },
+ "8424": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.3,
+  "sw_g": 0.0033
+ },
+ "8432": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 6235.7,
+  "sw_g": 6.2357
+ },
+ "8450": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 220.0,
+  "sw_g": 0.22
+ },
+ "8451": {
+  "source": "Kew SID",
+  "sw_1000g": 314.5,
+  "sw_g": 0.3145
+ },
+ "8466": {
+  "source": "Kew SID",
+  "sw_1000g": 384.63,
+  "sw_g": 0.38463
+ },
+ "847": {
+  "source": "Kew SID",
+  "sw_1000g": 41.7,
+  "sw_g": 0.0417
+ },
+ "8473": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 33.33,
+  "sw_g": 0.03333
+ },
+ "848": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.26,
+  "sw_g": 0.00026
+ },
+ "8487": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.66,
+  "sw_g": 0.00166
+ },
+ "8488": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.8,
+  "sw_g": 0.0008
+ },
+ "8490": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.7,
+  "sw_g": 0.0057
+ },
+ "8492": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.7,
+  "sw_g": 0.0017
+ },
+ "8516": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.39,
+  "sw_g": 0.00039
+ },
+ "8524": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 365.12,
+  "sw_g": 0.36512
+ },
+ "8526": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 83.33,
+  "sw_g": 0.08333
+ },
+ "8530": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 8.86,
+  "sw_g": 0.00886
+ },
+ "8532": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.1,
+  "sw_g": 0.0001
+ },
+ "8533": {
+  "source": "Kew SID",
+  "sw_1000g": 0.25,
+  "sw_g": 0.00025
+ },
+ "8537": {
+  "source": "Kew SID",
+  "sw_1000g": 100.0,
+  "sw_g": 0.1
+ },
+ "8544": {
+  "source": "Kew SID",
+  "sw_1000g": 2.99,
+  "sw_g": 0.00299
+ },
+ "8556": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.62,
+  "sw_g": 0.00162
+ },
+ "856": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "8565": {
+  "source": "Kew SID",
+  "sw_1000g": 10.88,
+  "sw_g": 0.01088
+ },
+ "8571": {
+  "source": "Kew SID",
+  "sw_1000g": 6.33,
+  "sw_g": 0.00633
+ },
+ "859": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.69,
+  "sw_g": 0.00569
+ },
+ "866": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.29,
+  "sw_g": 0.00029
+ },
+ "8690": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 27.22,
+  "sw_g": 0.02722
+ },
+ "8700": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 113.4,
+  "sw_g": 0.1134
+ },
+ "8744": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.75,
+  "sw_g": 0.00375
+ },
+ "8753": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.25,
+  "sw_g": 0.00025
+ },
+ "8765": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.25,
+  "sw_g": 0.00025
+ },
+ "8768": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "8770": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.2,
+  "sw_g": 0.0002
+ },
+ "8771": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.61,
+  "sw_g": 0.00061
+ },
+ "8777": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.25,
+  "sw_g": 0.00025
+ },
+ "8780": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.14,
+  "sw_g": 0.00014
+ },
+ "8785": {
+  "source": "Kew SID",
+  "sw_1000g": 1319.0,
+  "sw_g": 1.319
+ },
+ "8794": {
+  "source": "Kew SID",
+  "sw_1000g": 38461.5,
+  "sw_g": 38.4615
+ },
+ "880": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 420.0,
+  "sw_g": 0.42
+ },
+ "8802": {
+  "source": "Kew SID",
+  "sw_1000g": 3225.8,
+  "sw_g": 3.2258
+ },
+ "8866": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 250.0,
+  "sw_g": 0.25
+ },
+ "8872": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "8882": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.18,
+  "sw_g": 0.00018
+ },
+ "889": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.6,
+  "sw_g": 0.0016
+ },
+ "8917": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 22500.0,
+  "sw_g": 22.5
+ },
+ "893": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.47,
+  "sw_g": 0.00447
+ },
+ "8944": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 153.8,
+  "sw_g": 0.1538
+ },
+ "8946": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 36.6,
+  "sw_g": 0.0366
+ },
+ "8947": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 39.08,
+  "sw_g": 0.03908
+ },
+ "8951": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 62.56,
+  "sw_g": 0.06256
+ },
+ "8953": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 38.24,
+  "sw_g": 0.03824
+ },
+ "8958": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 10.12,
+  "sw_g": 0.01012
+ },
+ "8959": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 93.87,
+  "sw_g": 0.09387
+ },
+ "8965": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 183.0,
+  "sw_g": 0.183
+ },
+ "8967": {
+  "source": "Kew SID",
+  "sw_1000g": 256.41,
+  "sw_g": 0.25641
+ },
+ "8970": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 156.3,
+  "sw_g": 0.1563
+ },
+ "8983": {
+  "source": "Kew SID",
+  "sw_1000g": 1042.0,
+  "sw_g": 1.042
+ },
+ "8992": {
+  "source": "Kew SID",
+  "sw_1000g": 1068.9,
+  "sw_g": 1.0689
+ },
+ "9018": {
+  "source": "Kew SID",
+  "sw_1000g": 47.5,
+  "sw_g": 0.0475
+ },
+ "902": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.25,
+  "sw_g": 0.00425
+ },
+ "9029": {
+  "source": "Kew SID",
+  "sw_1000g": 8.36,
+  "sw_g": 0.00836
+ },
+ "9041": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 238.1,
+  "sw_g": 0.2381
+ },
+ "9042": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 588.0,
+  "sw_g": 0.588
+ },
+ "9043": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 65.44,
+  "sw_g": 0.06544
+ },
+ "9044": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "9045": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 612.37,
+  "sw_g": 0.61237
+ },
+ "9046": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 625.0,
+  "sw_g": 0.625
+ },
+ "9049": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 952.38,
+  "sw_g": 0.95238
+ },
+ "9086": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 45.0,
+  "sw_g": 0.045
+ },
+ "909": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.61,
+  "sw_g": 0.00061
+ },
+ "9096": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 2273.0,
+  "sw_g": 2.273
+ },
+ "9097": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 3030.0,
+  "sw_g": 3.03
+ },
+ "9098": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 3250.9,
+  "sw_g": 3.2509
+ },
+ "9107": {
+  "source": "Kew SID",
+  "sw_1000g": 1111.0,
+  "sw_g": 1.111
+ },
+ "9114": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 2478.6,
+  "sw_g": 2.4786
+ },
+ "9118": {
+  "source": "Kew SID",
+  "sw_1000g": 1000.0,
+  "sw_g": 1.0
+ },
+ "9121": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "9123": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "9138": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 3497.0,
+  "sw_g": 3.497
+ },
+ "9140": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 7143.0,
+  "sw_g": 7.143
+ },
+ "9143": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 3964.95,
+  "sw_g": 3.96495
+ },
+ "9146": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 1288.61,
+  "sw_g": 1.28861
+ },
+ "9168": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 18.2,
+  "sw_g": 0.0182
+ },
+ "9175": {
+  "source": "Kew SID",
+  "sw_1000g": 25000.0,
+  "sw_g": 25.0
+ },
+ "920": {
+  "source": "Kew SID",
+  "sw_1000g": 0.5,
+  "sw_g": 0.0005
+ },
+ "921": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.27,
+  "sw_g": 0.00127
+ },
+ "9213": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 37.85,
+  "sw_g": 0.03785
+ },
+ "9270": {
+  "source": "Kew SID",
+  "sw_1000g": 20.06,
+  "sw_g": 0.02006
+ },
+ "9279": {
+  "source": "Kew SID",
+  "sw_1000g": 1.5,
+  "sw_g": 0.0015
+ },
+ "9282": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "9285": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 4.8,
+  "sw_g": 0.0048
+ },
+ "9290": {
+  "source": "Kew SID",
+  "sw_1000g": 3.33,
+  "sw_g": 0.00333
+ },
+ "9291": {
+  "source": "Kew SID",
+  "sw_1000g": 1590.0,
+  "sw_g": 1.59
+ },
+ "9297": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 18.89,
+  "sw_g": 0.01889
+ },
+ "932": {
+  "source": "Kew SID",
+  "sw_1000g": 21.65,
+  "sw_g": 0.02165
+ },
+ "9326": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.8,
+  "sw_g": 0.0008
+ },
+ "936": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "9373": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.4,
+  "sw_g": 0.0014
+ },
+ "9374": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.4,
+  "sw_g": 0.0014
+ },
+ "938": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.68,
+  "sw_g": 0.00568
+ },
+ "9405": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.4,
+  "sw_g": 0.0014
+ },
+ "9412": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "942": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "9421": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.98,
+  "sw_g": 0.00198
+ },
+ "9437": {
+  "source": "Kew SID",
+  "sw_1000g": 487.8,
+  "sw_g": 0.4878
+ },
+ "9441": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.67,
+  "sw_g": 0.00167
+ },
+ "945": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 384.62,
+  "sw_g": 0.38462
+ },
+ "9450": {
+  "source": "Kew SID",
+  "storage": "recalcitrant"
+ },
+ "9516": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.56,
+  "sw_g": 0.00356
+ },
+ "952": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "9527": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.95,
+  "sw_g": 0.00195
+ },
+ "9535": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 6.25,
+  "sw_g": 0.00625
+ },
+ "9545": {
+  "source": "Kew SID",
+  "sw_1000g": 2678.08,
+  "sw_g": 2.67808
+ },
+ "9546": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 135.14,
+  "sw_g": 0.13514
+ },
+ "9549": {
+  "source": "Kew SID",
+  "sw_1000g": 2112.24,
+  "sw_g": 2.11224
+ },
+ "9558": {
+  "source": "Kew SID",
+  "sw_1000g": 163.16,
+  "sw_g": 0.16316
+ },
+ "9582": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.33,
+  "sw_g": 0.00033
+ },
+ "9584": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.37,
+  "sw_g": 0.00037
+ },
+ "9612": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "9615": {
+  "source": "Kew SID",
+  "sw_1000g": 1417.66,
+  "sw_g": 1.41766
+ },
+ "9621": {
+  "source": "Kew SID",
+  "sw_1000g": 584.4,
+  "sw_g": 0.5844
+ },
+ "963": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 19500.0,
+  "sw_g": 19.5
+ },
+ "9639": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.62,
+  "sw_g": 0.00162
+ },
+ "9664": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.57,
+  "sw_g": 0.00957
+ },
+ "969": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.0,
+  "sw_g": 0.001
+ },
+ "970": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 1.4,
+  "sw_g": 0.0014
+ },
+ "9702": {
+  "source": "Kew SID",
+  "sw_1000g": 419.6,
+  "sw_g": 0.4196
+ },
+ "9712": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "9714": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.52,
+  "sw_g": 0.00952
+ },
+ "9715": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 35.58,
+  "sw_g": 0.03558
+ },
+ "9716": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.95,
+  "sw_g": 0.00995
+ },
+ "9717": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 9.95,
+  "sw_g": 0.00995
+ },
+ "9719": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 23.6,
+  "sw_g": 0.0236
+ },
+ "972": {
+  "source": "Kew SID",
+  "storage": "intermediate",
+  "sw_1000g": 3000.0,
+  "sw_g": 3.0
+ },
+ "9722": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 11.7,
+  "sw_g": 0.0117
+ },
+ "9732": {
+  "source": "Kew SID",
+  "sw_1000g": 2.21,
+  "sw_g": 0.00221
+ },
+ "9735": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "9736": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "9737": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "9744": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 390.0,
+  "sw_g": 0.39
+ },
+ "9747": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 1700.0,
+  "sw_g": 1.7
+ },
+ "9750": {
+  "source": "Kew SID",
+  "sw_1000g": 166.7,
+  "sw_g": 0.1667
+ },
+ "9784": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 24.69,
+  "sw_g": 0.02469
+ },
+ "9785": {
+  "source": "Kew SID",
+  "sw_1000g": 833.0,
+  "sw_g": 0.833
+ },
+ "9786": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 469.56,
+  "sw_g": 0.46956
+ },
+ "9787": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 5.42,
+  "sw_g": 0.00542
+ },
+ "9825": {
+  "source": "Kew SID",
+  "sw_1000g": 3.6,
+  "sw_g": 0.0036
+ },
+ "984": {
+  "source": "Kew SID",
+  "storage": "intermediate"
+ },
+ "985": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 0.36,
+  "sw_g": 0.00036
+ },
+ "9864": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.69,
+  "sw_g": 0.00369
+ },
+ "9878": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 3.3,
+  "sw_g": 0.0033
+ },
+ "9938": {
+  "source": "Kew SID",
+  "storage": "orthodox"
+ },
+ "9942": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 33.22,
+  "sw_g": 0.03322
+ },
+ "9979": {
+  "source": "Kew SID",
+  "storage": "recalcitrant",
+  "sw_1000g": 101.52,
+  "sw_g": 0.10152
+ },
+ "9984": {
+  "source": "Kew SID",
+  "storage": "orthodox",
+  "sw_1000g": 14.0,
+  "sw_g": 0.014
+ }
+}

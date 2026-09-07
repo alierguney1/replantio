@@ -14,6 +14,8 @@ OUT = ROOT / "data" / "species.json"
 
 NUM = ["TOPMN", "TOPMX", "TMIN", "TMAX", "ROPMN", "ROPMX", "RMIN", "RMAX",
        "PHOPMN", "PHOPMX", "PHMIN", "PHMAX", "KTMP", "KTMPR", "GMIN", "GMAX", "ALTMX"]
+SEED_TRAITS_PATH = ROOT / "data" / "seed_traits.json"
+SEED_TRAITS = json.load(open(SEED_TRAITS_PATH)) if SEED_TRAITS_PATH.exists() else {}
 
 # Growth-rate class by genus. Heuristic: pioneers/plantation species vs
 # late-successional hardwoods; everything else defaults to medium.
@@ -368,6 +370,9 @@ def main():
             **({"sal_tol": sal_tol} if sal_tol else {}),
             **({"dra_opt": dra_opt} if dra_opt else {}),
             **({"dra_tol": dra_tol} if dra_tol else {}),
+            # Kew SID seed traits & restoration establishment markers
+            **({"storage": SEED_TRAITS[str(code)]["storage"]} if str(code) in SEED_TRAITS and "storage" in SEED_TRAITS[str(code)] else {}),
+            **({"sw_1000g": SEED_TRAITS[str(code)]["sw_1000g"]} if str(code) in SEED_TRAITS and "sw_1000g" in SEED_TRAITS[str(code)] else {}),
             "photo": photo,
             "cycle": cyc,
             "altmax": vals["ALTMX"],
