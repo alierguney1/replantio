@@ -28,8 +28,9 @@ L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/
   maxZoom: 20, maxNativeZoom: 19,
   attribution: "Imagery &copy; Esri, Vantor, Earthstar Geographics",
 }).addTo(map);
-L.tileLayer("https://basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png", {
-  maxZoom: 20, attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
+// ponytail: CARTO labels now watermark "API KEY REQUIRED"; Esri reference labels are keyless like the imagery
+L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", {
+  maxZoom: 20, maxNativeZoom: 19, attribution: "Labels &copy; Esri",
 }).addTo(map);
 
 let SPECIES = [], NATIVES = {}, NATURALIZED = {}, NAMES_PT = {}, SOURCING = null, INVASIVES = {}, NATIVES_L3 = {}, L3_REGIONS = {}, NATIVES_GEO = {};
