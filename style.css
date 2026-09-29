@@ -535,48 +535,7 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
 .leaflet-control-attribution a { color: var(--muted) !important; }
 .leaflet-container { font-family: inherit !important; }
 
-@media (max-width: 760px) {
-  .bar { left: 10px; right: 10px; top: 10px; gap: 6px; flex-wrap: wrap; }
-  .brand { padding: 9px 10px; }
-  .brand span { display: none; }           /* logo only; the popover still explains */
-  .search { flex: 1; min-width: 130px; }
-  .search input { width: 100%; padding: 9px 12px; }
-  #draw-btn span, #radar-btn span, #import-btn span { display: none; } /* icon-only controls */
-  #draw-btn, #import-btn, #radar-btn, #lang-btn { padding: 9px 10px; }
-  #about, #langmenu { left: 10px; right: 10px; width: auto; min-width: 0; top: 106px; }
-
-  /* panel becomes a bottom sheet */
-  #panel {
-    top: auto; left: 0; right: 0; bottom: 0;
-    width: 100%; max-width: none; max-height: 62vh;
-    border-radius: 18px 18px 0 0;
-  }
-  .p-head { padding: 14px var(--pad) 12px; }
-  .readout { grid-template-rows: repeat(9, auto); column-gap: 0; } /* single column: two columns clip at 390px */
-  .readout .rd:nth-child(6) { border-top: 1px solid var(--line); }
-
-  /* map controls and the sim pill lift above the sheet when it is open */
-  .leaflet-control-zoom { display: none; }  /* pinch zoom exists */
-  body.panel-open .leaflet-bottom.leaflet-left { bottom: 62vh; }
-  #sim {
-    left: 10px; right: 10px; transform: none; width: auto;
-    flex-wrap: wrap; gap: 6px 10px; padding: 8px 12px; border-radius: 16px;
-    bottom: 10px;
-  }
-  body.panel-open #sim { bottom: calc(62vh + 10px); }
-  #sim input[type="range"] { width: 100%; order: 5; }
-  .sim-note { display: none; }
-  #proj { display: none; }
-  #hint { bottom: auto; top: 106px; max-width: calc(100vw - 20px); text-align: center; }
-
-  /* first-run invitation stacks instead of squeezing */
-  #intro { flex-wrap: wrap; left: 10px; right: 10px; transform: none; max-width: none; row-gap: 8px; }
-  #intro .iq { flex: 1 1 100%; }
-  #intro .ialt { white-space: normal; flex: 1; min-width: 0; }
-
-  /* the sheet header stays opaque: scrolled rows must not ghost through the headline */
-  .p-head { background: linear-gradient(180deg, rgba(17,22,18,.97) 0, rgba(17,22,18,.96) 70%, rgba(17,22,18,.93) 100%); }
-}
+.sheet-grab { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   #panel, #hint { animation: none; }
@@ -710,8 +669,11 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
 }
 #radarnav .panel-close { position: static; }
 @media (max-width: 760px) {
-  #radarnav { bottom: 12px; }
-  body.panel-open #radarnav { bottom: calc(62vh + 10px); }
+  #radarnav { bottom: calc(12px + env(safe-area-inset-bottom)); left: 10px; right: 10px; transform: none; justify-content: space-between; }
+  body.panel-open #radarnav { bottom: calc(var(--sheet-h, 52vh) + 10px); }
+  #radarnav .rn-btn { width: 44px; height: 44px; font-size: 20px; }
+  #radarnav .rn-go { min-height: 40px; font-size: 14px; padding: 0 16px; }
+  #radarnav .rn-label { font-size: 12.5px; }
 }
 
 /* site adjustments: two quiet inline controls inside "Why these plants?" */
@@ -726,3 +688,131 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
   background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line-2); border-radius: 6px;
 }
 .site-adjust input[type="number"]:focus { outline: none; border-color: var(--accent); }
+
+/* ---------- phones: thumb-first layout ---------- */
+@media (max-width: 760px) {
+  /* one-line top bar, 44px targets, safe-area aware */
+  .bar {
+    left: 10px; right: 10px; top: max(10px, env(safe-area-inset-top)); gap: 6px; flex-wrap: nowrap;
+  }
+  .brand { padding: 0; width: 44px; height: 44px; justify-content: center; flex: none; }
+  .brand span { display: none; }
+  .search { flex: 1; min-width: 0; }
+  .search input { width: 100%; height: 44px; padding: 0 14px; font-size: 16px; } /* 16px: iOS won't zoom on focus */
+  #draw-btn span, #radar-btn span, #import-btn span { display: none; }
+  #draw-btn, #import-btn, #radar-btn, #lang-btn {
+    width: 44px; height: 44px; padding: 0; justify-content: center; flex: none;
+  }
+  #draw-btn svg, #radar-btn svg, #import-btn svg { width: 19px; height: 19px; }
+  /* typing a place: the search takes the whole bar */
+  .bar:focus-within #draw-btn, .bar:focus-within #radar-btn,
+  .bar:focus-within #import-btn, .bar:focus-within #lang-btn { display: none; }
+  #geo-results li { padding: 13px 14px; font-size: 15px; }
+  #about, #langmenu { left: 10px; right: 10px; width: auto; min-width: 0; top: calc(max(10px, env(safe-area-inset-top)) + 52px); }
+  #langmenu button { padding: 12px 14px; font-size: 15px; }
+
+  button, a, input, .opt, [data-toggle] { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+  /* panel is a draggable bottom sheet: peek / half / full */
+  #panel {
+    top: auto; left: 0; right: 0; bottom: 0;
+    width: 100%; max-width: none; max-height: none;
+    height: var(--sheet-h, 52vh);
+    border-radius: 20px 20px 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    transition: height .32s cubic-bezier(0.2, 0.8, 0.2, 1);
+    animation: sheet-rise .32s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  #panel.dragging { transition: none; }
+  #panel[data-stop="peek"] { overflow: hidden; }
+  @keyframes sheet-rise { from { transform: translateY(40%); opacity: .4; } }
+  .sheet-grab {
+    display: flex; justify-content: center; align-items: center;
+    position: sticky; top: 0; z-index: 5; height: 22px; margin-bottom: -22px;
+    touch-action: none; cursor: grab;
+  }
+  .sheet-grab i { width: 40px; height: 5px; border-radius: 99px; background: rgba(255,255,255,.26); }
+  .p-head { padding: 24px var(--pad) 14px; touch-action: none; }
+  .p-head { background: linear-gradient(180deg, rgba(17,22,18,.98) 0, rgba(17,22,18,.97) 70%, rgba(17,22,18,.94) 100%); }
+
+  /* header: bigger type, 44px icon targets */
+  .loc-title { font-size: 19px; margin-right: 132px; }
+  .loc-geo { font-size: 12px; }
+  .loc-note { font-size: 13.5px; color: var(--muted); }
+  .panel-close, .panel-del, .panel-fb {
+    top: 16px; width: 44px; height: 44px; border-radius: 12px; font-size: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .panel-close { right: 6px; }
+  .panel-del { right: 50px; }
+  .panel-fb { right: 94px; }
+  .panel-del svg, .panel-fb svg { width: 17px; height: 17px; }
+  [data-tip]::after { display: none; }      /* no hover on touch: tooltips only get in the way */
+
+  /* species search + filter chips as real pills in a swipeable row */
+  .sp-search { padding: 4px 2px 12px; }
+  .sp-search input { font-size: 16px; height: 40px; }
+  .chips-row {
+    flex-wrap: nowrap; overflow-x: auto; gap: 8px; scrollbar-width: none;
+    margin: var(--s4) calc(var(--pad) * -1) 0; padding: 2px var(--pad) 12px;
+  }
+  .chips-row::-webkit-scrollbar { display: none; }
+  .chips-row .opt, .chips-row .crit-toggle {
+    flex: none; min-height: 38px; padding: 0 15px; border-radius: 999px;
+    border: 1px solid var(--line-2); background: rgba(255,255,255,.03);
+    font-size: 14px; color: var(--muted); display: inline-flex; align-items: center; white-space: nowrap;
+  }
+  .chips-row .opt.on { color: var(--accent); border-color: rgba(99, 201, 135, .5); background: var(--accent-dim); }
+  .chips-row .opt .c { font-size: 11px; }
+  .chips-row .crit-toggle { margin-left: 0; }
+  .crit-row { flex-direction: column; gap: 6px; padding: 12px 0; }
+  .crit-row .k { flex: none; font-size: 11px; }
+  .crit-row .opts { column-gap: 8px; row-gap: 8px; margin: 0; }
+  .crit-row .opt {
+    min-height: 36px; padding: 0 13px; border-radius: 999px; border: 1px solid var(--line-2);
+    font-size: 13.5px; display: inline-flex; align-items: center;
+  }
+  .crit-row .opt.on { border-color: rgba(99, 201, 135, .5); color: var(--accent); }
+  .crit-clear { font-size: 13px; padding: 10px 0; }
+
+  /* species ledger: bigger names, whole row is the target */
+  .sp-head { min-height: 72px; gap: 14px; }
+  .sp-common { font-size: 16px; }
+  .sp-sci { font-size: 13px; margin-top: 3px; }
+  .nearby { font-size: 11px; }
+  .chip, .chip.more { min-height: 44px; padding: 0 18px; font-size: 14px; }
+  .chip.more { width: 100%; }
+  .fu { min-height: 48px; font-size: 14px; }
+  .disc { min-height: 52px; font-size: 12px; }
+  .site-adjust { font-size: 14px; gap: 22px; }
+  .site-adjust input[type="checkbox"] { width: 20px; height: 20px; }
+  .site-adjust input[type="number"] { width: 72px; height: 38px; font-size: 16px; }
+  .readout { grid-template-rows: repeat(12, auto); column-gap: 0; }
+  .readout .rd:nth-child(6) { border-top: 1px solid var(--line); }
+  textarea, select { font-size: 16px !important; }
+
+  /* map chrome rides on top of the sheet, whatever its height */
+  .leaflet-control-zoom { display: none; }  /* pinch zoom exists */
+  .locate-btn { width: 44px; height: 44px; }
+  .leaflet-bottom.leaflet-left { bottom: env(safe-area-inset-bottom); }
+  body.panel-open .leaflet-bottom.leaflet-left { bottom: var(--sheet-h, 52vh); }
+  #sim {
+    left: 10px; right: 10px; transform: none; width: auto;
+    flex-wrap: wrap; gap: 8px 12px; padding: 10px 14px; border-radius: 16px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+  body.panel-open #sim { bottom: calc(var(--sheet-h, 52vh) + 10px); }
+  #sim input[type="range"] { width: 100%; order: 5; height: 32px; }
+  .sim-note { display: none; }
+  #proj { display: none; }
+  #hint { bottom: auto; top: calc(max(10px, env(safe-area-inset-top)) + 54px); max-width: calc(100vw - 20px); text-align: center; font-size: 13px; }
+
+  /* first-run invitation stacks instead of squeezing */
+  #intro {
+    flex-wrap: wrap; left: 10px; right: 10px; transform: none; max-width: none; row-gap: 10px;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+  }
+  #intro .iq { flex: 1 1 100%; font-size: 15px; }
+  #intro .ialt { white-space: normal; flex: 1; min-width: 0; font-size: 13px; }
+  #intro #intro-go { min-height: 44px; padding: 0 18px; font-size: 15px; }
+}

@@ -600,10 +600,78 @@ function step(doneId, nextId) {
   document.getElementById(nextId)?.classList.add("active");
 }
 
+// ---------- mobile bottom sheet ----------
+// Phones get a draggable sheet with three stops instead of a fixed slab:
+// peek (header only, map free), half (default), full (list reading).
+// Everything that frames the map reads the sheet's real height from here.
+const isPhone = () => matchMedia("(max-width: 760px)").matches;
+let sheetStop = "half", sheetH = 0, simWantsPeek = false;
+function sheetStops() {
+  const vh = window.innerHeight;
+  const bar = document.querySelector(".bar")?.getBoundingClientRect().bottom ?? 60;
+  const head = panel.querySelector(".p-head")?.offsetHeight ?? 110;
+  return { peek: Math.min(head + 22, vh * 0.4), half: Math.round(vh * 0.52), full: Math.round(vh - bar - 8) };
+}
+function setSheet(stop, px) {
+  if (!isPhone()) return;
+  const s = sheetStops();
+  sheetStop = stop ?? sheetStop;
+  sheetH = Math.round(px ?? s[sheetStop]);
+  document.body.style.setProperty("--sheet-h", `${sheetH}px`);
+  panel.dataset.stop = sheetStop;
+  if (sheetStop === "peek") panel.scrollTop = 0;
+}
+// bottom padding (px) the map must leave for the sheet when framing things
+const sheetPx = () => (isPhone() && !panel.hidden ? sheetH || sheetStops()[sheetStop] : 0);
+function fitVisible(bounds, pad = 0.2) {
+  const sim = document.getElementById("sim");
+  const px = sheetPx() + (isPhone() && sim && !sim.hidden ? sim.offsetHeight + 12 : 0);
+  map.fitBounds(bounds.pad(pad), px ? { paddingBottomRight: [0, px], paddingTopLeft: [0, 64] } : undefined);
+}
+(() => {
+  let drag = null;
+  panel.addEventListener("pointerdown", e => {
+    if (!isPhone() || e.button > 0) return;
+    if (!e.target.closest(".sheet-grab, .p-head") || e.target.closest("button, a, input, textarea")) return;
+    drag = { y0: e.clientY, h0: sheetH || sheetStops()[sheetStop], t0: performance.now(), moved: false };
+    panel.classList.add("dragging");
+    panel.setPointerCapture(e.pointerId);
+  });
+  panel.addEventListener("pointermove", e => {
+    if (!drag) return;
+    const dy = drag.y0 - e.clientY;
+    if (Math.abs(dy) > 4) drag.moved = true;
+    const s = sheetStops();
+    setSheet(null, Math.max(s.peek * 0.8, Math.min(s.full, drag.h0 + dy)));
+  });
+  const end = e => {
+    if (!drag) return;
+    panel.classList.remove("dragging");
+    const s = sheetStops();
+    if (!drag.moved) { // tap on the grab/header cycles peek -> half -> full -> half
+      setSheet(sheetStop === "peek" ? "half" : sheetStop === "half" ? "full" : "half");
+    } else {
+      const v = (drag.y0 - e.clientY) / Math.max(1, performance.now() - drag.t0); // px/ms, + = up
+      const target = sheetH + v * 180; // fling projects the release point
+      const stop = Object.entries(s).sort((a, b) => Math.abs(a[1] - target) - Math.abs(b[1] - target))[0][0];
+      setSheet(stop);
+    }
+    drag = null;
+  };
+  panel.addEventListener("pointerup", end);
+  panel.addEventListener("pointercancel", end);
+  addEventListener("resize", () => { if (!panel.hidden) setSheet(); });
+})();
+
 function openPanel(html) {
+  const wasHidden = panel.hidden;
   content.innerHTML = html;
   panel.hidden = false;
   document.body.classList.add("panel-open");
+  if (wasHidden && isPhone()) { // a fresh sheet opens at half, framing the area above it
+    setSheet("half");
+    if (typeof shape !== "undefined" && shape?._pts?.length) fitVisible(L.latLngBounds(shape._pts), 0.3);
+  }
 }
 panel.addEventListener("click", e => {
   if (e.target.closest("[data-del]")) { // explicit area deletion
@@ -1083,6 +1151,7 @@ content.addEventListener("click", e => {
       const head = [...content.querySelectorAll(".sp")].find(el =>
         current.scored.find(x => x.sp.id === +el.dataset.id)?.sp.tree)?.querySelector("[data-toggle]");
       head?.scrollIntoView({ block: "center", behavior: "smooth" });
+      simWantsPeek = true;
       head?.click();
     } else radarScan();
     return;
@@ -1449,10 +1518,11 @@ function startSim(item) {
   ctl.querySelector("[data-simclose]").addEventListener("click", stopSim);
   ensureSimLayer();
   map.getContainer().style.cursor = "copy"; // planting is armed while the pill is up
-  // on mobile the bottom sheet covers 62vh: frame the stand in the visible strip
-  const sheetPx = matchMedia("(max-width: 760px)").matches && !$("#panel").hidden
-    ? Math.round(map.getSize().y * 0.62) : 0;
-  map.fitBounds(b.pad(0.2), sheetPx ? { paddingBottomRight: [0, sheetPx] } : undefined);
+  // on phones: a card tap keeps the sheet (the card stays readable, the stand is
+  // framed in the strip above it); the "see the planting grow" action drops to peek
+  if (simWantsPeek) setSheet("peek");
+  simWantsPeek = false;
+  fitVisible(b, 0.2);
   drawSim();
 }
 
@@ -2070,7 +2140,7 @@ function radarGoTo(i) {
   radarIdx = ((i % radarCands.length) + radarCands.length) % radarCands.length;
   radarCands.forEach((cd, k) => cd.poly.setStyle(k === radarIdx ? CAND_ACTIVE : CAND_STYLE));
   const cd = radarCands[radarIdx];
-  map.fitBounds(cd.poly.getBounds().pad(0.6));
+  fitVisible(cd.poly.getBounds(), 0.6);
   radarNav.querySelector(".rn-label").textContent =
     `${radarIdx + 1}/${radarCands.length} · ${landLabel(cd.tag)} · ${fmtHa(polyAreaHa(cd.pts.map(([la, ln]) => L.latLng(la, ln))))}`;
 }
@@ -2167,7 +2237,7 @@ async function importGeometryFile(file) {
       setShape(ring.map(([la, ln]) => L.latLng(la, ln)));
       last = shape;
     }
-    map.fitBounds(L.latLngBounds(polys.flat()).pad(0.15));
+    fitVisible(L.latLngBounds(polys.flat()), 0.15);
     await speciesReady;
     analyze(last._pts);
   } catch (err) {
