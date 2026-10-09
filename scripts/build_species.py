@@ -254,6 +254,37 @@ def growth_class(sci, famname, topt_mid, ktmpr):
     family = (famname or "").split(":")[-1]
     return f"{zone}_{rate}", ("conifer" if family in CONIFER_FAM else "broadleaf")
 
+# Approximate p_ds uncertainty half-width by evidence tier. Widths are loosely
+# scaled to the genus/family identification-success rates reported by Wyse &
+# Dickie (2018, AoB) — illustrative, NOT calibrated posteriors: empirical Kew
+# measurements get protocol noise only (0.05); heterogeneous or data-free
+# imputations get a near-uninformative 0.30.
+P_DS_HALF_WIDTH = {
+    "empirical_species": 0.05,
+    "genus_homogeneous": 0.11,
+    "family_prior": 0.21,
+    "uncertain_heterogeneous": 0.30,
+    "uncertain": 0.30,
+}
+
+
+def p_ds_interval(p_ds, confidence):
+    hw = P_DS_HALF_WIDTH.get(confidence, 0.30)
+    lo = max(0.0, round(p_ds - hw, 2))
+    hi = min(1.0, round(p_ds + hw, 2))
+    return lo, hi
+
+
+def seed_interval_fields(code):
+    """p_ds_lo/hi for species with a p_ds value, else {}."""
+    entry = SEED_TRAITS.get(str(code), {})
+    p_ds = entry.get("p_ds")
+    if p_ds is None:
+        return {}
+    lo, hi = p_ds_interval(p_ds, entry.get("storage_confidence"))
+    return {"p_ds_lo": lo, "p_ds_hi": hi}
+
+
 def main():
     # ponytail: cp1252 per research; a few source bytes are pre-damaged, replace them
     rows = list(csv.DictReader(open(SRC, encoding="cp1252", errors="replace")))
@@ -378,6 +409,7 @@ def main():
             # Kew SID seed traits & restoration establishment markers
             **({"storage": SEED_TRAITS[str(code)]["storage"]} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("storage") else {}),
             **({"p_ds": SEED_TRAITS[str(code)]["p_ds"]} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("p_ds") is not None else {}),
+            **seed_interval_fields(code),
             **({"storage_confidence": SEED_TRAITS[str(code)]["storage_confidence"]} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("storage_confidence") else {}),
             **({"sw_1000g": SEED_TRAITS[str(code)]["sw_1000g"]} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("sw_1000g") is not None else {}),
             **({"tsw_source": SEED_TRAITS[str(code)]["tsw_source"]} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("tsw_source") else {}),

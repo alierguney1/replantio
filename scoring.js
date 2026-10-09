@@ -872,3 +872,712 @@ export function gradeColor(s) {
   if (s > 0.2) return "#d79a63";
   return "#d4756f";
 }
+
+const MONTH_ABBR = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/**
+ * Continuous seed-reserve advantage in [0, 1] (Phase-2).
+ * Logistic in log10 1000-seed weight, anchored so the two legacy gates land
+ * on round values: 2 g/1000 (old micro gate) scores ~0.10, 1500 g/1000 (old
+ * large-nut gate) scores ~0.90. Solved midpoint x0 = 1.7385 (~55 g/1000),
+ * steepness k = 1.53. Direction follows the reserve effect (Westoby et al.
+ * 1996) and the Moles & Westoby (2004) seedling-survival synthesis (larger
+ * seeds survive early establishment hazards better); the anchors preserve
+ * prior intent continuously and are not new empirical cutoffs.
+ * Returns null when weight is unknown (benefit of the doubt downstream).
+ */
+export function seedReserveAdvantage(sw1000) {
+  if (sw1000 == null || !Number.isFinite(sw1000) || sw1000 <= 0) return null;
+  const x = Math.log10(sw1000);
+  return 1 / (1 + Math.exp(-1.53 * (x - 1.7385)));
+}
+
+/**
+ * Hydrothermal sowing window (Phase-2; Bradford 1990 concept).
+ * Monthly moisture index MI = P/ET0; months with MI < 0.5 count as dry, using
+ * the UNEP class boundary as the dry-month definition. A month is favorable
+ * when thermally viable for germination (tavg >= 4 C, interim Tb default for
+ * cool-season woody taxa, applied uniformly because the window is computed
+ * from site series alone — tropical taxa keep the same gate, a documented
+ * limitation) AND MI >= 0.5. Without an ET0 series the legacy absolute-rain
+ * fallbacks apply (AI >= 0.65: P >= 35 mm, else P >= 45 mm).
+ * Progress accumulates hydrothermal-time-style: each favorable month adds
+ * min(1, MI - 0.5) month-equivalents (capped — water past field capacity adds
+ * no further germination speed). The window is the longest circular run of
+ * favorable months. It is viable for first-season establishment when the run
+ * spans >= 3 months (taproot penetration before summer drought; interim
+ * heuristic — no published month-count threshold was found) AND accumulates
+ * >= 1.5 month-equivalents (the run averages at least half-strength
+ * moisture; interim). Without monthly series, an AI-only fallback maps UNEP
+ * class to window length (8/5/2/0 months at AI 0.65/0.50/0.20; interim) at
+ * assumed moderate strength (0.75/month, interim), with start unknown (null).
+ *
+ * @returns {{ start: number|null, length: number, moistureTime: number,
+ *   viable: boolean, totalFavorable: number, hasSeries: boolean }}
+ * moistureTime is in month-equivalents and never exceeds length.
+ */
+export function sowingWindow(site) {
+  const ai = site?.ai != null ? site.ai : null;
+  const hasSeries = site?.prec?.length === 12 && site?.tavg?.length === 12;
+  const favorable = [];
+  const strength = [];
+  if (hasSeries) {
+    const hasET0 = Array.isArray(site.et0) && site.et0.length === 12;
+    for (let m = 0; m < 12; m++) {
+      const p = site.prec[m];
+      const t = site.tavg[m];
+      const et = hasET0 ? site.et0[m] : null;
+      let wet = false;
+      let mi = null;
+      if (t != null && t >= 4.0) {
+        if (et != null && Number.isFinite(et) && et > 0) {
+          mi = p / et;
+          wet = mi >= 0.50;
+        } else {
+          wet = (ai != null && ai >= 0.65) ? p >= 35.0 : p >= 45.0;
+        }
+      }
+      favorable.push(wet);
+      strength.push(mi == null ? (wet ? 0.75 : 0) : (wet ? Math.min(1, Math.max(0, mi - 0.5)) : 0));
+    }
+  }
+  let best = { start: null, length: 0, moistureTime: 0 };
+  let totalFavorable = 0;
+  if (hasSeries) {
+    totalFavorable = favorable.filter(Boolean).length;
+    const f2 = favorable.concat(favorable);
+    const s2 = strength.concat(strength);
+    let cur = 0, curStart = 0, bestStart = 0;
+    for (let i = 0; i < 24; i++) {
+      if (f2[i]) {
+        if (cur === 0) curStart = i;
+        cur++;
+      } else {
+        if (cur > best.length) { best.length = cur; bestStart = curStart; }
+        cur = 0;
+      }
+    }
+    if (cur > best.length) { best.length = cur; bestStart = curStart; }
+    best.length = Math.min(best.length, 12);
+    if (best.length > 0) {
+      best.start = bestStart % 12;
+      // Moisture-time is summed over the winning window only, never over the
+      // 24-month scan: each favorable month contributes at most 1.0
+      // month-equivalent, so moistureTime <= length always holds.
+      // bestStart < 12 always (every circular run first occurs in months
+      // 0..11), so bestStart + k stays inside the doubled arrays.
+      let mt = 0;
+      for (let k = 0; k < best.length; k++) mt += s2[bestStart + k];
+      best.moistureTime = mt;
+    }
+  } else if (ai != null) {
+    // AI-only fallback (no monthly series): UNEP-aligned mapping, interim.
+    // No start month is knowable without a series, so start stays null and
+    // strength is assumed moderate (0.75/month, interim).
+    best.length = ai >= 0.65 ? 8 : ai >= 0.50 ? 5 : ai >= 0.20 ? 2 : 0;
+    best.moistureTime = best.length * 0.75;
+    totalFavorable = best.length;
+  }
+  return {
+    start: best.length ? best.start : null,
+    length: best.length,
+    moistureTime: +best.moistureTime.toFixed(2),
+    viable: best.length >= 3 && best.moistureTime >= 1.5,
+    totalFavorable,
+    hasSeries,
+  };
+}
+
+/** "Oct–Dec" style label for a sowing window (English abbreviations). */
+export function windowLabel(win) {
+  if (!win || win.start == null || !win.length) return "";
+  const end = (win.start + win.length - 1) % 12;
+  return `${MONTH_ABBR[win.start]}–${MONTH_ABBR[end]}`;
+}
+
+/**
+ * Establishment Strategy Model for Restoration & Reforestation (Phase-2).
+ * Recommends direct seeding vs nursery-raised seedlings across eco-physiological
+ * guilds. Design rules: every threshold cites a source; unsourced numbers were
+ * removed; uncertainty is explicit via `confidence` (no 0–1 feasibility score).
+ *
+ * Evidence backbone:
+ * - Species selection prior is climate-agnostic: mean field establishment from
+ *   direct seeding is ~11% (Ceccon et al. 2016, meta-analysis, n=89 species);
+ *   large seeds roughly double success; physical protection doubles germination
+ *   only transiently. Sowing *timing* still uses the seasonal moisture window.
+ * - Aridity classes follow UNEP (1992/1997): hyper-arid AI < 0.05, arid < 0.20,
+ *   semi-arid 0.20–0.50, dry sub-humid 0.50–0.65, humid > 0.65.
+ * - Storage physiology continuum (Roberts 1973; Dickie & Pritchard 2002);
+ *   dormancy classes (Baskin & Baskin 2004/2014); reserve effect
+ *   (Westoby et al. 1996; Moles & Westoby 2004).
+ * - Phase-2 additions: p_ds uncertainty intervals, with half-widths loosely
+ *   scaled to the genus/family identification-success rates reported by Wyse
+ *   & Dickie (2018) — illustrative widths, not calibrated posteriors;
+ *   hydrothermal sowing window with moisture-time accumulation (Bradford
+ *   1990 concept); continuous seed-reserve advantage replacing fixed mass
+ *   gates at two code-constructed anchors (0.2 low-reserve boundary, 0.5
+ *   midpoint) that preserve prior intent and are not empirical cutoffs.
+ *
+ * @param {Object} sp - species envelope from species.json
+ * @param {Object} [site] - environmental context (site.ai, site.prec, site.tavg, site.et0, site.soil, site.irrigated)
+ * @returns {{
+ *   method: "direct_seeding" | "seedling" | "both",
+ *   directViable: boolean,
+ *   seedlingViable: boolean,
+ *   confidence: "high" | "medium" | "low",
+ *   confidenceKey: string,
+ *   labelKey: string,
+ *   noteKey: string,
+ *   directives: string[],
+ *   storage: string | null,
+ *   seedWeightG: number | null,
+ *   seedSource: string | null,
+ *   pDsLo: number | null,
+ *   pDsHi: number | null,
+ *   seedAdvantage: number | null,
+ *   sowingWindow: { start: number | null, length: number, label: string } | null
+ *   // plus pDs, storageConfidence, dormancy, tswSource (see returns above)
+ * }}
+ */
+export function establishmentStrategy(sp, site = null) {
+  if (!sp) return null;
+  const isHerbOrGrass = sp.porte === "herb" || sp.porte === "grass" || sp.annual === true;
+  const isVine = sp.porte === "vine";
+  const isTreeOrShrub = sp.tree || sp.porte === "tree" || sp.porte === "shrub";
+
+  const storage = sp.storage ?? null;
+  const pDs = sp.p_ds != null ? sp.p_ds : (storage === "recalcitrant" ? 0.95 : (storage === "intermediate" ? 0.50 : (storage === "orthodox" ? 0.05 : 0.35)));
+  const storageConfidence = sp.storage_confidence ?? (sp.storage ? "empirical_species" : "uncertain");
+  // Approximate uncertainty bounds (build_species.py; half-widths loosely
+  // scaled to Wyse & Dickie 2018 identification-success rates — illustrative,
+  // not calibrated posteriors). Synthetic/test objects without them fall
+  // back to ±0.30.
+  const pDsLo = sp.p_ds_lo != null ? sp.p_ds_lo : (pDs != null ? Math.max(0, +(pDs - 0.30).toFixed(2)) : null);
+  const pDsHi = sp.p_ds_hi != null ? sp.p_ds_hi : (pDs != null ? Math.min(1, +(pDs + 0.30).toFixed(2)) : null);
+  const physWidth = (pDsLo != null && pDsHi != null) ? pDsHi - pDsLo : null;
+  const sw1000 = sp.sw_1000g != null ? sp.sw_1000g : null;
+  const seedAdvantage = seedReserveAdvantage(sw1000);
+  // Wide physiology intervals (uncertain/heterogeneous taxa) downgrade
+  // physiology-driven advice one level. Not applied to the water-driven
+  // climate gates (hyper-arid, dry-site, semi-arid-seasonal), the
+  // safety-driven gates (mycorrhizal, tropical-fleshy recalcitrant), or the
+  // lifeform shortcuts (herb, vine, mangrove) that return before this point.
+  const downgrade = (c) => {
+    if (physWidth == null || physWidth < 0.5) return c;
+    return c === "high" ? "medium" : "low";
+  };
+  const tswSource = sp.tsw_source ?? (sw1000 != null ? "species" : null);
+  const seedWeightG = sw1000 != null ? sw1000 / 1000 : null;
+  const seedSource = sp.seed_source ?? null;
+  const dormancy = sp.dormancy ?? null; // no silent default: PD/PY treatment
+  // directives fire only on explicit record data or Kew presow cues, never
+  // on a guessed class (the legume PY prior below is the one deliberate
+  // exception: hard-coated Fabaceae are textbook PY, Baskin & Baskin 2014).
+  const presow = sp.presow ?? null;
+
+  // 1. Lifeform & Special Botanical Distinctions (Rule 1: Lifeform-Aware)
+  // Mangrove rule is a CANDIDATE (low confidence): viviparous-propagule
+  // planting is standard silvicultural practice (Tomlinson textbook), but the
+  // primary citation is still pending verification.
+  const isMangroveViviparous = sp.viviparous === true || sp.family === "Rhizophoraceae" || sp.family === "Avicenniaceae" || (sp.sci && (sp.sci.startsWith("Rhizophora") || sp.sci.startsWith("Avicennia")));
+  if (isMangroveViviparous) {
+    return {
+      method: "both",
+      directViable: true,
+      seedlingViable: true,
+      confidence: "low",
+      confidenceKey: "Low confidence",
+      labelKey: "Direct insertion of propagules or container seedlings (mangrove silviculture)",
+      noteKey: "Viviparous / cryptoviviparous mangrove propagule: Seeds germinate directly on the parent tree and cannot be dried or stored; establish by directly inserting fresh viviparous propagules into intertidal mud flats during low tide, or outplanting nursery-hardened saplings.",
+      directives: [
+        "Mangrove propagule directive: Insert fresh mature propagules directly into tidal mudflats during low tide to anchor roots before high-tide washaway."
+      ],
+      storage: "recalcitrant",
+      pDs: 0.98,
+      storageConfidence: "empirical_species",
+      dormancy: "ND",
+      seedWeightG,
+      seedSource,
+      tswSource,
+      // Interval overridden with the point estimate: the pre-override pDsLo/Hi
+      // describe propagule desiccation risk, not insertion success.
+      pDsLo: 0.93,
+      pDsHi: 1.0,
+      seedAdvantage,
+      sowingWindow: null,
+    };
+  }
+
+  if (isHerbOrGrass) {
+    return {
+      method: "direct_seeding",
+      directViable: true,
+      seedlingViable: false,
+      confidence: "high",
+      confidenceKey: "High confidence",
+      labelKey: "Direct seeding",
+      noteKey: "Herbaceous species and grasses establish naturally and cost-effectively from direct seed sowing.",
+      directives: [],
+      storage,
+      pDs,
+      storageConfidence,
+      dormancy,
+      seedWeightG,
+      seedSource,
+      tswSource,
+      pDsLo,
+      pDsHi,
+      seedAdvantage,
+      sowingWindow: null,
+    };
+  }
+
+  if (isVine) {
+    return {
+      method: "both",
+      directViable: true,
+      seedlingViable: true,
+      confidence: "high",
+      confidenceKey: "High confidence",
+      labelKey: "Direct seeding or cuttings",
+      noteKey: "Established by direct seed sowing or vegetative stem cuttings.",
+      directives: [],
+      storage,
+      pDs,
+      storageConfidence,
+      dormancy,
+      seedWeightG,
+      seedSource,
+      tswSource,
+      pDsLo,
+      pDsHi,
+      seedAdvantage,
+      sowingWindow: null,
+    };
+  }
+
+  // 2. Hydro-Climatic Layer & Atmospheric Water Balance (sowing window)
+  const ai = site?.ai != null ? site.ai : null;
+  const irrigated = site?.irrigated === true;
+
+  const win = sowingWindow(site);
+  const maxConsecWet = win.length;
+  const totalWetMonths = win.totalFavorable;
+
+  const hasSeasonalWetWindow = win.viable;
+  // UNEP (1992/1997) aridity classes: hyper-arid AI < 0.05, arid < 0.20,
+  // semi-arid 0.20–0.50, dry sub-humid 0.50–0.65, humid > 0.65
+  // (FAO-AQUASTAT uses < 0.05 for hyper-arid; UNESCO/Penman < 0.03).
+  const isHyperArid = ai != null && ai < 0.05 && !hasSeasonalWetWindow && !irrigated;
+  const isSemiAridSeasonal = ai != null && ai < 0.50 && hasSeasonalWetWindow && !irrigated;
+  const isDrySite = ai != null && ai < 0.50 && !hasSeasonalWetWindow && !irrigated;
+
+  // False-break risk (heuristic, low confidence): isolated early rains in a dry
+  // climate can trigger germination followed by lethal topsoil desiccation
+  // (bet-hedging literature: Cohen, Venable).
+  const falseBreakRisk = ai != null && ai < 0.65 && maxConsecWet <= 1 && totalWetMonths >= 1 && !irrigated;
+
+  const winSummary = win.length
+    ? { start: win.start, length: win.length, label: windowLabel(win) }
+    : null;
+
+  // 3. Functional & Taxonomic Guilds
+  const isLegume = sp.family === "Fabaceae" || sp.family === "Leguminosae";
+  // Fast-growing broadleaves only. `uses: ["environmental"]` is a
+  // planting-purpose tag (erosion control, shelterbelts), not a regeneration
+  // trait — 694/2009 catalog species carry it and it must not qualify.
+  const isPioneer = sp.gclass && sp.gclass.endsWith("fast") && sp.wood !== "conifer";
+  const isRecalcitrant = (pDsLo != null ? pDsLo >= 0.80 : pDs >= 0.80) || storage === "recalcitrant";
+  const isIntermediate = storage === "intermediate" || (pDs >= 0.25 && pDs <= 0.75 && storageConfidence !== "empirical_species");
+  // Dipterocarpaceae are obligately ectomycorrhizal (Brearley 2012, Biotropica
+  // review "Ectomycorrhizal Associations of the Dipterocarpaceae");
+  // inoculation pays off on degraded land without forest soil, while natural
+  // colonization suffices on forest soil. Site forest cover is unknown here,
+  // so the rule below is conservative and low-confidence by design.
+  const isObligateMycorrhizal = (sp.ectomycorrhizal === true && sp.family === "Dipterocarpaceae") || (sp.sci && (sp.sci.startsWith("Shorea") || sp.sci.startsWith("Hopea") || sp.sci.startsWith("Dipterocarpus")));
+  // CANDIDATE (low confidence): epicotyl dormancy class exists in Baskin &
+  // Baskin (2021 revision), but the chilling-mismatch check below is heuristic.
+  const hasEpicotylDormancy = sp.epicotyl_dormancy === true || sp.family === "Fagaceae" || (sp.sci && sp.sci.startsWith("Quercus"));
+
+  // Large-seeded nut trees (Fagaceae, Hippocastanaceae, Araucariaceae, Juglandaceae, Betulaceae).
+  // Family membership decides the guild; the continuous reserve advantage
+  // admits only members at or above the 0.5 midpoint (~55 g/1000) instead of
+  // the old 1500 g cliff. Small-seeded members (e.g. Betula) and weight-less
+  // records stay out: no burial advice without mass evidence. Pinus pinea is
+  // excluded by family (Pinaceae), not by weight.
+  const isLargeNutFamily = sp.family === "Fagaceae" || sp.family === "Hippocastanaceae" || sp.family === "Araucariaceae" || sp.family === "Juglandaceae" || sp.family === "Betulaceae";
+  const isLargeNut = isLargeNutFamily && seedAdvantage != null && seedAdvantage >= 0.5;
+
+  // Tropical thin-coated fleshy recalcitrant seeds (Theobroma cacao, rubber, mangrove, dipterocarps)
+  const isTropicalFleshyRecalcitrant = isRecalcitrant && !isLargeNut && !isMangroveViviparous;
+
+  // Micro-seeded species. Continuous reserve advantage at the 0.2 low-reserve
+  // boundary (~7 g/1000) instead of the old 2 g cliff. Direction follows the
+  // Moles & Westoby (2004) seedling-survival synthesis (larger seeds survive
+  // early establishment hazards better); pelleting helps emergence mainly in
+  // controlled trials with limited field evidence.
+  const isMicroSeed = seedAdvantage != null && seedAdvantage <= 0.2 && isTreeOrShrub && tswSource !== "family";
+
+  // Large-seeded orthodox pioneer legumes & environmental broadleaves.
+  // Unified with the micro boundary: below 0.2 advantage, pioneers get
+  // micro-style conditional handling instead of the old 5 g cliff.
+  // Data-poor taxa stay out: unknown storage resolves to nursery seedlings
+  // (uncertain directive below), never to direct-seeding optimism. Unknown
+  // weight is tolerated only for confirmed orthodox storage.
+  const isDirectSeedingPioneer = (isLegume || isPioneer) && (storage === "orthodox" || pDs < 0.30) && (seedAdvantage == null ? storage === "orthodox" : seedAdvantage >= 0.2);
+
+  // Build actionable silvicultural directives
+  const directives = [];
+
+  // Seed Dormancy Directive (Baskin & Baskin 2014). Treatment types are
+  // evidence-backed; durations are species-specific and intentionally omitted.
+  if (dormancy === "PY+PD" || presow === "scarification_plus_cold_stratification") {
+    directives.push("Combinational seed dormancy (PY+PD): Mechanical or hot water scarification followed by cold moist stratification before sowing (duration varies by species).");
+  } else if (dormancy === "PY" || presow === "scarification" || (isLegume && dormancy !== "ND")) {
+    directives.push("Physical seed dormancy (PY): Hot water or mechanical scarification recommended before sowing.");
+  } else if (dormancy === "PD" || presow === "cold_stratification") {
+    directives.push("Physiological seed dormancy (PD): Cold moist stratification (1–5°C) recommended to synchronize germination; duration varies by species.");
+  } else if (dormancy === "MPD" || presow === "warm_plus_cold_stratification") {
+    directives.push("Morphophysiological seed dormancy (MPD): Sequential warm stratification followed by cold moist stratification required for embryo development and dormancy release.");
+  }
+
+  // Epicotyl Dormancy & Winter Chilling (candidate, low confidence)
+  if (hasEpicotylDormancy && site?.tavg?.length === 12) {
+    // No latitude => northern winter assumed (documented default; all
+    // production sites carry lat, fixtures should too).
+    const isNorth = (site?.lat == null || site.lat >= 0);
+    const winterMonths = isNorth ? [11, 0, 1] : [5, 6, 7];
+    const winterTavg = winterMonths.map(m => site.tavg[m]).reduce((a, b) => a + b, 0) / 3;
+
+    if (winterTavg > 10.0) {
+      directives.push("Epicotyl dormancy & chilling mismatch: Radicle emerges in autumn but shoot development may require winter chilling. In warm-winter climates shoot emergence can be suppressed; use locally adapted oaks (e.g. Quercus ilex, Q. suber) or container nursery stock.");
+    }
+  }
+
+  if (isLargeNut) {
+    directives.push("Direct seeding directive: Dibble/bury 3–5 cm in autumn/winter for undisturbed taproot formation (burial-depth effects in Leverkus et al. 2013); apply rodent protection with wire mesh shelters and high sowing density (individual protectors enhance establishment, Leverkus et al. 2015; acorn protection design, Reque & Martín 2015; field establishment typically 2–10%, Campos-Filho et al. 2013).");
+  }
+
+  if (isMicroSeed) {
+    directives.push("Micro-seed directive: Nursery seedlings ensure highest survival; for direct broadcast, use seed pelleting (SET) or high sowing density on weed-free mineral soil (pelleting benefits shown mainly in controlled trials; field evidence is limited).");
+  }
+
+  if (isIntermediate) {
+    directives.push("Intermediate seed storage: Moderate desiccation tolerance; vulnerable to open topsoil drying cycles. Sow immediately during peak soil moisture saturation or use container seedlings.");
+  }
+
+  if (isObligateMycorrhizal) {
+    directives.push("Obligate ectomycorrhizal dependence: Seedlings cannot absorb mineral nutrients without active fungal hyphal networks; on degraded or former agricultural lands lacking native forest soil, outplanting with mycorrhizal-inoculated container seedlings is mandatory.");
+  }
+
+  if (isDirectSeedingPioneer && sp.gclass?.startsWith("tropical")) {
+    directives.push("Aggressive grass competition: Fast-growing pasture grasses can suppress young seedlings; direct seeding is viable within multi-species seed mixes (Muvuca) or with rigorous pre-sowing weed suppression.");
+  }
+
+  if (site?.soil?.texture === "heavy") {
+    directives.push("Heavy clay soil: Mechanical seedbed preparation (ripping / furrowing) recommended to prevent surface crusting.");
+  } else if (site?.soil?.texture === "light") {
+    directives.push("Sandy soil: Sow seeds slightly deeper (3–5 cm) to secure contact with subsoil moisture.");
+  }
+
+  if (site?.ph != null && site.ph < 4.5) {
+    directives.push("Extreme soil acidity (pH < 4.5): Soluble aluminum toxicity inhibits radicle elongation; surface liming or container seedlings with buffered substrate recommended.");
+  }
+
+  if (isSemiAridSeasonal) {
+    directives.push("Seasonal moisture window: Sow at the onset of the rainy season (autumn in Mediterranean / onset of wet season) to allow taproots to penetrate before summer drought.");
+  }
+
+  if (isDrySite) {
+    directives.push("Water harvesting directive: In drylands, direct seeding requires zaï pits or contour infiltration furrows to concentrate runoff moisture.");
+  }
+
+  if (falseBreakRisk) {
+    directives.push("False-break risk: Isolated early rains can trigger germination followed by lethal topsoil desiccation; delay direct seeding until sustained rains begin or use nursery stock.");
+  }
+
+  // Uncertain physiology is now read off the declared evidence flags — no
+  // numeric p_ds gate. family_prior and genus_homogeneous stay silent here
+  // (their point estimates are decisive); only heterogeneous/uncertain fire.
+  if (storageConfidence === "uncertain_heterogeneous" || storageConfidence === "uncertain") {
+    directives.push("Uncertain seed storage physiology: Experimental desiccation data is incomplete for this taxon; nursery seedlings provide a safer establishment guarantee.");
+  }
+
+  // 4. Strategy Decision. No numeric feasibility score: mean field
+  // establishment from direct seeding is ~11% (Ceccon et al. 2016), so every
+  // "both" below is conditional and every branch carries confidence.
+  // A. Hyper-Arid (UNEP AI < 0.05)
+  if (isHyperArid) {
+    return {
+      method: "seedling",
+      directViable: false,
+      seedlingViable: true,
+      confidence: "high",
+      confidenceKey: "High confidence",
+      labelKey: "Nursery seedlings (essential on hyper-arid sites)",
+      noteKey: "Severe moisture deficit and absence of a rainy season make direct seeding unviable; nursery seedlings with supplemental watering are essential.",
+      directives,
+      storage,
+      pDs,
+      storageConfidence,
+      dormancy,
+      seedWeightG,
+      seedSource,
+      tswSource,
+      pDsLo,
+      pDsHi,
+      seedAdvantage,
+      sowingWindow: winSummary,
+    };
+  }
+
+  // B. Obligate Ectomycorrhizal Species (Dipterocarpaceae). Conservative and
+  // low-confidence: site forest cover is unknown, so natural inoculum cannot
+  // be assumed (Brearley 2012).
+  if (isObligateMycorrhizal) {
+    return {
+      method: "seedling",
+      directViable: false,
+      seedlingViable: true,
+      confidence: "low",
+      confidenceKey: "Low confidence",
+      labelKey: "Nursery seedlings (obligate ectomycorrhizal dependence)",
+      noteKey: "Obligate ectomycorrhizal species (Dipterocarpaceae). Seedlings need symbiotic fungal networks; site inoculum is unknown, so containerized nursery seedlings inoculated with mycorrhizae are the safe option on open or degraded sites.",
+      directives,
+      storage,
+      pDs,
+      storageConfidence,
+      dormancy,
+      seedWeightG,
+      seedSource,
+      tswSource,
+      pDsLo,
+      pDsHi,
+      seedAdvantage,
+      sowingWindow: winSummary,
+    };
+  }
+
+  // B2. Tropical Fleshy Recalcitrant (Theobroma cacao, etc.)
+  if (isTropicalFleshyRecalcitrant) {
+    return {
+      method: "seedling",
+      directViable: false,
+      seedlingViable: true,
+      confidence: "high",
+      confidenceKey: "High confidence",
+      labelKey: "Nursery seedlings (recalcitrant seed)",
+      noteKey: "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Loses viability rapidly without moist shade; containerized nursery seedlings are essential.",
+      directives,
+      storage,
+      pDs,
+      storageConfidence,
+      dormancy,
+      seedWeightG,
+      seedSource,
+      tswSource,
+      pDsLo,
+      pDsHi,
+      seedAdvantage,
+      sowingWindow: winSummary,
+    };
+  }
+
+  // D. Large Nut Trees (Quercus robur, Castanea sativa, Aesculus, etc.)
+  if (isLargeNut) {
+    // In semi-arid / dry sites with granivory pressure (Seville, etc.)
+    if (isSemiAridSeasonal || isDrySite) {
+      return {
+        method: "both",
+        directViable: true,
+        seedlingViable: true,
+        confidence: downgrade("medium"),
+        confidenceKey: downgrade("medium") === "medium" ? "Medium confidence" : "Low confidence",
+        labelKey: "Nursery seedlings (preferred) · Direct seeding conditional (predator protection)",
+        noteKey: "Acorn / nut silviculture: Direct seeding builds an undisturbed taproot with high drought resilience, but rodents and wild boar destroy most unprotected nuts (Leverkus et al. 2013). Prefer nursery seedlings unless wire mesh shelters or high-density sowing in mast years are used.",
+        directives,
+        storage,
+        pDs,
+        storageConfidence,
+        dormancy,
+        seedWeightG,
+        seedSource,
+        tswSource,
+        pDsLo,
+        pDsHi,
+        seedAdvantage,
+        sowingWindow: winSummary,
+      };
+    }
+    // In humid/perhumid sites (Giresun, Hamburg)
+    return {
+      method: "both",
+      directViable: true,
+      seedlingViable: true,
+      confidence: downgrade("medium"),
+      confidenceKey: downgrade("medium") === "medium" ? "Medium confidence" : "Low confidence",
+      labelKey: "Nursery seedlings · Direct seeding viable (buried)",
+      noteKey: "Large-seeded nut species (Kew SID). Container seedlings are standard, but direct seeding (buried 3–5 cm in autumn/winter) establishes an undisturbed taproot with superior drought tolerance; protect against rodent predation.",
+      directives,
+      storage,
+      pDs,
+      storageConfidence,
+      dormancy,
+      seedWeightG,
+      seedSource,
+      tswSource,
+      pDsLo,
+      pDsHi,
+      seedAdvantage,
+      sowingWindow: winSummary,
+    };
+  }
+
+  // E. Micro-Seeded Species (Eucalyptus grandis, Paulownia tomentosa, etc.)
+  if (isMicroSeed) {
+    return {
+      method: "both",
+      directViable: true,
+      seedlingViable: true,
+      confidence: downgrade("medium"),
+      confidenceKey: downgrade("medium") === "medium" ? "Medium confidence" : "Low confidence",
+      labelKey: "Nursery seedlings (preferred) · Direct seeding conditional (weed-free SET)",
+      noteKey: "Micro-seeded species (reserve advantage ≤ 0.2, ≈ <7 g per 1,000 seeds, Kew SID). Nursery seedlings provide highest certainty against weed competition; direct seeding is viable only on thoroughly prepared, weed-free mineral seedbeds using seed pelleting (SET) or high sowing density.",
+      directives,
+      storage,
+      pDs,
+      storageConfidence,
+      dormancy,
+      seedWeightG,
+      seedSource,
+      tswSource,
+      pDsLo,
+      pDsHi,
+      seedAdvantage,
+      sowingWindow: winSummary,
+    };
+  }
+
+  // F. Direct Seeding Pioneer Legumes & Environmental Hardwoods (Acacia, Enterolobium, Schizolobium, Senna, Caragana)
+  if (isDirectSeedingPioneer) {
+    if (isDrySite) {
+      return {
+        method: "both",
+        directViable: true,
+        seedlingViable: true,
+        confidence: downgrade("medium"),
+        confidenceKey: downgrade("medium") === "medium" ? "Medium confidence" : "Low confidence",
+        labelKey: "Nursery seedlings (preferred) · Direct seeding conditional",
+        noteKey: "Dry / semi-arid conditions without a reliable wet season: Container seedlings give highest establishment guarantee. Direct seeding is viable only with water-harvesting micro-catchments (zaï pits/furrows) and scarified seed sown before early rains.",
+        directives,
+        storage,
+        pDs,
+        storageConfidence,
+        dormancy,
+        seedWeightG,
+        seedSource,
+        tswSource,
+        pDsLo,
+        pDsHi,
+        seedAdvantage,
+        sowingWindow: winSummary,
+      };
+    }
+    return {
+      method: "both",
+      directViable: true,
+      seedlingViable: true,
+      confidence: downgrade("medium"),
+      confidenceKey: downgrade("medium") === "medium" ? "Medium confidence" : "Low confidence",
+      labelKey: "Nursery seedlings · Direct seeding viable",
+      noteKey: "Standard establishment uses containerized seedlings. Also highly viable for direct seeding mix (Muvuca) at the onset of rains, provided seeds receive scarification to break coat dormancy.",
+      directives,
+      storage,
+      pDs,
+      storageConfidence,
+      dormancy,
+      seedWeightG,
+      seedSource,
+      tswSource,
+      pDsLo,
+      pDsHi,
+      seedAdvantage,
+      sowingWindow: winSummary,
+    };
+  }
+
+  // G. Semi-Arid Seasonal Climate (other species)
+  if (isSemiAridSeasonal) {
+    return {
+      method: "both",
+      directViable: true,
+      seedlingViable: true,
+      confidence: "medium",
+      confidenceKey: "Medium confidence",
+      labelKey: "Nursery seedlings · Direct seeding viable (autumn window)",
+      noteKey: "Seasonally wet Mediterranean/dryland climate: Nursery seedlings provide high certainty, but direct seeding at the onset of autumn/winter rains allows taproots to establish before summer drought.",
+      directives,
+      storage,
+      pDs,
+      storageConfidence,
+      dormancy,
+      seedWeightG,
+      seedSource,
+      tswSource,
+      pDsLo,
+      pDsHi,
+      seedAdvantage,
+      sowingWindow: winSummary,
+    };
+  }
+
+  // H. Dry sites without a wet window (other non-pioneer trees)
+  if (isDrySite) {
+    return {
+      method: "seedling",
+      directViable: false,
+      seedlingViable: true,
+      confidence: "high",
+      confidenceKey: "High confidence",
+      labelKey: "Nursery seedlings (essential on arid sites)",
+      noteKey: "Low moisture availability and short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are essential.",
+      directives,
+      storage,
+      pDs,
+      storageConfidence,
+      dormancy,
+      seedWeightG,
+      seedSource,
+      tswSource,
+      pDsLo,
+      pDsHi,
+      seedAdvantage,
+      sowingWindow: winSummary,
+    };
+  }
+
+  // I. Standard hard-wood / conifer under humid/temperate climate
+  return {
+    method: "seedling",
+    directViable: false,
+    seedlingViable: true,
+    confidence: downgrade("medium"),
+    confidenceKey: downgrade("medium") === "medium" ? "Medium confidence" : "Low confidence",
+    labelKey: "Nursery seedlings (standard)",
+    noteKey: "Nursery-raised seedlings ensure early survival against weed competition and surface desiccation; mean field establishment from direct seeding is only ~11% (Ceccon et al. 2016).",
+    directives,
+    storage,
+    pDs,
+    storageConfidence,
+    dormancy,
+    seedWeightG,
+    seedSource,
+    tswSource,
+    pDsLo,
+    pDsHi,
+    seedAdvantage,
+    sowingWindow: winSummary,
+  };
+}
+
