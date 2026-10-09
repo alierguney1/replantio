@@ -148,8 +148,9 @@ above (a well-suited species can still be a poor direct-seeding candidate).
   measurements, ±0.11 for genus consensus, ±0.21 for family priors, ±0.30 for
   heterogeneous or data-free imputations. Widths are loosely scaled to the
   genus/family identification-success rates reported by Wyse & Dickie
-  (2018) — illustrative, not calibrated posteriors. Wide intervals (≥0.5)
-  downgrade physiology-driven advice one confidence level.
+  (2018) — illustrative, not calibrated posteriors. Thin evidence caps advice
+  at low confidence, read off the declared evidence flags (heterogeneous /
+  uncertain taxa never advise above low) — no interval arithmetic.
 - **Sowing window with months.** Each card names the favorable window
   (e.g. Oct–Dec): the longest run of months warm enough to germinate
   (≥4 °C) with P/ET₀ ≥ 0.5, viable when it spans ≥3 months and accumulates
@@ -164,7 +165,8 @@ above (a well-suited species can still be a poor direct-seeding candidate).
   seeding averages ~11% regardless of climate in Ceccon's meta-analysis);
   climate matters for *when* to sow, not *whether the species qualifies*.
   Uncertain taxa resolve to nursery seedlings with low confidence rather than
-  a guessed probability. Boreal, serotiny and fire-smoke rules are parked for
+  a guessed probability. Boreal, serotiny, fire-smoke, mangrove-propagule,
+  epicotyl-chilling and false-break rules are parked for
   a follow-up until their citations are verified.
 - **CSV codes are stable English; the UI localizes.** The export columns
   `establishment_method` (`direct_seeding` / `seedling` / `both`),

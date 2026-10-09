@@ -1055,18 +1055,15 @@ export function establishmentStrategy(sp, site = null) {
   // back to ±0.30.
   const pDsLo = sp.p_ds_lo != null ? sp.p_ds_lo : (pDs != null ? Math.max(0, +(pDs - 0.30).toFixed(2)) : null);
   const pDsHi = sp.p_ds_hi != null ? sp.p_ds_hi : (pDs != null ? Math.min(1, +(pDs + 0.30).toFixed(2)) : null);
-  const physWidth = (pDsLo != null && pDsHi != null) ? pDsHi - pDsLo : null;
   const sw1000 = sp.sw_1000g != null ? sp.sw_1000g : null;
   const seedAdvantage = seedReserveAdvantage(sw1000);
-  // Wide physiology intervals (uncertain/heterogeneous taxa) downgrade
-  // physiology-driven advice one level. Not applied to the water-driven
-  // climate gates (hyper-arid, dry-site, semi-arid-seasonal), the
-  // safety-driven gates (mycorrhizal, tropical-fleshy recalcitrant), or the
-  // lifeform shortcuts (herb, vine, mangrove) that return before this point.
-  const downgrade = (c) => {
-    if (physWidth == null || physWidth < 0.5) return c;
-    return c === "high" ? "medium" : "low";
-  };
+  // Thin evidence caps advice at low confidence — read off the declared
+  // evidence flags, never off interval arithmetic. Heterogeneous/uncertain
+  // taxa never advise with more than low confidence. Not applied to the
+  // water-driven climate gates (hyper-arid, dry-site, semi-arid-seasonal)
+  // or the lifeform shortcuts (herb, vine) that return before this point.
+  const thinEvidence = storageConfidence === "uncertain_heterogeneous" || storageConfidence === "uncertain";
+  const capped = (c) => (thinEvidence && c !== "low" ? "low" : c);
   const tswSource = sp.tsw_source ?? (sw1000 != null ? "species" : null);
   const seedWeightG = sw1000 != null ? sw1000 / 1000 : null;
   const seedSource = sp.seed_source ?? null;
@@ -1076,39 +1073,9 @@ export function establishmentStrategy(sp, site = null) {
   // exception: hard-coated Fabaceae are textbook PY, Baskin & Baskin 2014).
   const presow = sp.presow ?? null;
 
-  // 1. Lifeform & Special Botanical Distinctions (Rule 1: Lifeform-Aware)
-  // Mangrove rule is a CANDIDATE (low confidence): viviparous-propagule
-  // planting is standard silvicultural practice (Tomlinson textbook), but the
-  // primary citation is still pending verification.
-  const isMangroveViviparous = sp.viviparous === true || sp.family === "Rhizophoraceae" || sp.family === "Avicenniaceae" || (sp.sci && (sp.sci.startsWith("Rhizophora") || sp.sci.startsWith("Avicennia")));
-  if (isMangroveViviparous) {
-    return {
-      method: "both",
-      directViable: true,
-      seedlingViable: true,
-      confidence: "low",
-      confidenceKey: "Low confidence",
-      labelKey: "Direct insertion of propagules or container seedlings (mangrove silviculture)",
-      noteKey: "Viviparous / cryptoviviparous mangrove propagule: Seeds germinate directly on the parent tree and cannot be dried or stored; establish by directly inserting fresh viviparous propagules into intertidal mud flats during low tide, or outplanting nursery-hardened saplings.",
-      directives: [
-        "Mangrove propagule directive: Insert fresh mature propagules directly into tidal mudflats during low tide to anchor roots before high-tide washaway."
-      ],
-      storage: "recalcitrant",
-      pDs: 0.98,
-      storageConfidence: "empirical_species",
-      dormancy: "ND",
-      seedWeightG,
-      seedSource,
-      tswSource,
-      // Interval overridden with the point estimate: the pre-override pDsLo/Hi
-      // describe propagule desiccation risk, not insertion success.
-      pDsLo: 0.93,
-      pDsHi: 1.0,
-      seedAdvantage,
-      sowingWindow: null,
-    };
-  }
-
+  // 1. Lifeform shortcuts: herbs/grasses and vines resolve before any physiology.
+  // (Mangrove propagule, epicotyl-chilling and false-break rules are parked
+  // until their citations are verified — same backlog as boreal/serotiny.)
   if (isHerbOrGrass) {
     return {
       method: "direct_seeding",
@@ -1173,11 +1140,6 @@ export function establishmentStrategy(sp, site = null) {
   const isSemiAridSeasonal = ai != null && ai < 0.50 && hasSeasonalWetWindow && !irrigated;
   const isDrySite = ai != null && ai < 0.50 && !hasSeasonalWetWindow && !irrigated;
 
-  // False-break risk (heuristic, low confidence): isolated early rains in a dry
-  // climate can trigger germination followed by lethal topsoil desiccation
-  // (bet-hedging literature: Cohen, Venable).
-  const falseBreakRisk = ai != null && ai < 0.65 && maxConsecWet <= 1 && totalWetMonths >= 1 && !irrigated;
-
   const winSummary = win.length
     ? { start: win.start, length: win.length, label: windowLabel(win) }
     : null;
@@ -1196,10 +1158,6 @@ export function establishmentStrategy(sp, site = null) {
   // colonization suffices on forest soil. Site forest cover is unknown here,
   // so the rule below is conservative and low-confidence by design.
   const isObligateMycorrhizal = (sp.ectomycorrhizal === true && sp.family === "Dipterocarpaceae") || (sp.sci && (sp.sci.startsWith("Shorea") || sp.sci.startsWith("Hopea") || sp.sci.startsWith("Dipterocarpus")));
-  // CANDIDATE (low confidence): epicotyl dormancy class exists in Baskin &
-  // Baskin (2021 revision), but the chilling-mismatch check below is heuristic.
-  const hasEpicotylDormancy = sp.epicotyl_dormancy === true || sp.family === "Fagaceae" || (sp.sci && sp.sci.startsWith("Quercus"));
-
   // Large-seeded nut trees (Fagaceae, Hippocastanaceae, Araucariaceae, Juglandaceae, Betulaceae).
   // Family membership decides the guild; the continuous reserve advantage
   // admits only members at or above the 0.5 midpoint (~55 g/1000) instead of
@@ -1209,8 +1167,8 @@ export function establishmentStrategy(sp, site = null) {
   const isLargeNutFamily = sp.family === "Fagaceae" || sp.family === "Hippocastanaceae" || sp.family === "Araucariaceae" || sp.family === "Juglandaceae" || sp.family === "Betulaceae";
   const isLargeNut = isLargeNutFamily && seedAdvantage != null && seedAdvantage >= 0.5;
 
-  // Tropical thin-coated fleshy recalcitrant seeds (Theobroma cacao, rubber, mangrove, dipterocarps)
-  const isTropicalFleshyRecalcitrant = isRecalcitrant && !isLargeNut && !isMangroveViviparous;
+  // Tropical thin-coated fleshy recalcitrant seeds (Theobroma cacao, rubber, dipterocarps)
+  const isTropicalFleshyRecalcitrant = isRecalcitrant && !isLargeNut;
 
   // Micro-seeded species. Continuous reserve advantage at the 0.2 low-reserve
   // boundary (~7 g/1000) instead of the old 2 g cliff. Direction follows the
@@ -1242,19 +1200,6 @@ export function establishmentStrategy(sp, site = null) {
     directives.push("Morphophysiological seed dormancy (MPD): Sequential warm stratification followed by cold moist stratification required for embryo development and dormancy release.");
   }
 
-  // Epicotyl Dormancy & Winter Chilling (candidate, low confidence)
-  if (hasEpicotylDormancy && site?.tavg?.length === 12) {
-    // No latitude => northern winter assumed (documented default; all
-    // production sites carry lat, fixtures should too).
-    const isNorth = (site?.lat == null || site.lat >= 0);
-    const winterMonths = isNorth ? [11, 0, 1] : [5, 6, 7];
-    const winterTavg = winterMonths.map(m => site.tavg[m]).reduce((a, b) => a + b, 0) / 3;
-
-    if (winterTavg > 10.0) {
-      directives.push("Epicotyl dormancy & chilling mismatch: Radicle emerges in autumn but shoot development may require winter chilling. In warm-winter climates shoot emergence can be suppressed; use locally adapted oaks (e.g. Quercus ilex, Q. suber) or container nursery stock.");
-    }
-  }
-
   if (isLargeNut) {
     directives.push("Direct seeding directive: Dibble/bury 3–5 cm in autumn/winter for undisturbed taproot formation (burial-depth effects in Leverkus et al. 2013); apply rodent protection with wire mesh shelters and high sowing density (individual protectors enhance establishment, Leverkus et al. 2015; acorn protection design, Reque & Martín 2015; field establishment typically 2–10%, Campos-Filho et al. 2013).");
   }
@@ -1268,7 +1213,7 @@ export function establishmentStrategy(sp, site = null) {
   }
 
   if (isObligateMycorrhizal) {
-    directives.push("Obligate ectomycorrhizal dependence: Seedlings cannot absorb mineral nutrients without active fungal hyphal networks; on degraded or former agricultural lands lacking native forest soil, outplanting with mycorrhizal-inoculated container seedlings is mandatory.");
+    directives.push("Obligate ectomycorrhizal dependence: Seedlings cannot absorb mineral nutrients without active fungal hyphal networks; on degraded or former agricultural lands lacking native forest soil, outplanting with mycorrhizal-inoculated container seedlings is strongly recommended.");
   }
 
   if (isDirectSeedingPioneer && sp.gclass?.startsWith("tropical")) {
@@ -1291,10 +1236,6 @@ export function establishmentStrategy(sp, site = null) {
 
   if (isDrySite) {
     directives.push("Water harvesting directive: In drylands, direct seeding requires zaï pits or contour infiltration furrows to concentrate runoff moisture.");
-  }
-
-  if (falseBreakRisk) {
-    directives.push("False-break risk: Isolated early rains can trigger germination followed by lethal topsoil desiccation; delay direct seeding until sustained rains begin or use nursery stock.");
   }
 
   // Uncertain physiology is now read off the declared evidence flags — no
@@ -1332,18 +1273,18 @@ export function establishmentStrategy(sp, site = null) {
     };
   }
 
-  // B. Obligate Ectomycorrhizal Species (Dipterocarpaceae). Conservative and
-  // low-confidence: site forest cover is unknown, so natural inoculum cannot
-  // be assumed (Brearley 2012).
+  // B. Obligate Ectomycorrhizal Species (Dipterocarpaceae). No hard gate:
+  // conditional with low confidence — site forest cover is unknown, so
+  // natural inoculum cannot be assumed (Brearley 2012).
   if (isObligateMycorrhizal) {
     return {
-      method: "seedling",
-      directViable: false,
+      method: "both",
+      directViable: true,
       seedlingViable: true,
       confidence: "low",
       confidenceKey: "Low confidence",
-      labelKey: "Nursery seedlings (obligate ectomycorrhizal dependence)",
-      noteKey: "Obligate ectomycorrhizal species (Dipterocarpaceae). Seedlings need symbiotic fungal networks; site inoculum is unknown, so containerized nursery seedlings inoculated with mycorrhizae are the safe option on open or degraded sites.",
+      labelKey: "Nursery seedlings (preferred) \u00b7 Direct seeding conditional",
+      noteKey: "Obligate ectomycorrhizal species (Dipterocarpaceae, Brearley 2012). Seedlings need symbiotic fungal networks; on open or degraded sites use mycorrhizal-inoculated container seedlings, and sow directly only where native forest soil (and its inoculum) is present.",
       directives,
       storage,
       pDs,
@@ -1359,16 +1300,18 @@ export function establishmentStrategy(sp, site = null) {
     };
   }
 
-  // B2. Tropical Fleshy Recalcitrant (Theobroma cacao, etc.)
+  // B2. Tropical Fleshy Recalcitrant (Theobroma cacao, etc.). No hard gate:
+  // fresh seeds sown immediately into moist shade establish; seedlings are
+  // the safer option. Conditional with low confidence.
   if (isTropicalFleshyRecalcitrant) {
     return {
-      method: "seedling",
-      directViable: false,
+      method: "both",
+      directViable: true,
       seedlingViable: true,
-      confidence: "high",
-      confidenceKey: "High confidence",
-      labelKey: "Nursery seedlings (recalcitrant seed)",
-      noteKey: "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Loses viability rapidly without moist shade; containerized nursery seedlings are essential.",
+      confidence: "low",
+      confidenceKey: "Low confidence",
+      labelKey: "Nursery seedlings (preferred) \u00b7 Direct seeding conditional",
+      noteKey: "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Sow fresh seeds immediately into moist shade, or use containerized nursery seedlings; never let the seeds dry.",
       directives,
       storage,
       pDs,
@@ -1392,8 +1335,8 @@ export function establishmentStrategy(sp, site = null) {
         method: "both",
         directViable: true,
         seedlingViable: true,
-        confidence: downgrade("medium"),
-        confidenceKey: downgrade("medium") === "medium" ? "Medium confidence" : "Low confidence",
+        confidence: capped("medium"),
+        confidenceKey: capped("medium") === "medium" ? "Medium confidence" : "Low confidence",
         labelKey: "Nursery seedlings (preferred) · Direct seeding conditional (predator protection)",
         noteKey: "Acorn / nut silviculture: Direct seeding builds an undisturbed taproot with high drought resilience, but rodents and wild boar destroy most unprotected nuts (Leverkus et al. 2013). Prefer nursery seedlings unless wire mesh shelters or high-density sowing in mast years are used.",
         directives,
@@ -1415,8 +1358,8 @@ export function establishmentStrategy(sp, site = null) {
       method: "both",
       directViable: true,
       seedlingViable: true,
-      confidence: downgrade("medium"),
-      confidenceKey: downgrade("medium") === "medium" ? "Medium confidence" : "Low confidence",
+      confidence: capped("medium"),
+      confidenceKey: capped("medium") === "medium" ? "Medium confidence" : "Low confidence",
       labelKey: "Nursery seedlings · Direct seeding viable (buried)",
       noteKey: "Large-seeded nut species (Kew SID). Container seedlings are standard, but direct seeding (buried 3–5 cm in autumn/winter) establishes an undisturbed taproot with superior drought tolerance; protect against rodent predation.",
       directives,
@@ -1440,8 +1383,8 @@ export function establishmentStrategy(sp, site = null) {
       method: "both",
       directViable: true,
       seedlingViable: true,
-      confidence: downgrade("medium"),
-      confidenceKey: downgrade("medium") === "medium" ? "Medium confidence" : "Low confidence",
+      confidence: capped("medium"),
+      confidenceKey: capped("medium") === "medium" ? "Medium confidence" : "Low confidence",
       labelKey: "Nursery seedlings (preferred) · Direct seeding conditional (weed-free SET)",
       noteKey: "Micro-seeded species (reserve advantage ≤ 0.2, ≈ <7 g per 1,000 seeds, Kew SID). Nursery seedlings provide highest certainty against weed competition; direct seeding is viable only on thoroughly prepared, weed-free mineral seedbeds using seed pelleting (SET) or high sowing density.",
       directives,
@@ -1466,8 +1409,8 @@ export function establishmentStrategy(sp, site = null) {
         method: "both",
         directViable: true,
         seedlingViable: true,
-        confidence: downgrade("medium"),
-        confidenceKey: downgrade("medium") === "medium" ? "Medium confidence" : "Low confidence",
+        confidence: capped("medium"),
+        confidenceKey: capped("medium") === "medium" ? "Medium confidence" : "Low confidence",
         labelKey: "Nursery seedlings (preferred) · Direct seeding conditional",
         noteKey: "Dry / semi-arid conditions without a reliable wet season: Container seedlings give highest establishment guarantee. Direct seeding is viable only with water-harvesting micro-catchments (zaï pits/furrows) and scarified seed sown before early rains.",
         directives,
@@ -1488,8 +1431,8 @@ export function establishmentStrategy(sp, site = null) {
       method: "both",
       directViable: true,
       seedlingViable: true,
-      confidence: downgrade("medium"),
-      confidenceKey: downgrade("medium") === "medium" ? "Medium confidence" : "Low confidence",
+      confidence: capped("medium"),
+      confidenceKey: capped("medium") === "medium" ? "Medium confidence" : "Low confidence",
       labelKey: "Nursery seedlings · Direct seeding viable",
       noteKey: "Standard establishment uses containerized seedlings. Also highly viable for direct seeding mix (Muvuca) at the onset of rains, provided seeds receive scarification to break coat dormancy.",
       directives,
@@ -1532,16 +1475,17 @@ export function establishmentStrategy(sp, site = null) {
     };
   }
 
-  // H. Dry sites without a wet window (other non-pioneer trees)
+  // H. Dry sites without a wet window: no hard gate — conditional, medium
+  // confidence, viable only with water harvesting (zaï directive below).
   if (isDrySite) {
     return {
-      method: "seedling",
-      directViable: false,
+      method: "both",
+      directViable: true,
       seedlingViable: true,
-      confidence: "high",
-      confidenceKey: "High confidence",
-      labelKey: "Nursery seedlings (essential on arid sites)",
-      noteKey: "Low moisture availability and short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are essential.",
+      confidence: "medium",
+      confidenceKey: "Medium confidence",
+      labelKey: "Nursery seedlings (preferred) \u00b7 Direct seeding conditional",
+      noteKey: "Low moisture availability and a short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are the safer option, and direct seeding is viable only with water-harvesting micro-catchments.",
       directives,
       storage,
       pDs,
@@ -1562,8 +1506,8 @@ export function establishmentStrategy(sp, site = null) {
     method: "seedling",
     directViable: false,
     seedlingViable: true,
-    confidence: downgrade("medium"),
-    confidenceKey: downgrade("medium") === "medium" ? "Medium confidence" : "Low confidence",
+    confidence: capped("medium"),
+    confidenceKey: capped("medium") === "medium" ? "Medium confidence" : "Low confidence",
     labelKey: "Nursery seedlings (standard)",
     noteKey: "Nursery-raised seedlings ensure early survival against weed competition and surface desiccation; mean field establishment from direct seeding is only ~11% (Ceccon et al. 2016).",
     directives,

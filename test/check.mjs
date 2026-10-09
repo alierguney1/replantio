@@ -638,13 +638,16 @@ assert.equal(aridLegumeStrat.method, "both");
 assert.equal(aridLegumeStrat.directViable, true);
 assert.equal(aridLegumeStrat.labelKey, "Nursery seedlings (preferred) · Direct seeding conditional");
 
-// 5. Tree: Climax non-nut tree on dry steppe (Fraxinus / Oleaceae) -> seedling essential (harsh arid gate)
+// 5. Tree: Climax non-nut tree on dry steppe (Fraxinus / Oleaceae) -> conditional:
+// no hard gates except hyper-arid; dry sites advise seedlings-preferred +
+// water harvesting, with direct seeding viable (zaï micro-catchments)
 const aridAshStrat = establishmentStrategy({ porte: "tree", tree: true, family: "Oleaceae", gclass: "temperate_slow" }, { ai: 0.24, annualRain: 320 });
-assert.equal(aridAshStrat.method, "seedling");
-assert.equal(aridAshStrat.directViable, false);
-assert.equal(aridAshStrat.labelKey, "Nursery seedlings (essential on arid sites)");
+assert.equal(aridAshStrat.method, "both");
+assert.equal(aridAshStrat.directViable, true);
+assert.equal(aridAshStrat.labelKey, "Nursery seedlings (preferred) \u00b7 Direct seeding conditional");
 // Phase-1 contract: no numeric index, explicit confidence instead
-assert.equal(aridAshStrat.confidence, "high");
+// (dry-site conditional advises with medium confidence, not high)
+assert.equal(aridAshStrat.confidence, "medium");
 assert(!("dsfi" in aridAshStrat));
 
 // 6. Tree: Large-seeded nut tree (Oak / Quercus / Fagaceae) -> both viable via buried acorn dibbling
@@ -692,13 +695,14 @@ assert.equal(sowingWindow({ ai: 0.24 }).length, 2);
 assert.equal(sowingWindow({ ai: 0.24 }).viable, false);
 assert.equal(sowingWindow({ ai: 0.8 }).viable, true);
 
-// 11. Phase-2: wide physiology intervals downgrade physiology-driven advice
-const narrowSp = { porte: "tree", tree: true, family: "Oleaceae", gclass: "temperate_slow", p_ds: 0.35, p_ds_lo: 0.30, p_ds_hi: 0.40, storage_confidence: "uncertain" };
-const wideSp = { porte: "tree", tree: true, family: "Oleaceae", gclass: "temperate_slow", p_ds: 0.35, p_ds_lo: 0.10, p_ds_hi: 0.70, storage_confidence: "uncertain" };
-assert.equal(establishmentStrategy(narrowSp, { ai: 1.15 }).confidence, "medium");
-const wideStrat = establishmentStrategy(wideSp, { ai: 1.15 });
-assert.equal(wideStrat.confidence, "low");
-assert(wideStrat.directives.some(d => d.includes("Uncertain seed storage physiology")));
+// 11. Thin-evidence flag rule: identical numbers, different declared flags.
+// Uncertain taxa never advise above low confidence, with no interval math.
+const flagUncertain = { porte: "tree", tree: true, family: "Oleaceae", gclass: "temperate_slow", p_ds: 0.35, p_ds_lo: 0.30, p_ds_hi: 0.40, storage_confidence: "uncertain" };
+const flagEmpirical = { porte: "tree", tree: true, family: "Oleaceae", gclass: "temperate_slow", p_ds: 0.35, p_ds_lo: 0.30, p_ds_hi: 0.40, storage_confidence: "empirical_species" };
+assert.equal(establishmentStrategy(flagUncertain, { ai: 1.15 }).confidence, "low");
+assert.equal(establishmentStrategy(flagEmpirical, { ai: 1.15 }).confidence, "medium");
+const uncStrat = establishmentStrategy(flagUncertain, { ai: 1.15 });
+assert(uncStrat.directives.some(d => d.includes("Uncertain seed storage physiology")));
 
 // 12. Recalcitrant old-gate-vs-new-gate equivalence (catalog-wide): the
 // interval-based rule (pDsLo >= 0.80) must agree with the legacy point rule

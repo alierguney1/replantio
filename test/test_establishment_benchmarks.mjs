@@ -80,17 +80,20 @@ for (const sci of largeNutSpecies) {
   assert.equal(resMed.directViable, true);
 }
 
-// --- 2. TROPICAL FLESHY RECALCITRANT SEEDS (Cacao, Mangrove)
+// --- 2. TROPICAL FLESHY RECALCITRANT SEEDS (Cacao) ---
+// No hard gate: fresh seeds sown immediately into moist shade establish, so
+// the advice is conditional with low confidence (seedlings the safer option).
 console.log("\n--- 2. Testing Tropical Fleshy Recalcitrant Species ---");
 const tropicalRecalc = ["Theobroma cacao"];
 for (const sci of tropicalRecalc) {
   const sp = spBySci.get(sci);
   if (!sp) continue;
   const res = establishmentStrategy(sp, SITE_HUMID);
-  assert.equal(res.method, "seedling", `${sci} must be seedling only`);
-  assert.equal(res.directViable, false);
-  assert.equal(res.labelKey, "Nursery seedlings (recalcitrant seed)");
-  console.log(`  PASS: ${sci.padEnd(25)} -> ${res.labelKey}`);
+  assert.equal(res.method, "both", `${sci} must be conditional, not hard-gated`);
+  assert.equal(res.directViable, true);
+  assert.equal(res.labelKey, "Nursery seedlings (preferred) \u00b7 Direct seeding conditional");
+  assert.equal(res.confidence, "low");
+  console.log(`  PASS: ${sci.padEnd(25)} -> ${res.labelKey} (low confidence)`);
 }
 
 // --- 3. MICRO-SEEDED TREES (1000-seed weight < 2g: Pelleting SET / High-density broadcast)
@@ -226,8 +229,8 @@ const REF_SCENARIOS = [
   {
     sci: "Theobroma cacao",
     site: { ai: 1.60, koppen: "Af", name: "Pará, Brazil (Tropical rainforest, AI=1.60)" },
-    expectedMethod: "seedling",
-    expectedLabel: "Nursery seedlings (recalcitrant seed)",
+    expectedMethod: "both",
+    expectedLabel: "Nursery seedlings (preferred) · Direct seeding conditional",
     checkDirective: d => true
   },
   {
@@ -278,7 +281,7 @@ for (const sp of speciesList) {
   assert(["high", "medium", "low"].includes(stratHumid.confidence), `Species ${sp.sci} must carry confidence`);
   assert(typeof stratHumid.confidenceKey === "string");
   // Phase-1 regression guard: no removed/unsourced guidance may be emitted
-  const banned = ["capsaicin", "Serotinous", "Boreal silviculture", "Suicide", "Bimodal", "cfvo", "salinity", "DSFI", "3–5×", "30–60 days", "30–90 days", ">80%", "within 30 days", "(>30%)"];
+  const banned = ["capsaicin", "Serotinous", "Boreal silviculture", "Suicide", "Bimodal", "cfvo", "salinity", "DSFI", "mandatory", "Mangrove propagule", "Epicotyl dormancy", "False-break", "3–5×", "30–60 days", "30–90 days", ">80%", "within 30 days", "(>30%)"];
   for (const strat of [stratHumid, stratMed, stratSteppe, stratDesert]) {
     for (const d of strat.directives) {
       for (const b of banned) {
@@ -303,7 +306,7 @@ for (const sp of speciesList) {
   if (tier === "genus_homogeneous") assert(w <= 0.23, `${sp.sci}: genus width ${w}`);
   // sowing window is present for all climate-layer outcomes; lifeform
   // shortcuts (herbs, vines, mangrove propagules) return before it by design
-  const noWindowOk = new Set(["Direct seeding", "Direct seeding or cuttings", "Direct insertion of propagules or container seedlings (mangrove silviculture)"]);
+  const noWindowOk = new Set(["Direct seeding", "Direct seeding or cuttings"]);
   if (stratHumid.sowingWindow) {
     assert(stratHumid.sowingWindow.label && stratHumid.sowingWindow.length >= 1, `${sp.sci} window sane`);
   } else {
@@ -367,32 +370,35 @@ console.log(`  PASS: Pinus halepensis carries no serotiny directive (moved to Ph
 const shorea = spBySci.get("Shorea robusta");
 assert(shorea && shorea.ectomycorrhizal === true, "Shorea robusta must have ectomycorrhizal: true");
 const shoreaStrat = establishmentStrategy(shorea, { ai: 1.2 });
-assert.equal(shoreaStrat.method, "seedling");
-assert.equal(shoreaStrat.labelKey, "Nursery seedlings (obligate ectomycorrhizal dependence)");
+assert.equal(shoreaStrat.method, "both", "mycorrhizal rule is conditional, not a hard gate");
+assert.equal(shoreaStrat.labelKey, "Nursery seedlings (preferred) \u00b7 Direct seeding conditional");
 assert.equal(shoreaStrat.confidence, "low");
 assert(shoreaStrat.directives.some(d => d.includes("Obligate ectomycorrhizal dependence")));
-console.log(`  PASS: Shorea robusta (Dipterocarpaceae) correctly triggers low-confidence mycorrhizal constraint`);
+console.log(`  PASS: Shorea robusta (Dipterocarpaceae) correctly triggers low-confidence conditional mycorrhizal advice`);
 
-// 8d. Mangrove viviparous propagule guild
+// 8d. Mangrove propagule guild is PARKED (citation pending): Rhizophora now
+// resolves via the general tropical-fleshy recalcitrant path — conditional
+// with low confidence, no bespoke propagule silviculture.
 const rhizo = spBySci.get("Rhizophora mangle");
-assert(rhizo && rhizo.viviparous === true, "Rhizophora mangle must have viviparous: true");
+assert(rhizo && rhizo.viviparous === true, "Rhizophora mangle must keep viviparous: true in data");
 const rhizoStrat = establishmentStrategy(rhizo, { ai: 1.5 });
 assert.equal(rhizoStrat.method, "both");
-assert.equal(rhizoStrat.labelKey, "Direct insertion of propagules or container seedlings (mangrove silviculture)");
-assert(rhizoStrat.directives.some(d => d.includes("Mangrove propagule directive")));
-console.log(`  PASS: Rhizophora mangle correctly triggers mangrove viviparous propagule silviculture`);
+assert.equal(rhizoStrat.labelKey, "Nursery seedlings (preferred) \u00b7 Direct seeding conditional");
+assert.equal(rhizoStrat.confidence, "low");
+assert(!rhizoStrat.directives.some(d => d.includes("Mangrove propagule directive")), "parked guild must emit nothing");
+console.log(`  PASS: Rhizophora mangle parked to conditional tropical-fleshy advice`);
 
 // 8e. Epicotyl dormancy & chilling mismatch in warm winters (Quercus robur @ Seville)
 const oak = spBySci.get("Quercus robur");
 const oakSevilleStrat = establishmentStrategy(oak, SITE_MEDITERRANEAN);
-assert(oakSevilleStrat.directives.some(d => d.includes("Epicotyl dormancy & chilling mismatch")), "Quercus robur @ Seville must warn of epicotyl dormancy chilling mismatch");
+assert(!oakSevilleStrat.directives.some(d => d.includes("Epicotyl dormancy")), "parked epicotyl rule must emit nothing");
 assert.deepEqual(
   [oakSevilleStrat.sowingWindow.start, oakSevilleStrat.sowingWindow.length],
   [9, 3],
   "Seville sowing window must be Oct (9), 3 months",
 );
 assert.equal(oakSevilleStrat.sowingWindow.label, "Oct–Dec");
-console.log(`  PASS: Quercus robur @ Seville correctly triggers epicotyl dormancy chilling mismatch`);
+console.log(`  PASS: Quercus robur @ Seville window Oct-Dec, no parked epicotyl directive`);
 
 // 8f. UNEP aridity boundaries drive the dry branches (UNEP 1992/1997)
 const enterolobium = spBySci.get("Enterolobium cyclocarpum");
@@ -412,8 +418,9 @@ const dryOak = establishmentStrategy(oak, { ai: 0.10 });
 assert.equal(dryOak.method, "both", "AI=0.10 large nuts stay conditional (buried + protected), not gated");
 assert.equal(dryOak.labelKey, "Nursery seedlings (preferred) · Direct seeding conditional (predator protection)");
 const dryAsh = establishmentStrategy({ porte: "tree", tree: true, family: "Oleaceae", gclass: "temperate_slow" }, { ai: 0.10 });
-assert.equal(dryAsh.method, "seedling", "AI=0.10 without a window gates non-pioneer trees to seedling");
-assert.equal(dryAsh.labelKey, "Nursery seedlings (essential on arid sites)");
+assert.equal(dryAsh.method, "both", "AI=0.10 without a window is conditional (no hard gate except hyper-arid)");
+assert.equal(dryAsh.labelKey, "Nursery seedlings (preferred) · Direct seeding conditional");
+assert.equal(dryAsh.confidence, "medium");
 console.log(`  PASS: UNEP boundaries verified (hyper-arid <0.05 gates; arid stays conditional; window restores viability)`);
 
 // 8g. Rodent protection without anti-literature repellents (Leverkus et al. 2013:
@@ -485,30 +492,23 @@ assert.equal(oracle.viable, true);
 assert.equal(windowLabel(oracle), "Apr–Jun");
 console.log(`  PASS: MI oracle (1.5/1.0/1.25) -> start 3, length 3, moistureTime 2.25, viable (Apr–Jun)`);
 
-// 9f. Mangrove return on the REAL Rhizophora mangle record hardcodes the
-// interval [0.93, 1.0] around pDs 0.98 (insertion success, not desiccation
-// risk), so the point estimate must sit inside its own interval.
+// 9f. Interval passthrough on the REAL Rhizophora mangle record: the parked
+// mangrove override is gone, so the strategy returns the data interval
+// (recalcitrant empirical 0.95 +- 0.05) with the point estimate inside it.
 const rhizoReal = spBySci.get("Rhizophora mangle");
-assert(rhizoReal && rhizoReal.viviparous === true, "Rhizophora mangle must be viviparous");
+assert(rhizoReal && rhizoReal.viviparous === true, "Rhizophora mangle must keep viviparous: true in data");
 const rhizoRealStrat = establishmentStrategy(rhizoReal, { ai: 1.5 });
-assert.deepEqual([rhizoRealStrat.pDsLo, rhizoRealStrat.pDs, rhizoRealStrat.pDsHi], [0.93, 0.98, 1.0]);
-assert(rhizoRealStrat.pDsLo <= rhizoRealStrat.pDs && rhizoRealStrat.pDs <= rhizoRealStrat.pDsHi, "mangrove pDs must sit inside [pDsLo, pDsHi]");
-console.log(`  PASS: Rhizophora mangle interval [0.93, 1.0] contains pDs 0.98`);
+assert.deepEqual([rhizoRealStrat.pDsLo, rhizoRealStrat.pDs, rhizoRealStrat.pDsHi], [0.9, 0.95, 1.0]);
+assert(rhizoRealStrat.pDsLo <= rhizoRealStrat.pDs && rhizoRealStrat.pDs <= rhizoRealStrat.pDsHi, "pDs must sit inside [pDsLo, pDsHi]");
+console.log(`  PASS: Rhizophora mangle data interval [0.9, 1.0] contains pDs 0.95`);
 
-// 9g. Southern-hemisphere epicotyl branch on real Quercus robur (lat -23.5):
-// a site whose May–Jul mean exceeds 10 C fires the chilling-mismatch
-// directive, while one at or below 10 C does not. The engine reads southern
-// winter as indices [5,6,7] (Jun–Aug), so Aug is set equal to Jul to keep the
-// May–Jul framing and the code window in agreement.
+// 9g. Epicotyl rule is PARKED: even a warm-winter southern site must emit
+// no chilling-mismatch directive, while the sowing window still computes.
 const oakReal = spBySci.get("Quercus robur");
 assert(oakReal, "Quercus robur must exist in species.json");
-const southWarmTavg = Array(12).fill(20); // May–Jul mean 20 > 10
-const southWarm = establishmentStrategy(oakReal, { lat: -23.5, ai: 0.8, prec: Array(12).fill(60), tavg: southWarmTavg });
-assert(southWarm.directives.some(d => d.includes("Epicotyl dormancy & chilling mismatch")), "warm-winter southern site must fire the chilling-mismatch directive");
-const southCoolTavg = Array(12).fill(20);
-southCoolTavg[4] = 8; southCoolTavg[5] = 8; southCoolTavg[6] = 8; southCoolTavg[7] = 8; // May–Jul mean 8 <= 10
-const southCool = establishmentStrategy(oakReal, { lat: -23.5, ai: 0.8, prec: Array(12).fill(60), tavg: southCoolTavg });
-assert(!southCool.directives.some(d => d.includes("Epicotyl dormancy & chilling mismatch")), "cool-winter southern site must NOT fire the chilling-mismatch directive");
-console.log(`  PASS: Quercus robur southern epicotyl branch fires above May–Jul mean 10 C, silent at/below`);
+const southWarm = establishmentStrategy(oakReal, { lat: -23.5, ai: 0.8, prec: Array(12).fill(60), tavg: Array(12).fill(20) });
+assert(!southWarm.directives.some(d => d.includes("Epicotyl dormancy")), "parked epicotyl rule must emit nothing");
+assert(southWarm.sowingWindow && southWarm.sowingWindow.length === 12, "southern humid site keeps a full sowing window");
+console.log(`  PASS: Quercus robur southern site has no parked epicotyl directive, window intact`);
 
 console.log("\nALL ESTABLISHMENT BENCHMARKS PASSED SUCCESSFULLY!");

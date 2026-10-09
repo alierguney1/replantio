@@ -26,7 +26,6 @@ translations = {
         "Water harvesting directive: In drylands, direct seeding requires zaï pits or contour infiltration furrows to concentrate runoff moisture.": "Diretriz de captação de água: Em zonas áridas, a semeadura requer covas zaï ou sulcos em curvas de nível para concentrar a água de escoamento.",
         "Uncertain seed storage physiology: Experimental desiccation data is incomplete for this taxon; nursery seedlings provide a safer establishment guarantee.": "Fisiologia de armazenamento incerta: Dados experimentais de dessecação incompletos para o táxon; mudas de viveiro oferecem maior garantia.",
         "Seed Dormancy": "Dormência da Semente",
-        "False-break risk: Isolated early rains can trigger germination followed by lethal topsoil desiccation; delay direct seeding until sustained rains begin or use nursery stock.": "Risco de falsa brotação: Chuvas iniciais isoladas podem induzir germinação seguida de dessecação letal; adie a semeadura até chuvas contínuas ou use mudas.",
         "High confidence": "Confiança alta",
         "Medium confidence": "Confiança média",
         "Low confidence": "Confiança baixa",
