@@ -388,7 +388,8 @@ assert.equal(rhizoStrat.confidence, "low");
 assert(!rhizoStrat.directives.some(d => d.includes("Mangrove propagule directive")), "parked guild must emit nothing");
 console.log(`  PASS: Rhizophora mangle parked to conditional tropical-fleshy advice`);
 
-// 8e. Epicotyl dormancy & chilling mismatch in warm winters (Quercus robur @ Seville)
+// 8e. Epicotyl rule PARKED: Quercus robur @ Seville emits no chilling
+// directive; sowing-window asserts below prove the climate layer intact
 const oak = spBySci.get("Quercus robur");
 const oakSevilleStrat = establishmentStrategy(oak, SITE_MEDITERRANEAN);
 assert(!oakSevilleStrat.directives.some(d => d.includes("Epicotyl dormancy")), "parked epicotyl rule must emit nothing");
