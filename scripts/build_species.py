@@ -14,6 +14,13 @@ OUT = ROOT / "data" / "species.json"
 
 NUM = ["TOPMN", "TOPMX", "TMIN", "TMAX", "ROPMN", "ROPMX", "RMIN", "RMAX",
        "PHOPMN", "PHOPMX", "PHMIN", "PHMAX", "KTMP", "KTMPR", "GMIN", "GMAX", "ALTMX"]
+SEED_TRAITS_PATH = ROOT / "data" / "seed_traits.json"
+try:
+    SEED_TRAITS = json.load(open(SEED_TRAITS_PATH)) if SEED_TRAITS_PATH.exists() else {}
+except (OSError, ValueError) as ex:
+    raise SystemExit(f"Cannot load {SEED_TRAITS_PATH}: {ex}")
+if not isinstance(SEED_TRAITS, dict):
+    raise SystemExit(f"{SEED_TRAITS_PATH} must be a JSON object keyed by species id")
 
 # Growth-rate class by genus. Heuristic: pioneers/plantation species vs
 # late-successional hardwoods; everything else defaults to medium.
@@ -368,6 +375,19 @@ def main():
             **({"sal_tol": sal_tol} if sal_tol else {}),
             **({"dra_opt": dra_opt} if dra_opt else {}),
             **({"dra_tol": dra_tol} if dra_tol else {}),
+            # Kew SID seed traits & restoration establishment markers
+            **({"storage": SEED_TRAITS[str(code)]["storage"]} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("storage") else {}),
+            **({"p_ds": SEED_TRAITS[str(code)]["p_ds"]} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("p_ds") is not None else {}),
+            **({"storage_confidence": SEED_TRAITS[str(code)]["storage_confidence"]} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("storage_confidence") else {}),
+            **({"sw_1000g": SEED_TRAITS[str(code)]["sw_1000g"]} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("sw_1000g") is not None else {}),
+            **({"tsw_source": SEED_TRAITS[str(code)]["tsw_source"]} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("tsw_source") else {}),
+            **({"dormancy": SEED_TRAITS[str(code)]["dormancy"]} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("dormancy") else {}),
+            **({"presow": SEED_TRAITS[str(code)]["presow"]} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("presow") else {}),
+            **({"seed_source": SEED_TRAITS[str(code)]["source"]} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("source") else {}),
+            **({"epicotyl_dormancy": True} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("epicotyl_dormancy") else {}),
+            **({"serotinous": True} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("serotinous") else {}),
+            **({"ectomycorrhizal": True} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("ectomycorrhizal") else {}),
+            **({"viviparous": True} if str(code) in SEED_TRAITS and SEED_TRAITS[str(code)].get("viviparous") else {}),
             "photo": photo,
             "cycle": cyc,
             "altmax": vals["ALTMX"],
