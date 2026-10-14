@@ -473,6 +473,24 @@ assert(appSrc.includes("current.fsite.irrigated = site.irrigated"), "rescore mus
     'irr branch must return before track("filter")');
 }
 
+// CSV export formula injection sanitization
+{
+  const esc = v => {
+    let s = String(v ?? "");
+    if (/^[\s\t\r\n]*([=+\-@%|\uFF1D\uFF0B\uFF0D\uFF20\uFF5C])/.test(s)) s = "'" + s;
+    return `"${s.replace(/"/g, '""')}"`;
+  };
+  assert.equal(esc("=1+1"), `"'=1+1"`);
+  assert.equal(esc("  @SUM(A1)"), `"'  @SUM(A1)"`);
+  assert.equal(esc("\t-10"), `"'	-10"`);
+  assert.equal(esc("+44"), ` "'+44"`.trim());
+  assert.equal(esc("%cmd%"), `"'%cmd%"`);
+  assert.equal(esc("|pipe"), `"'|pipe"`);
+  assert.equal(esc("\uFF1Dformula"), `"'\uFF1Dformula"`);
+  assert.equal(esc("Quercus"), `"Quercus"`);
+  assert.equal(esc(null), `""`);
+}
+
 // grading bands
 assert.equal(grade(0.9), "Excellent");
 assert.equal(grade(0.5), "Suitable");
