@@ -1376,6 +1376,7 @@ function speciesDetail(id) {
             : tr("EcoCrop lists a killing temperature above this site's record low, but Kew records the species as naturalized in this country. Penalized half instead of excluded; the hardiness field is the suspect."))
         : tr("The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty."));
     }
+    if (s.factors.chill != null && s.factors.chill < 1) notes.push(tr("Needs winter dormancy; the coldest month here is too warm for it."));
     if (s.strat?.noteKey) notes.push(tr(s.strat.noteKey));
     if (s.strat?.directives?.length) s.strat.directives.forEach(d => notes.push(tr(d)));
     const escHtml = s => String(s ?? "").replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

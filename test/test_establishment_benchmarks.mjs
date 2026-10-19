@@ -604,4 +604,42 @@ console.log(`  PASS: Irrigated hyper-arid herb (${clover.sci}) escapes the seedl
 assert.equal(windowLabel({ start: 4, length: 1 }), "May", "windowLabel must render single months without a range");
 console.log(`  PASS: windowLabel single-month renders "May"`);
 
+// 10h. Steep slope (>25°) directive presence: emitted for conditional direct-seeding branches,
+// stripped on all seedling-only branches (§A hyper-arid, §B3 non-tropical recalcitrant, §H dry standard, §I humid standard)
+const steepSiteHumid = { ...SITE_HUMID, terrain: { slope: 30 } };
+const steepSiteDry = { ...SITE_DRY_STEPPE, terrain: { slope: 30 } };
+const steepSiteHyper = { ...SITE_HYPER_ARID, terrain: { slope: 30 } };
+
+const oakSteep = establishmentStrategy(oak, steepSiteHumid);
+assert(oakSteep.directives.some(d => d.includes("Steep slope: direct seeding at risk")),
+  "Large nut tree on steep slope must carry steep slope erosion directive");
+
+const pioneerSteep = establishmentStrategy(enterolobium, steepSiteDry);
+assert(pioneerSteep.directives.some(d => d.includes("Steep slope: direct seeding at risk")),
+  "Pioneer legume on steep slope must carry steep slope erosion directive");
+
+const ashSteepDry = establishmentStrategy({ porte: "tree", tree: true, family: "Oleaceae", gclass: "temperate_slow" }, steepSiteDry);
+assert(!ashSteepDry.directives.some(d => d.includes("Steep slope: direct seeding at risk")),
+  "Dry-site seedling-only tree (§H) must strip steep slope direct-seeding directive");
+
+const ashSteepHumid = establishmentStrategy({ porte: "tree", tree: true, family: "Oleaceae", gclass: "temperate_slow" }, steepSiteHumid);
+assert(!ashSteepHumid.directives.some(d => d.includes("Steep slope: direct seeding at risk")),
+  "Humid standard seedling tree (§I) must strip steep slope direct-seeding directive");
+
+const tamarixSteep = establishmentStrategy(tamarix, steepSiteHumid);
+assert(!tamarixSteep.directives.some(d => d.includes("Steep slope: direct seeding at risk")),
+  "Non-tropical recalcitrant tree (§B3) must not emit steep slope direct-seeding directive");
+
+const desertSteep = establishmentStrategy(enterolobium, steepSiteHyper);
+assert(!desertSteep.directives.some(d => d.includes("Steep slope: direct seeding at risk")),
+  "Hyper-arid seedling tree (§A) must not emit steep slope direct-seeding directive");
+console.log(`  PASS: Steep slope erosion directive correctly scoped to direct-viable branches and stripped on seedling-only`);
+
+// 10i. Sowing window fallback translation key "~{n} months (rainy season)" present in all 11 dictionaries
+for (const lang of allLangs) {
+  assert("~{n} months (rainy season)" in DICTS[lang],
+    `Missing "~{n} months (rainy season)" in language "${lang}"`);
+}
+console.log(`  PASS: "~{n} months (rainy season)" present in all 11 dictionaries`);
+
 console.log("\nALL ESTABLISHMENT BENCHMARKS PASSED SUCCESSFULLY!");

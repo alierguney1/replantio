@@ -301,8 +301,9 @@ const PT = {
   "Obligate ectomycorrhizal species (Dipterocarpaceae, Brearley 2012). Seedlings need symbiotic fungal networks; on open or degraded sites use mycorrhizal-inoculated container seedlings, and sow directly only where native forest soil (and its inoculum) is present.": "Espécie ectomicorrízica obrigatória (Dipterocarpaceae, Brearley 2012). As plântulas precisam de redes fúngicas simbióticas; em áreas abertas ou degradadas use mudas inoculadas com micorrizas, e semeie diretamente apenas onde houver solo florestal nativo (e seu inóculo).",
   "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Sow fresh seeds immediately into moist shade, or use containerized nursery seedlings; never let the seeds dry.": "Semente tropical sensível à dessecação (recalcitrante, Kew SID). Semeie sementes frescas imediatamente em sombra úmida, ou use mudas em recipientes; nunca deixe as sementes secarem.",
   "Low moisture availability and a short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are the safer option, and direct seeding is viable only with water-harvesting micro-catchments.": "Baixa umidade e janela curta de germinação tornam a semeadura arriscada; mudas com raízes formadas são mais seguras, e a semeadura direta só é viável com microbacias de captação de água.",
-  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.",
+  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Declive acentuado: semeadura direta com risco de erosão — use covas em curva de nível ou prefira mudas",
+  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridez desconhecida: sem série de umidade disponível para o local, os filtros hídricos não operam; recomendação de estabelecimento limitada a baixa confiança.",
+  "~{n} months (rainy season)": "~{n} meses (estação chuvosa)",
 };
 
 const ES = {
@@ -592,8 +593,9 @@ const ES = {
   "Obligate ectomycorrhizal species (Dipterocarpaceae, Brearley 2012). Seedlings need symbiotic fungal networks; on open or degraded sites use mycorrhizal-inoculated container seedlings, and sow directly only where native forest soil (and its inoculum) is present.": "Especie ectomicorrícica obligada (Dipterocarpaceae, Brearley 2012). Las plántulas necesitan redes fúngicas simbióticas; en sitios abiertos o degradados use plantones inoculados con micorrizas, y siembre directamente solo donde haya suelo forestal nativo (y su inóculo).",
   "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Sow fresh seeds immediately into moist shade, or use containerized nursery seedlings; never let the seeds dry.": "Semilla tropical sensible a la desecación (recalcitrante, Kew SID). Siembre semillas frescas de inmediato en sombra húmeda, o use plantones en contenedor; nunca deje secar las semillas.",
   "Low moisture availability and a short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are the safer option, and direct seeding is viable only with water-harvesting micro-catchments.": "La poca humedad y una ventana corta de germinación hacen riesgosa la siembra; los plantones con raíces desarrolladas son más seguros, y la siembra directa solo es viable con microcuencas de retención de agua.",
-  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.",
+  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Pendiente pronunciada: siembra directa con riesgo de erosión — use hoyos en curvas de nivel o prefiera plantones",
+  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridez desconocida: no hay serie de humedad disponible para este sitio, por lo que los filtros hídricos no operan; la recomendación se limita a confianza baja.",
+  "~{n} months (rainy season)": "~{n} meses (temporada de lluvias)",
 };
 
 const FR = {
@@ -883,8 +885,9 @@ const FR = {
   "Obligate ectomycorrhizal species (Dipterocarpaceae, Brearley 2012). Seedlings need symbiotic fungal networks; on open or degraded sites use mycorrhizal-inoculated container seedlings, and sow directly only where native forest soil (and its inoculum) is present.": "Espèce ectomycorhizienne obligatoire (Dipterocarpaceae, Brearley 2012). Les plants ont besoin de réseaux fongiques symbiotiques ; en milieu ouvert ou dégradé, utilisez des plants inoculés, et ne semez directement que sur sol forestier natif (et son inoculum).",
   "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Sow fresh seeds immediately into moist shade, or use containerized nursery seedlings; never let the seeds dry.": "Graine tropicale sensible à la dessiccation (recalcitrante, Kew SID). Semez les graines fraîches aussitôt à l'ombre humide, ou utilisez des plants en conteneur ; ne laissez jamais sécher les graines.",
   "Low moisture availability and a short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are the safer option, and direct seeding is viable only with water-harvesting micro-catchments.": "La faible humidité et une courte fenêtre de germination rendent le semis risqué ; les plants racinés sont plus sûrs, et le semis direct n'est viable qu'avec des micro-bassins de collecte d'eau.",
-  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.",
+  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Pente raide : semis direct exposé à l'érosion — utiliser des poquets de niveau ou préférer des plants",
+  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridité inconnue : aucune série hydrique disponible pour ce site, les seuils hydriques ne peuvent s'activer ; conseil d'établissement plafonné à faible confiance.",
+  "~{n} months (rainy season)": "~{n} mois (saison des pluies)",
 };
 
 // placeholders: filled with native-quality translations (zh ja ru id hi de sw)
@@ -1246,8 +1249,9 @@ const ZH = {
   "Obligate ectomycorrhizal species (Dipterocarpaceae, Brearley 2012). Seedlings need symbiotic fungal networks; on open or degraded sites use mycorrhizal-inoculated container seedlings, and sow directly only where native forest soil (and its inoculum) is present.": "专性外生菌根物种（Dipterocarpaceae，Brearley 2012）。幼苗需要共生真菌网络；在开阔或退化立地使用接种菌根的容器苗，仅在有原生林土壤（及其接种体）处直播。",
   "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Sow fresh seeds immediately into moist shade, or use containerized nursery seedlings; never let the seeds dry.": "热带脱水敏感种子（顽拗性，Kew SID）。将新鲜种子立即播入潮湿荫蔽处，或使用容器苗；切勿让种子干燥。",
   "Low moisture availability and a short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are the safer option, and direct seeding is viable only with water-harvesting micro-catchments.": "水分不足且发芽窗口短，直播风险高；根系发达的容器苗更稳妥，直播仅在配合微地形集水时可行。",
-  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.",
+  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "陡坡：直接播种存在侵蚀风险——建议采用等高线鱼鳞坑或优先选用苗木",
+  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "干旱度未知：该地点缺乏水分时间序列数据，水分驱动阈值无法激活；建立策略建议限制为低置信度。",
+  "~{n} months (rainy season)": "约{n}个月（雨季）",
 };
 const JA = {
   "Analyze": "分析する",
@@ -1607,8 +1611,9 @@ const JA = {
   "Obligate ectomycorrhizal species (Dipterocarpaceae, Brearley 2012). Seedlings need symbiotic fungal networks; on open or degraded sites use mycorrhizal-inoculated container seedlings, and sow directly only where native forest soil (and its inoculum) is present.": "絶対外生菌根性種（Dipterocarpaceae、Brearley 2012）。苗木は共生菌根ネットワークを必要とします。開けた土地や荒廃地では菌根接種コンテナ苗を用い、自生林土壤（とその接種源）がある場所でのみ直播してください。",
   "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Sow fresh seeds immediately into moist shade, or use containerized nursery seedlings; never let the seeds dry.": "乾燥に弱い熱帯種子（難貯蔵性、Kew SID）。新鮮な種子は直ちに湿った日陰に播くか、コンテナ苗を用いてください。種子を乾燥させてはいけません。",
   "Low moisture availability and a short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are the safer option, and direct seeding is viable only with water-harvesting micro-catchments.": "水分が少なく発芽適期が短いため直播は高リスクです。根の発達した苗木が安全で、直播は集水遺構がある場合にのみ成立します。",
-  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.",
+  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "急傾斜地：直播は土壌侵食リスクあり——等高線植栽穴（コンターピット）を用いるかコンテナ苗を優先",
+  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "乾燥度不明：この地点の水分時系列データがないため水分制限が適用されません。定着アドバイスは低信頼度にとどまります。",
+  "~{n} months (rainy season)": "約{n}か月（雨季）",
 };
 const RU = {
   "Analyze": "Анализировать",
@@ -1968,8 +1973,9 @@ const RU = {
   "Obligate ectomycorrhizal species (Dipterocarpaceae, Brearley 2012). Seedlings need symbiotic fungal networks; on open or degraded sites use mycorrhizal-inoculated container seedlings, and sow directly only where native forest soil (and its inoculum) is present.": "Облигатно эктомикоризный вид (Dipterocarpaceae, Brearley 2012). Сеянцам нужны симбиотические грибные сети; на открытых и деградированных участках используйте инокулированные саженцы, а прямой посев — только на естественной лесной почве (с её инокулюмом).",
   "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Sow fresh seeds immediately into moist shade, or use containerized nursery seedlings; never let the seeds dry.": "Тропические семена, чувствительные к высушиванию (рекальцитрантные, Kew SID). Сейте свежие семена сразу во влажную тень или используйте саженцы; не давайте семенам высыхать.",
   "Low moisture availability and a short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are the safer option, and direct seeding is viable only with water-harvesting micro-catchments.": "Мало влаги и короткое окно прорастания делают посев рискованным; саженцы с развитыми корнями надёжнее, а посев возможен только с микроводосборами.",
-  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.",
+  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Крутой склон: прямой посев подвержен эрозии — используйте террасные лунки или отдайте предпочтение саженцам",
+  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Аридность неизвестна: для этой локации нет данных о влажности, водные ограничения не действуют; рекомендация ограничена низкой степенью уверенности.",
+  "~{n} months (rainy season)": "~{n} мес. (сезон дождей)",
 };
 const ID = {
   "Analyze": "Analisis",
@@ -2329,8 +2335,9 @@ const ID = {
   "Obligate ectomycorrhizal species (Dipterocarpaceae, Brearley 2012). Seedlings need symbiotic fungal networks; on open or degraded sites use mycorrhizal-inoculated container seedlings, and sow directly only where native forest soil (and its inoculum) is present.": "Spesies ektomikoriza obligat (Dipterocarpaceae, Brearley 2012). Bibit membutuhkan jaringan jamur simbiotik; di lahan terbuka atau terdegradasi gunakan bibit inokulasi mikoriza, dan tabur langsung hanya di tanah hutan asli (beserta inokulumnya).",
   "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Sow fresh seeds immediately into moist shade, or use containerized nursery seedlings; never let the seeds dry.": "Benih tropis yang rentan kekeringan (rekalsitran, Kew SID). Tabur benih segar segera ke naungan lembap, atau gunakan bibit polybag; jangan biarkan benih mengering.",
   "Low moisture availability and a short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are the safer option, and direct seeding is viable only with water-harvesting micro-catchments.": "Air minim dan jendela perkecambahan pendek membuat tabur benih berisiko; bibit berakar baik lebih aman, dan tabur langsung hanya memungkinkan dengan jebakan air.",
-  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.",
+  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Lereng curam: penaburan langsung berisiko erosi — gunakan lubang kontur atau utamakan bibit polibag",
+  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Tingkat kegersangan tidak diketahui: tidak ada data kelembapan untuk lokasi ini sehingga batasan air tidak aktif; saran pembentukan dibatasi pada tingkat keyakinan rendah.",
+  "~{n} months (rainy season)": "~{n} bulan (musim hujan)",
 };
 const HI = {
   "Analyze": "विश्लेषण करें",
@@ -2690,8 +2697,9 @@ const HI = {
   "Obligate ectomycorrhizal species (Dipterocarpaceae, Brearley 2012). Seedlings need symbiotic fungal networks; on open or degraded sites use mycorrhizal-inoculated container seedlings, and sow directly only where native forest soil (and its inoculum) is present.": "अनिवार्य एक्टोमाइकोराइज़ल प्रजाति (Dipterocarpaceae, Brearley 2012)। पौधों को सहजीवी कवक जाल चाहिए; खुले/निम्नीकृत स्थलों पर माइकोराइज़ा-टीकाकृत पौध लगाएं, और केवल प्राकृतिक वन मिट्टी (व उसके संरोप) में ही सीधी बुआई करें।",
   "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Sow fresh seeds immediately into moist shade, or use containerized nursery seedlings; never let the seeds dry.": "सूखने के प्रति संवेदनशील उष्णकटिबंधीय बीज (recalcitrant, Kew SID)। ताज़ा बीज तुरंत नम छांव में बोएं या कंटेनर पौध लगाएं; बीजों को कभी सूखने न दें।",
   "Low moisture availability and a short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are the safer option, and direct seeding is viable only with water-harvesting micro-catchments.": "कम नमी व छोटी अंकुरण अवधि सीधी बुआई को जोखिम भरा बनाती है; विकसित जड़ों वाले पौध सुरक्षित हैं, और सीधी बुआई केवल जल-संचयन गड्ढों से ही संभव है।",
-  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.",
+  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "तीव्र ढलान: सीधे बीजारोपण में मिट्टी के कटाव का जोखिम — समोच्च गड्ढों (कंटूर पिट्स) का उपयोग करें या पौध को प्राथमिकता दें",
+  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "शुष्कता अज्ञात: इस स्थल के लिए कोई नमी श्रृंखला उपलब्ध नहीं है, अतः जल-आधारित सीमाएं लागू नहीं हो सकीं; स्थापना सलाह निम्न विश्वसनीयता तक सीमित है।",
+  "~{n} months (rainy season)": "~{n} माह (वर्षा ऋतु)",
 };
 const DE = {
   "Analyze": "Analysieren",
@@ -3051,8 +3059,9 @@ const DE = {
   "Obligate ectomycorrhizal species (Dipterocarpaceae, Brearley 2012). Seedlings need symbiotic fungal networks; on open or degraded sites use mycorrhizal-inoculated container seedlings, and sow directly only where native forest soil (and its inoculum) is present.": "Obligat ektomykorrhizierte Art (Dipterocarpaceae, Brearley 2012). Sämlinge brauchen symbiontische Pilznetzwerke; auf offenen oder degradierten Flächen inokulierte Containerpflanzen verwenden, Direktsaat nur auf nativem Waldboden (mit dessen Inokulum).",
   "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Sow fresh seeds immediately into moist shade, or use containerized nursery seedlings; never let the seeds dry.": "Trocknungsempfindlicher tropischer Samen (rekalsitrant, Kew SID). Frisches Saatgut sofort in feuchten Schatten säen oder Containerpflanzen verwenden; Saatgut niemals austrocknen lassen.",
   "Low moisture availability and a short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are the safer option, and direct seeding is viable only with water-harvesting micro-catchments.": "Wenig Feuchte und kurzes Keimfenster machen Direktsaat riskant; bewurzelte Pflanzen sind sicherer, Direktsaat ist nur mit Wasserspeicher-Mikrostrukturen machbar.",
-  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.",
+  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steilhang: Direktsaat erosionsgefährdet — Konturpflanzlöcher nutzen oder Containerpflanzen bevorzugen",
+  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridität unbekannt: Für diesen Standort liegen keine Feuchtedaten vor, wasserbasierte Schwellenwerte greifen nicht; Empfehlung auf geringe Verlässlichkeit begrenzt.",
+  "~{n} months (rainy season)": "~{n} Monate (Regenzeit)",
 };
 const SW = {
   "Analyze": "Chambua",
@@ -3412,8 +3421,9 @@ const SW = {
   "Obligate ectomycorrhizal species (Dipterocarpaceae, Brearley 2012). Seedlings need symbiotic fungal networks; on open or degraded sites use mycorrhizal-inoculated container seedlings, and sow directly only where native forest soil (and its inoculum) is present.": "Spishi tegemezi ya ektomakoriza (Dipterocarpaceae, Brearley 2012). Miche inahitaji nyavu za kuvu shirikishi; kwenye ardhi wazi au iliyoharibika tumia miche iliyochanjwa, pandikiza moja kwa moja pale tu penye udongo wa msitu asilia (na chanjo yake).",
   "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Sow fresh seeds immediately into moist shade, or use containerized nursery seedlings; never let the seeds dry.": "Mbegu za kitropiki zinazoharibika zikikauka (recalcitrant, Kew SID). Panda mbegu fresh mara moja kwenye kivuli chenye unyevu, au tumia miche; usiache mbegu zikauke.",
   "Low moisture availability and a short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are the safer option, and direct seeding is viable only with water-harvesting micro-catchments.": "Unyevu mdogo na dirisha fupi la kuota hufanya upandaji mbegu kuwa hatari; miche yenye mizizi iliyokomaa ni salama zaidi, na upandaji mbegu unafaa tu ukiwa na mashimo ya kukinga maji.",
-  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.",
+  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Mteremko mkali: upandaji mbegu uko hatarini kwa mmomonyoko — tumia mashimo ya kontua au pendelea miche",
+  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Ukame haujulikani: hakuna mfululizo wa unyevu unaopatikana kwa eneo hili, kwa hivyo vigezo vya maji haviwezi kufanya kazi; ushauri wa uanzishaji umepunguzwa kwa ujasiri wa chini.",
+  "~{n} months (rainy season)": "~miezi {n} (msimu wa mvua)",
 };
 
 const TR = {
@@ -3774,8 +3784,9 @@ const TR = {
   "Obligate ectomycorrhizal species (Dipterocarpaceae, Brearley 2012). Seedlings need symbiotic fungal networks; on open or degraded sites use mycorrhizal-inoculated container seedlings, and sow directly only where native forest soil (and its inoculum) is present.": "Zorunlu ektomikorizal tür (Dipterocarpaceae, Brearley 2012). Fidanlar simbiyotik mantar ağlarına ihtiyaç duyar; açık veya bozulmuş arazilerde mikoriza aşılı tüplü fidan kullanın, doğrudan ekimi yalnızca doğal orman toprağı (ve aşısı) olan yerlerde yapın.",
   "Desiccation-sensitive tropical seed (recalcitrant, Kew SID). Sow fresh seeds immediately into moist shade, or use containerized nursery seedlings; never let the seeds dry.": "Kurumaya duyarlı tropik tohum (recalcitrant, Kew SID). Taze tohumları hemen nemli gölgeye ekin veya tüplü fidan kullanın; tohumları asla kurutmayın.",
   "Low moisture availability and a short germination window make direct seeding high-risk here; nursery seedlings with developed root systems are the safer option, and direct seeding is viable only with water-harvesting micro-catchments.": "Düşük nem ve kısa çimlenme penceresi doğrudan ekimi riskli kılar; gelişmiş köklü fidanlar daha güvenlidir, doğrudan ekim yalnızca su hasadı mikro havzalarıyla mümkündür.",
-  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.",
+  "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Dik eğim: Doğrudan ekim erozyon riski taşır — teras/eşyükselti çukurları kullanın veya fidan tercih edin",
+  "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Kuraklık derecesi bilinmiyor: Bu konum için nem serisi mevcut olmadığından su kısıtları uygulanamıyor; yerleşim tavsiyesi düşük güvenilirlikle sınırlandırıldı.",
+  "~{n} months (rainy season)": "~{n} ay (yağış mevsimi)",
 };
 
 export const DICTS = { pt: PT, es: ES, fr: FR, zh: ZH, ja: JA, ru: RU, id: ID, hi: HI, de: DE, sw: SW, tr: TR };

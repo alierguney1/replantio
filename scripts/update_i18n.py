@@ -33,9 +33,9 @@ translations = {
         "High confidence": "Confiança alta",
         "Medium confidence": "Confiança média",
         "Low confidence": "Confiança baixa",
-        # TODO: professional translation pending — English interim keeps audits green
-        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence."
+        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Declive acentuado: semeadura direta com risco de erosão — use covas em curva de nível ou prefira mudas",
+        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridez desconhecida: sem série de umidade disponível para o local, os filtros hídricos não operam; recomendação de estabelecimento limitada a baixa confiança.",
+        "~{n} months (rainy season)": "~{n} meses (estação chuvosa)"
     },
     "es": {
         "Nursery seedlings (preferred) · Direct seeding conditional (predator protection)": "Plantones de vivero (preferente) · Siembra directa condicional (protección contra predadores)",
@@ -52,9 +52,9 @@ translations = {
         "High confidence": "Confianza alta",
         "Medium confidence": "Confianza media",
         "Low confidence": "Confianza baja",
-        # TODO: professional translation pending — English interim keeps audits green
-        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence."
+        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Pendiente pronunciada: siembra directa con riesgo de erosión — use hoyos en curvas de nivel o prefiera plantones",
+        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridez desconocida: no hay serie de humedad disponible para este sitio, por lo que los filtros hídricos no operan; la recomendación se limita a confianza baja.",
+        "~{n} months (rainy season)": "~{n} meses (temporada de lluvias)"
     },
     "fr": {
         "Nursery seedlings (preferred) · Direct seeding conditional (predator protection)": "Plants en pépinière (préféré) · Semis direct conditionnel (protection contre prédateurs)",
@@ -71,9 +71,9 @@ translations = {
         "High confidence": "Confiance élevée",
         "Medium confidence": "Confiance moyenne",
         "Low confidence": "Confiance faible",
-        # TODO: professional translation pending — English interim keeps audits green
-        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence."
+        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Pente raide : semis direct exposé à l'érosion — utiliser des poquets de niveau ou préférer des plants",
+        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridité inconnue : aucune série hydrique disponible pour ce site, les seuils hydriques ne peuvent s'activer ; conseil d'établissement plafonné à faible confiance.",
+        "~{n} months (rainy season)": "~{n} mois (saison des pluies)"
     },
     "de": {
         "Nursery seedlings (preferred) · Direct seeding conditional (predator protection)": "Baumschulpflanzen (bevorzugt) · Direktsaat bedingt (Prädatorenschutz)",
@@ -90,9 +90,9 @@ translations = {
         "High confidence": "Hohe Verlässlichkeit",
         "Medium confidence": "Mittlere Verlässlichkeit",
         "Low confidence": "Geringe Verlässlichkeit",
-        # TODO: professional translation pending — English interim keeps audits green
-        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence."
+        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steilhang: Direktsaat erosionsgefährdet — Konturpflanzlöcher nutzen oder Containerpflanzen bevorzugen",
+        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridität unbekannt: Für diesen Standort liegen keine Feuchtedaten vor, wasserbasierte Schwellenwerte greifen nicht; Empfehlung auf geringe Verlässlichkeit begrenzt.",
+        "~{n} months (rainy season)": "~{n} Monate (Regenzeit)"
     },
     "tr": {
         "Nursery seedlings (preferred) · Direct seeding conditional (predator protection)": "Tüplü fidan (tercih edilen) · Doğrudan ekim şartlı (predatör koruması)",
@@ -109,9 +109,9 @@ translations = {
         "High confidence": "Yüksek güven",
         "Medium confidence": "Orta güven",
         "Low confidence": "Düşük güven",
-        # TODO: professional translation pending — English interim keeps audits green
-        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence."
+        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Dik eğim: Doğrudan ekim erozyon riski taşır — teras/eşyükselti çukurları kullanın veya fidan tercih edin",
+        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Kuraklık derecesi bilinmiyor: Bu konum için nem serisi mevcut olmadığından su kısıtları uygulanamıyor; yerleşim tavsiyesi düşük güvenilirlikle sınırlandırıldı.",
+        "~{n} months (rainy season)": "~{n} ay (yağış mevsimi)"
     },
     "zh": {
         "Nursery seedlings (preferred) · Direct seeding conditional (predator protection)": "苗圃育苗（首选） · 直播造林有条件（防啮齿动物）",
@@ -128,9 +128,9 @@ translations = {
         "High confidence": "高可信度",
         "Medium confidence": "中等可信度",
         "Low confidence": "低可信度",
-        # TODO: professional translation pending — English interim keeps audits green
-        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence."
+        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "陡坡：直接播种存在侵蚀风险——建议采用等高线鱼鳞坑或优先选用苗木",
+        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "干旱度未知：该地点缺乏水分时间序列数据，水分驱动阈值无法激活；建立策略建议限制为低置信度。",
+        "~{n} months (rainy season)": "约{n}个月（雨季）"
     },
     "ja": {
         "Nursery seedlings (preferred) · Direct seeding conditional (predator protection)": "苗木植栽（推奨） · 直播条件付き（食害対策必須）",
@@ -147,9 +147,9 @@ translations = {
         "High confidence": "高信頼度",
         "Medium confidence": "中信頼度",
         "Low confidence": "低信頼度",
-        # TODO: professional translation pending — English interim keeps audits green
-        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence."
+        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "急傾斜地：直播は土壌侵食リスクあり——等高線植栽穴（コンターピット）を用いるかコンテナ苗を優先",
+        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "乾燥度不明：この地点の水分時系列データがないため水分制限が適用されません。定着アドバイスは低信頼度にとどまります。",
+        "~{n} months (rainy season)": "約{n}か月（雨季）"
     },
     "ru": {
         "Nursery seedlings (preferred) · Direct seeding conditional (predator protection)": "Саженцы (предпочтительно) · Прямой посев условно (защита от хищников)",
@@ -166,9 +166,9 @@ translations = {
         "High confidence": "Высокая достоверность",
         "Medium confidence": "Средняя достоверность",
         "Low confidence": "Низкая достоверность",
-        # TODO: professional translation pending — English interim keeps audits green
-        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence."
+        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Крутой склон: прямой посев подвержен эрозии — используйте террасные лунки или отдайте предпочтение саженцам",
+        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Аридность неизвестна: для этой локации нет данных о влажности, водные ограничения не действуют; рекомендация ограничена низкой степенью уверенности.",
+        "~{n} months (rainy season)": "~{n} мес. (сезон дождей)"
     },
     "id": {
         "Nursery seedlings (preferred) · Direct seeding conditional (predator protection)": "Bibit persemaian (utama) · Tabur benih bersyarat (proteksi predator)",
@@ -185,9 +185,9 @@ translations = {
         "High confidence": "Kepercayaan tinggi",
         "Medium confidence": "Kepercayaan sedang",
         "Low confidence": "Kepercayaan rendah",
-        # TODO: professional translation pending — English interim keeps audits green
-        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence."
+        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Lereng curam: penaburan langsung berisiko erosi — gunakan lubang kontur atau utamakan bibit polibag",
+        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Tingkat kegersangan tidak diketahui: tidak ada data kelembapan untuk lokasi ini sehingga batasan air tidak aktif; saran pembentukan dibatasi pada tingkat keyakinan rendah.",
+        "~{n} months (rainy season)": "~{n} bulan (musim hujan)"
     },
     "hi": {
         "Nursery seedlings (preferred) · Direct seeding conditional (predator protection)": "नर्सरी पौध (प्राथमिक) · सीधी बुआई सशर्त (परभक्षी सुरक्षा)",
@@ -204,9 +204,9 @@ translations = {
         "High confidence": "उच्च विश्वास",
         "Medium confidence": "मध्यम विश्वास",
         "Low confidence": "कम विश्वास",
-        # TODO: professional translation pending — English interim keeps audits green
-        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence."
+        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "तीव्र ढलान: सीधे बीजारोपण में मिट्टी के कटाव का जोखिम — समोच्च गड्ढों (कंटूर पिट्स) का उपयोग करें या पौध को प्राथमिकता दें",
+        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "शुष्कता अज्ञात: इस स्थल के लिए कोई नमी श्रृंखला उपलब्ध नहीं है, अतः जल-आधारित सीमाएं लागू नहीं हो सकीं; स्थापना सलाह निम्न विश्वसनीयता तक सीमित है।",
+        "~{n} months (rainy season)": "~{n} माह (वर्षा ऋतु)"
     },
     "sw": {
         "Nursery seedlings (preferred) · Direct seeding conditional (predator protection)": "Miche ya kitalu (inayopendekezwa) · Upandaji mbegu kwa masharti (ulinzi dhidi ya wanyama)",
@@ -223,9 +223,9 @@ translations = {
         "High confidence": "Uhakika wa juu",
         "Medium confidence": "Uhakika wa kati",
         "Low confidence": "Uhakika mdogo",
-        # TODO: professional translation pending — English interim keeps audits green
-        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings",
-        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence."
+        "Steep slope: direct seeding at risk of erosion — use contour pits or prefer seedlings": "Mteremko mkali: upandaji mbegu uko hatarini kwa mmomonyoko — tumia mashimo ya kontua au pendelea miche",
+        "Aridity unknown: no moisture series is available for this site, so water-driven gates cannot fire; establishment advice is capped at low confidence.": "Ukame haujulikani: hakuna mfululizo wa unyevu unaopatikana kwa eneo hili, kwa hivyo vigezo vya maji haviwezi kufanya kazi; ushauri wa uanzishaji umepunguzwa kwa ujasiri wa chini.",
+        "~{n} months (rainy season)": "~miezi {n} (msimu wa mvua)"
     }
 }
 

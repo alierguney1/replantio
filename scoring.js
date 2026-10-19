@@ -1561,7 +1561,8 @@ export function establishmentStrategy(sp, site = null, optWin = null) {
       confidenceKey: "Medium confidence",
       labelKey: "Nursery seedlings (standard)",
       noteKey: "Nursery-raised seedlings ensure early survival against weed competition and surface desiccation; mean field establishment from direct seeding is only ~11% (Ceccon et al. 2016).",
-      directives: directives.filter(d => !d.startsWith("Water harvesting directive")),
+      directives: (steepSlope ? directives.filter(d => d !== STEEP_SLOPE_DIRECTIVE) : directives)
+        .filter(d => !d.startsWith("Water harvesting directive")),
       ...base(),
     };
   }
