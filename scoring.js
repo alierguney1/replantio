@@ -649,11 +649,29 @@ export function scoreSpecies(sp, site, ev = null) {
     if (rtot > sp.rain[3] && rtot <= sp.rain[3] * WET_MARGIN) rain = 0.5;
   }
 
-  // A perennial lives through the whole year, not just its best window:
-  // the annual regime must sit inside the absolute temperature envelope.
-  let annual = trap(site.tavg.reduce((a, b) => a + b, 0) / 12, ...sp.temp) > 0 ? 1 : 0;
-  // native right here beats the envelope: the regime is survivable by observation
-  if (!annual && ev?.native) annual = 1;
+  // An annual crop lives inside its growing cycle window and never meets the
+  // winter: the annual-regime gate applies only to perennials that inhabit
+  // the ground year-round (same lifeform distinction as dual-stage frost).
+  let annual = 1;
+  if (!sp.annual || G === 12) {
+    const annualMean = site.tavg.reduce((a, b) => a + b, 0) / 12;
+    annual = trap(annualMean, ...sp.temp) > 0 ? 1 : 0;
+    // Native right here beats the envelope: the regime is survivable by observation
+    if (!annual && ev?.native) {
+      annual = 1;
+    } else if (!annual && (dormantTree || (sp.decid && (sp.ktmpr ?? 99) <= -10))) {
+      // In boreal/sub-arctic regimes where the 12-month mean falls below the
+      // database-wide TMIN floor (2.0 C) due to extreme winter cold, a dormant
+      // perennial that survives dormant frost (frost > 0) is bounded by its
+      // active growing-season warmth (Gt, Körner 2012 treeline: >=3 warm months),
+      // not by frozen winter months it avoids through endodormancy.
+      // Off-envelope heat (annualMean > sp.temp[2]) remains a hard kill.
+      const warmMonths = site.tavg.filter(t => t >= 5).length;
+      if (annualMean < sp.temp[0] && annualMean < 2.0 && warmMonths >= 3 && temp > 0) {
+        annual = ev?.countryNative ? 1.0 : 0.5;
+      }
+    }
+  }
 
   // ---------------------------------------------------------------------------
   // Dual-Stage Frost Semantics (Decoupled KTMPR vs KTMP)

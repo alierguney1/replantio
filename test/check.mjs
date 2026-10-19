@@ -430,6 +430,47 @@ assert.ok(barley?.annual, "barley is an annual");
 assert.equal(scoreSpecies(barley, giresun).factors.frost, 1,
   "annual window test stays KTMPR-first; barley is grown in Giresun");
 
+// boreal/sub-arctic annual gate reform (Kiruna & Fairbanks field reviews):
+// annual crops don't live in winter; dormant cold-hardy perennials in sub-2 C
+// regimes with >=3 warm months (Körner 2012 treeline criteria) must not be
+// beheaded by a binary full-year mean when growing season warmth and frost pass
+const kiruna = {
+  lat: 67.86,
+  tavg: [-12.1, -11.5, -7.8, -2.1, 4.3, 10.5, 13.3, 11.2, 5.8, -0.4, -6.5, -10.1],
+  tmin: [-15.2, -14.8, -11.5, -5.9, 0.2, 5.8, 8.9, 7.1, 2.3, -3.2, -9.4, -13.0],
+  prec: [32, 27, 28, 29, 41, 62, 85, 74, 52, 45, 38, 36],
+  ph: null, absMin: -36.8,
+};
+const longyearbyen = { // high arctic / polar tundra (warmest month 8.1 C, only 2 warm months)
+  lat: 78.22,
+  tavg: [-9.8, -10.5, -10.2, -7.4, -1.9, 3.8, 8.1, 6.5, 1.8, -3.5, -6.4, -8.7],
+  tmin: [-13.2, -14.1, -13.8, -10.5, -4.2, 1.6, 5.8, 4.5, -0.1, -5.9, -9.4, -11.8],
+  prec: [22, 18, 17, 12, 11, 15, 24, 28, 26, 21, 25, 23],
+  ph: null, absMin: -31.9,
+};
+assert.equal(scoreSpecies(barley, kiruna).factors.annual, 1, "annual barley escapes the 12-month mean in Kiruna");
+const birch = by("Betula pubescens");
+const birchKiruna = scoreSpecies(birch, kiruna, { countryNative: true });
+assert.equal(birchKiruna.factors.annual, 1, "native mountain birch clears annual gate in Kiruna");
+assert.ok(birchKiruna.score >= 0.4, `birch rates suitable in Kiruna: ${birchKiruna.score}`);
+const mugo = by("Pinus mugo");
+const mugoKiruna = scoreSpecies(mugo, kiruna);
+assert.equal(mugoKiruna.factors.annual, 0.5, "non-native hardy pine takes 0.5 demote caveat in sub-2 C regime");
+assert.ok(mugoKiruna.score >= 0.2, `mugo pine rates marginal/suitable in Kiruna: ${mugoKiruna.score}`);
+assert.equal(scoreSpecies(birch, longyearbyen, { countryNative: true }).score, 0,
+  "polar tundra with <3 warm months still trips annual gate for trees (Körner treeline law)");
+assert.equal(scoreSpecies(by("Mangifera indica"), kiruna).score, 0, "tropical tree dead in Kiruna");
+assert.equal(scoreSpecies(by("Ficus carica"), kiruna).score, 0, "tender fig killed by frost in Kiruna");
+const khartoum = {
+  lat: 15.6,
+  tavg: [24, 26, 29, 32, 35, 35, 33, 32, 33, 34, 29, 25],
+  tmin: [16, 17, 20, 23, 26, 27, 25, 24, 25, 26, 21, 17],
+  prec: [0, 0, 0, 0, 3, 7, 45, 68, 18, 5, 0, 0],
+  ph: null, absMin: 8.0,
+};
+assert.equal(scoreSpecies(birch, khartoum).factors.annual, 0,
+  "excessive off-envelope annual heat still trips annual gate (Birch in Khartoum)");
+
 // user-declared irrigation waives the dry side only (Malatya field request):
 // water lifts to the species' optimal minimum, never above what falls
 const apricot = by("Prunus armeniaca");
