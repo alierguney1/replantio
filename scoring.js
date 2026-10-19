@@ -879,7 +879,7 @@ export function scoreSpecies(sp, site, ev = null) {
   const fits = [tri(tsum / Gt, ...sp.temp), tri(rainVal, ...sp.rain)];
   if (sp.ph && site.ph != null) fits.push(tri(site.ph, ...sp.ph));
   const fit = fits.reduce((a, b) => a + b, 0) / fits.length;
-  const rankScore = tiebreakScore({ sp, fit, gbifCount: ev?.gbifCount ?? 0 }, site, ev);
+  const rankScore = tiebreakScore({ sp, fit, gbifCount: ev?.gbifCount ?? 0 }, site, ev?.rankEv ?? ev);
 
   return {
     score,
@@ -904,8 +904,10 @@ export function tiebreakScore(row, site = null, ev = null) {
   else if (e?.countryNaturalized) pts += 5;
 
   // 2. GBIF empirical presence nearby
-  const gbifCount = row?.gbifCount ?? row?.gbif?.count ?? e?.gbifCount ?? 0;
-  if (gbifCount > 0) pts += Math.min(15, Math.log2(gbifCount + 1) * 3);
+  const gbifCount = Number(row?.gbifCount ?? row?.gbif?.count ?? e?.gbifCount ?? 0);
+  if (Number.isFinite(gbifCount) && gbifCount > 0) {
+    pts += Math.min(15, Math.log2(gbifCount + 1) * 3);
+  }
 
   // 3. Cultural staple / agroforestry & restoration keystone identity
   if (sp?.uses?.includes("food") || sp?.uses?.includes("fruit")) pts += 5;
@@ -915,7 +917,8 @@ export function tiebreakScore(row, site = null, ev = null) {
   if (sp?.sci?.endsWith(" sp.")) pts -= 15;
 
   // 5. Residual climatic fit (kept as minor fractional tiebreak, not dictator)
-  pts += (row?.fit ?? 0) * 2;
+  const fitVal = Number(row?.fit);
+  if (Number.isFinite(fitVal)) pts += fitVal * 2;
 
   return pts;
 }

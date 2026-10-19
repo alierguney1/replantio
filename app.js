@@ -588,27 +588,27 @@ async function analyze(pts) {
     countryNaturalized: !!(place?.cc && (NATURALIZED[sp.id] ?? []).includes(place.cc)),
   });
   const rescore = () => {
+  const rescore = () => {
     const win = sowingWindow(site);
-    const isSameSite = current?.site === site;
-    const prev = isSameSite ? new Map((current?.scored ?? []).map(s => [s.sp.id, s])) : null;
+    const prevMap = current?.scored ? new Map(current.scored.map(x => [x.sp.id, x])) : null;
     return SPECIES
       .map(sp => {
-        const old = prev?.get(sp.id);
-        const ev = { native: evNative(sp), countryNative: evCountry(sp), countryNaturalized: evNaturalized(sp) };
         const rev = rankEv(sp);
-        const r = scoreSpecies(sp, site, { ...ev, rankEv: rev });
-        const gbifCount = old?.gbifCount ?? old?.gbif?.count ?? 0;
+        const ev = { native: evNative(sp), countryNative: evCountry(sp), countryNaturalized: evNaturalized(sp), rankEv: rev };
+        const prev = prevMap?.get(sp.id);
+        const gbifCount = prev?.gbifCount ?? prev?.gbif?.count ?? 0;
+        const r = scoreSpecies(sp, site, ev);
         const row = {
           sp,
           ev: rev,
-          f45: old?.f45 ?? null,
-          photo: old?.photo ?? null,
-          gbif: old?.gbif ?? null,
+          f45: prev?.f45 ?? null,
+          photo: prev?.photo ?? null,
+          gbif: prev?.gbif,
           gbifCount,
           strat: establishmentStrategy(sp, site, win),
           ...r
         };
-        row.rankScore = tiebreakScore(row, site, rev);
+        if (gbifCount > 0) row.rankScore = tiebreakScore(row, site, rev);
         return row;
       })
       .sort((a, b) => (b.score - a.score) || (b.rankScore - a.rankScore));
@@ -1059,7 +1059,7 @@ function speciesRow(s, i) {
                   ? tfmt("Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.", { region: regionName() })
                   : tr("Part of the native flora of this region (WCVP)"))
                 : tr("Part of the native flora of this country (WCVP)")}">${tr("native")}</span>` : ""}
-          <span class="nearby gbif" data-nearby="${s.sp.id}" ${s.gbif?.count > 0 ? "" : "hidden"} title="${tr("GBIF occurrence records near this area")}">&#10003; ${tr("nearby")}</span>
+          <span class="nearby gbif" data-nearby="${s.sp.id}" ${s.gbif?.count > 0 ? "" : "hidden"} title="${tr("GBIF occurrence records near this area")}" aria-label="${tr("Recorded nearby on GBIF")}">&#10003; ${tr("nearby")}</span>
           <span class="nearby warn45" data-f45="${s.sp.id}" ${s.score > 0.4 && s.f45 != null && s.f45 <= 0.4 ? "" : "hidden"} title="${tr("Falls below suitable in the 2040s climate (CMIP6)")}">2045 &#9662;</span>
           ${s.score <= 0.4 ? `<span class="nearby mgnl">${tr(grade(s.score)).toLowerCase()}</span>` : ""}
         </div>
@@ -2101,7 +2101,7 @@ async function gbifEvidence(top, bounds, signal) {
   const keys = await Promise.all(top.map(async s => {
     const cacheKey = `gbifk:${s.sp.sci}`;
     const cached = localStorage.getItem(cacheKey);
-    if (cached !== null) return cached === "x" ? null : +cached;
+    if (cached !== null) return cached === "x" ? null : (Number.isFinite(+cached) ? +cached : null);
     try {
       const j = await (await fetch(`https://api.gbif.org/v1/species/match?name=${encodeURIComponent(s.sp.sci)}`, { signal })).json();
       const ok = j.rank === "SPECIES" && (j.matchType === "EXACT" || (j.matchType === "FUZZY" && j.confidence >= 95));
@@ -2131,9 +2131,20 @@ async function gbifEvidence(top, bounds, signal) {
       updateEvidence(v.s);
     }
     current?.scored?.sort((a, b) => (b.score - a.score) || (b.rankScore - a.rankScore));
+    reorderSpList();
   } catch {
     if (signal.aborted) return;
     for (const v of withKey) { v.s.gbif = "ERR"; updateEvidence(v.s); }
+  }
+}
+
+function reorderSpList() {
+  const list = document.getElementById("sp-list");
+  if (!list || current?.q?.trim()) return;
+  const pool = current.scored.filter(s => critMatch(s, critState())).slice(0, current.shown);
+  for (const s of pool) {
+    const el = list.querySelector(`[data-id="${s.sp.id}"]`);
+    if (el) list.appendChild(el);
   }
 }
 

@@ -890,6 +890,18 @@ assert.equal(recalcDiverg.length, 0, `old/new recalcitrant gates diverge for ${r
   const ptsGenus = tiebreakScore({ sp: { sci: "Chamaedorea sp.", uses: ["food"] }, fit: 1.0 }, null, {});
   assert.ok(ptsGenus < 0, `genus placeholder penalized below zero: ${ptsGenus}`);
 
+  // NaN and malformed input resilience
+  assert.ok(Number.isFinite(tiebreakScore({ sp: { sci: "Test sp." }, fit: NaN, gbifCount: null }, null, {})), "finite on NaN fit and null gbifCount");
+  assert.ok(Number.isFinite(tiebreakScore({ sp: { sci: "Test sp." }, fit: undefined, gbifCount: -10 }, null, {})), "finite on undefined fit and negative gbifCount");
+
+  // Helper: strict monotonicity guard (no lower-scoring species ever surpasses a higher-scoring one)
+  const assertMonotonic = (list, name) => {
+    for (let i = 1; i < list.length; i++) {
+      assert.ok(list[i - 1].score >= list[i].score,
+        `score monotonicity violated in ${name} at index ${i}: ${list[i - 1].score} < ${list[i].score}`);
+    }
+  };
+
   // 2. Ordu Hazelnut & Black Sea Benchmark (s001):
   // In an Ordu coastal orchard regime where Corylus avellana ties at 1.0, it must
   // rank in the top 10 (#1) rather than being buried under narrow-envelope exotics
@@ -914,12 +926,7 @@ assert.equal(recalcDiverg.length, 0, `old/new recalcitrant gates diverge for ${r
   assert.ok(hazelRank >= 1 && hazelRank <= 10, `Corylus avellana ranks in top 10 at Ordu coastal (${hazelRank})`);
   const macaRank = orduRanked.findIndex(r => r.sp.sci === "Lepidium meyenii") + 1;
   assert.ok(hazelRank < macaRank, `Corylus avellana (#${hazelRank}) outranks Andean maca (#${macaRank})`);
-
-  // Strict monotonicity guard: no lower-scoring species ever surpasses a higher-scoring one
-  for (let i = 1; i < orduRanked.length; i++) {
-    assert.ok(orduRanked[i - 1].score >= orduRanked[i].score,
-      `score monotonicity violated at index ${i}: ${orduRanked[i - 1].score} < ${orduRanked[i].score}`);
-  }
+  assertMonotonic(orduRanked, "Ordu");
 
   // 3. Monsoon Rice & Genus-Placeholder Benchmark (s047):
   // Rice (Oryza sativa) must not be buried at #356 among 1.0 ties, and
@@ -944,6 +951,7 @@ assert.equal(recalcDiverg.length, 0, `old/new recalcitrant gates diverge for ${r
   const chamRank = mumbaiRanked.findIndex(r => r.sp.sci === "Chamaedorea sp.") + 1;
   assert.ok(riceRank < 320, `Oryza sativa elevated above #356 burial (#${riceRank})`);
   assert.ok(chamRank > 500 && chamRank >= mumbaiOnes - 5, `Chamaedorea sp. demoted from #1 to bottom of 1.0 ties (#${chamRank}/${mumbaiOnes})`);
+  assertMonotonic(mumbaiRanked, "Mumbai");
 
   // 4. Amazon Agroforestry Cacao vs. Desert Colocynth Benchmark (s072):
   const manaus = {
@@ -965,6 +973,7 @@ assert.equal(recalcDiverg.length, 0, `old/new recalcitrant gates diverge for ${r
   const colocynthRank = manausRanked.findIndex(r => r.sp.sci === "Citrullus colocynthis") + 1;
   assert.ok(cacaoRank < 40 && cacaoRank < colocynthRank,
     `Theobroma cacao (#${cacaoRank}) ranks far above Citrullus colocynthis (#${colocynthRank})`);
+  assertMonotonic(manausRanked, "Manaus");
 
   // 5. Curitiba Araucaria & Atlantic Forest Keystone Benchmark (s074):
   const curitibaHighland = {
@@ -984,6 +993,7 @@ assert.equal(recalcDiverg.length, 0, `old/new recalcitrant gates diverge for ${r
   }).sort((a, b) => (b.score - a.score) || (b.rankScore - a.rankScore));
   const araucariaRank = curitibaRanked.findIndex(r => r.sp.sci === "Araucaria angustifolia") + 1;
   assert.equal(araucariaRank, 1, `Araucaria angustifolia surfaces at #1 in Curitiba highland tiebreak (got #${araucariaRank})`);
+  assertMonotonic(curitibaRanked, "Curitiba");
 }
 
 console.log("all checks passed");
