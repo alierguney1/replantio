@@ -594,10 +594,9 @@ def main(argv=None):
             elif fam in ("Poaceae", "Gramineae", "Brassicaceae", "Cruciferae"):
                 # Strictly orthodox family prior. EcoCrop uses the traditional
                 # names Gramineae/Cruciferae, so both nomenclatures are matched.
-                # Chenopodiaceae was removed from this list: its single catalog
-                # from this list: its single catalog hit (Bassia latifolia,
-                # widely synonymized to Madhuca longifolia, Sapotaceae) made
-                # the prior rest on disputed taxonomy — such records resolve
+                # Chenopodiaceae was removed from this list: its single catalog hit
+                # (Bassia latifolia, widely synonymized to Madhuca longifolia, Sapotaceae)
+                # made the prior rest on disputed taxonomy — such records resolve
                 # to uncertain instead.
                 entry["storage"] = "orthodox"
                 entry["p_ds"] = 0.08
