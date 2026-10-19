@@ -665,7 +665,7 @@ export function scoreSpecies(sp, site, ev = null) {
       // perennial that survives dormant frost (frost > 0) is bounded by its
       // active growing-season warmth (Gt, Körner 2012 treeline: >=3 warm months),
       // not by frozen winter months it avoids through endodormancy.
-      // Off-envelope heat (annualMean > sp.temp[2]) remains a hard kill.
+      // Off-envelope heat (annualMean > sp.temp[3]) remains a hard kill.
       const warmMonths = site.tavg.filter(t => t >= 5).length;
       if (annualMean < sp.temp[0] && annualMean < 2.0 && warmMonths >= 3 && temp > 0) {
         annual = ev?.countryNative ? 1.0 : 0.5;
