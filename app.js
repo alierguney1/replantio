@@ -1,4 +1,4 @@
-import { aggregateClimate, scoreSpecies, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors, monthlyFlatInsolation, maxSoilDepthCm, aggregateSoilProfile, normalizeSearch, koppenGeigerClass, KOPPEN_DESCRIPTIONS, establishmentStrategy, sowingWindow } from "./scoring.js";
+import { aggregateClimate, scoreSpecies, tiebreakScore, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors, monthlyFlatInsolation, maxSoilDepthCm, aggregateSoilProfile, normalizeSearch, koppenGeigerClass, KOPPEN_DESCRIPTIONS, establishmentStrategy, sowingWindow } from "./scoring.js";
 import { DICTS, LANGS, NAMES, LOCALES, MONTHS_ALL } from "./i18n.js";
 import { CLASSES, projection, maturityYears, co2eKgPerTree, co2eTonsPerHa, height, dbhCm, crownDiameterM, crownDisplayM, standDisplay, STEMS_PER_HA } from "./growth.js";
 
@@ -582,6 +582,11 @@ async function analyze(pts) {
   const evNaturalized = sp => !L3_REGIONS[place?.cc] && !!place?.cc && (NATURALIZED[sp.id] ?? []).includes(place.cc);
   // kept on current so user site adjustments (irrigation, measured pH) can
   // re-run pure scoring without refetching anything
+  const rankEv = sp => ({
+    native: evNative(sp),
+    countryNative: !!(place?.cc && (NATIVES[sp.id] ?? []).includes(place.cc)),
+    countryNaturalized: !!(place?.cc && (NATURALIZED[sp.id] ?? []).includes(place.cc)),
+  });
   const rescore = () => {
     const win = sowingWindow(site);
     const isSameSite = current?.site === site;
@@ -589,16 +594,24 @@ async function analyze(pts) {
     return SPECIES
       .map(sp => {
         const old = prev?.get(sp.id);
-        return {
+        const ev = { native: evNative(sp), countryNative: evCountry(sp), countryNaturalized: evNaturalized(sp) };
+        const rev = rankEv(sp);
+        const r = scoreSpecies(sp, site, { ...ev, rankEv: rev });
+        const gbifCount = old?.gbifCount ?? old?.gbif?.count ?? 0;
+        const row = {
           sp,
+          ev: rev,
           f45: old?.f45 ?? null,
           photo: old?.photo ?? null,
           gbif: old?.gbif ?? null,
+          gbifCount,
           strat: establishmentStrategy(sp, site, win),
-          ...scoreSpecies(sp, site, { native: evNative(sp), countryNative: evCountry(sp), countryNaturalized: evNaturalized(sp) })
+          ...r
         };
+        row.rankScore = tiebreakScore(row, site, rev);
+        return row;
       })
-      .sort((a, b) => (b.score - a.score) || (b.fit - a.fit));
+      .sort((a, b) => (b.score - a.score) || (b.rankScore - a.rankScore));
   };
   const scored = rescore();
   step("ls-score");
@@ -2113,8 +2126,11 @@ async function gbifEvidence(top, bounds, signal) {
     const counts = Object.fromEntries((j.facets?.[0]?.counts ?? []).map(c => [c.name, c.count]));
     for (const v of withKey) {
       v.s.gbif = { key: v.key, count: counts[String(v.key)] ?? 0 };
+      v.s.gbifCount = v.s.gbif.count;
+      v.s.rankScore = tiebreakScore(v.s, current?.site, v.s.ev);
       updateEvidence(v.s);
     }
+    current?.scored?.sort((a, b) => (b.score - a.score) || (b.rankScore - a.rankScore));
   } catch {
     if (signal.aborted) return;
     for (const v of withKey) { v.s.gbif = "ERR"; updateEvidence(v.s); }

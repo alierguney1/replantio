@@ -1,7 +1,7 @@
 // Self-check for the scoring and growth engines. Run: node test/check.mjs
 import assert from "node:assert";
 import { readFileSync } from "node:fs";
-import { trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors, monthlyFlatInsolation, maxSoilDepthCm, scorePerennialRain, SLOPE_FLAT_DEG, SLOPE_MAX_DEG, MAX_SLOPE_DRAIN_FACTOR, scoreSpecies, aggregateClimate, grade, aridityClass, koppenGeigerClass, KOPPEN_DESCRIPTIONS, usdaTextureClass, faoTextureCategory, saxtonRawlsHydrology, aggregateSoilProfile, normalizeSearch, establishmentStrategy, seedReserveAdvantage, sowingWindow, windowLabel } from "../scoring.js";
+import { trap, daylength, slopeSolarFactor, monthlySlopeSolarFactors, monthlyFlatInsolation, maxSoilDepthCm, scorePerennialRain, SLOPE_FLAT_DEG, SLOPE_MAX_DEG, MAX_SLOPE_DRAIN_FACTOR, scoreSpecies, tiebreakScore, aggregateClimate, grade, aridityClass, koppenGeigerClass, KOPPEN_DESCRIPTIONS, usdaTextureClass, faoTextureCategory, saxtonRawlsHydrology, aggregateSoilProfile, normalizeSearch, establishmentStrategy, seedReserveAdvantage, sowingWindow, windowLabel } from "../scoring.js";
 import { CLASSES, height, dbhCm, co2eKgPerTree, crownDiameterM, crownDisplayM, standDisplay, maturityYears } from "../growth.js";
 
 const species = JSON.parse(readFileSync(new URL("../data/species.json", import.meta.url)));
@@ -865,6 +865,125 @@ assert.equal(recalcDiverg.length, 0, `old/new recalcitrant gates diverge for ${r
   const siteBoundaryOver = { ...siteBoundaryAt, prec: precOverBoundary };
   assert.equal(scoreSpecies(boundarySp, siteBoundaryAt).factors.rain, 1.0, "Atriplex canescens keeps rain 1.0 at annualRain === RMAX (600)");
   assert.equal(scoreSpecies(boundarySp, siteBoundaryOver).factors.rain, 0.5, "Atriplex canescens capped at 0.5 when annualRain exceeds RMAX by 1 mm (601)");
+}
+
+// --- Evidence-Weighted Ranking & Tiebreak Architecture (Report Fix #3)
+{
+  const nativesL3 = JSON.parse(readFileSync(new URL("../data/natives_l3.json", import.meta.url)));
+
+  // 1. Deterministic tiebreakScore priors and monotonicity
+  const rowBase = { sp: { sci: "Exoticus vulgaris", uses: [] }, fit: 0.95, gbifCount: 0 };
+  const ptsExotic = tiebreakScore(rowBase, null, {});
+  const ptsNat = tiebreakScore(rowBase, null, { countryNaturalized: true });
+  const ptsCountry = tiebreakScore(rowBase, null, { countryNative: true });
+  const ptsExact = tiebreakScore(rowBase, null, { native: true, countryNative: true });
+  assert.ok(ptsExact > ptsCountry && ptsCountry > ptsNat && ptsNat > ptsExotic,
+    `native hierarchy: exact(${ptsExact}) > country(${ptsCountry}) > naturalized(${ptsNat}) > exotic(${ptsExotic})`);
+
+  // GBIF nearby empirical presence boost (capped at +15)
+  const ptsGbif10 = tiebreakScore({ ...rowBase, gbifCount: 10 }, null, {});
+  const ptsGbif1000 = tiebreakScore({ ...rowBase, gbifCount: 1000 }, null, {});
+  assert.ok(ptsGbif10 > ptsExotic && ptsGbif1000 > ptsGbif10 && ptsGbif1000 - ptsExotic <= 15.001,
+    `GBIF log2 boost bounded at +15: ${ptsGbif1000 - ptsExotic}`);
+
+  // Unresolved genus placeholder penalty (" sp.")
+  const ptsGenus = tiebreakScore({ sp: { sci: "Chamaedorea sp.", uses: ["food"] }, fit: 1.0 }, null, {});
+  assert.ok(ptsGenus < 0, `genus placeholder penalized below zero: ${ptsGenus}`);
+
+  // 2. Ordu Hazelnut & Black Sea Benchmark (s001):
+  // In an Ordu coastal orchard regime where Corylus avellana ties at 1.0, it must
+  // rank in the top 10 (#1) rather than being buried under narrow-envelope exotics
+  // (Lepidium meyenii, Atriplex canescens). At the s001 grid cell, native walnut
+  // (Juglans regia) ranks #1 overall and hazelnut leads its score tier.
+  const orduCoastal = {
+    lat: 40.98,
+    tavg: [6.9, 8.0, 9.2, 12.7, 16.3, 21.1, 23.3, 24.2, 21.3, 16.9, 12.8, 9.2],
+    tmin: [3.6, 4.4, 5.6, 8.6, 12.6, 17.8, 20.1, 21.3, 18.1, 13.8, 9.4, 6.1],
+    prec: [95, 70, 90, 62, 82, 84, 85, 80, 85, 100, 88, 90],
+    ph: null, absMin: -5.5,
+  };
+  const orduRanked = species.map(sp => {
+    const ev = {
+      native: false,
+      countryNative: !!(natives[sp.id]?.includes("TR")),
+      countryNaturalized: !!(naturalized[sp.id]?.includes("TR")),
+    };
+    return { sp, ...scoreSpecies(sp, orduCoastal, ev) };
+  }).sort((a, b) => (b.score - a.score) || (b.rankScore - a.rankScore));
+  const hazelRank = orduRanked.findIndex(r => r.sp.sci === "Corylus avellana") + 1;
+  assert.ok(hazelRank >= 1 && hazelRank <= 10, `Corylus avellana ranks in top 10 at Ordu coastal (${hazelRank})`);
+  const macaRank = orduRanked.findIndex(r => r.sp.sci === "Lepidium meyenii") + 1;
+  assert.ok(hazelRank < macaRank, `Corylus avellana (#${hazelRank}) outranks Andean maca (#${macaRank})`);
+
+  // Strict monotonicity guard: no lower-scoring species ever surpasses a higher-scoring one
+  for (let i = 1; i < orduRanked.length; i++) {
+    assert.ok(orduRanked[i - 1].score >= orduRanked[i].score,
+      `score monotonicity violated at index ${i}: ${orduRanked[i - 1].score} < ${orduRanked[i].score}`);
+  }
+
+  // 3. Monsoon Rice & Genus-Placeholder Benchmark (s047):
+  // Rice (Oryza sativa) must not be buried at #356 among 1.0 ties, and
+  // Chamaedorea sp. must be demoted from #1 to the bottom of the 1.0 tier.
+  const mumbai = {
+    lat: 19.08,
+    tavg: [24.2, 25.1, 27.1, 28.7, 29.7, 28.1, 26.5, 26.2, 26.6, 27.7, 26.8, 24.9],
+    tmin: [18.7, 19.6, 22.1, 24.5, 26.4, 25.6, 24.6, 24.3, 24.2, 23.9, 21.9, 19.6],
+    prec: [1, 1, 0, 0, 14, 502, 783, 535, 315, 91, 16, 8],
+    ph: null, absMin: 13.0,
+  };
+  const mumbaiRanked = species.map(sp => {
+    const ev = {
+      native: false,
+      countryNative: !!(natives[sp.id]?.includes("IN")),
+      countryNaturalized: !!(naturalized[sp.id]?.includes("IN")),
+    };
+    return { sp, ...scoreSpecies(sp, mumbai, ev) };
+  }).sort((a, b) => (b.score - a.score) || (b.rankScore - a.rankScore));
+  const mumbaiOnes = mumbaiRanked.filter(r => r.score === 1).length;
+  const riceRank = mumbaiRanked.findIndex(r => r.sp.sci === "Oryza sativa") + 1;
+  const chamRank = mumbaiRanked.findIndex(r => r.sp.sci === "Chamaedorea sp.") + 1;
+  assert.ok(riceRank < 320, `Oryza sativa elevated above #356 burial (#${riceRank})`);
+  assert.ok(chamRank > 500 && chamRank >= mumbaiOnes - 5, `Chamaedorea sp. demoted from #1 to bottom of 1.0 ties (#${chamRank}/${mumbaiOnes})`);
+
+  // 4. Amazon Agroforestry Cacao vs. Desert Colocynth Benchmark (s072):
+  const manaus = {
+    lat: -3.12,
+    tavg: [26.5, 26.4, 26.5, 26.6, 26.8, 27.2, 27.6, 28.6, 28.9, 28.4, 27.6, 26.9],
+    tmin: [24.2, 24.2, 24.3, 24.4, 24.5, 24.4, 24.3, 24.8, 25.1, 25.0, 24.7, 24.4],
+    prec: [260, 255, 275, 260, 210, 95, 51, 43, 68, 112, 145, 190],
+    ph: null, absMin: 20.5,
+  };
+  const manausRanked = species.map(sp => {
+    const ev = {
+      native: !!(nativesL3[sp.id]?.includes("BZN")),
+      countryNative: !!(natives[sp.id]?.includes("BR")),
+      countryNaturalized: !!(naturalized[sp.id]?.includes("BR")),
+    };
+    return { sp, ...scoreSpecies(sp, manaus, ev) };
+  }).sort((a, b) => (b.score - a.score) || (b.rankScore - a.rankScore));
+  const cacaoRank = manausRanked.findIndex(r => r.sp.sci === "Theobroma cacao") + 1;
+  const colocynthRank = manausRanked.findIndex(r => r.sp.sci === "Citrullus colocynthis") + 1;
+  assert.ok(cacaoRank < 40 && cacaoRank < colocynthRank,
+    `Theobroma cacao (#${cacaoRank}) ranks far above Citrullus colocynthis (#${colocynthRank})`);
+
+  // 5. Curitiba Araucaria & Atlantic Forest Keystone Benchmark (s074):
+  const curitibaHighland = {
+    lat: -25.43,
+    tavg: [21.5, 21.2, 20.5, 18.8, 16.5, 15.2, 14.8, 15.6, 17.5, 18.5, 19.3, 20.8],
+    tmin: [16.5, 16.5, 15.5, 13.5, 11.0, 10.0, 9.7, 10.5, 12.0, 13.5, 14.5, 16.0],
+    prec: [210, 175, 140, 95, 125, 120, 90, 105, 130, 175, 140, 180],
+    ph: 5.5, absMin: 0.5,
+  };
+  const curitibaRanked = species.map(sp => {
+    const ev = {
+      native: !!(nativesL3[sp.id]?.includes("BZS")),
+      countryNative: !!(natives[sp.id]?.includes("BR")),
+      countryNaturalized: !!(naturalized[sp.id]?.includes("BR")),
+    };
+    return { sp, ...scoreSpecies(sp, curitibaHighland, ev) };
+  }).sort((a, b) => (b.score - a.score) || (b.rankScore - a.rankScore));
+  const araucariaRank = curitibaRanked.findIndex(r => r.sp.sci === "Araucaria angustifolia") + 1;
+  assert.equal(araucariaRank, 1, `Araucaria angustifolia surfaces at #1 in Curitiba highland tiebreak (got #${araucariaRank})`);
 }
 
 console.log("all checks passed");

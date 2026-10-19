@@ -879,13 +879,45 @@ export function scoreSpecies(sp, site, ev = null) {
   const fits = [tri(tsum / Gt, ...sp.temp), tri(rainVal, ...sp.rain)];
   if (sp.ph && site.ph != null) fits.push(tri(site.ph, ...sp.ph));
   const fit = fits.reduce((a, b) => a + b, 0) / fits.length;
+  const rankScore = tiebreakScore({ sp, fit, gbifCount: ev?.gbifCount ?? 0 }, site, ev);
 
   return {
     score,
     fit,
+    rankScore,
     factors: { temp, rain, ph, frost, photo, annual, chill, drain, depth, texture, soilDepth, salinity, drainage },
     window: { start: best, months: Gt }
   };
+}
+
+// Evidence-weighted tiebreak prior for sorting within equal bioclimatic score
+// tiers. Strictly decoupled from suitability (`score` remains pure abiotic
+// niche survival under Liebig's Law of the Minimum).
+export function tiebreakScore(row, site = null, ev = null) {
+  const sp = row?.sp ?? row;
+  const e = ev ?? row?.ev;
+  let pts = 0;
+
+  // 1. Native & establishment priority (Regional exact > Country native > Naturalized > Introduced)
+  if (e?.native) pts += 50;
+  else if (e?.countryNative) pts += 20;
+  else if (e?.countryNaturalized) pts += 5;
+
+  // 2. GBIF empirical presence nearby
+  const gbifCount = row?.gbifCount ?? row?.gbif?.count ?? e?.gbifCount ?? 0;
+  if (gbifCount > 0) pts += Math.min(15, Math.log2(gbifCount + 1) * 3);
+
+  // 3. Cultural staple / agroforestry & restoration keystone identity
+  if (sp?.uses?.includes("food") || sp?.uses?.includes("fruit")) pts += 5;
+  if (sp?.uses?.includes("timber") || sp?.uses?.includes("environmental")) pts += 3;
+
+  // 4. Penalize unresolved genus placeholders (e.g. "Chamaedorea sp.", "Rubus sp.")
+  if (sp?.sci?.endsWith(" sp.")) pts -= 15;
+
+  // 5. Residual climatic fit (kept as minor fractional tiebreak, not dictator)
+  pts += (row?.fit ?? 0) * 2;
+
+  return pts;
 }
 
 export function grade(s) {
