@@ -128,12 +128,19 @@ def _assert_anon_role(key):
     # Decode the JWT payload without verification (stdlib only): the scraped
     # or env-supplied key must carry role=="anon". Refuse service_role or any
     # other privileged key rather than querying under it.
+    if not isinstance(key, str):
+        raise RuntimeError("SID key must be a string")
+    parts = key.split(".")
+    if len(parts) != 3:
+        raise RuntimeError(f"SID key is not a valid 3-part JWT (got {len(parts)} parts)")
     try:
-        payload_b64 = key.split(".")[1]
+        payload_b64 = parts[1]
         payload_b64 += "=" * (-len(payload_b64) % 4)
         payload = json.loads(base64.urlsafe_b64decode(payload_b64.encode("ascii")).decode("utf-8"))
     except Exception as ex:
-        raise RuntimeError(f"SID key is not a decodable JWT ({ex}) — refusing to guess key shape")
+        raise RuntimeError(f"SID key payload is not decodable JSON ({ex}) — refusing to guess key shape")
+    if not isinstance(payload, dict):
+        raise RuntimeError("SID key JWT payload is not a JSON object")
     if payload.get("role") != "anon":
         raise RuntimeError(f"SID key role is {payload.get('role')!r}, expected 'anon' — refusing to use a privileged key")
 
@@ -164,7 +171,7 @@ def get_anon_key(max_retries=3):
             )
             with urllib.request.urlopen(req, timeout=15) as r:
                 js = r.read().decode("utf-8")
-            km = re.search(r"eyJ[a-zA-Z0-9_\-\.]+", js)
+            km = re.search(r"eyJ[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+", js)
             if not km:
                 raise RuntimeError("Could not extract the SID anon key")
             key = km.group(0)
@@ -201,8 +208,9 @@ def clean_binomial(sci):
     return None
 
 def classify_dormancy(s, kew_presow=None, storage=None):
-    b = clean_binomial(s["sci"])
-    genus = b[0] if b else s["sci"].split()[0]
+    b = clean_binomial(s.get("sci", ""))
+    parts = s.get("sci", "").strip().split()
+    genus = b[0] if b else (parts[0] if parts else "")
     fam = s.get("family") or ""
     porte = s.get("porte") or ""
     is_herb = porte in ("herb", "grass") or s.get("annual") == True
@@ -218,8 +226,11 @@ def classify_dormancy(s, kew_presow=None, storage=None):
     # 3. Direct empirical cue from Kew germination tests
     if kew_presow:
         kp = kew_presow.lower()
-        has_sc = any(w in kp for w in ("scarif", "chipped", "boiling", "scald", "acid", "nick"))
-        has_ch = any(w in kp for w in ("stratifi", "chill", "cold", "moist"))
+        # Differentiate acid scarification (concentrated H2SO4) from hormonal GA3 treatments (PD)
+        is_hormonal = any(g in kp for g in ("gibberell", "ga3", "ga-3"))
+        is_acid_scarif = ("acid" in kp and not is_hormonal) or any(w in kp for w in ("sulfuric", "sulphuric"))
+        has_sc = any(w in kp for w in ("scarif", "chipped", "boiling", "scald", "nick")) or is_acid_scarif
+        has_ch = any(w in kp for w in ("stratifi", "chill", "cold", "moist")) or is_hormonal
         if has_sc and has_ch:
             if storage == "recalcitrant":
                 # PY component physiologically impossible on desiccation-sensitive
@@ -258,7 +269,8 @@ def enrich_ecological_traits(s, entry):
     sci = s.get("sci", "")
     fam = s.get("family", "")
     b = clean_binomial(sci)
-    genus = b[0] if b else sci.split()[0]
+    parts = sci.strip().split()
+    genus = b[0] if b else (parts[0] if parts else "")
     if genus in ("Quercus", "Viburnum", "Paeonia", "Lilium") or fam == "Fagaceae":
         entry["epicotyl_dormancy"] = True
     if any(sci.startswith(x) for x in ("Pinus halepensis", "Pinus brutia", "Pinus radiata", "Pinus contorta", "Pinus banksiana", "Pinus rigida")) or "Banksia" in sci:
@@ -362,7 +374,7 @@ def main(argv=None):
     print("Fetching storage behaviour...")
     for i in range(0, len(all_int_ids), id_batch_size):
         chunk = all_int_ids[i:i + id_batch_size]
-        id_str = ",".join(str(x) for x in chunk)
+        id_str = ",".join(str(int(x)) for x in chunk)
         url = f"{base_url}/storage_behaviour?species_id=in.({id_str})&select=species_id,storage_behaviour&order=species_id.asc&limit={PAGE_LIMIT}"
         try:
             data = fetch_with_retry(url, headers=headers, cache_dir=cache_dir)
@@ -402,7 +414,7 @@ def main(argv=None):
     print("Fetching 1000-seed weights...")
     for i in range(0, len(all_int_ids), id_batch_size):
         chunk = all_int_ids[i:i + id_batch_size]
-        id_str = ",".join(str(x) for x in chunk)
+        id_str = ",".join(str(int(x)) for x in chunk)
         url = f"{base_url}/seed_weights?species_id=in.({id_str})&select=species_id,thousandseedweight&order=species_id.asc&limit={PAGE_LIMIT}"
         try:
             data = fetch_with_retry(url, headers=headers, cache_dir=cache_dir)
@@ -438,7 +450,7 @@ def main(argv=None):
     print("Fetching germination presowing treatments...")
     for i in range(0, len(all_int_ids), id_batch_size):
         chunk = all_int_ids[i:i + id_batch_size]
-        id_str = ",".join(str(x) for x in chunk)
+        id_str = ",".join(str(int(x)) for x in chunk)
         url = f"{base_url}/germination?species_id=in.({id_str})&presow_treatment=neq.&select=species_id,presow_treatment&order=species_id.asc&limit={PAGE_LIMIT}"
         try:
             data = fetch_with_retry(url, headers=headers, cache_dir=cache_dir)
@@ -566,8 +578,9 @@ def main(argv=None):
     for s in species_list:
         sid = str(s["id"])
         entry = dict(out.get(sid, {}))
-        b = clean_binomial(s["sci"])
-        genus = b[0] if b else s["sci"].split()[0]
+        b = clean_binomial(s.get("sci", ""))
+        parts = s.get("sci", "").strip().split()
+        genus = b[0] if b else (parts[0] if parts else "")
         fam = s.get("family") or ""
 
         # Storage & P_DS imputation

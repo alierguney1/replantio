@@ -276,9 +276,18 @@ def p_ds_interval(p_ds, confidence, code=None):
     return lo, hi
 
 
-def seed_interval_fields(code, seed_traits):
-    """p_ds_lo/hi for species with a p_ds value, else {}."""
-    st = seed_traits.get(str(code)) or {}
+def seed_interval_fields(st_or_code, seed_traits=None, code=None):
+    """p_ds_lo/hi for species with a p_ds value, else {}.
+
+    Accepts either (st, code=code) or (code, seed_traits) for compatibility.
+    """
+    if isinstance(st_or_code, dict):
+        st = st_or_code
+    elif seed_traits is not None and isinstance(seed_traits, dict):
+        code = st_or_code
+        st = seed_traits.get(str(code)) or {}
+    else:
+        st = {}
     if not isinstance(st, dict):
         raise SystemExit(f"species id {code}: seed_traits entry is not an object — refusing to build")
     p_ds = st.get("p_ds")
@@ -295,14 +304,16 @@ def main():
         raise SystemExit(f"{SEED_TRAITS_PATH} not found — refusing EcoCrop-only build (run scripts/fetch_seed_traits.py first).")
     else:
         try:
-            seed_traits = json.load(open(SEED_TRAITS_PATH))
+            with open(SEED_TRAITS_PATH, "r", encoding="utf-8") as f:
+                seed_traits = json.load(f)
         except (OSError, ValueError) as ex:
             raise SystemExit(f"Cannot load {SEED_TRAITS_PATH}: {ex}")
         if not isinstance(seed_traits, dict):
             raise SystemExit(f"{SEED_TRAITS_PATH} must be a JSON object keyed by species id")
 
     # ponytail: cp1252 per research; a few source bytes are pre-damaged, replace them
-    rows = list(csv.DictReader(open(SRC, encoding="cp1252", errors="replace")))
+    with open(SRC, encoding="cp1252", errors="replace") as f:
+        rows = list(csv.DictReader(f))
     out = []
     for r in rows:
         code = int(r["EcoPortCode"])
@@ -432,7 +443,7 @@ def main():
             # Kew SID seed traits & restoration establishment markers
             **({"storage": st["storage"]} if st.get("storage") else {}),
             **({"p_ds": st["p_ds"]} if st.get("p_ds") is not None else {}),
-            **seed_interval_fields(code, seed_traits),
+            **seed_interval_fields(st, code=code),
             **({"storage_confidence": st["storage_confidence"]} if st.get("storage_confidence") else {}),
             **({"storage_source": st["storage_source"]} if st.get("storage_source") else {}),
             **({"sw_1000g": st["sw_1000g"]} if st.get("sw_1000g") is not None else {}),
