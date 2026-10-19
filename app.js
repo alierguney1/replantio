@@ -1366,9 +1366,9 @@ function speciesDetail(id) {
     if (s.factors.texture != null && s.factors.texture < 1) notes.push(tfmt("The measured topsoil here is {t}, outside this species' preferred texture range: soft penalty, never an exclusion.", { t: tr(TEXTURE_NAMES[current.site.soil?.texture] ?? current.site.soil?.texture ?? "") }));
     if (current.site.irrigated) notes.push(tr("Scored as irrigated: water counts as available up to this species' optimum. Excess rain still applies."));
     else if (s.factors.rain < 0.2 && s.factors.temp >= 0.5) notes.push(tr("Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely."));
-    // wet-margin demote: rain 0.5 with the scored total above the ceiling can
-    // only come from the margin (the trapezoid is 0 past RMAX)
-    const rTot = (sp.tree && (sp.ktmpr ?? 99) <= -10) || s.window.months === 12 ? current.site.annualRain : wr;
+    // wet-margin demote or annual rain cap: rain 0.5 with the scored total above
+    // the ceiling can only come from the margin / consistency cap
+    const rTot = !sp.annual || s.window.months === 12 ? current.site.annualRain : wr;
     if (s.factors.rain === 0.5 && rTot > sp.rain[3])
       notes.push(tr("Annual rain here sits just above this species' EcoCrop ceiling. Excess-rain limits proxy disease and drainage rather than survival, so it takes a half penalty instead of exclusion."));
     if (s.factors.frost === 0.5) {

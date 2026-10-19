@@ -849,6 +849,22 @@ assert.equal(recalcDiverg.length, 0, `old/new recalcitrant gates diverge for ${r
   assert.equal(scoreSpecies(by("Stipa glareosa"), konyaSite).score, 1.0, "feathergrass stays 1.0 in semi-arid Konya");
   assert.equal(scoreSpecies(by("Pinus halepensis"), sevilleSite).score, 1.0, "Aleppo pine stays 1.0 in semi-arid Seville");
   assert.equal(scoreSpecies(by("Pistacia lentiscus"), sevilleSite).score, 1.0, "mastic stays 1.0 in semi-arid Seville");
+
+  // 6. Boundary verification: annualRain === RMAX keeps 1.0; annualRain === RMAX + 1 drops to 0.5
+  const boundarySp = by("Atriplex canescens"); // RMAX = 600, G = 4, !annual
+  // G=4 window with 75mm/mo = 300mm (optimal range [250, 450]); 8 other months = 37.5mm/mo -> 600mm annual
+  const precAtBoundary = [75, 75, 75, 75, 37.5, 37.5, 37.5, 37.5, 37.5, 37.5, 37.5, 37.5];
+  const precOverBoundary = [75, 75, 75, 75, 37.5, 37.5, 37.5, 37.5, 37.5, 37.5, 37.5, 38.5]; // 601mm
+  const siteBoundaryAt = {
+    lat: 35.0,
+    tavg: [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20],
+    tmin: [15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15],
+    prec: precAtBoundary,
+    ph: 7.0, absMin: 10.0,
+  };
+  const siteBoundaryOver = { ...siteBoundaryAt, prec: precOverBoundary };
+  assert.equal(scoreSpecies(boundarySp, siteBoundaryAt).factors.rain, 1.0, "Atriplex canescens keeps rain 1.0 at annualRain === RMAX (600)");
+  assert.equal(scoreSpecies(boundarySp, siteBoundaryOver).factors.rain, 0.5, "Atriplex canescens capped at 0.5 when annualRain exceeds RMAX by 1 mm (601)");
 }
 
 console.log("all checks passed");

@@ -601,9 +601,10 @@ export function scoreSpecies(sp, site, ev = null) {
   // scoring kept at rain 0 (issue #5 territory).
   const eff = site.irrigated ? (r => Math.max(r, sp.rain[1])) : (r => r);
 
+  const annualRain = site.prec.reduce((a, b) => a + b, 0);
   let temp = 0, rain = 0, best = 0, bestScore = -1;
   if (dormantTree) { // annual rain (slope-drainage relieved), warm-season temperature, decoupled
-    rain = scorePerennialRain(eff(site.prec.reduce((a, b) => a + b, 0)), sp.rain, site.terrain?.slope);
+    rain = scorePerennialRain(eff(annualRain), sp.rain, site.terrain?.slope);
     let bestMean = -Infinity;
     for (let s = 0; s < 12; s++) {
       let tsum = 0;
@@ -642,7 +643,6 @@ export function scoreSpecies(sp, site, ev = null) {
   // 0.5 inside the margin band, and a sloped site must never score below the
   // flat site's 0.5 demote (monotonicity; caught in #10 review at Giresun).
   const WET_MARGIN = 1.15;
-  const annualRain = site.prec.reduce((a, b) => a + b, 0);
   if (rain < 0.5) {
     let rtot = 0;
     if (dormantTree || G === 12) rtot = annualRain;
@@ -871,7 +871,7 @@ export function scoreSpecies(sp, site, ev = null) {
   const tri = (x, a, b, c, d) => trap(x, a, (b + c) / 2, (b + c) / 2, d);
   let tsum = 0;
   for (let k = 0; k < Gt; k++) tsum += site.tavg[(best + k) % 12];
-  const rainVal = eff(dormantTree ? site.prec.reduce((a, b) => a + b, 0) : (() => {
+  const rainVal = eff(dormantTree ? annualRain : (() => {
     let r = 0;
     for (let k = 0; k < G; k++) r += site.prec[(best + k) % 12];
     return r;
