@@ -759,6 +759,98 @@ const recalcDiverg = species
 if (recalcDiverg.length) console.error("recalcitrant gate divergence:", recalcDiverg);
 assert.equal(recalcDiverg.length, 0, `old/new recalcitrant gates diverge for ${recalcDiverg.length} species: ${recalcDiverg.join("; ")}`);
 
+
+// --- Annual-vs-Window Consistency Cap for G<12 Perennials (Report Fix #1)
+{
+  // 1. Ordu (s001, 1140 mm/yr): dry-adapted perennials with G<12 and RMAX < R_annual
+  // must drop from 1.0 to <= 0.5 (waterlogging caveat), never hard-killed to 0.0
+  const maca = by("Lepidium meyenii");         // G=8, perennial herb, RMAX=1000
+  const saltbush = by("Atriplex canescens");   // G=4, arid shrub, RMAX=600
+  const bluestem = by("Andropogon hallii");    // G=9, prairie grass, RMAX=1100
+  const medInter = by("Medicago intertexta");  // G=5, perennial-flagged herb, RMAX=600
+  assert.ok(!maca.annual && !saltbush.annual && !bluestem.annual && !medInter.annual);
+  for (const sp of [maca, saltbush, bluestem, medInter]) {
+    const res = scoreSpecies(sp, ordu);
+    assert.equal(res.factors.rain, 0.5, `${sp.sci} rain capped at 0.5 in Ordu (1140 mm > RMAX ${sp.rain[3]})`);
+    assert.ok(res.score > 0 && res.score <= 0.5, `${sp.sci} demoted to <= 0.5, never killed (${res.score})`);
+  }
+  // Native/wet-tolerant perennials at Ordu remain untouched
+  assert.equal(scoreSpecies(by("Agrostis tenuis"), ordu).score, 1.0, "Agrostis tenuis (RMAX 2100) stays 1.0 in Ordu");
+  assert.equal(scoreSpecies(by("Castanea mollissima"), ordu).score, 1.0, "Chinese chestnut (RMAX 1600) stays 1.0 in Ordu");
+  assert.ok(scoreSpecies(hazel, ordu, { countryNative: true }).score >= 0.4, "Ordu hazelnut retains suitability");
+
+  // 2. Hanoi (s050, 2078 mm/yr monsoon): desert wattle & dryland grasses demoted,
+  // while regional wet-tolerant perennials (sappanwood, tea, litchi, cassia) stay 1.0
+  const hanoi = {
+    lat: 21.0278,
+    tavg: [17.3, 18.5, 21.9, 24.9, 27.9, 29.7, 29.2, 28.5, 27.4, 24.8, 22.3, 17.7],
+    tmin: [14.3, 15.5, 19.1, 21.7, 24.9, 26.7, 26.4, 25.9, 24.9, 21.9, 19.3, 14.6],
+    prec: [65, 47, 76, 97, 212, 242, 302, 404, 348, 190, 59, 35],
+    ph: null, absMin: 4.5,
+  };
+  const desertWattle = by("Acacia jensenii"); // G=4, desert tree, RMAX=500
+  const woolGrass = by("Anthephora pubescens"); // G=5, arid grass, RMAX=950
+  assert.equal(scoreSpecies(desertWattle, hanoi).factors.rain, 0.5, "Acacia jensenii (RMAX 500) capped at 0.5 in Hanoi (2078 mm)");
+  assert.ok(scoreSpecies(desertWattle, hanoi).score <= 0.5, "Acacia jensenii drops out of Excellent in Hanoi");
+  assert.equal(scoreSpecies(woolGrass, hanoi).factors.rain, 0.5, "Anthephora pubescens (RMAX 950) capped at 0.5 in Hanoi");
+  for (const sci of ["Caesalpinia sappan", "Camellia sinensis", "Litchi chinensis", "Cinnamomum cassia", "Alnus nepalensis"]) {
+    const res = scoreSpecies(by(sci), hanoi);
+    assert.equal(res.factors.rain, 1.0, `wet-tolerant ${sci} keeps rain 1.0 in Hanoi`);
+  }
+
+  // 3. Rize (s003, 2223 mm/yr) & Giresun (s002, 1437 mm/yr) & Kathmandu (s095, 3032 mm/yr):
+  // Steppe/dry perennials soft-capped at 0.5 (never hard-killed to 0.0)
+  assert.equal(scoreSpecies(by("Secale montanum"), giresun).factors.rain, 0.5, "Secale montanum (RMAX 550) capped at 0.5 in Giresun");
+  assert.equal(scoreSpecies(by("Agropyron intermedium"), giresun).factors.rain, 0.5, "Agropyron intermedium (RMAX 1160) capped at 0.5 in Giresun");
+  assert.equal(scoreSpecies(by("Rubus occidentalis x idaeus"), rize).factors.rain, 0.5, "Rubus hybrid (RMAX 1500) capped at 0.5 in Rize");
+  assert.equal(scoreSpecies(by("Fragaria virginiana"), rize).factors.rain, 0.5, "Fragaria virginiana (RMAX 1700) capped at 0.5 in Rize");
+  assert.ok(scoreSpecies(tea, rize, { countryNaturalized: true }).score > 0.25, "Rize tea unaffected");
+
+  const kathmandu = {
+    lat: 27.72,
+    tavg: [10.4, 12.6, 16.4, 19.8, 21.6, 22.6, 22.2, 22.0, 21.0, 18.2, 14.1, 11.1],
+    tmin: [5.3, 7.5, 11.3, 14.7, 16.5, 17.5, 17.1, 16.9, 15.9, 13.1, 9.0, 6.0],
+    prec: [28, 30, 64, 85, 228, 454, 874, 722, 449, 82, 8, 8],
+    ph: null, absMin: -1.4,
+  };
+  for (const sci of ["Bromus inermis", "Eragrostis trichodes", "Rumex crispus"]) {
+    const res = scoreSpecies(by(sci), kathmandu);
+    assert.equal(res.factors.rain, 0.5, `${sci} capped at 0.5 in perhumid Kathmandu (3032 mm)`);
+    assert.ok(res.score <= 0.5, `${sci} drops from 1.0 tie in Kathmandu`);
+  }
+
+  // 4. True annual crops (sp.annual && G < 12) are exempt from full-year precipitation cap
+  const medMinima = by("Medicago minima"); // G=5, annual=true, RMAX=600
+  const rye = by("Secale cereale");        // G=6, annual=true, RMAX=2000
+  const cabbage = by("Brassica oleracea var. capitata"); // G=4, annual=true, RMAX=2500
+  assert.ok(medMinima.annual && barley.annual && rye.annual && cabbage.annual && bean.annual);
+  assert.equal(scoreSpecies(medMinima, ordu).factors.rain, 1.0, "annual Medicago minima exempt from annual rain cap in Ordu");
+  assert.equal(scoreSpecies(barley, giresun).factors.rain, 1.0, "annual barley exempt in Giresun");
+  assert.equal(scoreSpecies(by("Allium cepa var. aggregatum"), rize).factors.rain, 1.0, "annual shallot exempt in Rize (2223 mm > RMAX 1000)");
+  assert.ok(scoreSpecies(rye, rize).factors.rain > 0.9, "annual rye exempt from 0.5 cap in Rize");
+  assert.equal(scoreSpecies(cabbage, kathmandu).factors.rain, 1.0, "annual cabbage exempt in Kathmandu");
+
+  // 5. Semi-arid & arid sites (Konya, Seville) remain completely unaffected
+  const konyaSite = {
+    lat: 37.87,
+    tavg: [0.2, 1.8, 6.2, 11.5, 16.4, 20.8, 24.2, 23.9, 19.2, 13.2, 6.8, 2.1],
+    tmin: [-4.1, -2.8, 0.8, 5.4, 9.8, 13.9, 17.1, 16.9, 12.3, 7.0, 1.5, -2.2],
+    prec: konyaNormals.prec,
+    ph: null, absMin: -19.6,
+  };
+  const sevilleSite = {
+    lat: 37.39,
+    tavg: [11.0, 12.5, 15.6, 17.8, 21.8, 26.3, 28.5, 28.3, 24.6, 20.1, 14.8, 11.7],
+    tmin: [5.9, 7.0, 9.6, 11.5, 14.8, 18.8, 20.6, 20.8, 18.1, 14.4, 9.8, 7.0],
+    prec: sevilleNormals.prec,
+    ph: null, absMin: -0.4,
+  };
+  assert.equal(scoreSpecies(by("Hippophae rhamnoides"), konyaSite).score, 1.0, "sea buckthorn stays 1.0 in semi-arid Konya");
+  assert.equal(scoreSpecies(by("Stipa glareosa"), konyaSite).score, 1.0, "feathergrass stays 1.0 in semi-arid Konya");
+  assert.equal(scoreSpecies(by("Pinus halepensis"), sevilleSite).score, 1.0, "Aleppo pine stays 1.0 in semi-arid Seville");
+  assert.equal(scoreSpecies(by("Pistacia lentiscus"), sevilleSite).score, 1.0, "mastic stays 1.0 in semi-arid Seville");
+}
+
 console.log("all checks passed");
 console.log(`  oak@Berlin ${qrBerlin.score.toFixed(2)} | euc@Berlin ${egBerlin.score.toFixed(2)} | euc@SP ${egSP.score.toFixed(2)}`);
 console.log(`  euc CO2e(10y) ${eucCo2.toFixed(0)} kg | oak CO2e(10y) ${co2eKgPerTree(oakSp, 10).toFixed(1)} kg`);

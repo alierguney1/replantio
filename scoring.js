@@ -642,11 +642,25 @@ export function scoreSpecies(sp, site, ev = null) {
   // 0.5 inside the margin band, and a sloped site must never score below the
   // flat site's 0.5 demote (monotonicity; caught in #10 review at Giresun).
   const WET_MARGIN = 1.15;
+  const annualRain = site.prec.reduce((a, b) => a + b, 0);
   if (rain < 0.5) {
     let rtot = 0;
-    if (dormantTree || G === 12) rtot = site.prec.reduce((a, b) => a + b, 0);
+    if (dormantTree || G === 12) rtot = annualRain;
     else for (let k = 0; k < G; k++) rtot += site.prec[(best + k) % 12];
     if (rtot > sp.rain[3] && rtot <= sp.rain[3] * WET_MARGIN) rain = 0.5;
+  }
+
+  // Annual-vs-window rain consistency cap for short-cycle perennials (G < 12):
+  // True annual crops (sp.annual && G < 12) complete their life inside their
+  // growing window and escape the rest of the year. Perennials (!sp.annual)
+  // remain physically rooted for all 12 months: a dry-adapted shrub, herb, or
+  // tropical tree cannot cherry-pick a dry seasonal window to score 1.0 while
+  // enduring a full-year deluge above its absolute ceiling RMAX (sp.rain[3]).
+  // Demote to 0.5 (waterlogging / disease-pressure caveat) rather than a 0.0
+  // kill, mirroring the 0.5 wet-margin demote already applied within
+  // WET_MARGIN above RMAX.
+  if (!sp.annual && G < 12 && annualRain > sp.rain[3]) {
+    rain = Math.min(rain, 0.5);
   }
 
   // An annual crop lives inside its growing cycle window and never meets the
