@@ -1105,14 +1105,31 @@ export function establishmentStrategy(sp, site = null, optWin = null) {
   }
   const sw1000 = sp.sw_1000g != null ? sp.sw_1000g : null;
   const seedAdvantage = seedReserveAdvantage(sw1000);
+  // 1. Hydro-Climatic Layer & Atmospheric Water Balance (sowing window)
+  const ai = site?.ai != null && Number.isFinite(site.ai) ? site.ai : null;
+  const irrigated = site?.irrigated === true;
+
+  const win = optWin ?? sowingWindow(site);
+  const hasSeasonalWetWindow = win.viable;
+  // UNEP (1992/1997) aridity classes: hyper-arid AI < 0.05, arid < 0.20,
+  // semi-arid 0.20–0.50, dry sub-humid 0.50–0.65, humid > 0.65
+  // (FAO-AQUASTAT uses < 0.05 for hyper-arid; UNESCO/Penman < 0.03).
+  const isHyperArid = ai != null && ai < 0.05 && !hasSeasonalWetWindow && !irrigated;
+  const isSemiAridSeasonal = ai != null && ai < 0.50 && hasSeasonalWetWindow && !irrigated;
+  const isDrySite = ai != null && ai < 0.50 && !hasSeasonalWetWindow && !irrigated;
+  // Unknown aridity (ai == null: no AI / moisture series): the water-driven
+  // gates above cannot fire, so woody advice downstream is capped at low
+  // confidence (via capped()) and carries an explicit directive. The herb/
+  // vine shortcuts above resolve on aridity-independent evidence and keep
+  // their confidence — only the woody decision branches (§4+) are capped.
+  const aridityUnknown = ai == null;
+
   // Thin evidence caps advice at low confidence — read off the declared
   // evidence flags, never off interval arithmetic. Heterogeneous/uncertain
   // taxa never advise with more than low confidence. Not applied to the
   // water-driven climate gates (hyper-arid, dry-site, semi-arid-seasonal)
   // or the lifeform shortcuts (herb, vine) that return before this point.
-  // aridityUnknown (declared with the gates below; TDZ-safe: capped is only
-  // *called* in the decision branches) extends the same cap to sites with no
-  // moisture series.
+  // aridityUnknown extends the same cap to sites with no moisture series.
   const thinEvidence = storageConfidence === "uncertain_heterogeneous" || storageConfidence === "uncertain";
   const capped = (c) => ((thinEvidence || aridityUnknown) && c !== "low" ? "low" : c);
   const tswSource = sp.tsw_source ?? (sw1000 != null ? "species" : null);
@@ -1140,25 +1157,6 @@ export function establishmentStrategy(sp, site = null, optWin = null) {
   } else if (dormancy === "MPD" || presow === "warm_plus_cold_stratification") {
     dormancyDirectives.push("Morphophysiological seed dormancy (MPD): Sequential warm stratification followed by cold moist stratification required for embryo development and dormancy release.");
   }
-
-  // 1. Hydro-Climatic Layer & Atmospheric Water Balance (sowing window)
-  const ai = site?.ai != null ? site.ai : null;
-  const irrigated = site?.irrigated === true;
-
-  const win = optWin ?? sowingWindow(site);
-  const hasSeasonalWetWindow = win.viable;
-  // UNEP (1992/1997) aridity classes: hyper-arid AI < 0.05, arid < 0.20,
-  // semi-arid 0.20–0.50, dry sub-humid 0.50–0.65, humid > 0.65
-  // (FAO-AQUASTAT uses < 0.05 for hyper-arid; UNESCO/Penman < 0.03).
-  const isHyperArid = ai != null && ai < 0.05 && !hasSeasonalWetWindow && !irrigated;
-  const isSemiAridSeasonal = ai != null && ai < 0.50 && hasSeasonalWetWindow && !irrigated;
-  const isDrySite = ai != null && ai < 0.50 && !hasSeasonalWetWindow && !irrigated;
-  // Unknown aridity (ai == null: no AI / moisture series): the water-driven
-  // gates above cannot fire, so woody advice downstream is capped at low
-  // confidence (via capped()) and carries an explicit directive. The herb/
-  // vine shortcuts above resolve on aridity-independent evidence and keep
-  // their confidence — only the woody decision branches (§4+) are capped.
-  const aridityUnknown = ai == null;
 
   const winSummary = win.length
     ? { start: win.start, length: win.length, label: win.label ?? windowLabel(win) }
