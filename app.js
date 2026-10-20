@@ -588,7 +588,6 @@ async function analyze(pts) {
     countryNaturalized: !!(place?.cc && (NATURALIZED[sp.id] ?? []).includes(place.cc)),
   });
   const rescore = () => {
-  const rescore = () => {
     const win = sowingWindow(site);
     const prevMap = current?.scored ? new Map(current.scored.map(x => [x.sp.id, x])) : null;
     return SPECIES
