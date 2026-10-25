@@ -16,6 +16,52 @@ open http://localhost:8877
 Analyses are shareable: the drawn area is encoded in the URL hash
 (`#p=lat,lng;lat,lng;...`; the legacy `#a=south,west,north,east` box form still works).
 
+## This fork
+
+A fork of [gdavidss/replantio](https://github.com/gdavidss/replantio) that runs every
+open pull request by alierguney1 on top of upstream master (`5407fa4`: Köppen-Geiger as
+merged upstream, keyless Esri labels, the mobile bottom sheet), plus a climate-risk
+layer built from the daily record the app already downloads.
+
+**Pending upstream, live here**, merged in their stacked order:
+
+| PR | What it adds |
+|---|---|
+| #20 | Kew SID seed-trait pipeline and species build integration |
+| #21 | Evidence-backed seed-vs-seedling establishment advice (section below) |
+| #23 | Habit segmented control and an isolated "native here" toggle |
+| #24 | Boreal annual-regime reform and Körner treeline criteria for dormant taxa |
+| #26 | Annual-vs-window rain consistency cap for G<12 perennials |
+| #25 | Evidence-weighted tiebreak (native, GBIF, staple and genus priors) |
+| #22 | Irrigation promoted to the result-list chip row |
+| #27 | Country-specific restoration cost tables (BR, TR, eurozone) |
+
+**New in the fork:** [beyond the average year](#beyond-the-average-year-riskjs):
+year-by-year suitability, a frost calendar, winter chill, a bias-corrected 2040s
+outlook with a seed-source hint, and terrain-resolved suitability inside the drawn
+area. All of it is display-side by construction: `scoreSpecies` never reads it. A
+zero-drift scan confirms it, 803,600 scorings (20 fixture climates x 5 site variants
+x 4 evidence states x 2,009 species) with identical score, fit, rank score, factors
+and window before and after.
+
+**Fixed on the way:**
+
+- The irrigation-chip commit left two CSS blocks open (`.chip-toggle {` and, in the
+  phone media query, `.chips-main {`). Under CSS nesting every later rule nested inside
+  them and matched nothing: the native, habit and irrigation chips lost their styles
+  on desktop, and every phone rule after the chip row was dead. The stacked branch's
+  stylesheet does not parse at all (postcss: "Unclosed block"); this one parses with
+  zero nested rules.
+- Range strips draw the climate the scorer read. Dormant trees are scored on the full
+  year's rain, but their strip summed only the warm window: Berlin sugar maple drew its
+  tick at 326 mm, outside its 500 mm minimum, while it was scored on 583 mm.
+  `scoreSpecies` now returns that `basis`; the strip reads it.
+- `scripts/check_i18n.mjs` also fails on app.js keys missing from every dictionary,
+  which parity against Portuguese cannot see. It caught one: the "Recorded nearby on
+  GBIF" aria-label, now in all 11 languages.
+- When the projection cannot load, cards say n/a instead of "…" forever, and the map
+  footnote credits the Esri reference labels that replaced CARTO's.
+
 ## How an analysis works
 
 1. You draw the study area: click to drop vertices, close the polygon by clicking the
@@ -23,8 +69,11 @@ Analyses are shareable: the drawn area is encoded in the URL hash
    rectangle between the corners, Escape cancels. Site data is sampled at the
    polygon's centroid; area comes from the polygon itself.
 2. Canopy fetches, for the area centroid:
-   - 10 years of daily temperature, precipitation, solar radiation, humidity and
-     cloud cover (Open-Meteo ERA5 archive), aggregated in the browser,
+   - 10 years of daily temperature (mean, minimum, maximum), precipitation, solar
+     radiation, humidity and cloud cover (Open-Meteo ERA5 archive), aggregated in the
+     browser to monthly normals for scoring and read day by day for the climate-risk
+     layer,
+   - the 2015-2024 and 2040-2049 runs of one CMIP6 model for the 2040s outlook,
    - topsoil pH (SoilGrids 2.0 point query),
    - slope and aspect from a 3x3 sample of the 90 m Copernicus DEM,
    - a place name and country (BigDataCloud reverse geocoding).
@@ -204,6 +253,88 @@ coastal fog drip) needs field knowledge the tool flags rather than fakes. The
 obvious next scoring step is aspect-adjusted radiation and a fog-tolerance trait
 list for cloud-forest species.
 
+## Beyond the average year (risk.js)
+
+The suitability score runs on ten-year monthly normals, which answers "can it grow here
+in an average year?". Restoration plantings fail in the other years: the drought summer
+after planting, the late frost on new shoots, the mild winter that never breaks a fruit
+tree's dormancy. The app already downloads ten years of daily ERA5 for the site and used
+to average every day of it away. `risk.js` reads those days. Variability over averages
+is an old lesson in climate impacts (Katz & Brown 1992, Climatic Change 21:289) and in
+tree distributions specifically (Zimmermann et al. 2009, PNAS 106:19723: extremes
+improve range predictions beyond means). Everything here is display-side; the score
+and the ranking do not move (see the zero-drift scan above).
+
+- **Year by year.** Each complete calendar year on record is aggregated on its own
+  (`yearlyClimates`; a truncated year never poses as a dry one) and every candidate
+  species (score > 0.05) is scored on it by the same `scoreSpecies`, with the site's own
+  pH, soil, slope and irrigation, so a year can only fail on weather. Cards show one cell
+  per year coloured by that year's grade and name what sank each failing year (frost,
+  dry or wet year, cold or hot year, mild winter; site constants are never blamed for
+  one year failing when the next passes). The list marks species that are suitable on the
+  normals but fit fewer than 8 of 10 years (`6/10 yrs`), "more filters" gains a
+  *Year by year* row (any / 8 in 10 years / every year) and the CSV gains
+  `years_suitable` / `years_scored` (format v3, every v2 column in place). It is a
+  frequency over ten years, not a probability. For annual crops each year is a season of
+  its own; for perennials it is the share of years a new planting would have met inside
+  its envelope, and a single frost-kill year is enough to lose established trees. Cost:
+  ~10 scorer calls per candidate, 42 ms for 767 candidates in Chromium.
+- **Frost calendar.** Last spring and first autumn frost (daily minimum at or below
+  0 °C), the median over the record with the latest and earliest year named, and the
+  frost-free season. Seasons are anchored on the warmest month of the normals, the same
+  warmth rule as the Köppen classifier, so no latitude input and no hemisphere switch
+  can misfile a site; only windows the record fully covers count, and a frost-free
+  season enters the medians as an infinitely early (or late) date. Scale honesty applies
+  as for the frost margin: grid minima run warm, and frost pockets freeze on nights the
+  grid reads +2 °C.
+- **Winter chill.** The Dynamic Model (Fishman, Erez & Couvillon 1987, J. Theor. Biol.
+  124:473 and 126:309; constants as distributed by Erez & Fishman and in chillR) over
+  hourly temperatures rebuilt from daily extremes with Linvill's (1990, HortScience
+  25:14) sine-day / log-night curve, sunrise and sunset from the Forsythe daylength.
+  Winters run 1 Nov to end of Feb, the window of Luedeling, Zhang & Girvetz (2009, PLoS
+  ONE 4:e6166), shifted by half a year (1 May to 31 Aug) on a southern-type calendar.
+  Safe Winter Chill is their 10th percentile of winter totals: the chill reached in 9
+  winters of 10. Chilling hours (Weinberger's 1950 45 °F threshold with the 0 °C floor
+  chillR uses) ride alongside because nursery catalogues still quote them. With nine or ten winters the 10th percentile sits near
+  the poorest winter and is presented as such. Shown on the site and on the cards of
+  temperate deciduous species (the ones the scorer already gives a winter-dormancy
+  factor), never scored: chill requirements belong to cultivars, not species. The test
+  pins the model's documented behaviour: the first portion banks at hour 29 at a
+  constant 6 °C, effectiveness peaks at 6 to 8 °C, nothing accrues at 16 °C, and warm
+  afternoons negate the unbanked intermediate.
+- **A bias-corrected 2040s.** The outlook used to compare raw 2040-2049 model output
+  with ERA5, which put the model's bias at one grid point (often degrees in relief)
+  into every "2045" badge as if it were climate change. Now the same model's own
+  2015-2024 run is the baseline and only its change is applied to the ERA5 normals:
+  additive for temperature (mean, minimum and maximum by month), multiplicative for
+  precipitation, the delta method used to downscale GCMs for EcoCrop work
+  (Ramirez-Villegas & Jarvis 2010, CIAT Decision and Policy Analysis Working Paper 1;
+  Hay, Wilby & Leavesley 2000). Guards: a month with under 10 mm in the model baseline
+  takes the additive change, ratios stay within 0.2 to 5x, and the record low moves by
+  the change in the mean of annual minima, a steadier extreme than one ten-year low.
+  A browser fixture with a deliberate +1.5 °C model bias reads +1.6 °C of change, not
+  ~3.3. The site panel states the change (`2040s: +1.6 °C · −19% rain`). Still one
+  model (MRI-AGCM3-2-S): structural uncertainty across models is not sampled yet.
+- **Seed-source hint.** Projected warming expressed as the elevation drop that has that
+  temperature today (6.5 °C per km, rounded to 50 m; lowland sites get the warmer-
+  provenance wording only), with the advice climate-adjusted provenancing gives: mix
+  such pre-adapted seed into local seed rather than replace it (Prober et al. 2015,
+  Front. Ecol. Evol. 3:65).
+- **Terrain-resolved suitability.** On demand from a card ("map by terrain"): up to 100
+  cells over the drawn area, never finer than the 90 m DEM, sampled in one elevation
+  request. Each cell takes the analysed site's climate shifted by the lapse rate for its
+  elevation difference from the centroid that Open-Meteo already downscaled ERA5 to
+  (6.5 °C per km, the ICAO standard atmosphere; observed surface lapse rates run ~4 to
+  7, Rolland 2003, J. Climate 16:1032), its own slope and aspect from grid differences,
+  and the same rain. The species is scored per cell and drawn as blocks, never smoothed.
+  The climate grid cannot see this: ERA5 is ~9 km, but 400 m of relief inside one drawn
+  area is 2.6 °C. Valley floors that pool cold air run colder than a lapse rate says,
+  and the tooltip says so.
+
+`node test/test_risk.mjs` pins all of the above. Its daily weather comes from
+`test/synth_daily.mjs`, a seeded generator that reproduces given monthly normals with
+year-to-year and day-to-day noise: fixtures for code paths, not observations.
+
 ## The growth and carbon model
 
 Class-level, not species-level: each species carries a growth class
@@ -232,11 +363,13 @@ daylength at four latitudes, and fixture climates for Berlin and Sao Paulo).
 |---|---|---|---|
 | Species envelopes | FAO EcoCrop (2,568 species), OpenCLIM mirror | vendored at build time | attribute FAO |
 | Climate | Open-Meteo ERA5 archive | live, CORS, keyless | CC-BY 4.0, <10k calls/day |
+| 2040s projection | Open-Meteo climate API, MRI-AGCM3-2-S (CMIP6 HighResMIP), 2015-2024 and 2040-2049 runs | live, CORS, keyless | CC-BY 4.0 |
+| Elevation | Open-Meteo elevation (Copernicus DEM GLO-90): 3x3 slope probe, terrain map | live, CORS, keyless | free tier |
 | Soil | SoilGrids 2.0, ISRIC | live, CORS, keyless | CC-BY 4.0, 5 req/min |
 | Occurrence | GBIF v1 API | live, CORS, keyless | attribute GBIF |
 | Native ranges | Kew WCVP v16 (TDWG L3 to ISO countries) | vendored at build time | CC BY 3.0 |
 | Imagery | Esri World Imagery | tiles, keyless | attribution required |
-| Labels | CARTO dark_only_labels | tiles, keyless | attribution required |
+| Labels | Esri World Boundaries and Places | tiles, keyless | attribution required |
 | Geocoding | Open-Meteo geocoding + BigDataCloud reverse | live, CORS, keyless | free tiers |
 
 Gotchas the implementation already handles, listed so nobody rediscovers them:
@@ -277,11 +410,16 @@ reads only the class parameters, so each upgrade below is local.
 - **Whole-box soil instead of center point**: ISRIC's WCS endpoint (maps.isric.org)
   returns a small GeoTIFF for a bbox in one call, no rate limit observed; parse with
   geotiff.js. ISRIC recommends WCS over the beta REST API for production.
-- **Future climate**: the Open-Meteo climate API (CMIP6, 1950 to 2050) accepts the
-  same daily variables; run the same scoring against a 2040 window to show how the
-  shortlist shifts.
-- **Suitability heatmap**: score per pixel instead of per box center and paint a
-  canvas overlay; the engine is already a pure function of (species, site).
+- **Future climate**: in, bias-corrected by the delta method (see "Beyond the average
+  year"). The next step is an ensemble: the Open-Meteo climate API carries seven
+  HighResMIP models, and the share of models in which a species stays suitable is the
+  honest way to say how sure a 2045 badge is.
+- **Suitability heatmap**: in for terrain ("map by terrain": lapse-rate temperature,
+  slope and aspect per cell, one elevation call). Climate itself still varies at ERA5
+  scale; a finer climate grid would be the next refinement.
+- **Year by year beyond the scorer's inputs**: a daily soil-water bucket (Saxton-Rawls
+  AWC is already computed from the soil query) would turn dry years into seedling
+  drought days, the establishment-year risk the year-by-year strip only flags.
 - **Seedling sourcing**: link each recommended species to nursery directories
   (rngr.net for the US) the way Reforestation Hub does.
 
