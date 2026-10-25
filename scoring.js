@@ -871,11 +871,12 @@ export function scoreSpecies(sp, site, ev = null) {
   const tri = (x, a, b, c, d) => trap(x, a, (b + c) / 2, (b + c) / 2, d);
   let tsum = 0;
   for (let k = 0; k < Gt; k++) tsum += site.tavg[(best + k) % 12];
-  const rainVal = eff(dormantTree ? annualRain : (() => {
+  const rainRaw = dormantTree ? annualRain : (() => {
     let r = 0;
     for (let k = 0; k < G; k++) r += site.prec[(best + k) % 12];
     return r;
-  })());
+  })();
+  const rainVal = eff(rainRaw);
   const fits = [tri(tsum / Gt, ...sp.temp), tri(rainVal, ...sp.rain)];
   if (sp.ph && site.ph != null) fits.push(tri(site.ph, ...sp.ph));
   const fit = fits.reduce((a, b) => a + b, 0) / fits.length;
@@ -886,7 +887,12 @@ export function scoreSpecies(sp, site, ev = null) {
     fit,
     rankScore,
     factors: { temp, rain, ph, frost, photo, annual, chill, drain, depth, texture, soilDepth, salinity, drainage },
-    window: { start: best, months: Gt }
+    window: { start: best, months: Gt },
+    // the climate the trapezoids actually read: window-mean temperature and
+    // the rain total that was scored (the full year for dormant trees, not
+    // their warm window; before any irrigation lift). Cards draw their range
+    // strips from this so a strip can never contradict its score.
+    basis: { temp: tsum / Gt, rain: rainRaw },
   };
 }
 

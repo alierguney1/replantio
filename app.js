@@ -1484,7 +1484,9 @@ function speciesDetail(id) {
     ? `<div class="stat"><span class="sk">${tr("Best window")}</span><span class="sv">${MONTHS[s.window.start]}&ndash;${MONTHS[(s.window.start + s.window.months - 1) % 12]}</span></div>` : "";
 
   const factors = (() => {
-    const { wt, wr } = windowVals(s);
+    // strips read the climate the scorer read (scoreSpecies basis): a dormant
+    // tree is scored on the full year's rain, and its strip must say so
+    const { wt, wr } = s.basis ? { wt: s.basis.temp, wr: s.basis.rain } : windowVals(s);
     const notes = [];
     if (s.factors.photo != null && s.factors.photo < 1) notes.push(tr("Photoperiod outside this species' range: 0.5 penalty applied."));
     if (s.factors.drain === 0) notes.push(tfmt("This is a wetland species (needs saturated soil or standing water), and this point sits on a {n}° slope.", { n: fmt(current.site.terrain?.slope ?? 0) }));
