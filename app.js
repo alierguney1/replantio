@@ -1139,7 +1139,7 @@ function renderResults() {
       <a href="https://escolhas.org/wp-content/uploads/2023/09/Relatorio_RecuperacaoVegetal_Final.pdf" target="_blank">${tr("Costs: Instituto Escolhas 2023")}</a> &middot;
       <a href="https://www.ogm.gov.tr/tr/e-kutuphane-sitesi/mevzuat-sitesi/Talimatlar/01.01.2025%20Tarihinden%20%C4%B0tibaren%202025%20Y%C4%B1l%C4%B1%20Birim%20Bedellleri.pdf" target="_blank">OGM 2025 (TR)</a> &middot;
       <a href="https://ojs.sazu.si/folia_bio_geo/article/view/8084" target="_blank">SFS Slovenia (EU benchmark)</a><br>
-      ${tr("Map:")} Esri World Imagery (Esri, Vantor, Earthstar Geographics) &middot; &copy; OpenStreetMap contributors &middot; &copy; CARTO &middot; Leaflet
+      ${tr("Map:")} Esri World Imagery (Esri, Vantor, Earthstar Geographics) &middot; Esri reference labels &middot; &copy; OpenStreetMap contributors &middot; Leaflet
     </div>
     </div>
     <div class="panel-fade"></div>`);
@@ -2450,7 +2450,7 @@ async function terrainMap(id) {
 }
 
 function f45Text(s) {
-  if (s.f45 == null) return "&hellip;";
+  if (s.f45 == null) return current?.futureFailed ? tr("n/a") : "&hellip;";
   const d = Math.round((s.f45 - s.score) * 100);
   return `${Math.round(s.f45 * 100)}% <span class="d45">(${d >= 0 ? "+" : ""}${d})</span>`;
 }
