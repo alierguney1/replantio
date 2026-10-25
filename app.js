@@ -1,6 +1,7 @@
 import { aggregateClimate, scoreSpecies, tiebreakScore, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors, monthlyFlatInsolation, maxSoilDepthCm, aggregateSoilProfile, normalizeSearch, koppenGeigerClass, KOPPEN_DESCRIPTIONS, establishmentStrategy, sowingWindow } from "./scoring.js";
 import { DICTS, LANGS, NAMES, LOCALES, MONTHS_ALL } from "./i18n.js";
 import { CLASSES, projection, maturityYears, co2eKgPerTree, co2eTonsPerHa, height, dbhCm, crownDiameterM, crownDisplayM, standDisplay, STEMS_PER_HA } from "./growth.js";
+import { yearlyClimates, yearSites, yearlyFit, frostCalendar, frostDate, winterChill, monthlyMeans, meanAnnualMin, deltaFuture, shiftDaily, elevationAnalogue, cellSite, gridTerrain, LAPSE_C_PER_M } from "./risk.js";
 
 const $ = s => document.querySelector(s);
 // ---------- language: browser-detected, dictionary module ----------
@@ -197,6 +198,7 @@ const INACTIVE_STYLE = { color: "#93a096", weight: 1, fillOpacity: 0.03, dashArr
 let armed = false, verts = [], draft = null, shape = null; // shape = the active area
 const shapes = []; // every analyzed area stays on the map
 let abortCtl = null, current = null; // current = {site, scored, pts, center, ha}
+let terrainLayer = null, terrainFor = null; // on-demand terrain suitability overlay (terrainMap)
 drawBtn.addEventListener("click", () => armed ? cancelDraw() : arm());
 function arm() {
   armed = true; verts = [];
@@ -221,6 +223,7 @@ function deleteActiveArea() {
   if (!shape) return;
   abortCtl?.abort();
   current = null;
+  clearTerrain();
   removeStand(shape);
   removeEditHandles();
   map.removeLayer(shape);
@@ -413,7 +416,7 @@ function polyCentroid(pts) {
 // ---------- data fetchers ----------
 async function fetchClimate(c, signal) {
   const url = `https://archive-api.open-meteo.com/v1/archive?latitude=${c.lat.toFixed(4)}&longitude=${c.lng.toFixed(4)}` +
-    `&start_date=2015-01-01&end_date=2024-12-31&daily=temperature_2m_mean,temperature_2m_min,precipitation_sum,et0_fao_evapotranspiration,shortwave_radiation_sum,relative_humidity_2m_mean,cloud_cover_mean&timezone=auto`;
+    `&start_date=2015-01-01&end_date=2024-12-31&daily=temperature_2m_mean,temperature_2m_min,temperature_2m_max,precipitation_sum,et0_fao_evapotranspiration,shortwave_radiation_sum,relative_humidity_2m_mean,cloud_cover_mean&timezone=auto`;
   const j = await (await fetch(url, { signal })).json();
   if (!j.daily?.time?.length) throw new Error(j.reason || "no climate data");
   return j;
@@ -481,6 +484,7 @@ const panel = $("#panel"), content = $("#panel-content");
 
 async function analyze(pts) {
   stopSim();
+  clearTerrain();
   abortCtl?.abort();
   const ctl = abortCtl = new AbortController();
   const c = polyCentroid(pts);
@@ -568,6 +572,15 @@ async function analyze(pts) {
     terrain.radFactor = avgFactor;
     site.radSlope = agg.rad * avgFactor;
   }
+  // the daily record the normals average away (risk.js): each calendar year's
+  // own climate, the frost calendar and winter chill. Display-side only; the
+  // scorer still reads the normals above.
+  const years = yearlyClimates(clim.daily);
+  site.risk = {
+    years: years.map(y => ({ year: y.year, rain: y.annualRain, low: y.absMin, temp: y.meanTemp })),
+    frost: frostCalendar(clim.daily, agg.tavg),
+    chill: winterChill(clim.daily, c.lat, agg.tavg),
+  };
   // native-evidence for the scorer: the species' polygon (Little) or regional
   // (WCVP L3) range covers this exact point, so the local regime is survivable
   const evL3 = L3_REGIONS[place?.cc]?.[place?.uf] ?? null;
@@ -593,6 +606,9 @@ async function analyze(pts) {
   });
   const rescore = () => {
     const win = sowingWindow(site);
+    // one site per calendar year, rebuilt here so irrigation and measured pH
+    // apply to every year exactly as they do to the normals
+    const ysites = yearSites(site, years);
     // Evidence carry-over: rescore builds fresh objects, but row photos are
     // species-level (safe across analyses) and GBIF counts are area-level
     // (only valid for the same site object). Without this, every irrigation
@@ -616,6 +632,9 @@ async function analyze(pts) {
           strat: establishmentStrategy(sp, site, win),
           ...r
         };
+        // year-by-year fit only where a species can surface at all (critMatch
+        // shows score > 0.05): ~10 scorer calls each, never for the dead tail
+        if (r.score > 0.05 && ysites.length) row.yearly = yearlyFit(sp, ysites, ev);
         if (gbifCount > 0) row.rankScore = tiebreakScore(row, site, rev);
         if (prev?.photo !== undefined) row.photo = prev.photo;
         return row;
@@ -635,6 +654,7 @@ async function analyze(pts) {
   step("ls-score");
 
   current = { site, scored, rescore, pts, center: c, ha, filter: "all", habit: "tree", prop: "all", shown: 12,
+    relMin: null, daily: clim.daily, // daily kept for the 2040s winter chill (futureOutlook)
     cc: place?.cc ?? null, state: place?.state ?? "", city: place?.city ?? "", uf: place?.uf ?? "",
     evOpts: sp => ({ native: evNative(sp), countryNative: evCountry(sp), countryNaturalized: evNaturalized(sp) }),
     // native-first by default wherever we know the country AND the ranges loaded
@@ -889,9 +909,10 @@ const critMatch = (s, c) => s.score > 0.05
   && (!c.nativeOnly || (nativeHere(s.sp) === true && nativeRegion(s.sp) !== false))
   && (!c.matMax || (s.sp.tree && matCls(s.sp.gclass) <= c.matMax))
   && (!c.crownMin || (s.sp.tree && crownCls(s.sp.gclass) >= c.crownMin))
-  && (!c.prop || c.prop === "all" || (c.prop === "direct" ? !!s.strat?.directViable : !!s.strat?.seedlingViable));
+  && (!c.prop || c.prop === "all" || (c.prop === "direct" ? !!s.strat?.directViable : !!s.strat?.seedlingViable))
+  && (!c.relMin || (s.yearly?.n > 0 && s.yearly.ok / s.yearly.n >= c.relMin));
 
-const critState = () => ({ use: current.filter, nativeOnly: current.nativeOnly, matMax: current.matMax, crownMin: current.crownMin, habit: current.habit ?? "tree", prop: current.prop ?? "all" });
+const critState = () => ({ use: current.filter, nativeOnly: current.nativeOnly, matMax: current.matMax, crownMin: current.crownMin, habit: current.habit ?? "tree", prop: current.prop ?? "all", relMin: current.relMin ?? null });
 const critCount = over => current.scored.reduce((n, s) => n + (critMatch(s, { ...critState(), ...over }) ? 1 : 0), 0);
 
 const CRIT_DIMS = () => [
@@ -915,6 +936,15 @@ const CRIT_DIMS = () => [
     opts: [["all", tr("all uses")], ...["timber", "fruit", "environmental", "medicinal", "forage"].map(u => [u, tr(USE_LABELS[u])])],
     over: v => ({ use: v }),
   },
+  // reliability across the individual years on record (risk.js): a species
+  // that is excellent on the normals but fails every third year is a
+  // different restoration bet from one that fits every year
+  ...(current.site?.risk?.years?.length >= 5 ? [{
+    key: "rel", label: "Year by year", title: tr("Share of the individual years on record whose own weather fits the species"),
+    cur: String(current.relMin ?? ""),
+    opts: [["", tr("any")], ["0.8", tr("8 in 10 years")], ["1", tr("every year")]],
+    over: v => ({ relMin: v ? +v : null }),
+  }] : []),
   ...((current.habit ?? "tree") === "tree" ? [{
     key: "mat", label: "Maturity", title: tr("Time to max height"), cur: String(current.matMax ?? ""),
     opts: [["", tr("no limit")], ["20", tfmt("under {n} years", { n: 20 })], ["90", tfmt("under {n} years", { n: 90 })]],
@@ -959,7 +989,7 @@ function chipsMarkup() {
 }
 
 // the pristine state for this analysis: native-first, trees, no extra criteria
-const critIsDefault = () => current.filter === "all" && !current.matMax && !current.crownMin
+const critIsDefault = () => current.filter === "all" && !current.matMax && !current.crownMin && !current.relMin
   && (current.habit ?? "tree") === "tree" && (current.prop ?? "all") === "all"
   && current.nativeOnly === (!!current.cc && Object.keys(NATIVES).length > 0);
 
@@ -1019,6 +1049,7 @@ function loadRowPhotos() {
 }
 
 function renderResults() {
+  clearTerrain(); // re-rendering closes every card, the terrain map's included
   const { site, scored, ha, filter, shown } = current;
   const noLand = site.ph == null && (site.elevation == null || site.elevation < 1) && !current.force;
   const dls = monthlyDaylengths(site.lat);
@@ -1059,6 +1090,7 @@ function renderResults() {
       ${rd(tr("aridity"), site.aridity != null ? `${tr(site.aridity)} <span class="adm">(AI: ${fmt(site.ai, 2)})</span>` : tr("n/a"), tr("UNEP Aridity Index (P / ET₀)"))}
       ${rd(tr("climate class"), site.koppen ? `${site.koppen} <span class="adm">(${tr(KOPPEN_DESCRIPTIONS[site.koppen] ?? site.koppen)})</span>` : tr("n/a"), tr("Köppen-Geiger climate classification (Peel et al. 2007)"))}
     </div>
+    ${riskMarkup(site, rd)}
     <div class="footnote" style="margin-top:10px">
       ${tr("Suitability follows the FAO EcoCrop model (trapezoidal climate envelopes, most-limiting-factor). Growth and carbon are class-level estimates")}
       ${tr("(Chapman-Richards, Chave 2014 / Jenkins 2003, IPCC 2006), for screening, not planting prescriptions.")}
@@ -1146,6 +1178,8 @@ function speciesRow(s, i) {
                 : tr("Part of the native flora of this country (WCVP)")}">${tr("native")}</span>` : ""}
           <span class="nearby gbif" data-nearby="${s.sp.id}" ${s.gbif?.count > 0 ? "" : "hidden"} title="${tr("GBIF occurrence records near this area")}" aria-label="${tr("Recorded nearby on GBIF")}">&#10003; ${tr("nearby")}</span>
           <span class="nearby warn45" data-f45="${s.sp.id}" ${s.score > 0.4 && s.f45 != null && s.f45 <= 0.4 ? "" : "hidden"} title="${tr("Falls below suitable in the 2040s climate (CMIP6)")}">2045 &#9662;</span>
+          ${s.score > 0.4 && s.yearly?.n >= 5 && s.yearly.ok / s.yearly.n < 0.8
+            ? `<span class="nearby yrs" title="${tfmt("Suitable on the 10-year normals, but only {k} of the {n} individual years fit it", { k: s.yearly.ok, n: s.yearly.n })}">${tfmt("{k}/{n} yrs", { k: s.yearly.ok, n: s.yearly.n })}</span>` : ""}
           ${s.score <= 0.4 ? `<span class="nearby mgnl">${tr(grade(s.score)).toLowerCase()}</span>` : ""}
         </div>
         <div class="sp-sci">${showSci ? s.sp.sci : s.sp.family}${nativeHere(s.sp) === true && nativeRegion(s.sp) === false
@@ -1218,7 +1252,7 @@ content.addEventListener("click", e => {
   }
   if (e.target.closest("[data-crit-clear]")) {
     // reset to the analysis defaults, which include native-first
-    current.filter = "all"; current.matMax = null; current.crownMin = null; current.habit = "tree"; current.prop = "all";
+    current.filter = "all"; current.matMax = null; current.crownMin = null; current.habit = "tree"; current.prop = "all"; current.relMin = null;
     current.nativeOnly = !!current.cc && Object.keys(NATIVES).length > 0;
     current.shown = 12; renderResults(); loadRowPhotos();
     content.querySelector(".chips-row .opt")?.focus({ preventScroll: true });
@@ -1260,6 +1294,7 @@ content.addEventListener("click", e => {
     if (opt.dataset.f === "use") current.filter = v;
     if (opt.dataset.f === "mat") current.matMax = v ? +v : null;
     if (opt.dataset.f === "crown") current.crownMin = v ? +v : null;
+    if (opt.dataset.f === "rel") current.relMin = v ? +v : null;
     current.shown = 12; renderResults(); loadRowPhotos();
     content.querySelector(sel)?.focus({ preventScroll: true });
     return;
@@ -1315,6 +1350,8 @@ content.addEventListener("click", e => {
     } else radarScan();
     return;
   }
+  const tbtn = e.target.closest("[data-terrain]");
+  if (tbtn) { terrainMap(+tbtn.dataset.terrain); return; }
   if (e.target.closest("[data-print]")) { track("export", { kind: "print" }); window.print(); return; }
   if (e.target.closest("[data-shp]")) { track("export", { kind: "shp" }); shpExport(); return; }
   if (e.target.closest("[data-csv]")) { track("export", { kind: "csv" }); csvExport(); return; }
@@ -1323,6 +1360,7 @@ content.addEventListener("click", e => {
 
   const head = e.target.closest("[data-toggle]");
   if (head) {
+    clearTerrain(); // a terrain map belongs to the card that drew it
     const body = head.nextElementSibling;
     const item = current.scored.find(x => x.sp.id === +head.parentElement.dataset.id);
     if (body.hidden && !body.innerHTML) body.innerHTML = speciesDetail(item.sp.id);
@@ -1419,7 +1457,99 @@ function climateSvg(site) {
   </svg>`;
 }
 
-const slugify = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+// The years on record, one axis: each year's coldest night above the spine,
+// its rain hanging below, dashed at the record's mean. The monthly figure's
+// grammar, so the pair reads as one instrument: shape of the average year,
+// then how far real years stray from it.
+function yearsSvg(years) {
+  const W = 414, L = 2, R = 64, top = 14, tH = 38, gapA = 9, letters = 13, gapB = 7, pH = 44, bot = 15;
+  const n = years.length;
+  const spineY = top + tH + gapA, barTop = spineY + letters + gapB, H = barTop + pH + bot;
+  const iw = W - L - R;
+  const cx = i => L + (i + 0.5) * iw / n;
+  const bw = Math.max(8, Math.round(iw / n) - 15);
+  const lows = years.map(y => y.low), rains = years.map(y => y.rain);
+  const lo = Math.min(...lows), hi = Math.max(...lows);
+  const span = Math.max(6, hi - lo + 3), mid = (hi + lo) / 2;
+  const thi = mid + span / 2, tlo = mid - span / 2;
+  const ty = v => top + (thi - v) / (thi - tlo) * tH;
+  const rmax = Math.max(...rains, 10) * 1.1;
+  const py = v => (v / rmax) * pH;
+  const mean = rains.reduce((a, b) => a + b, 0) / n;
+  const dry = rains.indexOf(Math.min(...rains)), cold = lows.indexOf(lo);
+  const MONO = "IBM Plex Mono, monospace";
+  const KO = `paint-order="stroke" stroke="rgba(13,17,14,.9)" stroke-width="2.6" stroke-linejoin="round"`;
+  const line = lows.map((v, i) => `${i ? "L" : "M"}${cx(i).toFixed(1)},${ty(v).toFixed(1)}`).join("");
+  const dots = lows.map((v, i) => `<circle cx="${cx(i).toFixed(1)}" cy="${ty(v).toFixed(1)}" r="${i === cold ? 2.4 : 1.6}" fill="#d7a463" opacity="${i === cold ? 1 : .75}"/>`).join("");
+  const zero = tlo < 0 && thi > 0
+    ? `<line x1="${L}" x2="${L + iw}" y1="${ty(0).toFixed(1)}" y2="${ty(0).toFixed(1)}" stroke="rgba(255,255,255,.12)" stroke-dasharray="3 3"/>` : "";
+  const bars = rains.map((v, i) =>
+    `<rect x="${(cx(i) - bw / 2).toFixed(1)}" y="${barTop}" width="${bw}" height="${py(v).toFixed(1)}" rx="1.5" fill="#79a6c6" opacity="${i === dry ? .95 : .5}"/>`).join("");
+  const labels = years.map((y, i) =>
+    `<text x="${cx(i).toFixed(1)}" y="${spineY + 10}" font-size="8" fill="#6b786f" text-anchor="middle" font-family="${MONO}">${String(y.year).slice(2)}</text>`).join("");
+  const hover = years.map((y, i) =>
+    `<rect x="${(cx(i) - iw / n / 2).toFixed(1)}" y="0" width="${(iw / n).toFixed(1)}" height="${H}" fill="transparent"><title>${y.year} &middot; ${fmt(y.rain)} mm &middot; ${tr("coldest night")} ${fmt(y.low, 1)} \u00b0C</title></rect>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${tr("coldest night and rain of each year on record")}">
+    ${zero}
+    <path d="${line}" fill="none" stroke="#d7a463" stroke-width="1.4" stroke-opacity=".55" stroke-linejoin="round"/>
+    ${dots}
+    <text x="${L + iw + 11}" y="${(ty(lo) + 1).toFixed(1)}" font-size="10.5" font-family="${MONO}" fill="#d7a463">${fmt(lo)} \u00b0C</text>
+    <text x="${L + iw + 11}" y="${(ty(lo) + 12).toFixed(1)}" font-size="8.5" fill="#6b786f">${tr("coldest night")}</text>
+    <line x1="${(cx(0) - 12).toFixed(1)}" x2="${(cx(n - 1) + 12).toFixed(1)}" y1="${spineY}" y2="${spineY}" stroke="rgba(255,255,255,.2)"/>
+    ${labels}
+    ${bars}
+    <line x1="${L}" x2="${L + iw}" y1="${(barTop + py(mean)).toFixed(1)}" y2="${(barTop + py(mean)).toFixed(1)}" stroke="#79a6c6" stroke-opacity=".5" stroke-dasharray="2 3"/>
+    <text x="${cx(dry).toFixed(1)}" y="${(barTop + py(rains[dry]) + 10).toFixed(1)}" font-size="9" font-family="${MONO}" fill="#99a69c" text-anchor="middle" ${KO}>${fmt(rains[dry])}</text>
+    <text x="${L + iw + 11}" y="${barTop + 12}" font-size="10.5" font-family="${MONO}" fill="#79a6c6">${fmt(mean)} mm</text>
+    <text x="${L + iw + 11}" y="${barTop + 23}" font-size="8.5" fill="#6b786f">${tr("mean year")}</text>
+    ${hover}
+  </svg>`;
+}
+
+// "12 Apr"-style day labels in the UI language (reference non-leap year)
+const dayLabel = d => d ? new Intl.DateTimeFormat(LOCALE, { day: "numeric", month: "short", timeZone: "UTC" }).format(Date.UTC(2023, d.month, d.day)) : null;
+
+// The year-by-year block of "Why these plants?": figure, frost calendar,
+// winter chill, driest year and the 2040s change (patched in when the
+// projection lands).
+function riskMarkup(site, rd) {
+  const r = site.risk;
+  if (!r?.years?.length) return "";
+  const y0 = r.years[0].year, y1 = r.years[r.years.length - 1].year;
+  const f = r.frost, ch = r.chill;
+  const at = off => dayLabel(frostDate(f.anchorMonth, off));
+  let spring = tr("n/a"), autumn = tr("n/a"), season = tr("n/a");
+  if (f?.frostFree) { spring = autumn = tr("none on record"); season = tr("all year"); }
+  else if (f) {
+    spring = f.lastSpring.median != null
+      ? `${at(f.lastSpring.median)}${f.lastSpring.latest != null && f.lastSpring.latest !== f.lastSpring.median ? ` <span class="adm">(${tfmt("latest {d}", { d: at(f.lastSpring.latest) })})</span>` : ""}`
+      : f.springFrosts ? `${tfmt("{k} of {n} years", { k: f.springFrosts, n: f.springs })} <span class="adm">(${tfmt("latest {d}", { d: at(f.lastSpring.latest) })})</span>` : tr("none on record");
+    autumn = f.firstAutumn.median != null
+      ? `${at(f.firstAutumn.median)}${f.firstAutumn.earliest != null && f.firstAutumn.earliest !== f.firstAutumn.median ? ` <span class="adm">(${tfmt("earliest {d}", { d: at(f.firstAutumn.earliest) })})</span>` : ""}`
+      : f.autumnFrosts ? `${tfmt("{k} of {n} years", { k: f.autumnFrosts, n: f.autumns })} <span class="adm">(${tfmt("earliest {d}", { d: at(f.firstAutumn.earliest) })})</span>` : tr("none on record");
+    season = f.yearRound ? tr("frost in every season") : f.season != null ? tfmt("{n} days", { n: fmt(f.season) }) : tr("n/a");
+  }
+  const rains = r.years.map(y => y.rain), mean = rains.reduce((a, b) => a + b, 0) / rains.length;
+  const dry = r.years[rains.indexOf(Math.min(...rains))];
+  const dryPct = Math.round((dry.rain / mean - 1) * 100);
+  const chill = ch?.safeCP != null
+    ? `${ch.safeCP < 1 ? "&asymp;0" : fmt(ch.safeCP)} CP <span class="adm">(${tfmt("~{h} h", { h: fmt(Math.round(ch.safeCH / 10) * 10) })})</span>` : tr("n/a");
+  return `
+    <div class="section-h">${tfmt("Year by year &middot; {a}&ndash;{b}", { a: y0, b: y1 })}</div>
+    <div class="site-fig">${yearsSvg(r.years)}</div>
+    <div class="readout years">
+      ${rd(tr("last spring frost"), spring, tr("Median date of the last night at or below 0 \u00b0C before midsummer, from daily minima"))}
+      ${rd(tr("first autumn frost"), autumn, tr("Median date of the first night at or below 0 \u00b0C after midsummer, from daily minima"))}
+      ${rd(tr("frost-free season"), season)}
+      ${rd(tr("winter chill"), chill, tr("Safe Winter Chill: Dynamic Model chill portions (and 0-7.2 \u00b0C chilling hours) reached in 9 winters of 10, Nov-Feb or May-Aug (Luedeling et al. 2009)"))}
+      ${rd(tr("driest year"), `${dry.year} &middot; ${fmt(dry.rain)} mm <span class="adm">(${dryPct < 0 ? "&minus;" : "+"}${fmt(Math.abs(dryPct))}%)</span>`)}
+      ${rd(tr("2040s"), `<span data-fut>${futText()}</span>`, tr("Change from 2015-2024 to 2040-2049 in the MRI-AGCM3-2-S model's own run (delta method), applied to the ERA5 record"))}
+    </div>
+    <div class="evidence">${tr("Each year is scored on its own weather by the same engine; species cards show how many of these years fit them. Frost dates are the reanalysis grid's: valley floors and frost pockets freeze earlier and later than the grid.")}</div>
+    <div class="evidence" data-prov${current?.future?.prov ? "" : " hidden"}>${current?.future?.prov ?? ""}</div>`;
+}
+
+const slugify = t => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
   .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 // "Onde conseguir": the first block of the detail, because it is the only fact
@@ -1469,6 +1599,32 @@ function sourcingMarkup(sp) {
 // Baskin & Baskin dormancy codes to full display names (translated via i18n).
 const DORMANCY_NAMES = { ND: "No dormancy", PY: "Physical dormancy (PY)", PD: "Physiological dormancy (PD)", MPD: "Morphophysiological dormancy (MPD)", "PY+PD": "Combinational dormancy (PY+PD)" };
 
+// risk.js limitingFactor() codes to readable causes (translated via i18n)
+const WHY_LABELS = { dry: "dry year", wet: "wet year", cold: "cold year", hot: "hot year", frost: "frost", "mild winter": "mild winter" };
+// the species the scorer already gives a winter-dormancy factor (scoring.js
+// chill): temperate deciduous, the trees whose fruiting rides on winter chill
+const chillRelevant = sp => !!(sp.decid && sp.gclass?.startsWith("temperate"));
+
+// One cell per year on record, coloured by the grade that year's own weather
+// earns; hover names the year, its score and what sank it.
+function yearStrip(y) {
+  const w = 9, gap = 3, h = 10, W = y.years.length * (w + gap) - gap;
+  const cells = y.years.map((v, i) => `<rect x="${i * (w + gap)}" y="0" width="${w}" height="${h}" rx="2" fill="${gradeColor(v.score)}" opacity="${v.score > 0.4 ? 0.95 : 0.7}"><title>${v.year} &middot; ${fmt(v.score, 2)}${v.why ? ` &middot; ${tr(WHY_LABELS[v.why] ?? v.why)}` : ""}</title></rect>`).join("");
+  return `<svg class="yr-strip" viewBox="0 0 ${W} ${h}" width="${W}" height="${h}" role="img" aria-label="${tfmt("{k} of {n}", { k: y.ok, n: y.n })}">${cells}</svg>`;
+}
+// site-level 2040s change once futureOutlook lands (patched in by updateAllF45)
+const futText = () => {
+  const f = current?.future;
+  if (!f) return current?.futureFailed ? tr("n/a") : "&hellip;";
+  const sgn = v => (v >= 0 ? "+" : "&minus;");
+  return `${sgn(f.dT)}${fmt(Math.abs(f.dT), 1)} °C${f.dP != null ? ` &middot; ${sgn(f.dP)}${fmt(Math.abs(Math.round(f.dP * 100)))}% ${tr("rain")}` : ""}`;
+};
+// 2040s winter chill once futureOutlook lands (patched in by updateAllF45)
+const chillFutText = () => {
+  const f = current?.future?.chill;
+  return f?.safeCP != null ? `&rarr; ${fmt(f.safeCP)} ${tr("in the 2040s")}` : "";
+};
+
 function speciesDetail(id) {
   const s = current.scored.find(x => x.sp.id === id);
   const { sp } = s;
@@ -1510,6 +1666,16 @@ function speciesDetail(id) {
         : tr("The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty."));
     }
     if (s.factors.chill != null && s.factors.chill < 1) notes.push(tr("Needs winter dormancy; the coldest month here is too warm for it."));
+    // the years the normals average away (risk.js yearlyFit)
+    if (s.score > 0.4 && s.yearly?.n) {
+      const bad = s.yearly.years.filter(y => y.why);
+      if (bad.length === s.yearly.n) notes.push(tr("No single year on record fit this species on its own weather: only the 10-year average does. Expect it to struggle in real years."));
+      else if (bad.length) notes.push(tfmt("Outside its envelope in {years}: the 10-year normals average these years away.",
+        { years: bad.map(y => `${y.year} (${tr(WHY_LABELS[y.why] ?? y.why)})`).join(", ") }));
+    }
+    const ch = current.site.risk?.chill;
+    if (chillRelevant(sp) && ch?.safeCP != null) notes.push(tfmt("Winter chill here: about {cp} chill portions (~{ch} chill hours) in 9 winters of 10. Requirements are set by the cultivar, not the species; check yours against it.",
+      { cp: fmt(ch.safeCP), ch: fmt(Math.round(ch.safeCH / 10) * 10) }));
     if (s.strat?.noteKey) notes.push(tr(s.strat.noteKey));
     if (s.strat?.directives?.length) s.strat.directives.forEach(d => notes.push(tr(d)));
     const escHtml = s => String(s ?? "").replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -1541,6 +1707,9 @@ function speciesDetail(id) {
       ${win}
       ${sp.ktmpr != null ? `<div class="stat"><span class="sk">${tr("Hardy to")}</span><span class="sv">${sp.ktmpr.toFixed(0)} &deg;C</span></div>` : ""}
       <div class="stat"><span class="sk" title="${tr("Rescored on a 2040-2049 CMIP6 projection (MRI-AGCM3-2-S), same scoring engine")}">${tr("Score in the 2040s")}</span><span class="sv" data-f45stat="${sp.id}">${f45Text(s)}</span></div>
+      ${s.yearly?.n ? `<div class="stat"><span class="sk" title="${tr("Each year on record scored on its own weather, same engine")}">${tr("Year by year")}</span><span class="sv yr-sv">${yearStrip(s.yearly)}<span>${tfmt("{k} of {n}", { k: s.yearly.ok, n: s.yearly.n })}</span></span></div>` : ""}
+      ${chillRelevant(sp) && current.site.risk?.chill?.safeCP != null ? `<div class="stat"><span class="sk" title="${tr("Safe Winter Chill: Dynamic Model chill portions reached in 9 winters of 10 (Luedeling et al. 2009)")}">${tr("Winter chill (safe)")}</span><span class="sv">${fmt(current.site.risk.chill.safeCP)} CP <span class="d45" data-chill45>${chillFutText()}</span></span></div>` : ""}
+      <div class="stat"><span class="sk" title="${tr("The same engine on a grid of cells inside the drawn area: temperature shifted by each cell's elevation (6.5 °C per km), slope and aspect from the elevation model; rain held constant")}">${tr("Across this area")}</span><span class="sv" data-terrain-sv="${sp.id}"><button type="button" class="mini" data-terrain="${sp.id}">${tr("map by terrain")}</button></span></div>
       ${sp.tree ? `<div class="stat"><span class="sk">${tr("Trees in this area, 3&times;3 m")}</span><span class="sv">${fmtC(trees)}</span></div>
       <div class="stat wide"><span class="sk">${tr("Area CO&#8322;e by year 20")}</span><span class="sv">${fmtC(co2Ha20 * current.ha)} t</span></div>` : ""}
     </div>
@@ -2142,25 +2311,41 @@ function drawTree(g, x, y, r, tree, conifer) {
   g.drawImage(sp.c, x - sp.cx * k, y - sp.cy * k, sp.w * k, sp.w * k);
 }
 
-// ---------- 2040s outlook: rescore the shortlist on a CMIP6 projection ----------
+// ---------- 2040s outlook: rescore the shortlist on a bias-corrected CMIP6 projection ----------
+// Delta method (risk.js deltaFuture): the model's own 2015-2024 run is its
+// baseline, and only its change to 2040-2049 is applied to the ERA5 record
+// the site was scored on. Comparing raw 2040s model output with ERA5 (the
+// first version of this outlook) put the model's grid-point bias into every
+// "2045" badge as if it were climate change.
+const CMIP_MODEL = "MRI_AGCM3_2_S";
+const LAPSE_TEXT = `${fmt(LAPSE_C_PER_M * 1000, 1)} °C/km`;
+function provText(dT, dz, elev) {
+  if (dz == null) return "";
+  return elev != null && elev > dz + 50
+    ? tfmt("Seed-source hint: the 2040s here run about {t} °C warmer, roughly today's temperature {z} m lower down ({lapse}). Mixing seed from such lower or warmer provenances into local seed hedges against it (climate-adjusted provenancing, Prober et al. 2015).", { t: fmt(dT, 1), z: fmt(dz), lapse: LAPSE_TEXT })
+    : tfmt("Seed-source hint: the 2040s here run about {t} °C warmer. Mixing seed from warmer provenances into local seed hedges against it (climate-adjusted provenancing, Prober et al. 2015).", { t: fmt(dT, 1) });
+}
 async function futureOutlook(ctl) {
   const target = current;
   const c = target?.center;
   if (!c || ctl.signal.aborted) return;
+  const run = (a, b) => `https://climate-api.open-meteo.com/v1/climate?latitude=${c.lat.toFixed(4)}&longitude=${c.lng.toFixed(4)}` +
+    `&start_date=${a}&end_date=${b}&models=${CMIP_MODEL}&daily=temperature_2m_mean,temperature_2m_min,temperature_2m_max,precipitation_sum`;
   try {
-    const url = `https://climate-api.open-meteo.com/v1/climate?latitude=${c.lat.toFixed(4)}&longitude=${c.lng.toFixed(4)}` +
-      `&start_date=2040-01-01&end_date=2049-12-31&models=MRI_AGCM3_2_S&daily=temperature_2m_mean,temperature_2m_min,precipitation_sum`;
-    const res = await fetch(url, { signal: ctl.signal });
-    if (!res.ok || ctl.signal.aborted) return;
-    const j = await res.json();
-    if (!j.daily?.time?.length || ctl.signal.aborted || current !== target || !current?.site) return;
-    const agg = aggregateClimate(j.daily);
+    const [rb, rf] = await Promise.all([run("2015-01-01", "2024-12-31"), run("2040-01-01", "2049-12-31")]
+      .map(u => fetch(u, { signal: ctl.signal })));
+    if (!rb.ok || !rf.ok) throw new Error("projection unavailable");
+    const [jb, jf] = await Promise.all([rb.json(), rf.json()]);
+    if (!jb.daily?.time?.length || !jf.daily?.time?.length) throw new Error("empty projection");
+    if (ctl.signal.aborted || current !== target || !current?.site) return;
+    const model = d => ({ ...aggregateClimate(d), tmaxMean: monthlyMeans(d, "temperature_2m_max"), absMinMean: meanAnnualMin(d) });
+    const d = deltaFuture(current.site, model(jb.daily), model(jf.daily));
     // fsite mirrors the current-site context the main rescore() uses (ph,
     // soil, irrigation) so the 2040s suitability delta is climate-only.
     // Establishment strategy is deliberately NOT recomputed for the 2040s:
     // the CSV establishment_method/sowing_window columns describe the
     // current site only (see the `#` meta line in csvExport()).
-    const fsite = { ...agg, ph: current.site.ph, soil: current.site.soil ?? null, lat: c.lat,
+    const fsite = { ...d, ph: current.site.ph, soil: current.site.soil ?? null, lat: c.lat,
       irrigated: current.site.irrigated, terrain: current.site.terrain ?? null, radSlope: current.site.radSlope ?? null };
     current.fsite = fsite;
     for (const s of current.scored) {
@@ -2169,9 +2354,101 @@ async function futureOutlook(ctl) {
         countryNaturalized: !L3_REGIONS[current.cc] && !!current.cc && (NATURALIZED[s.sp.id] ?? []).includes(current.cc) };
       s.f45 = scoreSpecies(s.sp, fsite, ev).score;
     }
+    // 2040s winter chill: the observed days with the model's monthly change
+    // added, so the projection keeps ERA5's real day-to-day weather
+    const chill = current.daily ? winterChill(shiftDaily(current.daily, d.dTmin, d.dTmax, d.dTavg), c.lat, current.site.tavg) : null;
+    const dz = elevationAnalogue(d.dT);
+    current.future = { dT: d.dT, dP: d.dP, chill, dz, prov: provText(d.dT, dz, current.site.elevation) };
     updateAllF45();
-  } catch { /* the projection is an enhancement; fail silent */ }
+  } catch {
+    // the projection is an enhancement: the readout says n/a, nothing else moves
+    if (ctl.signal.aborted || current !== target || !current) return;
+    current.futureFailed = true;
+    updateAllF45();
+  }
 }
+// ---------- terrain-resolved suitability (on demand, one species) ----------
+// The engine is a pure function of (species, site), so it runs per cell:
+// up to 100 elevation samples on a grid over the drawn area (one Open-Meteo
+// elevation call, never finer than the 90 m DEM), each cell's temperature
+// shifted by the lapse rate from the analysed centroid (risk.js cellSite),
+// slope and aspect from the grid itself, rain held constant. Climate grids
+// cannot see this: ERA5 is ~9 km, but 400 m of relief inside a drawn area is
+// 2.6 C. Cells are drawn as blocks, never smoothed: one sample, one colour.
+// Cold-air pooling (valley floors colder than the lapse rate says) is the
+// known blind spot, named in the tooltip.
+function terrainPane() {
+  if (!map.getPane("terrain")) {
+    const p = map.createPane("terrain");
+    p.style.zIndex = 450; // above the area outline and planted stands, below markers
+    p.style.pointerEvents = "none";
+  }
+  return "terrain";
+}
+function clearTerrain() {
+  terrainLayer?.remove();
+  terrainLayer = null; terrainFor = null;
+  if (simCanvas) simCanvas.style.visibility = "";
+}
+function terrainCell(id, html) {
+  const el = content.querySelector(`[data-terrain-sv="${id}"]`);
+  if (el) el.innerHTML = html ?? `<button type="button" class="mini" data-terrain="${id}">${tr("map by terrain")}</button>`;
+}
+async function terrainMap(id) {
+  if (terrainFor === id) { clearTerrain(); terrainCell(id); return; }
+  clearTerrain();
+  const s = current?.scored.find(x => x.sp.id === id);
+  if (!s) return;
+  const target = current, pts = current.pts, b = L.latLngBounds(pts);
+  const lat0 = b.getCenter().lat * Math.PI / 180;
+  const wM = (b.getEast() - b.getWest()) * 111320 * Math.cos(lat0), hM = (b.getNorth() - b.getSouth()) * 111320;
+  let cols = Math.max(2, Math.round(Math.sqrt(100 * wM / Math.max(1, hM))));
+  cols = Math.min(cols, 50, Math.max(2, Math.floor(wM / 90)));
+  let rows = Math.min(50, Math.max(2, Math.floor(100 / cols)), Math.max(2, Math.floor(hM / 90)));
+  if (wM < 180 || hM < 180) { toast(tr("This area fits inside a few 90 m elevation cells: terrain cannot vary within it.")); return; }
+  const lats = [], lngs = [];
+  for (let r = 0; r < rows; r++) for (let k = 0; k < cols; k++) {
+    lats.push(b.getNorth() - (r + 0.5) * (b.getNorth() - b.getSouth()) / rows);
+    lngs.push(b.getWest() + (k + 0.5) * (b.getEast() - b.getWest()) / cols);
+  }
+  terrainCell(id, `<span class="faint">${tr("sampling terrain…")}</span>`);
+  let elev;
+  try {
+    const j = await (await fetch(`https://api.open-meteo.com/v1/elevation?latitude=${lats.map(x => x.toFixed(5)).join(",")}&longitude=${lngs.map(x => x.toFixed(5)).join(",")}`)).json();
+    elev = j.elevation;
+    if (!Array.isArray(elev) || elev.length !== lats.length || elev.some(v => v == null)) throw new Error("elevation");
+  } catch {
+    terrainCell(id);
+    toast(tr("Could not sample the terrain right now; try again."));
+    return;
+  }
+  if (current !== target) return;
+  const ref = current.site.elevation ?? [...elev].sort((a, c) => a - c)[elev.length >> 1];
+  const terr = gridTerrain(elev, cols, rows, wM / cols, hM / rows);
+  const ev = current.evOpts(s.sp);
+  const canvas = document.createElement("canvas");
+  canvas.width = cols; canvas.height = rows;
+  const g = canvas.getContext("2d");
+  const scores = [], inside = [];
+  for (let i = 0; i < lats.length; i++) {
+    if (!pointInPoly(lats[i], lngs[i], pts)) continue;
+    const sc = scoreSpecies(s.sp, cellSite(current.site, elev[i] - ref, terr[i]), ev).score;
+    scores.push(sc); inside.push(elev[i]);
+    g.fillStyle = gradeColor(sc);
+    g.fillRect(i % cols, Math.floor(i / cols), 1, 1);
+  }
+  if (!scores.length) { terrainCell(id); toast(tr("This area fits inside a few 90 m elevation cells: terrain cannot vary within it.")); return; }
+  terrainLayer = L.imageOverlay(canvas.toDataURL(), b, { pane: terrainPane(), opacity: 0.62, className: "terrain-img", interactive: false }).addTo(map);
+  terrainFor = id;
+  if (simCanvas) simCanvas.style.visibility = "hidden"; // the trees would hide what this is for
+  const lo = Math.min(...scores), hi = Math.max(...scores), ok = scores.filter(v => v > 0.4).length;
+  const tip = tfmt("{n} cells, {m} m apart · {a}–{b} m elevation · {lapse} lapse rate; valley floors that pool cold air run colder than this", {
+    n: scores.length, m: fmt(Math.round(Math.min(wM / cols, hM / rows) / 10) * 10), a: fmt(Math.min(...inside)), b: fmt(Math.max(...inside)), lapse: LAPSE_TEXT });
+  terrainCell(id, `<span title="${tip}">${hi - lo < 0.01 ? tr("uniform across this area") : `${fmt(lo, 2)}&ndash;${fmt(hi, 2)}`} &middot; ${tfmt("{k} of {n} cells suitable", { k: ok, n: scores.length })}</span> <button type="button" class="mini" data-terrain="${id}">${tr("hide")}</button>`);
+  fitVisible(b, 0.15);
+  track("terrain_map", { sci: s.sp.sci, cells: scores.length });
+}
+
 function f45Text(s) {
   if (s.f45 == null) return "&hellip;";
   const d = Math.round((s.f45 - s.score) * 100);
@@ -2189,6 +2466,10 @@ function updateAllF45() {
     const s = map.get(+stat.dataset.f45stat);
     if (s) stat.innerHTML = f45Text(s);
   });
+  content.querySelectorAll("[data-fut]").forEach(el => { el.innerHTML = futText(); });
+  content.querySelectorAll("[data-chill45]").forEach(el => { el.innerHTML = chillFutText(); });
+  const prov = content.querySelector("[data-prov]");
+  if (prov) { prov.innerHTML = current.future?.prov ?? ""; prov.hidden = !current.future?.prov; }
 }
 
 // ---------- species photos (iNaturalist default taxon photo) ----------
@@ -2652,11 +2933,15 @@ function csvExport() {
   // CSV column contract: the establishment columns were appended before
   // `uses` (not grouped with the factors); column order is frozen — do not
   // move them (downstream parsers read by position). Format version rides in
-  // the `#` meta line below, currently v2. `irrigated` is the last column and
-  // reports the site state the scores were computed under.
+  // the `#` meta line below, currently v3. `irrigated` reports the site state
+  // the scores were computed under. v3 appended `years_suitable` and
+  // `years_scored` after it (risk.js yearlyFit: how many of the individual
+  // years on record fit the species on their own weather); every v2 column
+  // keeps its position.
   const head = ["scientific_name", "common_name", "family", "score", "fit", "score_2040s",
     "temp_factor", "rain_factor", "ph_factor", "photo_factor", "frost_factor", "chill_factor",
-    "native_here", "growth_class", "establishment_method", "establishment_confidence", "sowing_window", "uses", "irrigated"];
+    "native_here", "growth_class", "establishment_method", "establishment_confidence", "sowing_window", "uses", "irrigated",
+    "years_suitable", "years_scored"];
   // the CSV mirrors the panel exactly: active filters, the marginality cut
   // and the invasive exclusion all apply; clear the filters to export wide
   const rows = current.scored.filter(s => critMatch(s, critState())).map(s => [
@@ -2666,12 +2951,16 @@ function csvExport() {
       .map(v => v == null ? "" : (+v).toFixed(3)),
     nativeHere(s.sp) ?? "", s.sp.gclass, s.strat?.method ?? "", s.strat?.confidence ?? "", s.strat?.sowingWindow?.label || (s.strat?.sowingWindow?.length ? `~${s.strat.sowingWindow.length} mo` : ""), s.sp.uses.join("|"),
     current.site.irrigated ? "true" : "false",
+    s.yearly?.n ? s.yearly.ok : "", s.yearly?.n ?? "",
   ].map(esc).join(","));
   const c = critState();
-  const meta = `# Replantio v2 ${new Date().toISOString().slice(0, 10)} · ${current.center.lat.toFixed(4)},${current.center.lng.toFixed(4)} · ${current.ha.toFixed(1)} ha\n`
+  const yrs = current.site.risk?.years ?? [];
+  const meta = `# Replantio v3 ${new Date().toISOString().slice(0, 10)} · ${current.center.lat.toFixed(4)},${current.center.lng.toFixed(4)} · ${current.ha.toFixed(1)} ha\n`
     + `# establishment_method/establishment_confidence/sowing_window describe the current site, not the 2040s outlook\n`
+    + `# score_2040s: ${CMIP_MODEL} 2040-2049, delta method against the model's own 2015-2024 run, applied to the ERA5 normals\n`
+    + `# years_suitable/years_scored: calendar years ${yrs.length ? `${yrs[0].year}-${yrs[yrs.length - 1].year}` : "n/a"} scored one by one on their own weather (score > 0.4)\n`
     + `# irrigation=${current.site.irrigated ? "irrigated" : "rainfed"}\n`
-    + `# filters: origin=${c.nativeOnly ? "native" : "all"} habit=${c.habit} establishment=${c.prop} use=${c.use}${c.matMax ? ` maturity<=${c.matMax}y` : ""}${c.crownMin ? ` crown>=${c.crownMin}m` : ""} · score>0.05 · invasives excluded (GRIIS${current.cc === "BR" ? " + Instituto Horus" : ""}) · ${rows.length} species\n`;
+    + `# filters: origin=${c.nativeOnly ? "native" : "all"} habit=${c.habit} establishment=${c.prop} use=${c.use}${c.matMax ? ` maturity<=${c.matMax}y` : ""}${c.crownMin ? ` crown>=${c.crownMin}m` : ""}${c.relMin ? ` years>=${Math.round(c.relMin * 100)}%` : ""} · score>0.05 · invasives excluded (GRIIS${current.cc === "BR" ? " + Instituto Horus" : ""}) · ${rows.length} species\n`;
   downloadBlob(`replantio-especies-${current.center.lat.toFixed(3)}_${current.center.lng.toFixed(3)}.csv`,
     new Blob([meta + head.join(",") + "\n" + rows.join("\n")], { type: "text/csv;charset=utf-8" }));
 }

@@ -632,6 +632,26 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
 .nearby.warn45 { color: var(--amber); }
 .d45 { color: var(--faint); font-size: .9em; }
 
+/* year by year (risk.js): row badge, card strip, and a one-column ledger for
+   the site block (its values carry dates and ranges, too long for half width) */
+.nearby.yrs { color: var(--amber); font-weight: 400; }
+.yr-sv { display: inline-flex; align-items: center; gap: 8px; }
+.yr-strip { display: block; flex: none; }
+.readout.years { grid-template-rows: none; grid-auto-flow: row; grid-template-columns: 1fr; }
+.readout.years .rd { border-top: 1px solid var(--line); }
+.readout.years .rd:first-child { border-top: 0; }
+/* a quiet in-row action ("map by terrain"): a link, not a pill */
+.mini {
+  font: inherit; font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif; font-size: 10.5px;
+  color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer;
+  text-decoration: underline; text-decoration-color: rgba(99, 201, 135, .35); text-underline-offset: 2px;
+}
+.mini:hover { color: var(--text); }
+.faint { color: var(--faint); }
+/* one elevation sample, one block: never smoothed into resolution it does not have */
+.terrain-img { image-rendering: pixelated; }
+@media print { .mini { display: none; } }
+
 /* ---------- report export (print to PDF) ---------- */
 @media print {
   body { background: #fff; }
@@ -908,6 +928,7 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
   .site-adjust input[type="number"] { width: 72px; height: 38px; font-size: 16px; }
   .readout { grid-template-rows: repeat(12, auto); column-gap: 0; }
   .readout .rd:nth-child(6) { border-top: 1px solid var(--line); }
+  .mini { font-size: 13px; min-height: 32px; }
   textarea, select { font-size: 16px !important; }
 
   /* map chrome rides on top of the sheet, whatever its height */
