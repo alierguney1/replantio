@@ -1,4 +1,4 @@
-import { aggregateClimate, scoreSpecies, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors, monthlyFlatInsolation, maxSoilDepthCm, aggregateSoilProfile, normalizeSearch } from "./scoring.js";
+import { aggregateClimate, scoreSpecies, tiebreakScore, grade, gradeColor, monthlyDaylengths, monthlySlopeSolarFactors, monthlyFlatInsolation, maxSoilDepthCm, aggregateSoilProfile, normalizeSearch, koppenGeigerClass, KOPPEN_DESCRIPTIONS, establishmentStrategy, sowingWindow } from "./scoring.js";
 import { DICTS, LANGS, NAMES, LOCALES, MONTHS_ALL } from "./i18n.js";
 import { CLASSES, projection, maturityYears, co2eKgPerTree, co2eTonsPerHa, height, dbhCm, crownDiameterM, crownDisplayM, standDisplay, STEMS_PER_HA } from "./growth.js";
 
@@ -28,13 +28,19 @@ L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/
   maxZoom: 20, maxNativeZoom: 19,
   attribution: "Imagery &copy; Esri, Vantor, Earthstar Geographics",
 }).addTo(map);
-L.tileLayer("https://basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png", {
-  maxZoom: 20, attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
+// ponytail: CARTO labels now watermark "API KEY REQUIRED"; Esri reference labels are keyless like the imagery
+L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", {
+  maxZoom: 20, maxNativeZoom: 19, attribution: "Labels &copy; Esri",
 }).addTo(map);
 
 let SPECIES = [], NATIVES = {}, NATURALIZED = {}, NAMES_PT = {}, SOURCING = null, INVASIVES = {}, NATIVES_L3 = {}, L3_REGIONS = {}, NATIVES_GEO = {};
+// Payload watch: species.json (trait fields for ~2k species) dominates first
+// render at ~675KB; it loads async alongside the optional layers so it never
+// blocks map interaction. Backlog: per-language dynamic import / trait-field
+// splitting — see README. Timed below to track regressions.
+console.time("species.json");
 const speciesReady = Promise.all([
-  fetch("data/species.json").then(r => r.json()).then(j => { SPECIES = j; }),
+  fetch("data/species.json").then(r => r.json()).then(j => { SPECIES = j; console.timeEnd("species.json"); }),
   fetch("data/natives.json").then(r => r.json()).then(j => { NATIVES = j; }).catch(() => {}), // optional layer
   fetch("data/naturalized.json").then(r => r.json()).then(j => { NATURALIZED = j; }).catch(() => {}), // optional layer
   // per-language species names, loaded only for the active language
@@ -190,6 +196,7 @@ const SHAPE_STYLE = { color: "#55d97c", weight: 1.5, fillOpacity: 0.08, dashArra
 const INACTIVE_STYLE = { color: "#93a096", weight: 1, fillOpacity: 0.03, dashArray: "3 5" };
 let armed = false, verts = [], draft = null, shape = null; // shape = the active area
 const shapes = []; // every analyzed area stays on the map
+let abortCtl = null, current = null; // current = {site, scored, pts, center, ha}
 drawBtn.addEventListener("click", () => armed ? cancelDraw() : arm());
 function arm() {
   armed = true; verts = [];
@@ -212,6 +219,8 @@ function cancelDraw() { disarm(); }
 document.addEventListener("keydown", e => { if (e.key === "Escape" && armed) cancelDraw(); });
 function deleteActiveArea() {
   if (!shape) return;
+  abortCtl?.abort();
+  current = null;
   removeStand(shape);
   removeEditHandles();
   map.removeLayer(shape);
@@ -469,7 +478,6 @@ async function fetchTerrain(c, signal) {
 
 // ---------- analysis ----------
 const panel = $("#panel"), content = $("#panel-content");
-let abortCtl = null, current = null; // current = {site, scored, pts, center, ha}
 
 async function analyze(pts) {
   stopSim();
@@ -485,8 +493,10 @@ async function analyze(pts) {
     current = shape._analysis;
     renderResults();
     loadRowPhotos();
+    if (!current.fsite) futureOutlook(ctl);
     return;
   }
+  current = null;
 
   openPanel(`
     <div class="p-head">
@@ -576,14 +586,57 @@ async function analyze(pts) {
   const evNaturalized = sp => !L3_REGIONS[place?.cc] && !!place?.cc && (NATURALIZED[sp.id] ?? []).includes(place.cc);
   // kept on current so user site adjustments (irrigation, measured pH) can
   // re-run pure scoring without refetching anything
-  const rescore = () => SPECIES
-    .map(sp => ({ sp, ...scoreSpecies(sp, site, { native: evNative(sp), countryNative: evCountry(sp), countryNaturalized: evNaturalized(sp) }) }))
-    .sort((a, b) => (b.score - a.score) || (b.fit - a.fit));
+  const rankEv = sp => ({
+    native: evNative(sp),
+    countryNative: !!(place?.cc && (NATIVES[sp.id] ?? []).includes(place.cc)),
+    countryNaturalized: !!(place?.cc && (NATURALIZED[sp.id] ?? []).includes(place.cc)),
+  });
+  const rescore = () => {
+    const win = sowingWindow(site);
+    // Evidence carry-over: rescore builds fresh objects, but row photos are
+    // species-level (safe across analyses) and GBIF counts are area-level
+    // (only valid for the same site object). Without this, every irrigation
+    // toggle vaporises the nearby badges until the next fetch resolves.
+    const prevMap = current?.scored ? new Map(current.scored.map(x => [x.sp.id, x])) : null;
+    const sameSite = prevMap && current?.site === site;
+    const list = SPECIES
+      .map(sp => {
+        const rev = rankEv(sp);
+        const ev = { native: evNative(sp), countryNative: evCountry(sp), countryNaturalized: evNaturalized(sp), rankEv: rev };
+        const prev = prevMap?.get(sp.id);
+        const gbifCount = prev?.gbifCount ?? prev?.gbif?.count ?? 0;
+        const r = scoreSpecies(sp, site, ev);
+        const row = {
+          sp,
+          ev: rev,
+          f45: prev?.f45 ?? null,
+          photo: prev?.photo ?? null,
+          gbif: prev?.gbif,
+          gbifCount,
+          strat: establishmentStrategy(sp, site, win),
+          ...r
+        };
+        if (gbifCount > 0) row.rankScore = tiebreakScore(row, site, rev);
+        if (prev?.photo !== undefined) row.photo = prev.photo;
+        return row;
+      })
+      .sort((a, b) => (b.score - a.score) || (b.rankScore - a.rankScore));
+    if (current?.fsite && current?.site === site) {
+      current.fsite.irrigated = site.irrigated;
+      current.fsite.ph = site.ph;
+      for (const s of list) {
+        s.f45 = scoreSpecies(s.sp, current.fsite, { native: evNative(s.sp),
+          countryNative: evCountry(s.sp), countryNaturalized: evNaturalized(s.sp) }).score;
+      }
+    }
+    return list;
+  };
   const scored = rescore();
   step("ls-score");
 
-  current = { site, scored, rescore, pts, center: c, ha, filter: "all", habit: "tree", shown: 12,
+  current = { site, scored, rescore, pts, center: c, ha, filter: "all", habit: "tree", prop: "all", shown: 12,
     cc: place?.cc ?? null, state: place?.state ?? "", city: place?.city ?? "", uf: place?.uf ?? "",
+    evOpts: sp => ({ native: evNative(sp), countryNative: evCountry(sp), countryNaturalized: evNaturalized(sp) }),
     // native-first by default wherever we know the country AND the ranges loaded
     nativeOnly: !!place?.cc && Object.keys(NATIVES).length > 0, critOpen: false };
   if (shape && shape._pts === pts) shape._analysis = current; // session cache per area
@@ -599,10 +652,78 @@ function step(doneId, nextId) {
   document.getElementById(nextId)?.classList.add("active");
 }
 
+// ---------- mobile bottom sheet ----------
+// Phones get a draggable sheet with three stops instead of a fixed slab:
+// peek (header only, map free), half (default), full (list reading).
+// Everything that frames the map reads the sheet's real height from here.
+const isPhone = () => matchMedia("(max-width: 760px)").matches;
+let sheetStop = "half", sheetH = 0, simWantsPeek = false;
+function sheetStops() {
+  const vh = window.innerHeight;
+  const bar = document.querySelector(".bar")?.getBoundingClientRect().bottom ?? 60;
+  const head = panel.querySelector(".p-head")?.offsetHeight ?? 110;
+  return { peek: Math.min(head + 22, vh * 0.4), half: Math.round(vh * 0.52), full: Math.round(vh - bar - 8) };
+}
+function setSheet(stop, px) {
+  if (!isPhone()) return;
+  const s = sheetStops();
+  sheetStop = stop ?? sheetStop;
+  sheetH = Math.round(px ?? s[sheetStop]);
+  document.body.style.setProperty("--sheet-h", `${sheetH}px`);
+  panel.dataset.stop = sheetStop;
+  if (sheetStop === "peek") panel.scrollTop = 0;
+}
+// bottom padding (px) the map must leave for the sheet when framing things
+const sheetPx = () => (isPhone() && !panel.hidden ? sheetH || sheetStops()[sheetStop] : 0);
+function fitVisible(bounds, pad = 0.2) {
+  const sim = document.getElementById("sim");
+  const px = sheetPx() + (isPhone() && sim && !sim.hidden ? sim.offsetHeight + 12 : 0);
+  map.fitBounds(bounds.pad(pad), px ? { paddingBottomRight: [0, px], paddingTopLeft: [0, 64] } : undefined);
+}
+(() => {
+  let drag = null;
+  panel.addEventListener("pointerdown", e => {
+    if (!isPhone() || e.button > 0) return;
+    if (!e.target.closest(".sheet-grab, .p-head") || e.target.closest("button, a, input, textarea")) return;
+    drag = { y0: e.clientY, h0: sheetH || sheetStops()[sheetStop], t0: performance.now(), moved: false };
+    panel.classList.add("dragging");
+    panel.setPointerCapture(e.pointerId);
+  });
+  panel.addEventListener("pointermove", e => {
+    if (!drag) return;
+    const dy = drag.y0 - e.clientY;
+    if (Math.abs(dy) > 4) drag.moved = true;
+    const s = sheetStops();
+    setSheet(null, Math.max(s.peek * 0.8, Math.min(s.full, drag.h0 + dy)));
+  });
+  const end = e => {
+    if (!drag) return;
+    panel.classList.remove("dragging");
+    const s = sheetStops();
+    if (!drag.moved) { // tap on the grab/header cycles peek -> half -> full -> half
+      setSheet(sheetStop === "peek" ? "half" : sheetStop === "half" ? "full" : "half");
+    } else {
+      const v = (drag.y0 - e.clientY) / Math.max(1, performance.now() - drag.t0); // px/ms, + = up
+      const target = sheetH + v * 180; // fling projects the release point
+      const stop = Object.entries(s).sort((a, b) => Math.abs(a[1] - target) - Math.abs(b[1] - target))[0][0];
+      setSheet(stop);
+    }
+    drag = null;
+  };
+  panel.addEventListener("pointerup", end);
+  panel.addEventListener("pointercancel", end);
+  addEventListener("resize", () => { if (!panel.hidden) setSheet(); });
+})();
+
 function openPanel(html) {
+  const wasHidden = panel.hidden;
   content.innerHTML = html;
   panel.hidden = false;
   document.body.classList.add("panel-open");
+  if (wasHidden && isPhone()) { // a fresh sheet opens at half, framing the area above it
+    setSheet("half");
+    if (typeof shape !== "undefined" && shape?._pts?.length) fitVisible(L.latLngBounds(shape._pts), 0.3);
+  }
 }
 panel.addEventListener("click", e => {
   if (e.target.closest("[data-del]")) { // explicit area deletion
@@ -767,9 +888,10 @@ const critMatch = (s, c) => s.score > 0.05
   && (c.use === "all" || s.sp.uses.includes(c.use))
   && (!c.nativeOnly || (nativeHere(s.sp) === true && nativeRegion(s.sp) !== false))
   && (!c.matMax || (s.sp.tree && matCls(s.sp.gclass) <= c.matMax))
-  && (!c.crownMin || (s.sp.tree && crownCls(s.sp.gclass) >= c.crownMin));
+  && (!c.crownMin || (s.sp.tree && crownCls(s.sp.gclass) >= c.crownMin))
+  && (!c.prop || c.prop === "all" || (c.prop === "direct" ? !!s.strat?.directViable : !!s.strat?.seedlingViable));
 
-const critState = () => ({ use: current.filter, nativeOnly: current.nativeOnly, matMax: current.matMax, crownMin: current.crownMin, habit: current.habit ?? "tree" });
+const critState = () => ({ use: current.filter, nativeOnly: current.nativeOnly, matMax: current.matMax, crownMin: current.crownMin, habit: current.habit ?? "tree", prop: current.prop ?? "all" });
 const critCount = over => current.scored.reduce((n, s) => n + (critMatch(s, { ...critState(), ...over }) ? 1 : 0), 0);
 
 const CRIT_DIMS = () => [
@@ -782,6 +904,11 @@ const CRIT_DIMS = () => [
     key: "habit", label: "Habit", cur: current.habit ?? "tree",
     opts: [["tree", tr("trees")], ["nontree", tr("shrubs and herbs")], ["shrub", tr("shrubs")], ["herb", tr("herbs")], ["grass", tr("grasses")], ["vine", tr("vines")], ["all", tr("all habits")]],
     over: v => ({ habit: v }),
+  },
+  {
+    key: "prop", label: "Establishment", cur: current.prop ?? "all",
+    opts: [["all", tr("all methods")], ["direct", tr("direct seeding")], ["seedling", tr("seedling planting")]],
+    over: v => ({ prop: v }),
   },
   {
     key: "use", label: "Use", cur: current.filter,
@@ -801,24 +928,40 @@ const CRIT_DIMS = () => [
 ];
 
 // guerrilla-mode front controls: one line of chips, the facet browser behind "more filters"
+// Irrigation lives here — not buried in "Why these plants?" — because it
+// rescores the list above the fold: a control that reorders results must sit
+// next to the results, not a scroll away inside a disclosure.
 function chipsMarkup() {
   const habit = current.habit ?? "tree";
   const fam = ["nontree", "shrub", "herb", "grass", "vine"].includes(habit); // any non-tree selection lights the family chip
+  const irr = !!current?.site?.irrigated;
+  const irrTitle = tr("Scored as irrigated: water counts as available up to this species' optimum. Excess rain still applies.").replace(/"/g, "&quot;");
+  const irrLabel = tr("irrigated").replace(/"/g, "&quot;");
+  const irrChip = `<button type="button" class="opt chip-irr${irr ? " on" : ""}" data-f="irr" data-v="toggle" aria-pressed="${irr ? "true" : "false"}" title="${irrTitle}" aria-label="${irrLabel}"><svg aria-hidden="true" focusable="false" width="11" height="11" viewBox="0 0 24 24" fill="${irr ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:4px"><path d="M12 2.7s6.5 7.1 6.5 11.3a6.5 6.5 0 0 1-13 0C5.5 9.8 12 2.7 12 2.7z"/></svg>${irrLabel}</button>`;
   const chip = (on, f, v, label, n) =>
-    `<button class="opt${on ? " on" : ""}" data-f="${f}" data-v="${v}"${on ? ' aria-pressed="true"' : ""}${!on && n === 0 ? " disabled" : ""}>${label}${!on && n != null ? `<span class="c">${n}</span>` : ""}</button>`;
+    `<button type="button" class="opt${on ? " on" : ""}" data-f="${f}" data-v="${v}" aria-pressed="${on ? "true" : "false"}"${!on && n === 0 ? " disabled" : ""}>${label}${!on && n != null ? `<span class="c">${n}</span>` : ""}</button>`;
+  const natN = current.nativeOnly ? null : critCount({ nativeOnly: true });
   return `<div class="sp-search"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="sp-search" type="search" placeholder="${tr("Search a species: bean, oak, Quercus...")}" value="${(current.q ?? "").replace(/"/g, "&quot;")}" autocomplete="off" spellcheck="false"></div>
   <div class="chips-row">
-    ${current.cc ? chip(current.nativeOnly, "origin", current.nativeOnly ? "all" : "native", tr("native here"), current.nativeOnly ? null : critCount({ nativeOnly: true })) : ""}
-    ${chip(habit === "tree", "habit", "tree", tr("trees"), habit === "tree" ? null : critCount({ habit: "tree" }))}
-    ${chip(fam, "habit", "nontree", tr("shrubs and herbs"), fam ? null : critCount({ habit: "nontree" }))}
-    ${chip(habit === "all", "habit", "all", tr("everything"), habit === "all" ? null : critCount({ habit: "all" }))}
+    <div class="chips-main">
+      ${current.cc ? `<button class="opt chip-toggle${current.nativeOnly ? " on" : ""}" data-f="origin" data-v="${current.nativeOnly ? "all" : "native"}"${current.nativeOnly ? ' aria-pressed="true"' : ' aria-pressed="false"'}${!current.nativeOnly && natN === 0 ? " disabled" : ""}><span class="dot" aria-hidden="true"></span>${tr("native here")}${!current.nativeOnly && natN != null ? `<span class="c">${natN}</span>` : ""}</button>` : ""}
+      <div class="habit-seg" role="group" aria-label="${tr("Habit")}">
+        ${chip(habit === "tree", "habit", "tree", tr("trees"), habit === "tree" ? null : critCount({ habit: "tree" }))}
+        ${chip(fam, "habit", "nontree", tr("shrubs and herbs"), fam ? null : critCount({ habit: "nontree" }))}
+        ${chip(habit === "all", "habit", "all", tr("everything"), habit === "all" ? null : critCount({ habit: "all" }))}
+      </div>
+    </div>
     <button class="crit-toggle" data-crit-toggle aria-expanded="${current.critOpen ? "true" : "false"}">${tr("more filters")}<i class="car"></i></button>
+  </div>
+  <div class="chips-sub">
+    ${irrChip}
   </div>`;
 }
 
 // the pristine state for this analysis: native-first, trees, no extra criteria
 const critIsDefault = () => current.filter === "all" && !current.matMax && !current.crownMin
-  && (current.habit ?? "tree") === "tree" && current.nativeOnly === (!!current.cc && Object.keys(NATIVES).length > 0);
+  && (current.habit ?? "tree") === "tree" && (current.prop ?? "all") === "all"
+  && current.nativeOnly === (!!current.cc && Object.keys(NATIVES).length > 0);
 
 // species search: "does X grow here?" is a question, so it overrides the
 // chips (but never the guardrails: invasives answer with the reason, not
@@ -853,12 +996,12 @@ function critMarkup() {
     <div class="k"${d.title ? ` title="${d.title}"` : ""}>${tr(d.label)}</div>
     <div class="opts">${d.opts.map(([v, txt], i) => {
       const on = d.cur === v, c = on ? 0 : critCount(d.over(v));
-      return `<button class="opt${on ? (i ? " on constrained" : " on") : ""}" data-f="${d.key}" data-v="${v}"${on ? ' aria-pressed="true"' : ""}${!on && !c ? " disabled" : ""}>${txt}${on ? "" : `<span class="c">${c}</span>`}</button>`;
+      return `<button type="button" class="opt${on ? (i ? " on constrained" : " on") : ""}" data-f="${d.key}" data-v="${v}" aria-pressed="${on ? "true" : "false"}"${!on && !c ? " disabled" : ""}>${txt}${on ? "" : `<span class="c">${c}</span>`}</button>`;
     }).join("")}</div></div>`).join("");
 
   return `${chipsMarkup()}
     <div class="crit-panel"${current.critOpen ? "" : " hidden"}>${rows}${
-      critIsDefault() ? "" : `<button class="crit-clear" data-crit-clear>${tr("clear criteria")}</button>`
+      critIsDefault() ? "" : `<button type="button" class="crit-clear" data-crit-clear>${tr("clear criteria")}</button>`
     }</div>`;
 }
 
@@ -901,7 +1044,6 @@ function renderResults() {
     <div class="section-h">${tr("Site climate &middot; ERA5 2015&ndash;2024")}</div>
     <div class="site-fig">${climateSvg(site)}</div>
     <div class="site-adjust">
-      <label><input type="checkbox" data-ov-irr${site.irrigated ? " checked" : ""}> ${tr("irrigated")}</label>
       <label>${tr("measured pH")} <input type="number" data-ov-ph min="3" max="10" step="0.1" value="${site.phUser ?? ""}" placeholder="${site.ph != null ? fmt(site.ph, 1) : "–"}"></label>
     </div>
     <div class="readout">
@@ -915,6 +1057,7 @@ function renderResults() {
       ${rd(tr("cloud"), site.cloud != null ? `${fmt(site.cloud)}%` : tr("n/a"), tr("high humidity plus high cloud cover marks fog-prone sites"))}
       ${rd(tr("slope"), site.terrain ? `${fmt(site.terrain.slope)}°${site.terrain.facing ? ` ${tr("facing")} ` + tr(site.terrain.facing) : ""}` : tr("n/a"))}
       ${rd(tr("aridity"), site.aridity != null ? `${tr(site.aridity)} <span class="adm">(AI: ${fmt(site.ai, 2)})</span>` : tr("n/a"), tr("UNEP Aridity Index (P / ET₀)"))}
+      ${rd(tr("climate class"), site.koppen ? `${site.koppen} <span class="adm">(${tr(KOPPEN_DESCRIPTIONS[site.koppen] ?? site.koppen)})</span>` : tr("n/a"), tr("Köppen-Geiger climate classification (Peel et al. 2007)"))}
     </div>
     <div class="footnote" style="margin-top:10px">
       ${tr("Suitability follows the FAO EcoCrop model (trapezoidal climate envelopes, most-limiting-factor). Growth and carbon are class-level estimates")}
@@ -1001,7 +1144,7 @@ function speciesRow(s, i) {
                   ? tfmt("Part of the native flora of {region} (WCVP). Ranges resolve at whole-province scale; where a species grows within {region} varies.", { region: regionName() })
                   : tr("Part of the native flora of this region (WCVP)"))
                 : tr("Part of the native flora of this country (WCVP)")}">${tr("native")}</span>` : ""}
-          <span class="nearby gbif" data-nearby="${s.sp.id}" ${s.gbif?.count > 0 ? "" : "hidden"} title="${tr("GBIF occurrence records near this area")}">&#10003; ${tr("nearby")}</span>
+          <span class="nearby gbif" data-nearby="${s.sp.id}" ${s.gbif?.count > 0 ? "" : "hidden"} title="${tr("GBIF occurrence records near this area")}" aria-label="${tr("Recorded nearby on GBIF")}">&#10003; ${tr("nearby")}</span>
           <span class="nearby warn45" data-f45="${s.sp.id}" ${s.score > 0.4 && s.f45 != null && s.f45 <= 0.4 ? "" : "hidden"} title="${tr("Falls below suitable in the 2040s climate (CMIP6)")}">2045 &#9662;</span>
           ${s.score <= 0.4 ? `<span class="nearby mgnl">${tr(grade(s.score)).toLowerCase()}</span>` : ""}
         </div>
@@ -1021,20 +1164,23 @@ function speciesRow(s, i) {
 
 // site adjustments: mutate the site, re-run pure scoring, re-render. The
 // SoilGrids value is kept in phGrid so clearing the field restores it.
+// (Irrigation moved to the filter chip row: it rescores the list, so it lives
+// with the list. Handled in the .opt[data-f="irr"] click branch below.)
 content.addEventListener("change", e => {
   const site = current?.site;
   if (!site) return;
-  if (e.target.matches("[data-ov-irr]")) {
-    site.irrigated = e.target.checked || undefined;
-  } else if (e.target.matches("[data-ov-ph]")) {
+  if (e.target.matches("[data-ov-ph]")) {
     const v = parseFloat(e.target.value);
     if (site.phGrid === undefined) site.phGrid = site.ph;
     site.phUser = Number.isFinite(v) && v >= 3 && v <= 10 ? Math.round(v * 10) / 10 : null;
     site.ph = site.phUser ?? site.phGrid;
     if (site.phUser == null) delete site.phUser;
   } else return;
+  const wasFocused = document.activeElement === e.target;
   current.scored = current.rescore();
+  current.shown = 12;
   renderResults(); loadRowPhotos();
+  if (wasFocused && !isPhone()) content.querySelector("[data-ov-ph]")?.focus({ preventScroll: true });
   track("site_override", { irrigated: !!site.irrigated, ph: site.phUser ?? undefined });
 });
 
@@ -1072,25 +1218,51 @@ content.addEventListener("click", e => {
   }
   if (e.target.closest("[data-crit-clear]")) {
     // reset to the analysis defaults, which include native-first
-    current.filter = "all"; current.matMax = null; current.crownMin = null; current.habit = "tree";
+    current.filter = "all"; current.matMax = null; current.crownMin = null; current.habit = "tree"; current.prop = "all";
     current.nativeOnly = !!current.cc && Object.keys(NATIVES).length > 0;
-    current.shown = 12; renderResults(); loadRowPhotos(); return;
+    current.shown = 12; renderResults(); loadRowPhotos();
+    content.querySelector(".chips-row .opt")?.focus({ preventScroll: true });
+    return;
   }
   const opt = e.target.closest(".opt[data-f]");
   if (opt) {
+    if (!current) return;
     const v = opt.dataset.v;
     if (["lmf", "lapp", "lveg"].includes(opt.dataset.f)) {
       current.legal[opt.dataset.f === "lmf" ? "mf" : opt.dataset.f === "lapp" ? "app" : "veg"] = v;
       renderResults(); loadRowPhotos();
       return;
     }
+    if (opt.dataset.f === "irr") {
+      // site truth, not a view filter: toggles dry-side-only irrigation
+      // (scoring.js lifts supply to the species optimum, wet limits untouched),
+      // then re-runs pure scoring in place — no refetch. Tracked as a site
+      // override (continuity with the old checkbox), not as a view filter.
+      // PINNED: keep this branch above track("filter") with its return;
+      // do not rename data-f="irr" (CSS + the refocus query depend on it).
+      const site = current?.site;
+      if (!site) return;
+      site.irrigated = site.irrigated ? undefined : true;
+      current.scored = current.rescore();
+      current.shown = 12; renderResults(); loadRowPhotos();
+      content.querySelector('.opt[data-f="irr"]')?.focus({ preventScroll: true });
+      track("site_override", { irrigated: !!site.irrigated });
+      return;
+    }
     track("filter", { f: opt.dataset.f, v });
+    const inRow = !!opt.closest(".chips-row");
+    const sel = inRow
+      ? (opt.dataset.f === "origin" ? '.chips-row .opt[data-f="origin"]' : `.chips-row .opt[data-f="${opt.dataset.f}"][data-v="${v}"]`)
+      : `.crit-panel .opt[data-f="${opt.dataset.f}"][data-v="${v}"]`;
     if (opt.dataset.f === "habit") { current.habit = v; current.matMax = null; current.crownMin = null; }
     if (opt.dataset.f === "origin") current.nativeOnly = v === "native";
+    if (opt.dataset.f === "prop") current.prop = v;
     if (opt.dataset.f === "use") current.filter = v;
     if (opt.dataset.f === "mat") current.matMax = v ? +v : null;
     if (opt.dataset.f === "crown") current.crownMin = v ? +v : null;
-    current.shown = 12; renderResults(); loadRowPhotos(); return;
+    current.shown = 12; renderResults(); loadRowPhotos();
+    content.querySelector(sel)?.focus({ preventScroll: true });
+    return;
   }
   const srcLink = e.target.closest(".getrows a");
   if (srcLink) { // the loop's conversion moment: intent became a store visit
@@ -1138,6 +1310,7 @@ content.addEventListener("click", e => {
       const head = [...content.querySelectorAll(".sp")].find(el =>
         current.scored.find(x => x.sp.id === +el.dataset.id)?.sp.tree)?.querySelector("[data-toggle]");
       head?.scrollIntoView({ block: "center", behavior: "smooth" });
+      simWantsPeek = true;
       head?.click();
     } else radarScan();
     return;
@@ -1293,6 +1466,9 @@ function sourcingMarkup(sp) {
     </div>`;
 }
 
+// Baskin & Baskin dormancy codes to full display names (translated via i18n).
+const DORMANCY_NAMES = { ND: "No dormancy", PY: "Physical dormancy (PY)", PD: "Physiological dormancy (PD)", MPD: "Morphophysiological dormancy (MPD)", "PY+PD": "Combinational dormancy (PY+PD)" };
+
 function speciesDetail(id) {
   const s = current.scored.find(x => x.sp.id === id);
   const { sp } = s;
@@ -1316,9 +1492,9 @@ function speciesDetail(id) {
     if (s.factors.texture != null && s.factors.texture < 1) notes.push(tfmt("The measured topsoil here is {t}, outside this species' preferred texture range: soft penalty, never an exclusion.", { t: tr(TEXTURE_NAMES[current.site.soil?.texture] ?? current.site.soil?.texture ?? "") }));
     if (current.site.irrigated) notes.push(tr("Scored as irrigated: water counts as available up to this species' optimum. Excess rain still applies."));
     else if (s.factors.rain < 0.2 && s.factors.temp >= 0.5) notes.push(tr("Rainfall is the limiting factor here. The model scores rainfed growing only; irrigation changes this picture entirely."));
-    // wet-margin demote: rain 0.5 with the scored total above the ceiling can
-    // only come from the margin (the trapezoid is 0 past RMAX)
-    const rTot = (sp.tree && (sp.ktmpr ?? 99) <= -10) || s.window.months === 12 ? current.site.annualRain : wr;
+    // wet-margin demote or annual rain cap: rain 0.5 with the scored total above
+    // the ceiling can only come from the margin / consistency cap
+    const rTot = !sp.annual || s.window.months === 12 ? current.site.annualRain : wr;
     if (s.factors.rain === 0.5 && rTot > sp.rain[3])
       notes.push(tr("Annual rain here sits just above this species' EcoCrop ceiling. Excess-rain limits proxy disease and drainage rather than survival, so it takes a half penalty instead of exclusion."));
     if (s.factors.frost === 0.5) {
@@ -1332,11 +1508,14 @@ function speciesDetail(id) {
         : tr("The record low here sits within the grid's frost margin. Reanalysis under-reports valley and highland night frosts, so this frost-tender species takes a half penalty."));
     }
     if (s.factors.chill != null && s.factors.chill < 1) notes.push(tr("Needs winter dormancy; the coldest month here is too warm for it."));
+    if (s.strat?.noteKey) notes.push(tr(s.strat.noteKey));
+    if (s.strat?.directives?.length) s.strat.directives.forEach(d => notes.push(tr(d)));
+    const escHtml = s => String(s ?? "").replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     return `<div class="factors">
       ${rangeStrip(tr("Temperature"), " °C", sp.temp, wt, 1)}
       ${rangeStrip(tr("Rainfall"), " mm", sp.rain, wr, 0)}
       ${rangeStrip(tr("Soil pH"), "", sp.ph, current.site.ph, 1)}
-    </div>${notes.map(n => `<div class="evidence">${n}</div>`).join("")}`;
+    </div>${notes.map(n => `<div class="evidence">${escHtml(n)}</div>`).join("")}`;
   })();
 
   return `
@@ -1349,6 +1528,9 @@ function speciesDetail(id) {
     </div>` : ""}
 
     <div class="stats">
+      ${s.strat ? `<div class="stat"><span class="sk">${tr("Establishment")}</span><span class="sv">${tr(s.strat.labelKey)} <span class="adm">(${tr(s.strat.confidenceKey)})</span></span></div>` : ""}
+      ${s.strat?.sowingWindow?.start != null ? `<div class="stat"><span class="sk">${tr("Sowing window")}</span><span class="sv">${s.strat.sowingWindow.length === 1 ? MONTHS[s.strat.sowingWindow.start] : `${MONTHS[s.strat.sowingWindow.start]}&ndash;${MONTHS[(s.strat.sowingWindow.start + s.strat.sowingWindow.length - 1) % 12]}`}</span></div>` : (s.strat?.sowingWindow?.length ? `<div class="stat"><span class="sk">${tr("Sowing window")}</span><span class="sv">${tfmt("~{n} months (rainy season)", { n: s.strat.sowingWindow.length })}</span></div>` : "")}
+      ${s.strat?.dormancy && DORMANCY_NAMES[s.strat.dormancy] ? `<div class="stat"><span class="sk">${tr("Seed Dormancy")}</span><span class="sv">${tr(DORMANCY_NAMES[s.strat.dormancy])}</span></div>` : ""}
       ${sp.tree ? `<div class="stat"><span class="sk">${tr("Trunk &oslash; 20 yr")}</span><span class="sv">${d20.toFixed(0)} cm</span></div>
       <div class="stat"><span class="sk">${tr("Canopy, 20 yr")}</span><span class="sv">${crown20.toFixed(1)} m &middot; ${fmt(Math.PI / 4 * crown20 * crown20)} m&sup2;</span></div>
       <div class="stat"><span class="sk">${tr("CO&#8322;e/tree, 20 yr")}</span><span class="sv">${fmt(co2Tree20)} kg</span></div>
@@ -1504,10 +1686,11 @@ function startSim(item) {
   ctl.querySelector("[data-simclose]").addEventListener("click", stopSim);
   ensureSimLayer();
   map.getContainer().style.cursor = "copy"; // planting is armed while the pill is up
-  // on mobile the bottom sheet covers 62vh: frame the stand in the visible strip
-  const sheetPx = matchMedia("(max-width: 760px)").matches && !$("#panel").hidden
-    ? Math.round(map.getSize().y * 0.62) : 0;
-  map.fitBounds(b.pad(0.2), sheetPx ? { paddingBottomRight: [0, sheetPx] } : undefined);
+  // on phones: a card tap keeps the sheet (the card stays readable, the stand is
+  // framed in the strip above it); the "see the planting grow" action drops to peek
+  if (simWantsPeek) setSheet("peek");
+  simWantsPeek = false;
+  fitVisible(b, 0.2);
   drawSim();
 }
 
@@ -1959,20 +2142,32 @@ function drawTree(g, x, y, r, tree, conifer) {
 
 // ---------- 2040s outlook: rescore the shortlist on a CMIP6 projection ----------
 async function futureOutlook(ctl) {
+  const target = current;
+  const c = target?.center;
+  if (!c || ctl.signal.aborted) return;
   try {
-    const c = current.center;
     const url = `https://climate-api.open-meteo.com/v1/climate?latitude=${c.lat.toFixed(4)}&longitude=${c.lng.toFixed(4)}` +
       `&start_date=2040-01-01&end_date=2049-12-31&models=MRI_AGCM3_2_S&daily=temperature_2m_mean,temperature_2m_min,precipitation_sum`;
-    const j = await (await fetch(url, { signal: ctl.signal })).json();
-    if (!j.daily?.time?.length || ctl.signal.aborted) return;
+    const res = await fetch(url, { signal: ctl.signal });
+    if (!res.ok || ctl.signal.aborted) return;
+    const j = await res.json();
+    if (!j.daily?.time?.length || ctl.signal.aborted || current !== target || !current?.site) return;
     const agg = aggregateClimate(j.daily);
-    const fsite = { ...agg, ph: current.site.ph, soil: current.site.soil ?? null, lat: c.lat };
+    // fsite mirrors the current-site context the main rescore() uses (ph,
+    // soil, irrigation) so the 2040s suitability delta is climate-only.
+    // Establishment strategy is deliberately NOT recomputed for the 2040s:
+    // the CSV establishment_method/sowing_window columns describe the
+    // current site only (see the `#` meta line in csvExport()).
+    const fsite = { ...agg, ph: current.site.ph, soil: current.site.soil ?? null, lat: c.lat,
+      irrigated: current.site.irrigated, terrain: current.site.terrain ?? null, radSlope: current.site.radSlope ?? null };
+    current.fsite = fsite;
     for (const s of current.scored) {
-      s.f45 = scoreSpecies(s.sp, fsite, { native: nativeRegion(s.sp) === true,
+      const ev = current.evOpts ? current.evOpts(s.sp) : { native: nativeRegion(s.sp) === true,
         countryNative: !L3_REGIONS[current.cc] && nativeHere(s.sp) === true,
-        countryNaturalized: !L3_REGIONS[current.cc] && !!current.cc && (NATURALIZED[s.sp.id] ?? []).includes(current.cc) }).score;
-      updateF45(s);
+        countryNaturalized: !L3_REGIONS[current.cc] && !!current.cc && (NATURALIZED[s.sp.id] ?? []).includes(current.cc) };
+      s.f45 = scoreSpecies(s.sp, fsite, ev).score;
     }
+    updateAllF45();
   } catch { /* the projection is an enhancement; fail silent */ }
 }
 function f45Text(s) {
@@ -1980,11 +2175,18 @@ function f45Text(s) {
   const d = Math.round((s.f45 - s.score) * 100);
   return `${Math.round(s.f45 * 100)}% <span class="d45">(${d >= 0 ? "+" : ""}${d})</span>`;
 }
-function updateF45(s) {
-  const badge = content.querySelector(`[data-f45="${s.sp.id}"]`);
-  if (badge) badge.hidden = !(s.score > 0.4 && s.f45 != null && s.f45 <= 0.4);
-  const stat = content.querySelector(`[data-f45stat="${s.sp.id}"]`);
-  if (stat) stat.innerHTML = f45Text(s);
+function updateAllF45() {
+  if (!current?.scored) return;
+  const map = new Map();
+  for (const s of current.scored) map.set(s.sp.id, s);
+  content.querySelectorAll("[data-f45]").forEach(badge => {
+    const s = map.get(+badge.dataset.f45);
+    if (s) badge.hidden = !(s.score > 0.4 && s.f45 != null && s.f45 <= 0.4);
+  });
+  content.querySelectorAll("[data-f45stat]").forEach(stat => {
+    const s = map.get(+stat.dataset.f45stat);
+    if (s) stat.innerHTML = f45Text(s);
+  });
 }
 
 // ---------- species photos (iNaturalist default taxon photo) ----------
@@ -2026,7 +2228,7 @@ async function gbifEvidence(top, bounds, signal) {
   const keys = await Promise.all(top.map(async s => {
     const cacheKey = `gbifk:${s.sp.sci}`;
     const cached = localStorage.getItem(cacheKey);
-    if (cached !== null) return cached === "x" ? null : +cached;
+    if (cached !== null) return cached === "x" ? null : (Number.isFinite(+cached) ? +cached : null);
     try {
       const j = await (await fetch(`https://api.gbif.org/v1/species/match?name=${encodeURIComponent(s.sp.sci)}`, { signal })).json();
       const ok = j.rank === "SPECIES" && (j.matchType === "EXACT" || (j.matchType === "FUZZY" && j.confidence >= 95));
@@ -2051,11 +2253,25 @@ async function gbifEvidence(top, bounds, signal) {
     const counts = Object.fromEntries((j.facets?.[0]?.counts ?? []).map(c => [c.name, c.count]));
     for (const v of withKey) {
       v.s.gbif = { key: v.key, count: counts[String(v.key)] ?? 0 };
+      v.s.gbifCount = v.s.gbif.count;
+      v.s.rankScore = tiebreakScore(v.s, current?.site, v.s.ev);
       updateEvidence(v.s);
     }
+    current?.scored?.sort((a, b) => (b.score - a.score) || (b.rankScore - a.rankScore));
+    reorderSpList();
   } catch {
     if (signal.aborted) return;
     for (const v of withKey) { v.s.gbif = "ERR"; updateEvidence(v.s); }
+  }
+}
+
+function reorderSpList() {
+  const list = document.getElementById("sp-list");
+  if (!list || current?.q?.trim()) return;
+  const pool = current.scored.filter(s => critMatch(s, critState())).slice(0, current.shown);
+  for (const s of pool) {
+    const el = list.querySelector(`[data-id="${s.sp.id}"]`);
+    if (el) list.appendChild(el);
   }
 }
 
@@ -2125,7 +2341,7 @@ function radarGoTo(i) {
   radarIdx = ((i % radarCands.length) + radarCands.length) % radarCands.length;
   radarCands.forEach((cd, k) => cd.poly.setStyle(k === radarIdx ? CAND_ACTIVE : CAND_STYLE));
   const cd = radarCands[radarIdx];
-  map.fitBounds(cd.poly.getBounds().pad(0.6));
+  fitVisible(cd.poly.getBounds(), 0.6);
   radarNav.querySelector(".rn-label").textContent =
     `${radarIdx + 1}/${radarCands.length} · ${landLabel(cd.tag)} · ${fmtHa(polyAreaHa(cd.pts.map(([la, ln]) => L.latLng(la, ln))))}`;
 }
@@ -2222,7 +2438,7 @@ async function importGeometryFile(file) {
       setShape(ring.map(([la, ln]) => L.latLng(la, ln)));
       last = shape;
     }
-    map.fitBounds(L.latLngBounds(polys.flat()).pad(0.15));
+    fitVisible(L.latLngBounds(polys.flat()), 0.15);
     await speciesReady;
     analyze(last._pts);
   } catch (err) {
@@ -2426,22 +2642,34 @@ function zipStore(files) {
 // ---------- export: full factor matrix as CSV ----------
 function csvExport() {
   if (!current) return;
-  const esc = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const esc = v => {
+    let s = String(v ?? "");
+    if (/^[\s\t\r\n]*([=+\-@%|\uFF1D\uFF0B\uFF0D\uFF20\uFF5C])/.test(s)) s = "'" + s;
+    return `"${s.replace(/"/g, '""')}"`;
+  };
+  // CSV column contract: the establishment columns were appended before
+  // `uses` (not grouped with the factors); column order is frozen — do not
+  // move them (downstream parsers read by position). Format version rides in
+  // the `#` meta line below, currently v2. `irrigated` is the last column and
+  // reports the site state the scores were computed under.
   const head = ["scientific_name", "common_name", "family", "score", "fit", "score_2040s",
     "temp_factor", "rain_factor", "ph_factor", "photo_factor", "frost_factor", "chill_factor",
-    "native_here", "growth_class", "uses"];
+    "native_here", "growth_class", "establishment_method", "establishment_confidence", "sowing_window", "uses", "irrigated"];
   // the CSV mirrors the panel exactly: active filters, the marginality cut
   // and the invasive exclusion all apply; clear the filters to export wide
   const rows = current.scored.filter(s => critMatch(s, critState())).map(s => [
-    s.sp.sci, s.sp.common, s.sp.family,
+    s.sp.sci, s.sp.common, s.sp.family ?? "",
     s.score.toFixed(3), s.fit.toFixed(3), s.f45 != null ? s.f45.toFixed(3) : "",
     ...[s.factors.temp, s.factors.rain, s.factors.ph, s.factors.photo, s.factors.frost, s.factors.chill]
       .map(v => v == null ? "" : (+v).toFixed(3)),
-    nativeHere(s.sp) ?? "", s.sp.gclass, s.sp.uses.join("|"),
+    nativeHere(s.sp) ?? "", s.sp.gclass, s.strat?.method ?? "", s.strat?.confidence ?? "", s.strat?.sowingWindow?.label || (s.strat?.sowingWindow?.length ? `~${s.strat.sowingWindow.length} mo` : ""), s.sp.uses.join("|"),
+    current.site.irrigated ? "true" : "false",
   ].map(esc).join(","));
   const c = critState();
-  const meta = `# Replantio ${new Date().toISOString().slice(0, 10)} · ${current.center.lat.toFixed(4)},${current.center.lng.toFixed(4)} · ${current.ha.toFixed(1)} ha\n`
-    + `# filters: origin=${c.nativeOnly ? "native" : "all"} habit=${c.habit} use=${c.use}${c.matMax ? ` maturity<=${c.matMax}y` : ""}${c.crownMin ? ` crown>=${c.crownMin}m` : ""} · score>0.05 · invasives excluded (GRIIS${current.cc === "BR" ? " + Instituto Horus" : ""}) · ${rows.length} species\n`;
+  const meta = `# Replantio v2 ${new Date().toISOString().slice(0, 10)} · ${current.center.lat.toFixed(4)},${current.center.lng.toFixed(4)} · ${current.ha.toFixed(1)} ha\n`
+    + `# establishment_method/establishment_confidence/sowing_window describe the current site, not the 2040s outlook\n`
+    + `# irrigation=${current.site.irrigated ? "irrigated" : "rainfed"}\n`
+    + `# filters: origin=${c.nativeOnly ? "native" : "all"} habit=${c.habit} establishment=${c.prop} use=${c.use}${c.matMax ? ` maturity<=${c.matMax}y` : ""}${c.crownMin ? ` crown>=${c.crownMin}m` : ""} · score>0.05 · invasives excluded (GRIIS${current.cc === "BR" ? " + Instituto Horus" : ""}) · ${rows.length} species\n`;
   downloadBlob(`replantio-especies-${current.center.lat.toFixed(3)}_${current.center.lng.toFixed(3)}.csv`,
     new Blob([meta + head.join(",") + "\n" + rows.join("\n")], { type: "text/csv;charset=utf-8" }));
 }
