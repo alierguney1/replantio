@@ -1046,6 +1046,14 @@ assert.equal(recalcDiverg.length, 0, `old/new recalcitrant gates diverge for ${r
   assert.equal(araucariaRank, 1, `Araucaria angustifolia surfaces at #1 in Curitiba highland tiebreak (got #${araucariaRank})`);
   assertMonotonic(curitibaRanked, "Curitiba");
 }
+// --- Biological Nitrogen Fixation (N-fixer) layer
+const alnus = by("Alnus rubra");
+assert.ok(alnus && alnus.nfix === true, "Alnus rubra is an actinorhizal nitrogen fixer");
+const acacia = by("Acacia tortilis");
+assert.ok(acacia && acacia.nfix === true, "Acacia tortilis is a legume nitrogen fixer");
+const elaeagnus = by("Elaeagnus angustifolia");
+assert.ok(elaeagnus && elaeagnus.nfix === true, "Elaeagnus angustifolia is a nitrogen fixer");
+assert.equal(qr.nfix, undefined, "Quercus robur is not a nitrogen fixer");
 
 console.log("all checks passed");
 console.log(`  oak@Berlin ${qrBerlin.score.toFixed(2)} | euc@Berlin ${egBerlin.score.toFixed(2)} | euc@SP ${egSP.score.toFixed(2)}`);
