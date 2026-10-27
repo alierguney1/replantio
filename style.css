@@ -309,6 +309,13 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
 
 /* independent toggle chip: "native here" */
 .chip-toggle {
+  display: inline-flex; align-items: center; gap: 4px;
+  min-height: 22px; padding: 0 7px; border-radius: 999px;
+  border: 1px solid var(--line); background: rgba(255, 255, 255, 0.02);
+  font: inherit; font-size: 11px; color: var(--muted); cursor: pointer;
+  white-space: nowrap; transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  flex-shrink: 0;
+}
 
 .chips-row .opt.on { color: var(--accent); }
 .chips-row .crit-toggle { margin-left: auto; }
@@ -376,7 +383,6 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
 .habit-seg .opt.on .c { display: none; }
 .habit-seg .opt[disabled] { opacity: 0.35; cursor: default; }
 
-}
 .chip-irr svg {
   color: var(--water); opacity: 0.65; transition: opacity 0.15s ease;
 }
@@ -847,7 +853,7 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
   .chips-row::-webkit-scrollbar { display: none; }
   .chips-main {
     display: inline-flex; align-items: center; gap: 8px; flex: none; flex-wrap: nowrap;
-
+  }
   .chips-row .opt, .chips-row .crit-toggle {
     flex: none; min-height: 44px; padding: 0 15px; border-radius: 999px;
     border: 1px solid var(--line-2); background: rgba(255,255,255,.03);
@@ -946,3 +952,18 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
   #intro .ialt { white-space: normal; flex: 1; min-width: 0; font-size: 13px; }
   #intro #intro-go { min-height: 44px; padding: 0 18px; font-size: 15px; }
 }
+
+/* plain-language hover help: dotted hint trigger + wrapped popover */
+.tip { position: relative; cursor: help; border-bottom: 1px dotted var(--faint); outline: none; }
+.tip::after {
+  content: attr(data-help);
+  position: absolute; bottom: calc(100% + 8px); right: 0; z-index: 60;
+  width: 250px; max-width: 70vw; white-space: normal; text-align: left;
+  font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif; font-size: 11.5px; font-weight: 400; line-height: 1.45; color: var(--text);
+  background: rgba(10, 14, 11, .97); padding: 9px 11px; border-radius: 8px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.09), 0 8px 24px rgba(0,0,0,.55);
+  opacity: 0; transform: translateY(2px); pointer-events: none;
+  transition: opacity .12s ease .1s, transform .12s ease .1s;
+}
+.stat .sk .tip::after { right: auto; left: 0; }
+.tip:hover::after, .tip:focus::after { opacity: 1; transform: translateY(0); }

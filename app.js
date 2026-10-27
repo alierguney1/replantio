@@ -1468,6 +1468,18 @@ function sourcingMarkup(sp) {
 
 // Baskin & Baskin dormancy codes to full display names (translated via i18n).
 const DORMANCY_NAMES = { ND: "No dormancy", PY: "Physical dormancy (PY)", PD: "Physiological dormancy (PD)", MPD: "Morphophysiological dormancy (MPD)", "PY+PD": "Combinational dormancy (PY+PD)" };
+// Plain-language hover help per code (same keys translated in i18n.js).
+const DORMANCY_HELP = {
+  "ND": "These seeds sprout as soon as they get warmth and moisture. No special preparation is needed; just sow them.",
+  "PY": "The seed coat is hard and waterproof, so water cannot get in. Nick or sand the coat, or soak the seeds in hot water, before sowing.",
+  "PD": "The embryo inside needs a cold, damp spell to wake up, like a winter. Keep the seeds in moist sand at 1–5 °C for weeks to months, or sow them outdoors in autumn and let winter do the job.",
+  "MPD": "The embryo is still immature and also needs a chill. The seeds need a warm, moist period first and then a cold one, so germination can take many months. Sowing outdoors in autumn is the easy route.",
+  "PY+PD": "Two locks: a waterproof coat and an embryo that needs winter. First break the coat (nick, sand or hot water), then give the seeds a cold, moist rest before sowing.",
+};
+const DORMANCY_INTRO = "Many seeds will not sprout right away, even in good conditions. This built-in safety delay is called dormancy: it makes the seed wait for the right season. Knowing the type tells you how to prepare the seeds before sowing.";
+// hover/focus tooltip: a hint trigger with a wrapped popover (touch: tap focuses it)
+const tipAttr = t => t.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+const helpTip = (inner, text) => `<span class="tip" tabindex="0" role="note" data-help="${tipAttr(tr(text))}">${inner}</span>`;
 
 function speciesDetail(id) {
   const s = current.scored.find(x => x.sp.id === id);
@@ -1530,7 +1542,7 @@ function speciesDetail(id) {
     <div class="stats">
       ${s.strat ? `<div class="stat"><span class="sk">${tr("Establishment")}</span><span class="sv">${tr(s.strat.labelKey)} <span class="adm">(${tr(s.strat.confidenceKey)})</span></span></div>` : ""}
       ${s.strat?.sowingWindow?.start != null ? `<div class="stat"><span class="sk">${tr("Sowing window")}</span><span class="sv">${s.strat.sowingWindow.length === 1 ? MONTHS[s.strat.sowingWindow.start] : `${MONTHS[s.strat.sowingWindow.start]}&ndash;${MONTHS[(s.strat.sowingWindow.start + s.strat.sowingWindow.length - 1) % 12]}`}</span></div>` : (s.strat?.sowingWindow?.length ? `<div class="stat"><span class="sk">${tr("Sowing window")}</span><span class="sv">${tfmt("~{n} months (rainy season)", { n: s.strat.sowingWindow.length })}</span></div>` : "")}
-      ${s.strat?.dormancy && DORMANCY_NAMES[s.strat.dormancy] ? `<div class="stat"><span class="sk">${tr("Seed Dormancy")}</span><span class="sv">${tr(DORMANCY_NAMES[s.strat.dormancy])}</span></div>` : ""}
+      ${s.strat?.dormancy && DORMANCY_NAMES[s.strat.dormancy] ? `<div class="stat"><span class="sk">${helpTip(tr("Seed Dormancy"), DORMANCY_INTRO)}</span><span class="sv">${helpTip(tr(DORMANCY_NAMES[s.strat.dormancy]), DORMANCY_HELP[s.strat.dormancy])}</span></div>` : ""}
       ${sp.tree ? `<div class="stat"><span class="sk">${tr("Trunk &oslash; 20 yr")}</span><span class="sv">${d20.toFixed(0)} cm</span></div>
       <div class="stat"><span class="sk">${tr("Canopy, 20 yr")}</span><span class="sv">${crown20.toFixed(1)} m &middot; ${fmt(Math.PI / 4 * crown20 * crown20)} m&sup2;</span></div>
       <div class="stat"><span class="sk">${tr("CO&#8322;e/tree, 20 yr")}</span><span class="sv">${fmt(co2Tree20)} kg</span></div>
