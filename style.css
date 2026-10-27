@@ -309,6 +309,13 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
 
 /* independent toggle chip: "native here" */
 .chip-toggle {
+  display: inline-flex; align-items: center; gap: 4px;
+  min-height: 22px; padding: 0 7px; border-radius: 999px;
+  border: 1px solid var(--line); background: rgba(255, 255, 255, 0.02);
+  font: inherit; font-size: 11px; color: var(--muted); cursor: pointer;
+  white-space: nowrap; transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  flex-shrink: 0;
+}
 
 .chips-row .opt.on { color: var(--accent); }
 .chips-row .crit-toggle { margin-left: auto; }
@@ -376,7 +383,6 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
 .habit-seg .opt.on .c { display: none; }
 .habit-seg .opt[disabled] { opacity: 0.35; cursor: default; }
 
-}
 .chip-irr svg {
   color: var(--water); opacity: 0.65; transition: opacity 0.15s ease;
 }
@@ -846,7 +852,7 @@ html, body { margin: 0; height: 100%; background: #0a0d0b; color: var(--text); }
   .chips-row::-webkit-scrollbar { display: none; }
   .chips-main {
     display: inline-flex; align-items: center; gap: 8px; flex: none; flex-wrap: nowrap;
-
+  }
   .chips-row .opt, .chips-row .crit-toggle {
     flex: none; min-height: 44px; padding: 0 15px; border-radius: 999px;
     border: 1px solid var(--line-2); background: rgba(255,255,255,.03);
